@@ -181,53 +181,76 @@
             </div>
             <h1>Registro</h1>
 
-            <form>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nombre(s)</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Apellidos</label>
-                        <input type="text" required>
-                    </div>
-                </div>
+            <form method="POST" action="{% url 'registro' %}">
+    {% csrf_token %}
 
-                <div class="form-group">
-                    <label>CURP</label>
-                    <input type="text" pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9A-Z]{2}" oninput="this.value = this.value.toUpperCase()" maxlength="18" minlength="18" required>
-                    <div class="auth-links" style="text-align: right;">
-                        <a href="https://www.gob.mx/curp/" target="_blank" style="font-size: 10px;"><i class="fas fa-external-link-alt"></i> Consultar CURP</a>
-                    </div>
-                </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label>Nombre(s)</label>
+            <input type="text" name="nombre" required>
+        </div>
 
-                <div class="form-group">
-                    <label>Institución</label>
-                    <select required>
-                        <option value="">Selecciona</option>
-                        <option>CINVESTAV</option>
-                        <option>USICAMM</option>
-                    </select>
-                </div>
+        <div class="form-group">
+            <label>Apellido paterno</label>
+            <input type="text" name="apellido_paterno" required>
+        </div>
 
-                <div class="form-group">
-                    <label>Correo institucional</label>
-                    <input type="email" required>
-                </div>
+        <div class="form-group">
+            <label>Apellido materno</label>
+            <input type="text" name="apellido_materno">
+        </div>
+    </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Confirmar contraseña</label>
-                        <input type="password" required>
-                    </div>
-                </div>
+    <div class="form-group">
+        <label>CURP</label>
+        <input type="text"
+               name="curp"
+               pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9A-Z]{2}"
+               oninput="this.value = this.value.toUpperCase()"
+               maxlength="18"
+               minlength="18"
+               required>
+        <div class="auth-links" style="text-align: right;">
+            <a href="https://www.gob.mx/curp/" target="_blank" style="font-size: 10px;">
+                <i class="fas fa-external-link-alt"></i> Consultar CURP
+            </a>
+        </div>
+    </div>
 
-                <button class="btn"><i class="fa-solid fa-user-check"></i> Crear cuenta</button>
-            </form>
+    <div class="form-group">
+        <label>Institución</label>
+        <select name="institucion_id" required>
+            <option value="">Selecciona</option>
+            {% for inst in instituciones %}
+                <option value="{{ inst.id_institucion }}">
+                    {{ inst.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Correo institucional</label>
+        <input type="email" name="correo" required>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" name="password1" required>
+        </div>
+
+        <div class="form-group">
+            <label>Confirmar contraseña</label>
+            <input type="password" name="password2" required>
+        </div>
+    </div>
+
+    <button class="btn">
+        <i class="fa-solid fa-user-check"></i> Crear cuenta
+    </button>
+</form>
+
 
             <div class="auth-links">
                 <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
