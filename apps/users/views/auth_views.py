@@ -1,13 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .models import Institucion, Usuario, Rol
+from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
-
-def index(request):
-    return render(request, 'users/index.html')
+from ..models import Institucion, Usuario, Rol
+from django.contrib.auth.hashers import check_password
 
 
 def sesion(request):
@@ -21,13 +17,24 @@ def sesion(request):
             messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
 
-        if usuario.check_password(password):  
+        if not usuario.activo:
+            messages.error(request, 'El usuario no existe o no está activo')
+            return redirect('sesion')
+
+        if usuario.check_password(password):
             request.session['usuario_id'] = usuario.id_usuario
-            return redirect('dashboard')
+            request.session['rol'] = usuario.rol.nombre_rol
+            if usuario.rol.nombre_rol == 'Administrador':
+                return redirect('panel_admin')
+            else:
+                return redirect('home')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos')
 
+        messages.error(request, 'Usuario o contraseña incorrectos')
+
     return render(request, 'sesion.html')
+
 
 def registro(request):
     instituciones = Institucion.objects.filter(activo=True)
@@ -72,30 +79,11 @@ def registro(request):
         return redirect('sesion')
 
     return render(request, 'resgistro.html', {
-        'instituciones': instituciones
-    })
+    'instituciones': instituciones
+})
+
 
 
 def cerrar_sesion(request):
     logout(request)
     return redirect('sesion')
-
-
-@login_required
-def dashboard(request):
-    return render(request, 'dash.html')
-
-
-@login_required
-def panel_admin(request):
-    return render(request, 'paneladm.html')
-
-
-@login_required
-def chat(request):
-    return render(request, 'chat.html')
-
-
-@login_required
-def prueba(request):
-    return render(request, 'prueba.html')

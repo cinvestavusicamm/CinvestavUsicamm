@@ -6,15 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuario - SIU</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    
+
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             height: 100%;
             font-family: Arial, sans-serif;
             display: flex;
-            flex-direction: column; 
+            flex-direction: column;
         }
 
         .background-carousel {
@@ -34,16 +35,24 @@
             transition: opacity 1.5s ease-in-out;
         }
 
-        .slide.active { opacity: 1; }
+        .slide.active {
+            opacity: 1;
+        }
 
-#slide-1 { background-image: url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80');}
+        #slide-1 {
+            background-image: url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80');
+        }
 
-#slide-2 { background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80'); }
+        #slide-2 {
+            background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80');
+        }
 
-#slide-3 { background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80'); }
+        #slide-3 {
+            background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80');
+        }
 
         header {
-            background-color: #702032; 
+            background-color: #702032;
             color: white;
             padding: 10px 20px;
         }
@@ -56,14 +65,33 @@
             margin: 0 auto;
         }
 
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; }
-        .logo img { height: 35px; border-radius: 50%; }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
 
-        nav ul { list-style: none; display: flex; gap: 20px; margin: 0; }
-        nav a { color: white; text-decoration: none; font-size: 14px; }
+        .logo img {
+            height: 35px;
+            border-radius: 50%;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
 
         main {
-            flex: 1; 
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -74,14 +102,23 @@
             background: white;
             padding: 20px 25px;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 380px; 
+            max-width: 380px;
             text-align: center;
         }
 
-        .volver { text-align: left; margin-bottom: 5px; }
-        .btn-volver { text-decoration: none; color: #702032; font-size: 12px; font-weight: bold; }
+        .volver {
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+        .btn-volver {
+            text-decoration: none;
+            color: #702032;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
         .logo_jajuar {
             width: 60px;
@@ -91,14 +128,33 @@
             margin-bottom: 5px;
         }
 
-        h1 { color: #4a141d; font-size: 20px; margin: 10px 0; }
+        h1 {
+            color: #4a141d;
+            font-size: 20px;
+            margin: 10px 0;
+        }
 
-        .form-row { display: flex; gap: 10px; }
-        .form-group { text-align: left; flex: 1; margin-bottom: 8px; }
-        
-        label { display: block; font-size: 11px; color: #702032; margin-bottom: 3px; font-weight: bold; }
-        
-        input, select {
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-group {
+            text-align: left;
+            flex: 1;
+            margin-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            color: #702032;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
@@ -111,7 +167,7 @@
         .btn {
             width: 100%;
             padding: 10px;
-            background-color: #008080; 
+            background-color: #008080;
             color: white;
             border: none;
             border-radius: 8px;
@@ -120,8 +176,16 @@
             margin-top: 5px;
         }
 
-        .auth-links { margin-top: 5px; font-size: 12px; }
-        .auth-links a { color: #008080; text-decoration: none; font-weight: bold; }
+        .auth-links {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .auth-links a {
+            color: #008080;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
         /* Logos Inferiores */
         .logos-footer-container {
@@ -133,17 +197,25 @@
             align-items: center;
         }
 
-        .logo-footer-item img { max-height: 30px; width: auto; }
-        .logo-footer-item span { display: block; font-size: 9px; color: #666; }
+        .logo-footer-item img {
+            max-height: 30px;
+            width: auto;
+        }
+
+        .logo-footer-item span {
+            display: block;
+            font-size: 9px;
+            color: #666;
+        }
 
         footer {
             width: 100%;
             text-align: center;
-            padding: 25px 0; 
-            background: rgba(105, 31, 31, 0.947); 
+            padding: 25px 0;
+            background: rgba(105, 31, 31, 0.947);
             color: white;
-            font-size: 14px; 
-            border-top: 3px solid #702032; 
+            font-size: 14px;
+            border-top: 3px solid #702032;
         }
     </style>
 </head>
@@ -159,13 +231,14 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                    alt="Logo">
                 EscalafonIA
             </div>
             <nav>
                 <ul>
-                    <li><a href="login.html">Iniciar Sesión</a></li>
-                    <li><a href="registro.html">Registrarse</a></li>
+                    <li><a href="{% url 'sesion' %}">Iniciar sesión</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
                 </ul>
             </nav>
         </div>
@@ -174,95 +247,92 @@
     <main>
         <div class="auth-container">
             <div class="volver">
-                <a href="login.html" class="btn-volver"><i class="fa-solid fa-circle-arrow-left"></i> Volver</a>
+                <a href="{% url 'sesion' %}" class="btn-volver"><i class="fa-solid fa-circle-arrow-left"></i> Volver</a>
             </div>
             <div class="logoI">
-                <img class="logo_jajuar" src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
+                <img class="logo_jajuar"
+                    src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                    alt="Jaguar">
             </div>
             <h1>Registro</h1>
 
             <form method="POST" action="{% url 'registro' %}">
-    {% csrf_token %}
+                {% csrf_token %}
 
-    <div class="form-row">
-        <div class="form-group">
-            <label>Nombre(s)</label>
-            <input type="text" name="nombre" required>
-        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre(s)</label>
+                        <input type="text" name="nombre" required>
+                    </div>
 
-        <div class="form-group">
-            <label>Apellido paterno</label>
-            <input type="text" name="apellido_paterno" required>
-        </div>
+                    <div class="form-group">
+                        <label>Apellido paterno</label>
+                        <input type="text" name="apellido_paterno" required>
+                    </div>
 
-        <div class="form-group">
-            <label>Apellido materno</label>
-            <input type="text" name="apellido_materno">
-        </div>
-    </div>
+                    <div class="form-group">
+                        <label>Apellido materno</label>
+                        <input type="text" name="apellido_materno">
+                    </div>
+                </div>
 
-    <div class="form-group">
-        <label>CURP</label>
-        <input type="text"
-               name="curp"
-               pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9A-Z]{2}"
-               oninput="this.value = this.value.toUpperCase()"
-               maxlength="18"
-               minlength="18"
-               required>
-        <div class="auth-links" style="text-align: right;">
-            <a href="https://www.gob.mx/curp/" target="_blank" style="font-size: 10px;">
-                <i class="fas fa-external-link-alt"></i> Consultar CURP
-            </a>
-        </div>
-    </div>
+                <div class="form-group">
+                    <label>CURP</label>
+                    <input type="text" name="curp" pattern="[A-Z]{4}[0-9]{6}[A-Z]{6}[0-9A-Z]{2}"
+                        oninput="this.value = this.value.toUpperCase()" maxlength="18" minlength="18" required>
+                    <div class="auth-links" style="text-align: right;">
+                        <a href="https://www.gob.mx/curp/" target="_blank" style="font-size: 10px;">
+                            <i class="fas fa-external-link-alt"></i> Consultar CURP
+                        </a>
+                    </div>
+                </div>
 
-    <div class="form-group">
-        <label>Institución</label>
-        <select name="institucion_id" required>
-            <option value="">Selecciona</option>
-            {% for inst in instituciones %}
-                <option value="{{ inst.id_institucion }}">
-                    {{ inst.nombre }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
+                <div class="form-group">
+                    <label>Institución</label>
+                    <select name="institucion_id" required>
+                        <option value="">Selecciona</option>
+                        {% for inst in instituciones %}
+                        <option value="{{ inst.id_institucion }}">
+                            {{ inst.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
 
-    <div class="form-group">
-        <label>Correo institucional</label>
-        <input type="email" name="correo" required>
-    </div>
+                </div>
 
-    <div class="form-row">
-        <div class="form-group">
-            <label>Contraseña</label>
-            <input type="password" name="password1" required>
-        </div>
+                <div class="form-group">
+                    <label>Correo institucional</label>
+                    <input type="email" name="correo" required>
+                </div>
 
-        <div class="form-group">
-            <label>Confirmar contraseña</label>
-            <input type="password" name="password2" required>
-        </div>
-    </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" name="password1" required>
+                    </div>
 
-    <button class="btn">
-        <i class="fa-solid fa-user-check"></i> Crear cuenta
-    </button>
-</form>
+                    <div class="form-group">
+                        <label>Confirmar contraseña</label>
+                        <input type="password" name="password2" required>
+                    </div>
+                </div>
 
+                <button class="btn">
+                    <i class="fa-solid fa-user-check"></i> Crear cuenta
+                </button>
+            </form>
 
             <div class="auth-links">
-                <p>¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a></p>
+                <p>¿Ya tienes cuenta? <a href="{% url 'sesion' %}">Iniciar sesión</a></p>
             </div>
 
             <div class="logos-footer-container">
                 <div class="logo-footer-item">
-                    <img src="imagenes/logosimbolo.png" alt="Cinvestav">
+                    <img src="/static/imagenes/logosimbolo.png" alt="Cinvestav">
                     <span>Cinvestav</span>
                 </div>
                 <div class="logo-footer-item">
-                    <img src="imagenes/USICAMM.jpg" alt="USICAMM">
+                    <img src="/static/imagenes/USICAMM.jpg" alt="USICAMM">
                 </div>
             </div>
         </div>
@@ -282,4 +352,5 @@
         }, 8000);
     </script>
 </body>
+
 </html>

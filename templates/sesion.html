@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -168,8 +169,8 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="login.html">Iniciar Sesión</a></li>
-                    <li><a href="registro.html">Registrarse</a></li>
+                    <li><a href="{% url 'sesion' %}">Iniciar Sesión</a></li>
+                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
                 </ul>
             </nav>
         </div>
@@ -182,14 +183,15 @@
             </div>
             <h1>Iniciar Sesión</h1>
 
-            <form>
+            <form method="POST" action="{% url 'sesion' %}">
+                {% csrf_token %}
                 <div class="form-group">
                     <label>Correo institucional</label>
-                    <input type="email" placeholder="Correo institucional" required>
+                    <input type="email" name="correo" placeholder="Correo institucional" required>
                 </div>
                 <div class="form-group">
                     <label>Contraseña</label>
-                    <input type="password" placeholder="Contraseña" required>
+                    <input type="password" name="password" placeholder="Contraseña" required>
                 </div>
                 <button class="btn"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
             </form>
@@ -201,11 +203,11 @@
 
             <div class="logos-footer-container">
                 <div class="logo-footer-item">
-                    <img src="imagenes/logosimbolo.png" alt="Cinvestav">
+                    <img src="{% static 'imagenes/logosimbolo.png' %}" alt="Cinvestav">
                     <span>Cinvestav</span>
                 </div>
                 <div class="logo-footer-item">
-                    <img src="imagenes/USICAMM.jpg" alt="USICAMM">
+                    <img src="{% static 'imagenes/USICAMM.jpg' %}" alt="USICAMM">
                 </div>
             </div>
         </div>

@@ -1,10 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADM - Centro de Control Institucional</title>
-    
+
     <style>
         /* ==================== VARIABLES Y RESET ==================== */
         * {
@@ -13,7 +15,8 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
         }
 
@@ -34,7 +37,7 @@
             --verde-hover: #005f61;
         }
 
-        
+
         .sidebar {
             width: 250px;
             background-color: var(--vino-principal);
@@ -64,14 +67,14 @@
             width: 80px;
             height: auto;
             margin-bottom: 10px;
-            filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3));
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.3));
         }
 
         .menu-list {
             list-style: none;
             padding: 0;
             margin-top: 10px;
-            display: flex; 
+            display: flex;
             flex-direction: column;
         }
 
@@ -111,7 +114,7 @@
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .header-left h2 {
@@ -165,13 +168,30 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             border-left: 5px solid var(--vino-principal);
         }
-        
-        .kpi-card:nth-child(2) { border-left-color: #f1c40f; }
-        .kpi-card:nth-child(3) { border-left-color: var(--verde-principal); }
-        .kpi-card:nth-child(4) { border-left-color: #e74c3c; }
 
-        .kpi-card h3 { font-size: 0.85rem; color: #777; margin-bottom: 10px; }
-        .kpi-card .value { font-size: 2.2rem; font-weight: bold; color: var(--texto-oscuro); }
+        .kpi-card:nth-child(2) {
+            border-left-color: #f1c40f;
+        }
+
+        .kpi-card:nth-child(3) {
+            border-left-color: var(--verde-principal);
+        }
+
+        .kpi-card:nth-child(4) {
+            border-left-color: #e74c3c;
+        }
+
+        .kpi-card h3 {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .kpi-card .value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--texto-oscuro);
+        }
 
         /* ==================== SECCIONES DE GESTIÓN ==================== */
         .management-sections {
@@ -179,14 +199,14 @@
             grid-template-columns: 2fr 1fr;
             gap: 30px;
         }
-        
+
         .section-card {
             background-color: var(--fondo-claro);
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .section-card h3 {
             font-size: 1.3rem;
             color: var(--vino-principal);
@@ -194,7 +214,7 @@
             border-bottom: 1px solid var(--borde-tarjeta);
             padding-bottom: 10px;
         }
-        
+
         .action-button {
             background-color: var(--verde-principal);
             color: white;
@@ -207,9 +227,11 @@
             width: 100%;
             margin-top: 10px;
         }
-        
-        .action-button:hover { background-color: var(--verde-hover); }
-        
+
+        .action-button:hover {
+            background-color: var(--verde-hover);
+        }
+
         .expedient-list li {
             padding: 12px 0;
             border-bottom: 1px dashed #eee;
@@ -217,13 +239,29 @@
             justify-content: space-between;
             align-items: center;
         }
-        
-        .detail { color: var(--vino-principal); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+
+        .detail {
+            color: var(--vino-principal);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
 
         @media (max-width: 1024px) {
-            .management-sections { grid-template-columns: 1fr; }
-            .header-content { flex-direction: column; text-align: center; gap: 15px; }
-            .header-logos-inst { border: none; padding: 0; }
+            .management-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .header-logos-inst {
+                border: none;
+                padding: 0;
+            }
         }
     </style>
 </head>
@@ -232,10 +270,10 @@
 
     <div class="sidebar">
         <div class="logo-section">
-            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" 
-                 alt="Logo" 
-                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
-            
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                alt="Logo"
+                style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
+
             <h1>Administrador</h1>
             <p style="font-size: 0.8rem; opacity: 0.8;">Panel de Control</p>
         </div>
@@ -249,14 +287,14 @@
             <li><a href="#"> Gestión de Usuarios</a></li>
             <li style="margin-top: auto;"><a href="#" style="color: #ff9999;">🚪 Cerrar Sesión</a></li>
         </ul>
-    </div> 
+    </div>
     <div class="main-content">
-        
+
         <div class="header-content">
             <div class="header-left">
                 <h2>Centro de Control</h2>
             </div>
-            
+
             <div class="header-right">
                 <div class="header-logos-inst">
                     <img src="imagenes/logosimbolo.png" alt="Cinvestav">
@@ -268,7 +306,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="kpi-grid">
             <div class="kpi-card">
                 <h3>SOLICITUDES PENDIENTES</h3>
@@ -287,7 +325,7 @@
                 <div class="value" style="color: #e74c3c;">03</div>
             </div>
         </div>
-        
+        <button class="action-button" id="btnAddUser" style="background: #722f37;">Agregar Usuario</button> <br>
         <div class="management-sections">
             <div class="section-card">
                 <h3>Expedientes Prioritarios</h3>
@@ -311,7 +349,60 @@
                 </ul>
                 <button class="action-button" style="background: var(--vino-principal);">Ver Bandeja Completa</button>
             </div>
-            
+
+            <div id="userModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+    background: rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+                <div style="background:white; padding:30px; border-radius:8px; width:400px; position:relative;">
+                    <h3>Agregar Nuevo Usuario</h3>
+                    <form id="addUserForm">
+                        <label>Nombre:</label>
+                        <input type="text" name="nombre" required style="width:100%; margin-bottom:10px; padding:8px;">
+
+                        <label>Apellido Paterno:</label>
+                        <input type="text" name="apellido_paterno" required
+                            style="width:100%; margin-bottom:10px; padding:8px;">
+
+                        <label>Apellido Materno:</label>
+                        <input type="text" name="apellido_materno" required
+                            style="width:100%; margin-bottom:10px; padding:8px;">
+
+                        <label>Correo:</label>
+                        <input type="email" name="correo" required style="width:100%; margin-bottom:10px; padding:8px;">
+
+                        <label>Contraseña:</label>
+                        <input type="password" name="contrasena" required
+                            style="width:100%; margin-bottom:10px; padding:8px;">
+
+                        <label>CURP:</label>
+                        <input type="text" name="curp" required style="width:100%; margin-bottom:10px; padding:8px;">
+
+                        <label>Institución:</label>
+                        <select name="institucion" required style="width:100%; margin-bottom:10px; padding:8px;">
+                            <option value="">Selecciona...</option>
+                            {% for i in instituciones %}
+                            <option value="{{ i.id }}">{{ i.nombre }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label>Rol:</label>
+                        <select name="rol" required style="width:100%; margin-bottom:10px; padding:8px;">
+                            <option value="">Selecciona...</option>
+                            {% for r in roles %}
+                            <option value="{{ r.id }}">{{ r.nombre_rol }}</option>
+                            {% endfor %}
+                        </select>
+
+
+                        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px;">
+                            <button type="button" id="cancelModal"
+                                style="background:#ccc; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">Cancelar</button>
+                            <button type="submit"
+                                style="background:#722f37; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer;">Agregar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div class="section-card">
                 <h3>Acciones Rápidas</h3>
                 <p style="font-size: 0.9rem; margin-bottom: 10px; color: #666;">Control Global del Sistema:</p>
@@ -321,6 +412,8 @@
             </div>
         </div>
     </div>
+<script src="{% static 'js/crear_admin.js' %}"></script>
 
 </body>
+
 </html>

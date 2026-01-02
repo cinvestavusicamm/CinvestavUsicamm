@@ -2,6 +2,8 @@ from django.db import models
 from .rol import Rol
 from .institucion import Institucion
 from django.utils import timezone
+from django.contrib.auth.hashers import check_password
+
 
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)

@@ -391,9 +391,21 @@
         <ul class="nav-links">
             <li><a href="#" class="active">Inicio</a></li>
             <li><a href="#caracteristicas">Cursos</a></li>
-            <li><a href="#ai-agent">Agente IA</a></li>
+            <li><a href="{% url 'chat' %}">Chat IA</a></li>
             <li><a href="#" id="btnContacto">Contacto</a></li>
-            <li><a href="login.html" class="btn-login">Acceder</a></li>
+            {% if request.session.usuario_id %}
+        <li>
+            <a href="{% url 'logout' %}" class="btn-login">
+                Cerrar sesión
+            </a>
+        </li>
+    {% else %}
+        <li>
+            <a href="{% url 'sesion' %}" class="btn-login">
+                Acceder
+            </a>
+        </li>
+    {% endif %}
         </ul>
     </nav>
 
