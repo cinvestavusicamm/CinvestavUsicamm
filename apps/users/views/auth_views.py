@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from ..models import Institucion, Usuario, Rol
 from django.contrib.auth.hashers import check_password
-
+from django.utils import timezone
 
 def sesion(request):
     if request.method == 'POST':
@@ -12,28 +12,33 @@ def sesion(request):
         password = request.POST['password']
 
         try:
-            usuario = Usuario.objects.get(correo=correo)
+            usuario = Usuario.objects.select_related('rol').get(correo=correo)
         except Usuario.DoesNotExist:
             messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
 
         if not usuario.activo:
-            messages.error(request, 'El usuario no existe o no está activo')
+            messages.error(request, 'El usuario no está activo')
             return redirect('sesion')
 
         if usuario.check_password(password):
+            request.session.clear()
+
             request.session['usuario_id'] = usuario.id_usuario
-            request.session['rol'] = usuario.rol.nombre_rol
-            if usuario.rol.nombre_rol == 'Administrador':
-                return redirect('panel_admin')
-            else:
-                return redirect('home')
-        else:
-            messages.error(request, 'Usuario o contraseña incorrectos')
+            request.session['usuario_nombre'] = usuario.nombre
+            request.session['usuario_rol'] = usuario.rol.nombre_rol
+
+            print("SESSION GUARDADA:", dict(request.session.items()))
+            
+            usuario.ultimo_acceso = timezone.now()
+            usuario.save(update_fields=['ultimo_acceso'])
+
+            return redirect('panel_admin')
 
         messages.error(request, 'Usuario o contraseña incorrectos')
 
     return render(request, 'sesion.html')
+
 
 
 def registro(request):
@@ -78,12 +83,11 @@ def registro(request):
         messages.success(request, 'Cuenta creada correctamente')
         return redirect('sesion')
 
-    return render(request, 'resgistro.html', {
+    return render(request, 'registro.html', {
     'instituciones': instituciones
 })
 
-
-
 def cerrar_sesion(request):
-    logout(request)
+    request.session.flush()
     return redirect('sesion')
+

@@ -1,115 +1,384 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PANEL ADMIN| EscalafonIA Jaguar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <style>
         :root {
-            --guinda: #691C32; --dorado: #BC955C; --turquesa: #007A7C;
-            --turquesa-claro: #E0F7FA; --blanco: #FFFFFF; --gris-bg: #F4F7F6;
-            --rojo: #C0392B; --verde: #27AE60;
+            --guinda: #691C32;
+            --dorado: #BC955C;
+            --turquesa: #007A7C;
+            --turquesa-claro: #E0F7FA;
+            --blanco: #FFFFFF;
+            --gris-bg: #F4F7F6;
+            --rojo: #C0392B;
+            --verde: #27AE60;
             --font-main: 'Open Sans', sans-serif;
             --font-title: 'Montserrat', sans-serif;
         }
 
-        @keyframes jaguarFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        @keyframes jaguarFloat {
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-main); background-color: var(--gris-bg); display: flex; height: 100vh; overflow: hidden; }
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--gris-bg);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
 
-        .sidebar { width: 300px; background-color: var(--guinda); color: white; border-right: 4px solid var(--dorado); display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar-header { padding: 2.5rem 1rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); animation: jaguarFloat 4s ease-in-out infinite; }
-        .jaguar-logo { height: 95px; width: 95px; border-radius: 50%; border: 3px solid var(--dorado); background: white; margin-bottom: 15px; object-fit: cover; }
-        .nav-menu { flex: 1; padding-top: 25px; }
-        .nav-link { padding: 15px 30px; display: flex; align-items: center; color: white; text-decoration: none; transition: 0.3s; gap: 12px; font-size: 1.1rem; }
-        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); border-left: 6px solid var(--dorado); color: var(--dorado); font-weight: 600; }
+        .sidebar {
+            width: 300px;
+            background-color: var(--guinda);
+            color: white;
+            border-right: 4px solid var(--dorado);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 2.5rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: jaguarFloat 4s ease-in-out infinite;
+        }
+
+        .jaguar-logo {
+            height: 95px;
+            width: 95px;
+            border-radius: 50%;
+            border: 3px solid var(--dorado);
+            background: white;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding-top: 25px;
+        }
+
+        .nav-link {
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 6px solid var(--dorado);
+            color: var(--dorado);
+            font-weight: 600;
+        }
 
 
-        .main-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .top-bar { background: white; padding: 18px 35px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 12px rgba(0,0,0,0.08); z-index: 100; }
-        .welcome-msg { font-family: var(--font-title); color: var(--guinda); font-weight: 700; font-size: 1.4rem; }
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-        .admin-profile { cursor: pointer; padding: 8px 15px; border-radius: 10px; transition: 0.2s; }
-        .admin-profile:hover { background: #f8f8f8; }
+        .top-bar {
+            background: white;
+            padding: 18px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            z-index: 100;
+        }
 
-        .scrollable-content { flex: 1; overflow-y: auto; padding: 35px; padding-bottom: 120px; }
-        
+        .welcome-msg {
+            font-family: var(--font-title);
+            color: var(--guinda);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .admin-profile {
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+
+        .admin-profile:hover {
+            background: #f8f8f8;
+        }
+
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 35px;
+            padding-bottom: 120px;
+        }
+
         /* --- Estadísticas --- */
-        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.8rem; margin-bottom: 2.5rem; }
-        .stat-card { background: var(--blanco); padding: 1.5rem; border-radius: 15px; border-bottom: 5px solid var(--turquesa); box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
-        .stat-card h2 { color: var(--guinda); font-size: 2.3rem; margin-top: 5px; }
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--blanco);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-bottom: 5px solid var(--turquesa);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-card h2 {
+            color: var(--guinda);
+            font-size: 2.3rem;
+            margin-top: 5px;
+        }
 
         /* --- Dashboard Grid --- */
-        .dashboard-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 2.5rem; }
-        .crud-card { background: white; border-radius: 18px; padding: 25px; margin-bottom: 2.5rem; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--turquesa-claro); padding-bottom: 15px; margin-bottom: 20px; }
-        
-        table { width: 100%; border-collapse: collapse; font-size: 1rem; }
-        th { text-align: left; padding: 15px; background: #fafafa; color: var(--guinda); font-weight: 700; }
-        td { padding: 15px; border-bottom: 1px solid #f2f2f2; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 2.5rem;
+        }
 
-        .btn { border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; }
-        .btn-add { background: var(--verde); color: white; }
-        .btn-action { background: none; font-size: 1.4rem; cursor: pointer; border: none; margin: 0 8px; }
+        .crud-card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
 
-        .status-toggle { cursor: pointer; font-size: 2rem; color: var(--verde); }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--turquesa-claro);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            background: #fafafa;
+            color: var(--guinda);
+            font-weight: 700;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-add {
+            background: var(--verde);
+            color: white;
+        }
+
+        .btn-action {
+            background: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            border: none;
+            margin: 0 8px;
+        }
+
+        .status-toggle {
+            cursor: pointer;
+            font-size: 2rem;
+            color: var(--verde);
+        }
 
         /* --- AGENTE IA WIDGET --- */
-        .ia-widget { background: var(--blanco); border-radius: 22px; display: flex; flex-direction: column; overflow: hidden; border: 2px solid var(--turquesa-claro); height: 580px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
-        .ia-header { background: linear-gradient(135deg, var(--turquesa), #005f61); padding: 1.2rem; color: white; display: flex; align-items: center; gap: 12px; }
-        .ia-header img { width: 45px; height: 45px; border-radius: 50%; background: white; border: 2px solid var(--dorado); }
-        .chat-area { flex: 1; padding: 1.2rem; background: #F9FBFF; overflow-y: auto; font-size: 1rem; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 12px; max-width: 88%; line-height: 1.4; }
-        .msg-bot { background: white; border: 1px solid #eee; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .msg-user { background: var(--turquesa); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .ia-widget {
+            background: var(--blanco);
+            border-radius: 22px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid var(--turquesa-claro);
+            height: 580px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .ia-header {
+            background: linear-gradient(135deg, var(--turquesa), #005f61);
+            padding: 1.2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ia-header img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--dorado);
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 1.2rem;
+            background: #F9FBFF;
+            overflow-y: auto;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            padding: 10px 15px;
+            border-radius: 12px;
+            max-width: 88%;
+            line-height: 1.4;
+        }
+
+        .msg-bot {
+            background: white;
+            border: 1px solid #eee;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .msg-user {
+            background: var(--turquesa);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
 
         /* --- FOOTER FIJO --- */
-        .fixed-footer { background: var(--guinda); color: white; padding: 15px 40px; border-top: 5px solid var(--dorado); position: fixed; bottom: 0; right: 0; width: calc(100% - 300px); z-index: 200; display: flex; justify-content: space-between; align-items: center; }
-        .footer-logo-box { display: flex; align-items: center; gap: 15px; }
-        .footer-logo-box img { height: 45px; border-radius: 50%; background: white; padding: 2px; }
+        .fixed-footer {
+            background: var(--guinda);
+            color: white;
+            padding: 15px 40px;
+            border-top: 5px solid var(--dorado);
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: calc(100% - 300px);
+            z-index: 200;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-logo-box img {
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            padding: 2px;
+        }
     </style>
 </head>
+
 <body>
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" class="jaguar-logo" alt="Logo">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                class="jaguar-logo" alt="Logo">
             <h3 style="font-family: var(--font-title); font-size: 1.5rem;">ESCALAFONIA</h3>
             <p style="color: var(--dorado); font-size: 0.9rem; font-weight: 700;">Panel Maestro</p>
         </div>
         <nav class="nav-menu">
             <a href="#" class="nav-link active"><i class="fas fa-users-cog"></i> Gestión de Usuarios</a>
             <a href="#" class="nav-link"><i class="fas fa-robot"></i> Asistente IA</a>
-            <a href="#" class="nav-link" onclick="cerrarSesion()" style="margin-top: auto; color: #ff9f9f; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; padding-bottom: 35px;">
+            <a href="{% url 'logout' %}" class="nav-link"
+                style="margin-top: auto; color: #ff9f9f; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; padding-bottom: 35px;">
                 <i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN
             </a>
+
         </nav>
     </aside>
 
     <div class="main-container">
         <header class="top-bar">
-            <div class="welcome-msg">¡Bienvenido, Administrador Jaguar!</div>
+            <div class="welcome-msg">¡Bienvenido, {{ usuario_rol }}</div>
             <div class="admin-profile" onclick="cerrarSesion()">
                 <div style="display:flex; align-items:center; gap:15px;">
                     <div style="text-align:right">
-                        <p style="font-size:1.1rem; font-weight:700; color: var(--guinda);">Analista_Master_01</p>
+                        <p style="font-size:1.1rem; font-weight:700;">{{ request.session.usuario_nombre }}</p>
                         <small style="color:var(--turquesa); font-weight: 600;">Sesión Segura</small>
                     </div>
-                    <div style="width:50px; height:50px; border-radius:50%; background:var(--dorado); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 1.2rem;">AM</div>
+
+
+                    <div
+                        style="width:50px; height:50px; border-radius:50%; background:var(--dorado); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 1.2rem;">
+                        AM</div>
                 </div>
             </div>
         </header>
 
         <main class="scrollable-content">
             <div class="stats-row">
-                <div class="stat-card"><small>Total Registros</small><h2>1,284</h2></div>
-                <div class="stat-card" style="border-color: var(--verde);"><small>Activos</small><h2>1,126</h2></div>
-                <div class="stat-card" style="border-color: var(--dorado);"><small>En Revisión</small><h2>158</h2></div>
+                <div class="stat-card"><small>Total Registros</small>
+                    <h2>1,284</h2>
+                </div>
+                <div class="stat-card" style="border-color: var(--verde);"><small>Activos</small>
+                    <h2>1,126</h2>
+                </div>
+                <div class="stat-card" style="border-color: var(--dorado);"><small>En Revisión</small>
+                    <h2>158</h2>
+                </div>
             </div>
 
             <div class="dashboard-grid">
@@ -117,44 +386,103 @@
                     <section class="crud-card">
                         <div class="card-header">
                             <h4><i class="fas fa-user-shield"></i> Administradores</h4>
-                            <button class="btn btn-add" onclick="simularNuevo('Administrador', 'lista-admins')"><i class="fas fa-plus"></i> AGREGAR POR CURP</button>
+                            <button class="btn btn-add" onclick="abrirFormulario('Administrador')"><i
+                                    class="fas fa-plus"></i> AGREGAR POR CURP</button>
                         </div>
                         <table>
-                            <thead><tr><th>CURP (ID)</th><th>Nombre</th><th>Correo / Institución</th><th>Estado</th><th>Acciones</th></tr></thead>
-                            <tbody id="lista-admins">
+                            <thead>
                                 <tr>
-                                    <td><strong>ADMN700101HDF</strong></td>
-                                    <td>Lic. Roberto Saucedo</td>
-                                    <td>roberto.admin@cinvestav.mx<br><small>Cinvestav IPN</small></td>
-                                    <td><i class="fas fa-toggle-on status-toggle" onclick="this.classList.toggle('fa-toggle-on'); this.classList.toggle('fa-toggle-off');"></i></td>
+                                    <th>CURP (ID)</th>
+                                    <th>Nombre</th>
+                                    <th>Correo / Institución</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-admins">
+                                {% for u in admins %}
+                                <tr>
+                                    <td><strong>{{ u.curp }}</strong></td>
+                                    <td>{{ u.nombre }} {{ u.apellido_paterno }}</td>
                                     <td>
-                                        <button class="btn-action" style="color: var(--turquesa)" onclick="simularModificar(this)"><i class="fas fa-edit"></i></button>
-                                        <button class="btn-action" style="color: var(--rojo)" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                                        {{ u.correo }}<br>
+                                        <small>{{ u.institucion.nombre }}</small>
+                                    </td>
+                                    <td>
+                                        {% if u.activo %}
+                                        <i class="fas fa-toggle-on status-toggle"></i>
+                                        {% else %}
+                                        <i class="fas fa-toggle-off status-toggle"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-action" onclick="eliminarUsuario({{ u.id_usuario }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">No hay administradores</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
+
                         </table>
                     </section>
 
                     <section class="crud-card" style="border-top: 5px solid var(--turquesa);">
                         <div class="card-header">
                             <h4><i class="fas fa-chalkboard-teacher"></i> Docentes</h4>
-                            <button class="btn btn-add" style="background: var(--turquesa);" onclick="simularNuevo('Docente', 'lista-docentes')"><i class="fas fa-plus"></i> AGREGAR POR CURP</button>
+                            <button class="btn btn-add" style="background: var(--turquesa);"
+                                onclick="abrirFormulario('Docente')">AGREGAR
+                                POR CURP</button>
                         </div>
                         <table>
-                            <thead><tr><th>CURP (ID)</th><th>Nombre</th><th>Correo / Institución</th><th>Estado</th><th>Acciones</th></tr></thead>
-                            <tbody id="lista-docentes">
+                            <thead>
                                 <tr>
-                                    <td><strong>MORA850314HDF</strong></td>
-                                    <td>Alejandro Morales</td>
-                                    <td>a.morales@sep.mx<br><small>unam Benito Juárez</small></td>
-                                    <td><i class="fas fa-toggle-on status-toggle" onclick="this.classList.toggle('fa-toggle-on'); this.classList.toggle('fa-toggle-off');"></i></td>
+                                    <th>CURP (ID)</th>
+                                    <th>Nombre</th>
+                                    <th>Correo / Institución</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-docentes">
+                                {% for u in docentes %}
+                                <tr>
+                                    <td><strong>{{ u.curp }}</strong></td>
+                                    <td>{{ u.nombre }} {{ u.apellido_paterno }}</td>
                                     <td>
-                                        <button class="btn-action" style="color: var(--turquesa)" onclick="simularModificar(this)"><i class="fas fa-edit"></i></button>
-                                        <button class="btn-action" style="color: var(--rojo)" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                                        {{ u.correo }}<br>
+                                        <small>{{ u.institucion.nombre }}</small>
+                                    </td>
+                                    <td>
+                                        {% if u.activo %}
+                                        <i class="fas fa-toggle-on status-toggle"></i>
+                                        {% else %}
+                                        <i class="fas fa-toggle-off status-toggle"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-action" onclick="eliminarUsuario({{ u.id_usuario }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">No hay docentes</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
+
                         </table>
                     </section>
                 </div>
@@ -162,15 +490,24 @@
                 <div class="ai-col">
                     <div class="ia-widget">
                         <div class="ia-header">
-                            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="IA">
-                            <div><p style="font-weight: 700;">Jaguar Asistente IA</p><small>En línea para consulta</small></div>
+                            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                                alt="IA">
+                            <div>
+                                <p style="font-weight: 700;">Jaguar Asistente IA</p><small>En línea para
+                                    consulta</small>
+                            </div>
                         </div>
                         <div class="chat-area" id="chat-box">
-                            <div class="msg msg-bot">Bienvenido al Centro de Gestión. ¿En qué trámite puedo apoyarte hoy?</div>
+                            <div class="msg msg-bot">Bienvenido al Centro de Gestión. ¿En qué trámite puedo apoyarte
+                                hoy?</div>
                         </div>
-                        <div style="padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white;">
-                            <input type="text" id="chat-input" placeholder="Escribe tu duda..." style="flex:1; border: 1px solid #ddd; padding: 12px; border-radius: 8px; outline: none; font-size: 1rem;">
-                            <button onclick="enviarMensaje()" style="background: var(--turquesa); color:white; border:none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"><i class="fas fa-paper-plane"></i></button>
+                        <div
+                            style="padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white;">
+                            <input type="text" id="chat-input" placeholder="Escribe tu duda..."
+                                style="flex:1; border: 1px solid #ddd; padding: 12px; border-radius: 8px; outline: none; font-size: 1rem;">
+                            <button onclick="enviarMensaje()"
+                                style="background: var(--turquesa); color:white; border:none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"><i
+                                    class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -179,62 +516,206 @@
 
         <footer class="fixed-footer">
             <div class="footer-logo-box">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
-                <div class="footer-info"><strong>ESCALAFONIA 2026</strong><br><small>Cinvestav México | USICAMM</small></div>
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                    alt="Logo">
+                <div class="footer-info"><strong>ESCALAFONIA 2026</strong><br><small>Cinvestav México | USICAMM</small>
+                </div>
             </div>
         </footer>
     </div>
+    <div id="modalUsuario" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Registrar Usuario</h3>
+
+            <form id="formUsuario">
+                {% csrf_token %}
+
+                <label>Rol</label>
+                <select name="rol" required>
+                    <option value="">Seleccione un rol</option>
+                    {% for r in roles %}
+                    <option value="{{ r.id_rol }}">{{ r.nombre_rol }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>CURP</label>
+                <input type="text" name="curp" maxlength="18" required>
+
+                <label>Nombre</label>
+                <input type="text" name="nombre" required>
+
+                <label>Apellido Paterno</label>
+                <input type="text" name="apellido_paterno" required>
+
+                <label>Apellido Materno</label>
+                <input type="text" name="apellido_materno" required>
+
+                <label>Correo electrónico</label>
+                <input type="email" name="correo" required>
+
+                <label>Contraseña</label>
+                <input type="password" name="contraseña" required>
+
+                <label>Institución</label>
+                <select name="institucion" required>
+                    <option value="">Seleccione una institución</option>
+                    {% for i in instituciones %}
+                    <option value="{{ i.id_institucion }}">{{ i.nombre }}</option>
+                    {% endfor %}
+                </select>
+
+                <div class="modal-actions">
+                    <button type="submit">Guardar</button>
+                    <button type="button" onclick="cerrarModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="modalEditarUsuario" style="display:none;">
+        <form id="formEditarUsuario">
+            {% csrf_token %}
+            <input type="hidden" id="edit_id" name="id_usuario">
+
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="text" name="apellido_paterno" placeholder="Apellido Paterno" required>
+            <input type="text" name="apellido_materno" placeholder="Apellido Materno" required>
+            <input type="email" name="correo" placeholder="Correo" required>
+            <input type="text" name="curp" placeholder="CURP" required>
+
+            <select name="rol" required>
+                {% for r in roles %}
+                <option value="{{ r.nombre_rol }}">{{ r.nombre_rol }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="institucion" required>
+                {% for i in instituciones %}
+                <option value="{{ i.id_institucion }}">{{ i.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="password" name="contraseña" placeholder="Nueva contraseña (opcional)">
+
+            <button type="submit">Guardar cambios</button>
+            <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
+        </form>
+    </div>
+
+
+
 
     <script>
-        function cerrarSesion() { if(confirm("¿Cerrar sesión administrativa?")) location.reload(); }
-
-        function simularModificar(btn) {
-            const tr = btn.closest('tr');
-            const nuevoNombre = prompt("Actualizar Nombre para " + tr.cells[0].innerText + ":", tr.cells[1].innerText);
-            if(nuevoNombre) tr.cells[1].innerText = nuevoNombre;
-            const nuevoCorreo = prompt("Actualizar Correo/Inst:");
-            if(nuevoCorreo) tr.cells[2].innerHTML = nuevoCorreo;
+        function abrirFormulario() {
+            document.getElementById('modalUsuario').style.display = 'block';
         }
 
-        function simularNuevo(tipo, tableId) {
-            const curp = prompt("Ingrese el CURP (Identificador Único) del " + tipo + ":");
-            if(curp && curp.length >= 10) {
-                const nombre = prompt("CURP Validado. Ingrese el Nombre Completo:");
-                const inst = prompt("Institución:");
-                const correo = prompt("Correo:");
-                if(nombre && inst && correo) {
-                    const row = document.getElementById(tableId).insertRow();
-                    row.innerHTML = `<td><strong>${curp.toUpperCase()}</strong></td><td>${nombre}</td><td>${correo}<br><small>${inst}</small></td>
-                    <td><i class="fas fa-toggle-on status-toggle" onclick="this.classList.toggle('fa-toggle-on'); this.classList.toggle('fa-toggle-off');"></i></td>
-                    <td><button class="btn-action" style="color: var(--turquesa)" onclick="simularModificar(this)"><i class="fas fa-edit"></i></button>
-                    <button class="btn-action" style="color: var(--rojo)" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button></td>`;
-                }
-            }
+        function cerrarModal() {
+            document.getElementById('modalUsuario').style.display = 'none';
         }
 
-        // Lógica del Chat
-        function enviarMensaje() {
-            const input = document.getElementById('chat-input');
-            const chatBox = document.getElementById('chat-box');
-            if(input.value.trim() === "") return;
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('formUsuario');
 
-            // Mensaje del Usuario
-            chatBox.innerHTML += `<div class="msg msg-user">${input.value}</div>`;
-            const query = input.value.toLowerCase();
-            input.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-            // Respuesta Simulada de Jaguar IA
-            setTimeout(() => {
-                let respuesta = "Entendido. Estoy analizando tu solicitud en la base de datos central.";
-                if(query.includes("curp")) respuesta = "El formato de CURP debe contener 18 caracteres alfanuméricos según RENAPO.";
-                if(query.includes("hola")) respuesta = "¡Hola! Soy el Agente Jaguar. ¿Deseas validar un expediente o buscar un usuario?";
-                if(query.includes("borrar")) respuesta = "Para eliminar un registro, utiliza el icono de basura en la tabla de gestión.";
-                
-                chatBox.innerHTML += `<div class="msg msg-bot">${respuesta}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
+                const formData = new FormData(this);
+
+                fetch("{% url 'agregar_usuario_ajax' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Usuario creado correctamente');
+                            location.reload();
+                        } else {
+                            let errores = '';
+                            for (let campo in data.error) {
+                                errores += `${campo}: ${data.error[campo].join(', ')}\n`;
+                            }
+                            alert(errores);
+                        }
+                    })
+                    .catch(() => alert('Error del servidor'));
+            });
+        });
+    </script>
+    <script>
+        function abrirModalEditar() {
+            document.getElementById('modalEditarUsuario').style.display = 'block';
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('modalEditarUsuario').style.display = 'none';
+        }
+
+        function editarUsuario(id) {
+            fetch(`/usuario/${id}/obtener/`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const form = document.getElementById('formEditarUsuario');
+                        form.elements['id_usuario'].value = data.id_usuario;
+                        form.elements['nombre'].value = data.nombre;
+                        form.elements['apellido_paterno'].value = data.apellido_paterno;
+                        form.elements['apellido_materno'].value = data.apellido_materno;
+                        form.elements['correo'].value = data.correo;
+                        form.elements['curp'].value = data.curp;
+                        form.elements['rol'].value = data.rol; // asegurarse que el <option> tenga value con el nombre del rol
+                        form.elements['institucion'].value = data.institucion; // usar id correcto del campo PK
+                        form.elements['contraseña'].value = ''; // no mostrar contraseña
+
+                        abrirModalEditar();
+
+                        // Evento submit del formulario de edición
+                        form.onsubmit = function (e) {
+                            e.preventDefault();
+                            enviarEdicionUsuario(id);
+                        }
+                    } else {
+                        alert(data.error);
+                    }
+                });
+        }
+
+        function enviarEdicionUsuario(id) {
+            const form = document.getElementById('formEditarUsuario');
+            const formData = new FormData(form);
+
+            fetch(`/usuario/${id}/editar/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Usuario actualizado correctamente');
+                        location.reload();
+                    } else {
+                        let errores = '';
+                        if (typeof data.error === 'object') {
+                            for (let campo in data.error) {
+                                errores += `${campo}: ${data.error[campo]}\n`;
+                            }
+                        } else {
+                            errores = data.error;
+                        }
+                        alert('Error: ' + errores);
+                    }
+                });
         }
     </script>
+
+
+
 </body>
+
 </html>

@@ -1,32 +1,32 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.hashers import make_password
-from ..models import Usuario, Rol, Institucion
+from ..models import Institucion, Usuario, Rol
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.cache import never_cache
 
-def crear_admin(request):
-
-    # 🔒 SOLO BLOQUEAR SI YA EXISTE UN ADMIN
-    if Usuario.objects.filter(rol__nombre_rol='Administrador').exists():
-        messages.error(request, 'Ya existe un administrador')
+@never_cache
+def panel_admin(request):
+    if not request.session.get('usuario_id'):
         return redirect('sesion')
 
-    if request.method == 'POST':
-        rol_admin = Rol.objects.get(nombre_rol='Administrador')
-        institucion = Institucion.objects.first()
+    admins = Usuario.objects.select_related('rol', 'institucion') \
+        .filter(rol__nombre_rol='Administrador')
 
-        Usuario.objects.create(
-            nombre=request.POST['nombre'],
-            apellido_paterno=request.POST['apellido_paterno'],
-            apellido_materno=request.POST.get('apellido_materno', ''),
-            correo=request.POST['correo'],
-            contraseña=make_password(request.POST['password']),
-            curp=request.POST['curp'],
-            rol=rol_admin,
-            institucion=institucion,
-            activo=True
-        )
+    docentes = Usuario.objects.select_related('rol', 'institucion') \
+        .filter(rol__nombre_rol='Docente')
+    
+    instituciones = Institucion.objects.all()
+    roles = Rol.objects.exclude(nombre_rol='Administrador')
 
-        messages.success(request, 'Administrador creado correctamente')
-        return redirect('sesion')
+    return render(request, 'paneladm.html', {
+        'admins': admins,
+        'docentes': docentes,
+        'usuario_nombre': request.session.get('usuario_nombre'),
+        'usuario_rol': request.session.get('usuario_rol'),
+        'instituciones': Institucion.objects.all(),
+        'roles': Rol.objects.all(),
 
-    return render(request, 'crear_admin.html')
+    })
+
+
