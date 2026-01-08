@@ -28,12 +28,22 @@ def sesion(request):
             request.session['usuario_nombre'] = usuario.nombre
             request.session['usuario_rol'] = usuario.rol.nombre_rol
 
-            print("SESSION GUARDADA:", dict(request.session.items()))
             
             usuario.ultimo_acceso = timezone.now()
             usuario.save(update_fields=['ultimo_acceso'])
 
-            return redirect('panel_admin')
+            if usuario.rol.nombre_rol == 'Administrador':
+                    return redirect('panel_admin')
+
+            elif usuario.rol.nombre_rol == 'Docente':
+                return redirect('panel_docente')
+
+            elif usuario.rol.nombre_rol == 'Usuario':
+                return redirect('dashboard')
+
+            else:
+                messages.error(request, 'Rol no reconocido')
+                return redirect('sesion')
 
         messages.error(request, 'Usuario o contraseña incorrectos')
 
