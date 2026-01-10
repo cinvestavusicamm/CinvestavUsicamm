@@ -1103,9 +1103,7 @@
                 <!-- Barra de Herramientas -->
                 <div class="barra-herramientas">
                     <div class="herramientas-izquierda">
-                        <button class="btn btn-primary" id="btnModoRapido">
-                            <i class="fas fa-bolt"></i> Modo Rápido
-                        </button>
+                        
                         <button class="btn btn-outline" id="btnFiltrarIA">
                             <i class="fas fa-robot"></i> Solo IA
                         </button>
@@ -1115,12 +1113,7 @@
                     </div>
                     
                     <div class="herramientas-derecha">
-                        <select id="filtroPrioridad" class="select-sm">
-                            <option value="todas">Todas las prioridades</option>
-                            <option value="alta">Alta prioridad</option>
-                            <option value="media">Media prioridad</option>
-                            <option value="baja">Baja prioridad</option>
-                        </select>
+                        
                         <div class="contador-revision">
                             <span id="contadorPendientes">48</span> preguntas pendientes
                         </div>
@@ -1310,149 +1303,10 @@
                                       placeholder="Escribe aquí tus observaciones, sugerencias o razones para rechazar/modificar la pregunta..."></textarea>
                         </div>
 
-                        <!-- Historial de la pregunta -->
-                        <div class="historial-validacion">
-                            <h3><i class="fas fa-history"></i> Historial de esta pregunta</h3>
-                            <div class="historial-lista">
-                                <div class="historial-item">
-                                    <div class="historial-icono aprobada">
-                                        <i class="fas fa-user-check"></i>
-                                    </div>
-                                    <div class="historial-contenido">
-                                        <p><strong>María Pérez</strong> aprobó la pregunta</p>
-                                        <span class="historial-fecha">Hace 2 horas</span>
-                                    </div>
-                                </div>
-                                <div class="historial-item">
-                                    <div class="historial-icono">
-                                        <i class="fas fa-robot"></i>
-                                    </div>
-                                    <div class="historial-contenido">
-                                        <p><strong>IA Llama 3.1</strong> generó la pregunta</p>
-                                        <span class="historial-fecha">Hoy, 10:30 AM</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Lista de Preguntas Pendientes -->
-                <div class="lista-pendientes">
-                    <div class="lista-header">
-                        <h2><i class="fas fa-list-ol"></i> Preguntas Pendientes</h2>
-                        <div class="filtros-lista">
-                            <select id="filtroAsignatura" class="select-sm">
-                                <option value="todas">Todas las asignaturas</option>
-                                <option value="matematicas">Matemáticas</option>
-                                <option value="espanol">Español</option>
-                                <option value="ciencias">Ciencias</option>
-                            </select>
-                            <select id="filtroOrden" class="select-sm">
-                                <option value="recientes">Más recientes primero</option>
-                                <option value="antiguos">Más antiguos primero</option>
-                                <option value="prioridad">Por prioridad</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="lista-contenido" id="listaPendientes">
-                        <!-- Pregunta 1 (Activa) -->
-                        <div class="pendiente-item activa" data-id="1">
-                            <div class="pendiente-icono ia">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="pendiente-contenido">
-                                <h4>Estrategias para enseñanza de fracciones en primaria</h4>
-                                <div class="pendiente-meta">
-                                    <span>Matemáticas • Primaria • Pedagógica</span>
-                                    <span>Hace 2 horas</span>
-                                </div>
-                            </div>
-                            <div class="pendiente-acciones">
-                                <span class="badge" style="background: rgba(243, 156, 18, 0.1); color: #f39c12;">
-                                    <i class="fas fa-exclamation-circle"></i> Alta
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Pregunta 2 -->
-                        <div class="pendiente-item" data-id="2">
-                            <div class="pendiente-icono ia">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="pendiente-contenido">
-                                <h4>Evaluación de competencias lectoras según NEM</h4>
-                                <div class="pendiente-meta">
-                                    <span>Español • Secundaria • Disciplinar</span>
-                                    <span>Hace 3 horas</span>
-                                </div>
-                            </div>
-                            <div class="pendiente-acciones">
-                                <span class="badge" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
-                                    <i class="fas fa-info-circle"></i> Media
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Pregunta 3 -->
-                        <div class="pendiente-item" data-id="3">
-                            <div class="pendiente-icono humana">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="pendiente-contenido">
-                                <h4>Casos prácticos de inclusión educativa</h4>
-                                <div class="pendiente-meta">
-                                    <span>Inclusión • Preescolar • Didáctica</span>
-                                    <span>Hace 5 horas</span>
-                                </div>
-                            </div>
-                            <div class="pendiente-acciones">
-                                <span class="badge" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
-                                    <i class="fas fa-check-circle"></i> Baja
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Pregunta 4 -->
-                        <div class="pendiente-item" data-id="4">
-                            <div class="pendiente-icono ia">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="pendiente-contenido">
-                                <h4>Uso de TIC para enseñanza de ciencias naturales</h4>
-                                <div class="pendiente-meta">
-                                    <span>Ciencias • Media Superior • TIC</span>
-                                    <span>Ayer, 14:30</span>
-                                </div>
-                            </div>
-                            <div class="pendiente-acciones">
-                                <span class="badge" style="background: rgba(243, 156, 18, 0.1); color: #f39c12;">
-                                    <i class="fas fa-exclamation-circle"></i> Alta
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Pregunta 5 -->
-                        <div class="pendiente-item" data-id="5">
-                            <div class="pendiente-icono humana">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="pendiente-contenido">
-                                <h4>Evaluación de proyectos escolares comunitarios</h4>
-                                <div class="pendiente-meta">
-                                    <span>Gestión • Secundaria • Vinculación</span>
-                                    <span>Ayer, 10:15</span>
-                                </div>
-                            </div>
-                            <div class="pendiente-acciones">
-                                <span class="badge" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
-                                    <i class="fas fa-info-circle"></i> Media
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </main>
     </div>
