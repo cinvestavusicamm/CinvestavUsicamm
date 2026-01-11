@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from src.application.use_cases.chat_rag import ChatRAGUseCase
-from src.infrastructure.api.dependencies import get_chat_use_case
+from application.use_cases.agent.chat_rag import ChatRAGUseCase
+from infrastructure.api.dependencies import get_chat_use_case
 
 # --- ESTA LÍNEA ES LA QUE TE FALTA O ESTÁ MAL ---
 router = APIRouter() 

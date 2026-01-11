@@ -1,5 +1,5 @@
-from src.application.ports.output import VectorRepository, LLMService
-from src.infrastructure.utils.pdf_parser import PDFParser  # Reutilizamos la lógica de chunks
+from application.ports.agent.output import VectorRepository, LLMService
+from infrastructure.utils.pdf_parser import PDFParser  # Reutilizamos la lógica de chunks
 
 class IngestTextUseCase:
     def __init__(self, db: VectorRepository, llm: LLMService):

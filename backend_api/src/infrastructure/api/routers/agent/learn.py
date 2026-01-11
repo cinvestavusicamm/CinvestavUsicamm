@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from src.application.use_cases.ingest_text import IngestTextUseCase
-from src.infrastructure.api.dependencies import get_ingest_text_use_case
+from application.use_cases.agent.ingest_text import IngestTextUseCase
+from infrastructure.api.dependencies import get_ingest_text_use_case
 
 router = APIRouter()
 

@@ -1,7 +1,7 @@
 import asyncpg
 from typing import List
-from src.application.ports.output import VectorRepository
-from src.infrastructure.config.settings import settings
+from application.ports.agent.output import VectorRepository
+from infrastructure.config.settings import settings
 
 class PostgresVectorRepo(VectorRepository):
     """

@@ -58,7 +58,7 @@ services:
     build:
       context: ../backend_api  # Sube un nivel para encontrar el código
       dockerfile: Dockerfile
-    command: uvicorn src.infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload
+    command: uvicorn infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload
     volumes:
       - ../backend_api:/app  # "Hot reload": cambios en código se reflejan al instante
     ports:
@@ -66,12 +66,13 @@ services:
     environment:
       # Conexión a la BD (nombre del servicio 'db')
       POSTGRES_HOST: db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: escalafon_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres 
+      POSTGRES_DB: Escalafon_db
       POSTGRES_PORT: 5432
       # Conexión a Ollama (nombre del servicio 'ollama')
       OLLAMA_BASE_URL: http://ollama:11434
+      PÝTHONPATH: /app
     depends_on:
       db:
         condition: service_healthy
@@ -80,22 +81,38 @@ services:
     networks:
       - escalafon_net
 
+  django:
+      container_name: escalafon_django
+      build:
+        context: ..                  # apunta a la raíz, donde está manage.py
+        dockerfile: apps/Dockerfile  # tu Dockerfile de Django
+      volumes:
+        - ../:/app                    # para hot reload
+      ports:
+        - "8000:8000"
+      depends_on:
+        - backend
+        - db
+      networks:
+        - escalafon_net
+
+
   # -------------------------------------------------------------------------
   # 4. FRONTEND WEB
   # -------------------------------------------------------------------------
-  frontend:
-    container_name: escalafonia_ui
-    build:
-      context: ../frontend_web
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend_web/src:/app/src  # Hot reload para desarrollo frontend
-    ports:
-      - "3000:80"  # Exponemos el puerto 80 del contenedor al 3000 de tu PC
-    depends_on:
-      - backend
-    networks:
-      - escalafon_net
+  #frontend:
+   # container_name: escalafonia_ui
+    #build:
+     # context: ../frontend_web
+      #dockerfile: Dockerfile
+    #volumes:
+     # - ../frontend_web/src:/app/src  # Hot reload para desarrollo frontend
+    #ports:
+     # - "3000:80"  # Exponemos el puerto 80 del contenedor al 3000 de tu PC
+    #depends_on:
+     # - backend
+    #networks:
+     # - escalafon_net
 
 # ---------------------------------------------------------------------------
 # VOLUMENES Y REDES

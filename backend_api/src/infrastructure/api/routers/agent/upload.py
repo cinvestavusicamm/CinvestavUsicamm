@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
-from src.application.use_cases.ingest_doc import IngestDocUseCase
-from src.infrastructure.api.dependencies import get_ingest_use_case
+from application.use_cases.agent.ingest_doc import IngestDocUseCase
+from infrastructure.api.dependencies import get_ingest_use_case
 
 router = APIRouter()
 

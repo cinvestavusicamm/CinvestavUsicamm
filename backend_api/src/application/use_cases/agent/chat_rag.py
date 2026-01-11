@@ -1,5 +1,5 @@
-from src.application.ports.output import VectorRepository, LLMService
-from src.domain.prompts import PromptTemplates
+from application.ports.agent.output import VectorRepository, LLMService
+from domain.agent.prompts import PromptTemplates
 
 class ChatRAGUseCase:
     """

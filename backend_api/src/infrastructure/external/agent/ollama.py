@@ -1,7 +1,7 @@
 import httpx
 from typing import List
-from src.application.ports.output import LLMService
-from src.infrastructure.config.settings import settings
+from application.ports.agent.output import LLMService
+from infrastructure.config.settings import settings
 
 class OllamaAdapter(LLMService):
     """

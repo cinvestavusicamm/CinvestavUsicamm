@@ -3,11 +3,11 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Base de Datos
-    DB_USER: str = os.getenv("POSTGRES_USER", "user")
-    DB_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
-    DB_HOST: str = os.getenv("POSTGRES_HOST", "db")
+    DB_USER: str = os.getenv("POSTGRES_USER", "postgres")
+    DB_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
+    DB_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
     DB_PORT: str = os.getenv("POSTGRES_PORT", "5432")
-    DB_NAME: str = os.getenv("POSTGRES_DB", "escalafon_db")
+    DB_NAME: str = os.getenv("POSTGRES_DB", "Escalafon_db")
 
     # IA (Ollama)
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://motor_ollama:11434")
