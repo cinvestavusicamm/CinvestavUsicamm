@@ -3,259 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Maestro | EscalafonIA Jaguar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <title>Procesos de Promoción | EscalafonIA Jaguar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         :root {
-            --guinda: #691C32; --dorado: #BC955C; --turquesa: #007A7C;
-            --bg: #F8FAFC; --blanco: #FFFFFF; --rojo: #C0392B; --verde: #27AE60;
+            --guinda: #691C32;
+            --dorado: #BC955C;
+            --turquesa: #007A7C;
+            --bg-gris: #F4F7F6;
+            --blanco: #FFFFFF;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); display: flex; height: 100vh; overflow: hidden; }
-        
-        /* Sidebar Mejorada */
-        .sidebar { width: 280px; background: var(--guinda); color: white; padding: 2rem 1.5rem; display: flex; flex-direction: column; flex-shrink: 0; border-right: 4px solid var(--dorado); }
-        .jaguar-logo { text-align: center; margin-bottom: 2rem; }
-        .jaguar-logo img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--dorado); background: white; }
-        
-        .nav-menu a { padding: 12px 15px; border-radius: 10px; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.8); text-decoration: none; transition: 0.3s; font-size: 0.9rem; font-weight: 600; }
-        .nav-menu a:hover, .nav-menu a.active { background: rgba(255,255,255,0.1); color: var(--dorado); }
-        .btn-dashboard-sidebar { background: var(--dorado) !important; color: white !important; margin-bottom: 20px !important; justify-content: center; }
 
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-gris);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-        /* Top Bar */
-        .top-bar { background: white; padding: 0.8rem 2.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10; }
-        .user-info { display: flex; align-items: center; gap: 15px; }
-        .user-avatar { width: 40px; height: 40px; background: var(--turquesa); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid var(--dorado); }
+        /* --- Header Institucional Vino --- */
+        .header-main {
+            background: var(--guinda);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--dorado);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
 
-        /* Content */
-        .content { flex: 1; overflow-y: auto; padding: 2.5rem; padding-bottom: 100px; }
-        
-        .btn-back-top { margin-bottom: 20px; padding: 10px 20px; border-radius: 8px; border: 1px solid #ddd; background: white; color: var(--guinda); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 0.85rem; }
-        .btn-back-top:hover { background: #f0f0f0; border-color: var(--guinda); }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand img { width: 60px; border-radius: 50%; border: 2px solid var(--dorado); background: white; padding: 2px; }
+        .brand-text h1 { font-family: 'Montserrat'; margin: 0; font-size: 1.4rem; font-weight: 800; }
+        .brand-text span { font-size: 0.75rem; font-weight: 700; color: var(--dorado); text-transform: uppercase; letter-spacing: 1px; }
 
-        .section-card { background: var(--blanco); border-radius: 20px; padding: 2rem; margin-bottom: 2.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 5px solid var(--turquesa); }
-        
-        .course-item { border: 1px solid #eee; border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; background: white; }
-        .course-item:hover { border-color: var(--turquesa); transform: translateY(-3px); }
-        
-        .puntos-tag { background: var(--guinda); color: white; padding: 4px 12px; border-radius: 50px; font-weight: 800; font-size: 0.8rem; display: inline-block; margin-bottom: 10px; }
-        .cupo-pill { background: #E0F2F1; color: var(--turquesa); padding: 5px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; border: 1px solid var(--turquesa); }
-        .material-icon { margin-right: 15px; font-size: 0.75rem; color: #555; display: flex; align-items: center; gap: 5px; background: #f0f0f0; padding: 4px 8px; border-radius: 5px; }
+        /* --- Barra de Navegación Superior --- */
+        .nav-actions-top {
+            background: #fff;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            border-bottom: 1px solid #ddd;
+        }
 
-        /* Agente IA interactivo */
-        .ai-trigger { position: fixed; bottom: 30px; right: 30px; width: 85px; height: 85px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.2); z-index: 1000; border: 4px solid var(--dorado); }
-        .ai-trigger img { width: 85%; height: 85%; border-radius: 50%; }
+        .btn-nav {
+            font-family: 'Montserrat';
+            font-weight: 700;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .ai-widget { position: fixed; bottom: 125px; right: 30px; width: 350px; height: 500px; background: white; border-radius: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); display: none; flex-direction: column; z-index: 1001; border: 2px solid #eee; overflow: hidden; }
-        .chat-box { flex: 1; padding: 1.2rem; overflow-y: auto; background: #F8FAFC; display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; }
-        .msg { padding: 10px 15px; border-radius: 15px; max-width: 85%; }
-        .msg-bot { background: white; border: 1px solid #ddd; align-self: flex-start; }
-        .msg-user { background: var(--turquesa); color: white; align-self: flex-end; }
+        .btn-back { border: 2px solid var(--guinda); color: var(--guinda); background: transparent; }
+        .btn-back:hover { background: var(--guinda); color: white; }
+        .btn-exit { background: var(--guinda); color: white; border: none; }
 
-        /* Modal */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 2.5rem; border-radius: 25px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-        .upload-section { border: 2px dashed #ddd; padding: 15px; border-radius: 10px; margin: 10px 0; background: #fafafa; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; font-family: inherit; }
-        .btn-save { background: var(--turquesa); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; }
+        /* --- Contenedor Principal --- */
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-        footer { background: var(--guinda); color: white; padding: 1.2rem 2.5rem; border-top: 4px solid var(--dorado); display: flex; justify-content: space-between; align-items: center; }
+        .section-title {
+            font-family: 'Montserrat';
+            color: var(--guinda);
+            font-weight: 800;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--dorado);
+            padding-left: 15px;
+        }
+
+        /* --- Tarjetas de Promoción --- */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        /* --- Indicadores de Puntaje --- */
+        .puntaje-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .puntaje-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .puntaje-valor { font-weight: 800; color: var(--turquesa); }
+
+        /* --- Timeline del Proceso --- */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-step {
+            text-align: center;
+            font-size: 0.65rem;
+            width: 25%;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        .timeline-step.active { color: var(--guinda); }
+        .timeline-step i { font-size: 1.2rem; display: block; margin-bottom: 5px; }
+
+        /* --- Jaguar IA Analítica --- */
+        .ia-card {
+            background: linear-gradient(135deg, #691C32 0%, #4a1422 100%);
+            color: white;
+            border: none;
+        }
+
+        .ia-card img {
+            width: 80px;
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            opacity: 0.3;
+        }
+
+        /* --- Footer --- */
+        .footer-vino {
+            background: var(--guinda);
+            color: white;
+            padding: 30px 40px;
+            border-top: 5px solid var(--dorado);
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .legal { font-size: 0.7rem; opacity: 0.7; max-width: 800px; margin: 0 auto; line-height: 1.4; }
+
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="jaguar-logo">
+    <header class="header-main">
+        <div class="brand">
             <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
-            <h2 style="font-family: 'Montserrat'; font-size: 1.1rem; margin-top: 10px;">ESCALAFONIA IA</h2>
+            <div class="brand-text">
+                <h1>EscalafonIA Jaguar</h1>
+                <span>Procesos de Carrera Magisterial 2026</span>
+            </div>
         </div>
-        <nav class="nav-menu">
-            <a href="#" class="btn-dashboard-sidebar"><i class="fas fa-th-large"></i> DASHBOARD</a>
-            
-            <a href="#" class="active"><i class="fas fa-certificate"></i> Cursos y Promociones</a>
-            <a href="#"><i class="fas fa-users"></i> Grupos y Alumnos</a>
-            <a href="#"><i class="fas fa-question-circle"></i> Ayuda</a>
-        </nav>
-    </aside>
+        <div style="text-align: right;">
+            <div style="font-weight: 700; font-size: 0.9rem;">Maestra Elena Pérez</div>
+            <div style="font-size: 0.65rem; color: var(--dorado);">Folio USICAMM: 08-2026-X4</div>
+        </div>
+    </header>
 
-    <div class="main-wrapper">
-        <header class="top-bar">
-            <div style="font-family: 'Montserrat'; font-weight: 700; color: var(--guinda);">GESTIÓN DE PROMOCIONES 2026</div>
-            <div class="user-info">
-                <div style="text-align: right; margin-right: 10px;">
-                    <div style="font-size: 0.9rem; font-weight: 700;">Analista_Master_01</div>
-                    <a href="#" onclick="location.reload()" style="color: var(--rojo); font-weight: 700; font-size: 0.75rem; text-decoration: none;">Cerrar Sesión</a>
+    <nav class="nav-actions-top">
+        <a href="#" class="btn-nav btn-back"><i class="fas fa-home"></i> VOLVER</a>
+        <a href="#" class="btn-nav btn-exit"><i class="fas fa-power-off"></i> SALIR</a>
+    </nav>
+
+    <div class="container">
+        <h2 class="section-title">Convocatorias Disponibles</h2>
+
+        <div class="promo-grid">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <h3 style="color:var(--guinda); margin:0;">Promoción Horizontal</h3>
+                    <span style="background:var(--turquesa); color:white; padding:4px 10px; border-radius:50px; font-size:0.6rem; font-weight:bold;">EN PROCESO</span>
                 </div>
-                <div class="user-avatar">AM</div>
-            </div>
-        </header>
+                <p style="font-size:0.8rem; color:#666;">Incentivos por niveles para personal con funciones docentes.</p>
+                
+                <div class="puntaje-box">
+                    <div class="puntaje-item"><span>Formación Profesional:</span> <span class="puntaje-valor">15/15 pts</span></div>
+                    <div class="puntaje-item"><span>Antigüedad (12 años):</span> <span class="puntaje-valor">22/35 pts</span></div>
+                    <div class="puntaje-item"><span>Examen de Aptitudes:</span> <span class="puntaje-valor">Pendiente</span></div>
+                </div>
 
-        <main class="content">
-            <a href="javascript:history.back()" class="btn-back-top"><i class="fas fa-arrow-left"></i> REGRESAR</a>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h1 style="color: var(--guinda); font-family: 'Montserrat'; font-size: 2.2rem;">Cursos y Promociones</h1>
-                <button class="btn-save" style="width: auto;" onclick="openModal()">+ Nueva Promoción</button>
-            </div>
-
-            <section class="section-card">
-                <h2 style="color: var(--turquesa); margin-bottom: 1.5rem; font-size: 1.3rem;"><i class="fas fa-calendar-check"></i> Cursos a Iniciar</h2>
-                <div id="lista-cursos"></div>
-            </section>
-
-            <section class="section-card" style="border-top-color: var(--dorado);">
-                <h2 style="color: var(--dorado); margin-bottom: 1.5rem; font-size: 1.3rem;"><i class="fas fa-history"></i> Historial Finalizado</h2>
-                <div id="lista-finalizados"></div>
-            </section>
-        </main>
-
-        <footer>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" style="width: 35px; border-radius: 50%; background: white;">
-                <strong>ESCALAFONIA 2026</strong>
-            </div>
-            <div style="text-align: right; font-size: 0.75rem;">Cinvestav • USICAMM • SEP</div>
-        </footer>
-    </div>
-
-    <div class="ai-trigger" onclick="toggleChat()">
-        <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
-    </div>
-
-    <div class="ai-widget" id="aiWidget">
-        <div style="background: var(--guinda); color: white; padding: 1rem; display: flex; align-items: center; gap: 10px;">
-            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" style="width: 30px; border-radius: 50%;">
-            <span>Jaguar Asistente IA</span>
-            <i class="fas fa-times" style="margin-left: auto; cursor: pointer;" onclick="toggleChat()"></i>
-        </div>
-        <div class="chat-box" id="chatBox">
-            <div class="msg msg-bot">Hola. Soy el Jaguar IA. ¿Deseas actualizar el cupo de un curso o subir nuevos archivos PDF/Video?</div>
-        </div>
-        <div style="padding: 10px; display: flex; gap: 5px;">
-            <input type="text" id="chatInput" placeholder="Escribe al Jaguar..." style="margin:0;">
-            <button onclick="enviarMensaje()" style="background: var(--turquesa); color: white; border: none; padding: 10px;"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
-    <div class="modal" id="modalCurso">
-        <div class="modal-content">
-            <h3 id="modalTitle">Nueva Promoción / Curso</h3>
-            <input type="hidden" id="editIdx">
-            
-            <label>Título del Curso</label>
-            <input type="text" id="titulo" placeholder="Ej: Diplomado en IA">
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div><label>Fecha Inicio</label><input type="date" id="fecha"></div>
-                <div><label>Cupos Disponibles</label><input type="number" id="cupos" placeholder="50"></div>
+                <div class="timeline">
+                    <div class="timeline-step active"><i class="fas fa-file-signature"></i>Registro</div>
+                    <div class="timeline-step active"><i class="fas fa-check-circle"></i>Validación</div>
+                    <div class="timeline-step"><i class="fas fa-edit"></i>Examen</div>
+                    <div class="timeline-step"><i class="fas fa-list-ol"></i>Resultados</div>
+                </div>
+                <button style="width:100%; background:var(--guinda); color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer;">REVISAR ESTATUS</button>
             </div>
 
-            <label>Puntuación Escalafonaria (+00.0)</label>
-            <input type="text" id="puntos" placeholder="+15.0">
-
-            <div class="upload-section">
-                <label><i class="fas fa-file-pdf"></i> SUBIR MATERIAL PDF</label>
-                <input type="file" id="pdfFile" accept="application/pdf">
+            <div class="card ia-card">
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
+                <h3 style="margin-top:0; font-family:'Montserrat';"><i class="fas fa-paw"></i> Jaguar IA Predictiva</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">
+                    Maestra Elena, su puntaje acumulado actual es de <strong>37 puntos</strong> (sin considerar el examen).
+                    <br><br>
+                    Basado en las tendencias de su zona escolar, usted necesita obtener al menos <strong>24 puntos</strong> en la valoración de conocimientos para asegurar el incentivo O1.
+                </p>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <i class="fas fa-lightbulb" style="color:var(--dorado)"></i> <strong>Tip de la IA:</strong> Refuerce el eje de <em>"Gestión Escolar"</em>, representa el 30% de su examen final.
+                </div>
             </div>
 
-            <div class="upload-section">
-                <label><i class="fas fa-video"></i> SUBIR VIDEO TUTORIAL</label>
-                <input type="file" id="videoFile" accept="video/*">
+            <div class="card" style="opacity: 0.8;">
+                <h3 style="color:var(--guinda); margin:0;">Promoción Vertical</h3>
+                <p style="font-size:0.8rem; color:#666;">Ascenso a funciones de Dirección o Supervisión.</p>
+                <div style="text-align:center; padding: 20px 0;">
+                    <i class="fas fa-lock" style="font-size: 2rem; color: #ccc;"></i>
+                    <p style="font-size: 0.7rem; font-weight: bold; color: #999;">PRÓXIMA CONVOCATORIA: MARZO 2026</p>
+                </div>
+                <button style="width:100%; background:transparent; border: 2px solid #ccc; color:#999; padding:12px; border-radius:10px; font-weight:bold; cursor:not-allowed;">VER REQUISITOS</button>
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn-save" style="background: #eee; color: #333;" onclick="closeModal()">Cancelar</button>
-                <button class="btn-save" onclick="saveCurso()">Guardar Curso</button>
+            <div class="card">
+                <h3 style="color:var(--guinda); margin:0;">Beca Comisión / AT</h3>
+                <p style="font-size:0.8rem; color:#666;">Apoyos para estudios de posgrado o Asesoría Técnica.</p>
+                <div class="puntaje-box" style="background: #e0f2f1;">
+                    <p style="margin:0; font-size: 0.75rem; color: var(--turquesa); font-weight: bold;">
+                        <i class="fas fa-star"></i> Usted es candidata para la Beca Comisión por su desempeño destacado en 2025.
+                    </p>
+                </div>
+                <button style="width:100%; margin-top:15px; background:var(--turquesa); color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer;">INICIAR SOLICITUD</button>
             </div>
         </div>
     </div>
 
-    <script>
-        let cursos = [
-            { titulo: "Especialidad en Didáctica 2026", fecha: "2026-03-10", cupos: 40, puntos: "+15.5", pdf: "Guia.pdf", video: "Clase1.mp4", finalizado: false },
-            { titulo: "Diplomado IA Básica", fecha: "2025-12-01", cupos: 0, puntos: "+10.0", pdf: "Manual.pdf", video: "Intro.mp4", finalizado: true }
-        ];
-        let editingIdx = -1;
+    <footer class="footer-vino">
+        <div class="legal">
+            Sistema alineado con la <strong>Ley General del Sistema para la Carrera de las Maestras y los Maestros</strong>. La transparencia de este proceso es garantizada por la auditoría interna de la SEP y protegida por la LGPDPPSO.
+        </div>
+        <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 15px;">
+            ESCALAFONIA JAGUAR V1.0 | USICAMM MÉXICO 2026
+        </div>
+    </footer>
 
-        function render() {
-            const listA = document.getElementById('lista-cursos');
-            const listF = document.getElementById('lista-finalizados');
-            listA.innerHTML = ""; listF.innerHTML = "";
-
-            cursos.forEach((c, i) => {
-                const html = `
-                <div class="course-item">
-                    <div>
-                        <div class="puntos-tag">PUNTUACIÓN: ${c.puntos}</div>
-                        <h4 style="color: var(--guinda); font-size: 1.2rem;">${c.titulo}</h4>
-                        <p style="font-size: 0.85rem; margin: 10px 0;"><i class="fas fa-calendar"></i> Fecha: ${c.fecha}</p>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span class="cupo-pill">CUPO DISPONIBLE: ${c.cupos}</span>
-                            <div class="material-icon"><i class="fas fa-file-pdf"></i> ${c.pdf}</div>
-                            <div class="material-icon"><i class="fas fa-video"></i> ${c.video}</div>
-                        </div>
-                    </div>
-                    <div>
-                        <button onclick="editCurso(${i})" style="color:var(--turquesa); border:none; background:none; font-size:1.3rem; cursor:pointer;"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteCurso(${i})" style="color:var(--rojo); border:none; background:none; font-size:1.3rem; cursor:pointer; margin-left:10px;"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`;
-                if(c.finalizado) listF.innerHTML += html; else listA.innerHTML += html;
-            });
-        }
-
-        function openModal() { document.getElementById('modalCurso').style.display='flex'; editingIdx = -1; }
-        function closeModal() { document.getElementById('modalCurso').style.display='none'; reset(); }
-
-        function saveCurso() {
-            const pdfName = document.getElementById('pdfFile').files[0]?.name;
-            const videoName = document.getElementById('videoFile').files[0]?.name;
-
-            const nuevo = {
-                titulo: document.getElementById('titulo').value,
-                fecha: document.getElementById('fecha').value,
-                cupos: document.getElementById('cupos').value,
-                puntos: document.getElementById('puntos').value,
-                pdf: pdfName || (editingIdx >= 0 ? cursos[editingIdx].pdf : 'Sin_PDF.pdf'),
-                video: videoName || (editingIdx >= 0 ? cursos[editingIdx].video : 'Sin_Video.mp4'),
-                finalizado: false
-            };
-            if(editingIdx === -1) cursos.push(nuevo); else Object.assign(cursos[editingIdx], nuevo);
-            render(); closeModal();
-        }
-
-        function editCurso(i) {
-            editingIdx = i; const c = cursos[i];
-            document.getElementById('titulo').value = c.titulo;
-            document.getElementById('fecha').value = c.fecha;
-            document.getElementById('cupos').value = c.cupos;
-            document.getElementById('puntos').value = c.puntos;
-            document.getElementById('modalTitle').innerText = "Editar Curso / Puntos";
-            document.getElementById('modalCurso').style.display='flex';
-        }
-
-        function deleteCurso(i) { if(confirm("¿Borrar curso?")) { cursos.splice(i,1); render(); } }
-        
-        function toggleChat() { const c = document.getElementById('aiWidget'); c.style.display = c.style.display === 'flex' ? 'none' : 'flex'; }
-        
-        function enviarMensaje() {
-            const input = document.getElementById('chatInput');
-            const box = document.getElementById('chatBox');
-            if(!input.value) return;
-            box.innerHTML += `<div class="msg msg-user">${input.value}</div>`;
-            input.value = "";
-            setTimeout(() => {
-                box.innerHTML += `<div class="msg msg-bot"><b>Jaguar:</b> Procesado. He actualizado el cupo y los materiales PDF en el servidor central.</div>`;
-                box.scrollTop = box.scrollHeight;
-            }, 800);
-        }
-
-        function reset() { document.querySelectorAll('input').forEach(i => i.value=""); document.getElementById('modalTitle').innerText = "Nueva Promoción"; }
-        render();
-    </script>
 </body>
 </html>
