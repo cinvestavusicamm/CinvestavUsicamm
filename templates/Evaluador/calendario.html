@@ -7,6 +7,8 @@
     <link rel="icon" type="image/x-icon"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FullCalendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
     <link rel="stylesheet" href="../../static/css/evaluador.css">
     <title>Calendario - Creador de Evaluaciones</title>
     <style>
@@ -33,6 +35,8 @@
             --color-evento-publicacion: #27ae60;
             --color-evento-reunion: #f39c12;
             --color-evento-personal: #1abc9c;
+            --color-evento-capacitacion: #16a085;
+            --color-evento-convocatoria: #8e44ad;
             
             /* Colores neutros */
             --color-fondo: #f8f9fa;
@@ -51,8 +55,6 @@
             --radio-borde: 10px;
             --radio-borde-grande: 16px;
         }
-
-        
 
         /* ===== CONTENIDO PRINCIPAL ===== */
         .contenido-principal {
@@ -105,6 +107,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .herramientas-derecha {
@@ -168,6 +171,44 @@
             border-color: var(--color-secundario);
         }
 
+        /* Filtros */
+        .filtros {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filtro-select {
+            padding: 8px 12px;
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            font-size: 14px;
+            background: white;
+            color: var(--color-texto);
+            min-width: 150px;
+        }
+
+        .filtro-select:focus {
+            outline: none;
+            border-color: var(--color-secundario);
+        }
+
+        .btn-filtro {
+            padding: 8px 15px;
+            background: var(--color-fondo);
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            color: var(--color-texto);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-filtro:hover {
+            background: var(--color-secundario);
+            color: white;
+            border-color: var(--color-secundario);
+        }
+
         /* Controles de navegación del calendario */
         .controles-calendario {
             display: flex;
@@ -223,174 +264,29 @@
             background: #2980b9;
         }
 
-        /* ===== CALENDARIO MENSUAL ===== */
-        .calendario-mensual {
-            background: var(--color-fondo-card);
-            border-radius: var(--radio-borde-grande);
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: var(--sombra-suave);
-            border: 1px solid var(--color-borde);
-        }
-
-        /* Encabezado del calendario (días de la semana) */
-        .encabezado-calendario {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            margin-bottom: 10px;
-            background: var(--color-borde);
-            border-radius: var(--radio-borde);
-            overflow: hidden;
-        }
-
-        .dia-semana {
-            background: var(--color-fondo);
-            padding: 15px 10px;
-            text-align: center;
-            font-weight: 600;
-            color: var(--color-texto);
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .dia-semana.domingo {
-            color: var(--color-error);
-        }
-
-        /* Grid de días del mes */
-        .grid-calendario {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: var(--color-borde);
-            border-radius: var(--radio-borde);
-            overflow: hidden;
-        }
-
-        .dia-calendario {
-            background: white;
-            min-height: 120px;
-            padding: 10px;
-            border: none;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .dia-calendario:hover {
-            background: #f8f9fa;
-            transform: scale(1.01);
-            z-index: 1;
-        }
-
-        .dia-calendario.otro-mes {
-            background: var(--color-fondo);
-            color: var(--color-texto-claro);
-        }
-
-        .dia-calendario.hoy {
-            background: rgba(52, 152, 219, 0.05);
-            border: 2px solid var(--color-secundario);
-        }
-
-        .numero-dia {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: var(--color-texto);
-            font-size: 16px;
-        }
-
-        .dia-calendario.hoy .numero-dia {
-            background: var(--color-secundario);
-            color: white;
-            border-radius: 50%;
-        }
-
-        .dia-calendario.domingo .numero-dia {
-            color: var(--color-error);
-        }
-
-        /* Eventos en el día */
-        .eventos-dia {
-            margin-top: 35px;
+        /* ===== CONTENEDOR CALENDARIO CON FULLCALENDAR ===== */
+        .contenedor-calendario {
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            max-height: 80px;
-            overflow-y: auto;
-            padding-right: 5px;
+            gap: 30px;
+            margin-bottom: 30px;
         }
 
-        .evento-item {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 500;
-            color: white;
-            cursor: pointer;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            transition: all 0.2s ease;
-        }
-
-        .evento-item:hover {
-            transform: translateX(3px);
-            box-shadow: var(--sombra-suave);
-        }
-
-        .evento-item.mas-eventos {
-            background: var(--color-fondo);
-            color: var(--color-texto-secundario);
-            text-align: center;
-            font-style: italic;
-        }
-
-        /* Colores de eventos */
-        .evento-evaluacion {
-            background: var(--color-evento-evaluacion);
-            border-left: 3px solid var(--color-evento-evaluacion);
-        }
-
-        .evento-plazo {
-            background: var(--color-evento-plazo);
-            border-left: 3px solid var(--color-evento-plazo);
-        }
-
-        .evento-revision {
-            background: var(--color-evento-revision);
-            border-left: 3px solid var(--color-evento-revision);
-        }
-
-        .evento-publicacion {
-            background: var(--color-evento-publicacion);
-            border-left: 3px solid var(--color-evento-publicacion);
-        }
-
-        .evento-reunion {
-            background: var(--color-evento-reunion);
-            border-left: 3px solid var(--color-evento-reunion);
-        }
-
-        .evento-personal {
-            background: var(--color-evento-personal);
-            border-left: 3px solid var(--color-evento-personal);
-        }
-
-        /* ===== PRÓXIMOS EVENTOS ===== */
-        .proximos-eventos {
+        /* Calendario Principal (FullCalendar) */
+        .calendario-principal {
             background: var(--color-fondo-card);
             border-radius: var(--radio-borde-grande);
             padding: 25px;
-            margin-bottom: 30px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid var(--color-borde);
+            height: 650px;
+        }
+
+        /* Leyenda de Eventos */
+        .leyenda-eventos {
+            background: var(--color-fondo-card);
+            border-radius: var(--radio-borde-grande);
+            padding: 25px;
             box-shadow: var(--sombra-suave);
             border: 1px solid var(--color-borde);
         }
@@ -416,6 +312,83 @@
             color: var(--color-secundario);
         }
 
+        /* Grid de leyenda */
+        .leyenda-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            background: var(--color-fondo);
+            border-radius: var(--radio-borde);
+            border: 1px solid var(--color-borde);
+            transition: all 0.3s ease;
+        }
+
+        .leyenda-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--sombra-suave);
+        }
+
+        .leyenda-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+
+        .leyenda-texto {
+            font-size: 14px;
+            color: var(--color-texto);
+            font-weight: 500;
+        }
+
+        .leyenda-color.evaluacion {
+            background: var(--color-evento-evaluacion);
+        }
+
+        .leyenda-color.plazo {
+            background: var(--color-evento-plazo);
+        }
+
+        .leyenda-color.revision {
+            background: var(--color-evento-revision);
+        }
+
+        .leyenda-color.publicacion {
+            background: var(--color-evento-publicacion);
+        }
+
+        .leyenda-color.reunion {
+            background: var(--color-evento-reunion);
+        }
+
+        .leyenda-color.personal {
+            background: var(--color-evento-personal);
+        }
+
+        .leyenda-color.capacitacion {
+            background: var(--color-evento-capacitacion);
+        }
+
+        .leyenda-color.convocatoria {
+            background: var(--color-evento-convocatoria);
+        }
+
+        /* ===== PRÓXIMOS EVENTOS ===== */
+        .proximos-eventos {
+            background: var(--color-fondo-card);
+            border-radius: var(--radio-borde-grande);
+            padding: 25px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid var(--color-borde);
+        }
+
         .btn-link {
             background: none;
             border: none;
@@ -439,6 +412,9 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
         }
 
         .evento-proximo {
@@ -525,6 +501,7 @@
         .calendario-procesos {
             background: var(--color-fondo-card);
             border-radius: var(--radio-borde-grande);
+            margin-top: 30px;
             padding: 25px;
             box-shadow: var(--sombra-suave);
             border: 1px solid var(--color-borde);
@@ -608,52 +585,211 @@
             font-weight: 600;
         }
 
-        /* ===== LEGENDA DE EVENTOS ===== */
-        .leyenda-eventos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid var(--color-borde);
+        /* ===== MODAL NUEVO EVENTO ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
         }
 
-        .leyenda-item {
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            height: 500px;
+            background: white;
+            border-radius: var(--radio-borde-grande);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--sombra-fuerte);
+            overflow: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--color-primario), #972948);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 10px;
+        }
+
+        .btn-cerrar {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cerrar:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: var(--color-texto);
+            font-size: 14px;
         }
 
-        .leyenda-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
         }
 
-        .leyenda-color.evaluacion {
-            background: var(--color-evento-evaluacion);
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-secundario);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
 
-        .leyenda-color.plazo {
-            background: var(--color-evento-plazo);
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
-        .leyenda-color.revision {
-            background: var(--color-evento-revision);
+        .textarea {
+            min-height: 100px;
+            resize: vertical;
         }
 
-        .leyenda-color.publicacion {
-            background: var(--color-evento-publicacion);
+        .select-color {
+            padding: 10px;
+            border-radius: var(--radio-borde);
+            border: 1px solid var(--color-borde);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .leyenda-color.reunion {
-            background: var(--color-evento-reunion);
+        .select-color:focus {
+            outline: none;
+            border-color: var(--color-secundario);
         }
 
-        .leyenda-color.personal {
-            background: var(--color-evento-personal);
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 100%;
+            height: 40px;
+            border-radius: var(--radio-borde);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.05);
+        }
+
+        .color-option.selected {
+            border-color: var(--color-texto);
+            box-shadow: var(--sombra-suave);
+        }
+
+        .color-option[data-color="evaluacion"] { background: var(--color-evento-evaluacion); }
+        .color-option[data-color="plazo"] { background: var(--color-evento-plazo); }
+        .color-option[data-color="revision"] { background: var(--color-evento-revision); }
+        .color-option[data-color="publicacion"] { background: var(--color-evento-publicacion); }
+        .color-option[data-color="reunion"] { background: var(--color-evento-reunion); }
+        .color-option[data-color="personal"] { background: var(--color-evento-personal); }
+        .color-option[data-color="capacitacion"] { background: var(--color-evento-capacitacion); }
+        .color-option[data-color="convocatoria"] { background: var(--color-evento-convocatoria); }
+
+        .modal-footer {
+            padding: 20px 25px;
+            background: var(--color-fondo);
+            border-top: 1px solid var(--color-borde);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn-cancelar {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid var(--color-borde);
+            border-radius: var(--radio-borde);
+            color: var(--color-texto);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancelar:hover {
+            background: var(--color-fondo);
+        }
+
+        .btn-guardar {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, var(--color-exito), #2ecc71);
+            color: white;
+            border: none;
+            border-radius: var(--radio-borde);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-guardar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
         }
 
         /* ===== FONDO DEL MENÚ MÓVIL ===== */
@@ -673,10 +809,106 @@
             }
         }
 
-        .calendario-mensual,
+        .calendario-principal,
+        .leyenda-eventos,
         .proximos-eventos,
         .calendario-procesos {
             animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* ===== FULLCALENDAR PERSONALIZACIÓN ===== */
+        .fc {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .fc-header-toolbar {
+            display: none !important;
+        }
+
+        .fc-daygrid-day-number {
+            font-weight: 600;
+            color: var(--color-texto);
+        }
+
+        .fc-col-header-cell {
+            background: var(--color-fondo);
+            font-weight: 600;
+            color: var(--color-texto);
+            padding: 10px 0;
+        }
+
+        .fc-col-header-cell.fc-day-sun {
+            color: var(--color-error);
+        }
+
+        .fc-daygrid-day.fc-day-today {
+            background-color: rgba(52, 152, 219, 0.05) !important;
+        }
+
+        .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+            background: var(--color-secundario);
+            color: white !important;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px;
+        }
+
+        /* Estilos personalizados para eventos */
+        .fc-event {
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 3px 6px !important;
+            font-size: 12px !important;
+            cursor: pointer;
+        }
+
+        .fc-event-title {
+            font-weight: 500 !important;
+        }
+
+        /* Colores personalizados para eventos */
+        .evento-evaluacion-fc {
+            background: var(--color-evento-evaluacion) !important;
+            border-left: 4px solid var(--color-evento-evaluacion) !important;
+        }
+
+        .evento-plazo-fc {
+            background: var(--color-evento-plazo) !important;
+            border-left: 4px solid var(--color-evento-plazo) !important;
+        }
+
+        .evento-revision-fc {
+            background: var(--color-evento-revision) !important;
+            border-left: 4px solid var(--color-evento-revision) !important;
+        }
+
+        .evento-publicacion-fc {
+            background: var(--color-evento-publicacion) !important;
+            border-left: 4px solid var(--color-evento-publicacion) !important;
+        }
+
+        .evento-reunion-fc {
+            background: var(--color-evento-reunion) !important;
+            border-left: 4px solid var(--color-evento-reunion) !important;
+        }
+
+        .evento-personal-fc {
+            background: var(--color-evento-personal) !important;
+            border-left: 4px solid var(--color-evento-personal) !important;
+        }
+
+        .evento-capacitacion-fc {
+            background: var(--color-evento-capacitacion) !important;
+            border-left: 4px solid var(--color-evento-capacitacion) !important;
+        }
+
+        .evento-convocatoria-fc {
+            background: var(--color-evento-convocatoria) !important;
+            border-left: 4px solid var(--color-evento-convocatoria) !important;
         }
 
         /* ===== SCROLLBAR PERSONALIZADO ===== */
@@ -699,14 +931,15 @@
             background: rgba(105, 28, 50, 0.3);
         }
 
+        .lista-proximos-eventos::-webkit-scrollbar,
+        .tabla-procesos::-webkit-scrollbar {
+            width: 6px;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
-            .grid-calendario .dia-calendario {
-                min-height: 100px;
-            }
-            
-            .eventos-dia {
-                max-height: 60px;
+            .calendario-principal {
+                height: 600px;
             }
         }
 
@@ -726,32 +959,13 @@
                 justify-content: center;
             }
             
-            .dia-semana {
-                padding: 10px 5px;
-                font-size: 12px;
+            .filtros {
+                justify-content: center;
+                flex-wrap: wrap;
             }
             
-            .dia-calendario {
-                min-height: 80px;
-                padding: 5px;
-            }
-            
-            .numero-dia {
-                top: 5px;
-                right: 5px;
-                width: 25px;
-                height: 25px;
-                font-size: 14px;
-            }
-            
-            .eventos-dia {
-                margin-top: 30px;
-                max-height: 50px;
-            }
-            
-            .evento-item {
-                font-size: 10px;
-                padding: 3px 5px;
+            .leyenda-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             }
         }
 
@@ -795,23 +1009,15 @@
                 padding: 20px 15px;
             }
             
-            .calendario-mensual,
+            .calendario-principal {
+                padding: 15px;
+                height: 500px;
+            }
+            
+            .leyenda-eventos,
             .proximos-eventos,
             .calendario-procesos {
                 padding: 20px;
-            }
-            
-            .dia-semana {
-                padding: 8px 3px;
-                font-size: 11px;
-            }
-            
-            .dia-calendario {
-                min-height: 70px;
-            }
-            
-            .eventos-dia {
-                display: none;
             }
             
             .evento-proximo {
@@ -825,6 +1031,7 @@
             
             .evento-meta {
                 justify-content: center;
+                flex-wrap: wrap;
             }
             
             .tabla-procesos {
@@ -834,6 +1041,19 @@
             .tabla-procesos th,
             .tabla-procesos td {
                 padding: 10px;
+            }
+            
+            .fc-event {
+                font-size: 10px !important;
+                padding: 2px 4px !important;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal {
+                max-width: 95%;
             }
         }
 
@@ -872,18 +1092,20 @@
                 margin: 10px 0;
             }
             
-            .dia-calendario {
-                min-height: 60px;
+            .calendario-principal {
+                height: 450px;
             }
             
-            .numero-dia {
-                position: static;
-                margin: 0 auto;
-                margin-bottom: 5px;
+            .leyenda-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
             
-            .leyenda-eventos {
-                justify-content: center;
+            .fc-daygrid-day-number {
+                font-size: 12px;
+            }
+            
+            .color-options {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -927,9 +1149,9 @@
                     </a>
                 </li>
                 <li>
-                    <a class="barra-lateral-link" href="generador_ia.html">
+                    <a class="barra-lateral-link" href="chat_ia.html">
                         <i class="fa-solid fa-robot"></i>
-                        <span>Generador IA</span>
+                        <span>Chat IA</span>
                     </a>
                 </li>
                 <li>
@@ -1000,242 +1222,51 @@
                     </div>
                 </div>
 
-                <!-- Calendario Mensual -->
-                <div class="calendario-mensual">
-                    <!-- Días de la semana -->
-                    <div class="encabezado-calendario">
-                        <div class="dia-semana">Lun</div>
-                        <div class="dia-semana">Mar</div>
-                        <div class="dia-semana">Mié</div>
-                        <div class="dia-semana">Jue</div>
-                        <div class="dia-semana">Vie</div>
-                        <div class="dia-semana">Sáb</div>
-                        <div class="dia-semana domingo">Dom</div>
+                <!-- Contenedor Calendario Completo -->
+                <div class="contenedor-calendario">
+                    <!-- Calendario FullCalendar -->
+                    <div class="calendario-principal">
+                        <div id="calendar"></div>
                     </div>
 
-                    <!-- Grid de días -->
-                    <div class="grid-calendario" id="gridCalendario">
-                        <!-- Días del mes anterior -->
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">27</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">28</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">29</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">30</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">31</div>
-                        </div>
-
-                        <!-- Junio 2024 -->
-                        <!-- Semana 1 -->
-                        <div class="dia-calendario">
-                            <div class="numero-dia">1</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-personal">Reunión equipo</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">2</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        
-                        <!-- Semana 2 -->
-                        <div class="dia-calendario">
-                            <div class="numero-dia">3</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">4</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-plazo">Plazo: Revisión preguntas</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">5</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">6</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-reunion">Reunión USICAMM</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">7</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">8</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario domingo">
-                            <div class="numero-dia">9</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        
-                        <!-- Semana 3 -->
-                        <div class="dia-calendario">
-                            <div class="numero-dia">10</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-evaluacion">Evaluación Primaria</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario hoy">
-                            <div class="numero-dia">11</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-revision">Revisión pendiente</div>
-                                <div class="evento-item evento-plazo">Plazo cercano</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">12</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">13</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-publicacion">Publicación resultados</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">14</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">15</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-evaluacion">Evaluación Secundaria</div>
-                                <div class="evento-item evento-plazo">Fin de plazo</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario domingo">
-                            <div class="numero-dia">16</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        
-                        <!-- Semana 4 -->
-                        <div class="dia-calendario">
-                            <div class="numero-dia">17</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-reunion">Junta pedagógica</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">18</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-evaluacion">Evaluación Horizontal</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">19</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">20</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-revision">Revisión colegas</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">21</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">22</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario domingo">
-                            <div class="numero-dia">23</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        
-                        <!-- Semana 5 -->
-                        <div class="dia-calendario">
-                            <div class="numero-dia">24</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-plazo">Entrega final</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">25</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">26</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-reunion">Capacitación NEM</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">27</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">28</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-publicacion">Publica. convocatoria</div>
-                            </div>
-                        </div>
-                        <div class="dia-calendario">
-                            <div class="numero-dia">29</div>
-                            <div class="eventos-dia"></div>
-                        </div>
-                        <div class="dia-calendario domingo">
-                            <div class="numero-dia">30</div>
-                            <div class="eventos-dia">
-                                <div class="evento-item evento-personal">Revisión personal</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Días del próximo mes -->
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">1</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">2</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">3</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">4</div>
-                        </div>
-                        <div class="dia-calendario otro-mes">
-                            <div class="numero-dia">5</div>
-                        </div>
-                    </div>
-
-                    <!-- Leyenda de eventos -->
+                    <!-- Leyenda de Eventos -->
                     <div class="leyenda-eventos">
-                        <div class="leyenda-item">
-                            <div class="leyenda-color evaluacion"></div>
-                            <span>Evaluación</span>
+                        <div class="seccion-header">
+                            <h2><i class="fas fa-key"></i> Leyenda de Eventos</h2>
                         </div>
-                        <div class="leyenda-item">
-                            <div class="leyenda-color plazo"></div>
-                            <span>Plazo límite</span>
-                        </div>
-                        <div class="leyenda-item">
-                            <div class="leyenda-color revision"></div>
-                            <span>Revisión</span>
-                        </div>
-                        <div class="leyenda-item">
-                            <div class="leyenda-color publicacion"></div>
-                            <span>Publicación</span>
-                        </div>
-                        <div class="leyenda-item">
-                            <div class="leyenda-color reunion"></div>
-                            <span>Reunión</span>
-                        </div>
-                        <div class="leyenda-item">
-                            <div class="leyenda-color personal"></div>
-                            <span>Personal</span>
+                        <div class="leyenda-grid">
+                            <div class="leyenda-item">
+                                <div class="leyenda-color evaluacion"></div>
+                                <span class="leyenda-texto">Evaluación</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <div class="leyenda-color plazo"></div>
+                                <span class="leyenda-texto">Plazo límite</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <div class="leyenda-color revision"></div>
+                                <span class="leyenda-texto">Revisión</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <div class="leyenda-color publicacion"></div>
+                                <span class="leyenda-texto">Publicación</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <div class="leyenda-color reunion"></div>
+                                <span class="leyenda-texto">Reunión</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <div class="leyenda-color personal"></div>
+                                <span class="leyenda-texto">Personal</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <div class="leyenda-color capacitacion"></div>
+                                <span class="leyenda-texto">Capacitación</span>
+                            </div>
+                            <div class="leyenda-item">
+                                <div class="leyenda-color convocatoria"></div>
+                                <span class="leyenda-texto">Convocatoria</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1258,10 +1289,10 @@
                             </div>
                             <div class="evento-contenido">
                                 <h3>Evaluación Promoción Horizontal - Secundaria</h3>
-                                <p>Evaluación para promoción horizontal de maestros de secundaria. Se aplicará en línea a través de la plataforma USICAMM.</p>
+                                <p>Evaluación para promoción horizontal de maestros de secundaria.</p>
                                 <div class="evento-meta">
-                                    <span><i class="fas fa-clock"></i> 09:00 - 12:00 hrs</span>
-                                    <span><i class="fas fa-map-marker-alt"></i> Plataforma en línea</span>
+                                    <span><i class="fas fa-clock"></i> 09:00 - 12:00</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> En línea</span>
                                 </div>
                             </div>
                             <div class="evento-badge evento-evaluacion">
@@ -1277,14 +1308,14 @@
                             </div>
                             <div class="evento-contenido">
                                 <h3>Plazo Límite: Validación Preguntas IA</h3>
-                                <p>Fecha límite para validar las preguntas generadas por IA del banco de Matemáticas Primaria.</p>
+                                <p>Fecha límite para validar preguntas generadas por IA.</p>
                                 <div class="evento-meta">
-                                    <span><i class="fas fa-clock"></i> Hasta las 23:59 hrs</span>
-                                    <span><i class="fas fa-exclamation-circle"></i> 48 pendientes</span>
+                                    <span><i class="fas fa-clock"></i> Hasta 23:59</span>
+                                    <span><i class="fas fa-exclamation-circle"></i> Crítico</span>
                                 </div>
                             </div>
                             <div class="evento-badge evento-plazo">
-                                Plazo límite
+                                Plazo
                             </div>
                         </div>
 
@@ -1296,10 +1327,10 @@
                             </div>
                             <div class="evento-contenido">
                                 <h3>Revisión Colegas - Ciencias Naturales</h3>
-                                <p>Reunión para revisión conjunta de preguntas de Ciencias Naturales con el equipo de especialistas.</p>
+                                <p>Reunión para revisión conjunta de preguntas.</p>
                                 <div class="evento-meta">
-                                    <span><i class="fas fa-clock"></i> 16:00 - 18:00 hrs</span>
-                                    <span><i class="fas fa-map-marker-alt"></i> Sala 3, USICAMM</span>
+                                    <span><i class="fas fa-clock"></i> 16:00 - 18:00</span>
+                                    <span><i class="fas fa-map-marker-alt"></i> Sala 3</span>
                                 </div>
                             </div>
                             <div class="evento-badge evento-revision">
@@ -1311,9 +1342,35 @@
 
                 <!-- Calendario de Procesos USICAMM -->
                 <div class="calendario-procesos">
+                    
                     <div class="seccion-header">
                         <h2><i class="fas fa-calendar-check"></i> Calendario de Procesos USICAMM 2026</h2>
                     </div>
+
+                    <div class="barra-herramientas">
+                    <div class="herramientas-izquierda">
+                        
+                        
+                        <!-- Filtros -->
+                        <div class="filtros">
+                            <select class="filtro-select" id="filtroTipo">
+                                <option value="">Todos los tipos</option>
+                                <option value="evaluacion">Promoción horizontal</option>
+                                <option value="plazo">Promoción vertical</option>
+                            </select>
+                            
+                            <input type="date" class="filtro-select" id="filtroFecha">
+                            
+                            <button class="btn-filtro" id="btnAplicarFiltro">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                            
+                            <button class="btn-filtro" id="btnLimpiarFiltro">
+                                <i class="fas fa-times"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
                     
                     <div class="tabla-procesos">
                         <table>
@@ -1334,8 +1391,8 @@
                                         <small>Evaluación de conocimientos y aptitudes</small>
                                     </td>
                                     <td>Evaluación</td>
-                                    <td>01/06/2024</td>
-                                    <td>30/09/2024</td>
+                                    <td>04/03/2024</td>
+                                    <td>30/03/2024</td>
                                     <td><span class="badge badge-en-curso">En curso</span></td>
                                     <td>
                                         <div class="tiempo-restante">
@@ -1432,7 +1489,98 @@
         </main>
     </div>
 
+    <!-- Modal Nuevo Evento -->
+    <div class="modal-overlay" id="modalNuevoEvento">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Nuevo Evento</h3>
+                <button class="btn-cerrar" id="btnCerrarModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="formNuevoEvento">
+                    <div class="form-group">
+                        <label for="eventoTitulo">Título del Evento *</label>
+                        <input type="text" id="eventoTitulo" class="form-control" placeholder="Ej: Evaluación Primaria" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventoFecha">Fecha *</label>
+                            <input type="date" id="eventoFecha" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventoHoraInicio">Hora Inicio</label>
+                            <input type="time" id="eventoHoraInicio" class="form-control" value="09:00">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventoTipo">Tipo de Evento *</label>
+                            <select id="eventoTipo" class="form-control" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="evaluacion">Evaluación</option>
+                                <option value="plazo">Plazo límite</option>
+                                <option value="revision">Revisión</option>
+                                <option value="publicacion">Publicación</option>
+                                <option value="reunion">Reunión</option>
+                                <option value="personal">Personal</option>
+                                <option value="capacitacion">Capacitación</option>
+                                <option value="convocatoria">Convocatoria</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="eventoHoraFin">Hora Fin</label>
+                            <input type="time" id="eventoHoraFin" class="form-control" value="12:00">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventoUbicacion">Ubicación</label>
+                        <input type="text" id="eventoUbicacion" class="form-control" placeholder="Ej: Plataforma en línea, Sala 3, etc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventoColor">Color del Evento</label>
+                        <div class="color-options">
+                            <div class="color-option" data-color="evaluacion" title="Evaluación"></div>
+                            <div class="color-option" data-color="plazo" title="Plazo límite"></div>
+                            <div class="color-option" data-color="revision" title="Revisión"></div>
+                            <div class="color-option" data-color="publicacion" title="Publicación"></div>
+                            <div class="color-option" data-color="reunion" title="Reunión"></div>
+                            <div class="color-option" data-color="personal" title="Personal"></div>
+                            <div class="color-option" data-color="capacitacion" title="Capacitación"></div>
+                            <div class="color-option" data-color="convocatoria" title="Convocatoria"></div>
+                        </div>
+                        <input type="hidden" id="eventoColor" value="evaluacion">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventoDescripcion">Descripción</label>
+                        <textarea id="eventoDescripcion" class="form-control textarea" placeholder="Descripción detallada del evento..."></textarea>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelarEvento">Cancelar</button>
+                <button type="button" class="btn-guardar" id="btnGuardarEvento">
+                    <i class="fas fa-save"></i> Guardar Evento
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="fondo"></div>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
 
     <!-- Scripts -->
     <script>
@@ -1486,119 +1634,525 @@
             });
         });
 
-        // Script para funcionalidades del calendario
-        document.addEventListener('DOMContentLoaded', function() {
-            // Variables de estado
-            let mesActual = 5; // Junio (0-11)
-            let añoActual = 2024;
-            const meses = [
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-            ];
+        // ========================
+        // MODAL Y FORMULARIO NUEVO EVENTO
+        // ========================
+        const modalNuevoEvento = document.getElementById('modalNuevoEvento');
+        const btnNuevoEvento = document.getElementById('btnNuevoEvento');
+        const btnCerrarModal = document.getElementById('btnCerrarModal');
+        const btnCancelarEvento = document.getElementById('btnCancelarEvento');
+        const btnGuardarEvento = document.getElementById('btnGuardarEvento');
+        const formNuevoEvento = document.getElementById('formNuevoEvento');
+        const colorOptions = document.querySelectorAll('.color-option');
+        const eventoColorInput = document.getElementById('eventoColor');
+        const eventoTipoSelect = document.getElementById('eventoTipo');
+        const eventoTituloInput = document.getElementById('eventoTitulo');
+        const eventoFechaInput = document.getElementById('eventoFecha');
+        const eventoHoraInicioInput = document.getElementById('eventoHoraInicio');
+        const eventoHoraFinInput = document.getElementById('eventoHoraFin');
+        const eventoUbicacionInput = document.getElementById('eventoUbicacion');
+        const eventoDescripcionInput = document.getElementById('eventoDescripcion');
+
+        // Variables globales
+        let calendar;
+        let eventosFiltrados = [];
+
+        // Función para abrir modal
+        function abrirModalNuevoEvento() {
+            // Establecer fecha actual por defecto
+            const hoy = new Date();
+            const fechaFormateada = hoy.toISOString().split('T')[0];
+            eventoFechaInput.value = fechaFormateada;
             
-            // Actualizar mes actual en pantalla
-            function actualizarMesActual() {
-                document.getElementById('mesActual').textContent = `${meses[mesActual]} ${añoActual}`;
-            }
+            // Seleccionar primer color por defecto
+            seleccionarColor('evaluacion');
             
-            // Inicializar
-            actualizarMesActual();
-            
-            // Navegación entre meses
-            document.getElementById('btnAnteriorMes')?.addEventListener('click', function() {
-                if (mesActual === 0) {
-                    mesActual = 11;
-                    añoActual--;
-                } else {
-                    mesActual--;
-                }
-                actualizarMesActual();
-                console.log('Mes anterior:', meses[mesActual], añoActual);
+            modalNuevoEvento.classList.add('active');
+        }
+
+        // Función para cerrar modal
+        function cerrarModalNuevoEvento() {
+            modalNuevoEvento.classList.remove('active');
+            formNuevoEvento.reset();
+            seleccionarColor('evaluacion');
+        }
+
+        // Función para seleccionar color
+        function seleccionarColor(color) {
+            // Remover selección anterior
+            colorOptions.forEach(option => {
+                option.classList.remove('selected');
             });
             
-            document.getElementById('btnSiguienteMes')?.addEventListener('click', function() {
-                if (mesActual === 11) {
-                    mesActual = 0;
-                    añoActual++;
-                } else {
-                    mesActual++;
+            // Agregar selección nueva
+            const selectedOption = document.querySelector(`.color-option[data-color="${color}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+                eventoColorInput.value = color;
+            }
+        }
+
+        // Event listeners para color options
+        colorOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const color = this.getAttribute('data-color');
+                seleccionarColor(color);
+            });
+        });
+
+        // Sincronizar tipo de evento con color
+        eventoTipoSelect.addEventListener('change', function() {
+            const tipo = this.value;
+            if (tipo) {
+                seleccionarColor(tipo);
+            }
+        });
+
+        // Event listeners para modal
+        btnNuevoEvento.addEventListener('click', abrirModalNuevoEvento);
+        btnCerrarModal.addEventListener('click', cerrarModalNuevoEvento);
+        btnCancelarEvento.addEventListener('click', cerrarModalNuevoEvento);
+
+        // Cerrar modal al hacer clic fuera
+        modalNuevoEvento.addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarModalNuevoEvento();
+            }
+        });
+
+        // Guardar nuevo evento
+        btnGuardarEvento.addEventListener('click', function() {
+            // Validar formulario
+            if (!formNuevoEvento.checkValidity()) {
+                alert('Por favor, completa los campos requeridos (*)');
+                return;
+            }
+            
+            // Obtener datos del formulario
+            const titulo = eventoTituloInput.value;
+            const fecha = eventoFechaInput.value;
+            const horaInicio = eventoHoraInicioInput.value || '09:00';
+            const horaFin = eventoHoraFinInput.value || '12:00';
+            const tipo = eventoTipoSelect.value;
+            const ubicacion = eventoUbicacionInput.value || 'Por definir';
+            const color = eventoColorInput.value;
+            const descripcion = eventoDescripcionInput.value || 'Sin descripción';
+            
+            // Traducir tipo para mostrar
+            const tiposTraducidos = {
+                'evaluacion': 'Evaluación',
+                'plazo': 'Plazo límite',
+                'revision': 'Revisión',
+                'publicacion': 'Publicación',
+                'reunion': 'Reunión',
+                'personal': 'Personal',
+                'capacitacion': 'Capacitación',
+                'convocatoria': 'Convocatoria'
+            };
+            
+            // Crear objeto evento
+            const nuevoEvento = {
+                title: titulo,
+                start: horaInicio ? `${fecha}T${horaInicio}` : fecha,
+                end: horaFin ? `${fecha}T${horaFin}` : fecha,
+                allDay: !horaInicio,
+                className: `evento-${color}-fc`,
+                extendedProps: {
+                    tipo: tipo,
+                    descripcion: descripcion,
+                    hora: horaInicio ? `${horaInicio} - ${horaFin}` : 'Todo el día',
+                    lugar: ubicacion
                 }
-                actualizarMesActual();
-                console.log('Mes siguiente:', meses[mesActual], añoActual);
+            };
+            
+            // Agregar evento al calendario
+            calendar.addEvent(nuevoEvento);
+            
+            // Cerrar modal y limpiar formulario
+            cerrarModalNuevoEvento();
+            
+            // Mostrar mensaje de éxito
+            alert(`Evento "${titulo}" agregado exitosamente para el ${fecha}`);
+            
+            // Navegar a la fecha del evento
+            calendar.gotoDate(fecha);
+        });
+
+        // ========================
+        // FULLCALENDAR IMPLEMENTACIÓN
+        // ========================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar calendario
+            const calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                headerToolbar: false,
+                height: '100%',
+                contentHeight: 'auto',
+                dayMaxEvents: 3,
+                events: [
+                    // Eventos de evaluación
+                    {
+                        title: 'Evaluación Primaria',
+                        start: '2024-06-10T09:00:00',
+                        end: '2024-06-10T12:00:00',
+                        className: 'evento-evaluacion-fc',
+                        extendedProps: {
+                            tipo: 'evaluacion',
+                            descripcion: 'Evaluación para promoción horizontal de maestros de primaria',
+                            hora: '09:00 - 12:00',
+                            lugar: 'Plataforma en línea'
+                        }
+                    },
+                    {
+                        title: 'Evaluación Secundaria',
+                        start: '2024-06-15T09:00:00',
+                        end: '2024-06-15T12:00:00',
+                        className: 'evento-evaluacion-fc',
+                        extendedProps: {
+                            tipo: 'evaluacion',
+                            descripcion: 'Evaluación para promoción horizontal de maestros de secundaria',
+                            hora: '09:00 - 12:00',
+                            lugar: 'Plataforma en línea'
+                        }
+                    },
+                    {
+                        title: 'Evaluación Horizontal',
+                        start: '2024-06-18T10:00:00',
+                        end: '2024-06-18T13:00:00',
+                        className: 'evento-evaluacion-fc',
+                        extendedProps: {
+                            tipo: 'evaluacion',
+                            descripcion: 'Evaluación promoción horizontal para todos los niveles',
+                            hora: '10:00 - 13:00',
+                            lugar: 'Centro de evaluación'
+                        }
+                    },
+
+                    // Eventos de plazo
+                    {
+                        title: 'Plazo: Revisión preguntas',
+                        start: '2024-06-04',
+                        end: '2024-06-04',
+                        allDay: true,
+                        className: 'evento-plazo-fc',
+                        extendedProps: {
+                            tipo: 'plazo',
+                            descripcion: 'Fecha límite para revisar preguntas generadas por IA',
+                            hora: 'Hasta las 23:59',
+                            lugar: 'Sistema USICAMM'
+                        }
+                    },
+                    {
+                        title: 'Fin de plazo',
+                        start: '2024-06-15',
+                        end: '2024-06-15',
+                        allDay: true,
+                        className: 'evento-plazo-fc',
+                        extendedProps: {
+                            tipo: 'plazo',
+                            descripcion: 'Fin del plazo para entrega de documentos',
+                            hora: 'Hasta las 18:00',
+                            lugar: 'Oficinas USICAMM'
+                        }
+                    },
+                    {
+                        title: 'Plazo límite validación IA',
+                        start: '2024-06-18',
+                        end: '2024-06-18',
+                        allDay: true,
+                        className: 'evento-plazo-fc',
+                        extendedProps: {
+                            tipo: 'plazo',
+                            descripcion: 'Fecha límite para validar preguntas generadas por IA',
+                            hora: 'Hasta las 23:59',
+                            lugar: 'Sistema USICAMM'
+                        }
+                    },
+                    {
+                        title: 'Entrega final',
+                        start: '2024-06-24',
+                        end: '2024-06-24',
+                        allDay: true,
+                        className: 'evento-plazo-fc',
+                        extendedProps: {
+                            tipo: 'plazo',
+                            descripcion: 'Entrega final de reportes de evaluación',
+                            hora: 'Hasta las 17:00',
+                            lugar: 'Departamento de Evaluación'
+                        }
+                    },
+
+                    // Eventos de revisión
+                    {
+                        title: 'Revisión pendiente',
+                        start: '2024-06-11T14:00:00',
+                        end: '2024-06-11T16:00:00',
+                        className: 'evento-revision-fc',
+                        extendedProps: {
+                            tipo: 'revision',
+                            descripcion: 'Revisión de evaluaciones pendientes',
+                            hora: '14:00 - 16:00',
+                            lugar: 'Sala de juntas 2'
+                        }
+                    },
+                    {
+                        title: 'Revisión colegas',
+                        start: '2024-06-20T16:00:00',
+                        end: '2024-06-20T18:00:00',
+                        className: 'evento-revision-fc',
+                        extendedProps: {
+                            tipo: 'revision',
+                            descripcion: 'Revisión conjunta con colegas evaluadores',
+                            hora: '16:00 - 18:00',
+                            lugar: 'Sala 3, USICAMM'
+                        }
+                    },
+
+                    // Eventos de publicación
+                    {
+                        title: 'Publicación resultados',
+                        start: '2024-06-13T10:00:00',
+                        end: '2024-06-13T10:00:00',
+                        className: 'evento-publicacion-fc',
+                        extendedProps: {
+                            tipo: 'publicacion',
+                            descripcion: 'Publicación de resultados primera etapa',
+                            hora: '10:00',
+                            lugar: 'Portal USICAMM'
+                        }
+                    },
+                    {
+                        title: 'Publica. convocatoria',
+                        start: '2024-06-28T09:00:00',
+                        end: '2024-06-28T09:00:00',
+                        className: 'evento-convocatoria-fc',
+                        extendedProps: {
+                            tipo: 'convocatoria',
+                            descripcion: 'Publicación oficial convocatoria 2027',
+                            hora: '09:00',
+                            lugar: 'Portal oficial'
+                        }
+                    },
+
+                    // Eventos de reunión
+                    {
+                        title: 'Reunión USICAMM',
+                        start: '2024-06-06T11:00:00',
+                        end: '2024-06-06T13:00:00',
+                        className: 'evento-reunion-fc',
+                        extendedProps: {
+                            tipo: 'reunion',
+                            descripcion: 'Reunión general del equipo USICAMM',
+                            hora: '11:00 - 13:00',
+                            lugar: 'Auditorio principal'
+                        }
+                    },
+                    {
+                        title: 'Junta pedagógica',
+                        start: '2024-06-17T15:00:00',
+                        end: '2024-06-17T17:00:00',
+                        className: 'evento-reunion-fc',
+                        extendedProps: {
+                            tipo: 'reunion',
+                            descripcion: 'Junta pedagógica mensual',
+                            hora: '15:00 - 17:00',
+                            lugar: 'Sala de directivos'
+                        }
+                    },
+                    {
+                        title: 'Capacitación NEM',
+                        start: '2024-06-26T09:00:00',
+                        end: '2024-06-26T14:00:00',
+                        className: 'evento-capacitacion-fc',
+                        extendedProps: {
+                            tipo: 'capacitacion',
+                            descripcion: 'Capacitación sobre Nuevo Modelo Educativo',
+                            hora: '09:00 - 14:00',
+                            lugar: 'Centro de capacitación'
+                        }
+                    },
+
+                    // Eventos personales
+                    {
+                        title: 'Reunión equipo',
+                        start: '2024-06-01T10:00:00',
+                        end: '2024-06-01T11:00:00',
+                        className: 'evento-personal-fc',
+                        extendedProps: {
+                            tipo: 'personal',
+                            descripcion: 'Reunión de equipo de trabajo',
+                            hora: '10:00 - 11:00',
+                            lugar: 'Oficina 204'
+                        }
+                    },
+                    {
+                        title: 'Revisión personal',
+                        start: '2024-06-30',
+                        end: '2024-06-30',
+                        allDay: true,
+                        className: 'evento-personal-fc',
+                        extendedProps: {
+                            tipo: 'personal',
+                            descripcion: 'Revisión personal de proyectos',
+                            hora: 'Todo el día',
+                            lugar: 'Oficina'
+                        }
+                    }
+                ],
+                eventClick: function(info) {
+                    const evento = info.event;
+                    const tipo = evento.extendedProps.tipo;
+                    const tiposTraducidos = {
+                        'evaluacion': 'Evaluación',
+                        'plazo': 'Plazo límite',
+                        'revision': 'Revisión',
+                        'publicacion': 'Publicación',
+                        'reunion': 'Reunión',
+                        'personal': 'Personal',
+                        'capacitacion': 'Capacitación',
+                        'convocatoria': 'Convocatoria'
+                    };
+                    
+                    alert(`${evento.title}\n\nTipo: ${tiposTraducidos[tipo]}\nFecha: ${evento.start.toLocaleDateString('es-MX')}\nHora: ${evento.extendedProps.hora}\nLugar: ${evento.extendedProps.lugar}\n\n${evento.extendedProps.descripcion}`);
+                },
+                datesSet: function(info) {
+                    // Actualizar mes actual en la barra de herramientas
+                    const fecha = info.view.currentStart;
+                    const mes = fecha.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+                    const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
+                    document.getElementById('mesActual').textContent = mesCapitalizado;
+                }
+            });
+
+            // Renderizar calendario
+            calendar.render();
+
+            // ========================
+            // CONTROLES DEL CALENDARIO
+            // ========================
+            
+            // Navegación entre meses
+            document.getElementById('btnAnteriorMes').addEventListener('click', function() {
+                calendar.prev();
+            });
+            
+            document.getElementById('btnSiguienteMes').addEventListener('click', function() {
+                calendar.next();
             });
             
             // Botón Hoy
-            document.getElementById('btnHoy')?.addEventListener('click', function() {
-                const hoy = new Date();
-                mesActual = hoy.getMonth();
-                añoActual = hoy.getFullYear();
-                actualizarMesActual();
-                console.log('Ir a hoy:', meses[mesActual], añoActual);
+            document.getElementById('btnHoy').addEventListener('click', function() {
+                calendar.today();
             });
             
-            // Select de vista
-            document.getElementById('selectVista')?.addEventListener('change', function() {
-                console.log('Cambiando a vista:', this.value);
-                // Aquí podrías cambiar entre vistas mensual, semanal, diaria
+            // ========================
+            // FILTROS DE EVENTOS
+            // ========================
+            const filtroTipo = document.getElementById('filtroTipo');
+            const filtroFecha = document.getElementById('filtroFecha');
+            const btnAplicarFiltro = document.getElementById('btnAplicarFiltro');
+            const btnLimpiarFiltro = document.getElementById('btnLimpiarFiltro');
+
+            // Aplicar filtros
+            btnAplicarFiltro.addEventListener('click', function() {
+                aplicarFiltros();
             });
-            
-            // Botón nuevo evento
-            document.getElementById('btnNuevoEvento')?.addEventListener('click', function() {
-                alert('Creando nuevo evento...');
-                // Aquí podrías abrir un modal para crear evento
+
+            // Limpiar filtros
+            btnLimpiarFiltro.addEventListener('click', function() {
+                filtroTipo.value = '';
+                filtroFecha.value = '';
+                aplicarFiltros();
             });
-            
-            // Botón exportar
-            document.getElementById('btnExportarCalendario')?.addEventListener('click', function() {
-                alert('Exportando calendario...');
-                // Aquí podrías exportar a PDF o iCal
-            });
+
+            // Función para aplicar filtros
+            function aplicarFiltros() {
+                const tipoFiltro = filtroTipo.value;
+                const fechaFiltro = filtroFecha.value;
+                
+                // Obtener todos los eventos
+                const eventos = calendar.getEvents();
+                
+                // Limpiar eventos filtrados anteriores
+                eventosFiltrados.forEach(evento => {
+                    evento.remove();
+                });
+                eventosFiltrados = [];
+                
+                // Si no hay filtros, mostrar todos los eventos
+                if (!tipoFiltro && !fechaFiltro) {
+                    eventos.forEach(evento => {
+                        evento.setProp('display', 'auto');
+                    });
+                    return;
+                }
+                
+                // Aplicar filtros
+                eventos.forEach(evento => {
+                    const tipoEvento = evento.extendedProps.tipo;
+                    const fechaEvento = evento.start;
+                    const fechaEventoStr = fechaEvento ? fechaEvento.toISOString().split('T')[0] : '';
+                    
+                    let mostrar = true;
+                    
+                    // Filtrar por tipo
+                    if (tipoFiltro && tipoEvento !== tipoFiltro) {
+                        mostrar = false;
+                    }
+                    
+                    // Filtrar por fecha
+                    if (fechaFiltro && fechaEventoStr !== fechaFiltro) {
+                        mostrar = false;
+                    }
+                    
+                    // Mostrar u ocultar evento según filtros
+                    evento.setProp('display', mostrar ? 'auto' : 'none');
+                    
+                    // Si el evento está oculto por filtros, agregarlo a la lista de filtrados
+                    if (!mostrar) {
+                        eventosFiltrados.push(evento);
+                    }
+                });
+                
+                // Mostrar mensaje si no hay resultados
+                const eventosVisibles = eventos.length - eventosFiltrados.length;
+                if (eventosVisibles === 0) {
+                    alert('No se encontraron eventos con los filtros aplicados.');
+                }
+            }
+
+            // ========================
+            // EVENTOS ADICIONALES
+            // ========================
             
             // Botón ver todos eventos
-            document.getElementById('btnVerTodosEventos')?.addEventListener('click', function(e) {
+            document.getElementById('btnVerTodosEventos').addEventListener('click', function(e) {
                 e.preventDefault();
-                alert('Mostrando todos los eventos...');
-            });
-            
-            // Hacer clic en días del calendario
-            const diasCalendario = document.querySelectorAll('.dia-calendario:not(.otro-mes)');
-            diasCalendario.forEach(dia => {
-                dia.addEventListener('click', function() {
-                    const numeroDia = this.querySelector('.numero-dia').textContent;
-                    console.log('Día seleccionado:', numeroDia, meses[mesActual], añoActual);
-                    
-                    // Remover selección anterior
-                    diasCalendario.forEach(d => d.classList.remove('seleccionado'));
-                    
-                    // Agregar selección actual
-                    this.classList.add('seleccionado');
-                    this.style.border = '2px solid var(--color-primario)';
-                });
-            });
-            
-            // Hacer clic en eventos del calendario
-            const eventosCalendario = document.querySelectorAll('.evento-item');
-            eventosCalendario.forEach(evento => {
-                evento.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Evitar que también se active el día
-                    const textoEvento = this.textContent;
-                    console.log('Evento seleccionado:', textoEvento);
-                    
-                    // Aquí podrías mostrar detalles del evento
-                    alert(`Evento: ${textoEvento}`);
-                });
+                calendar.changeView('listMonth');
             });
             
             // Hacer clic en próximos eventos
             const proximosEventos = document.querySelectorAll('.evento-proximo');
             proximosEventos.forEach(evento => {
                 evento.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
                     const titulo = this.querySelector('h3').textContent;
                     const fecha = this.querySelector('.evento-dia').textContent + 
-                                  ' ' + this.querySelector('.evento-mes').textContent;
+                                  ' ' + this.querySelector('.evento-mes').textcontent;
                     
-                    console.log('Evento próximo seleccionado:', titulo);
-                    alert(`${titulo}\nFecha: ${fecha}`);
+                    // Navegar a la fecha del evento en el calendario
+                    let fechaEvento;
+                    switch(id) {
+                        case '1': fechaEvento = '2024-06-15'; break;
+                        case '2': fechaEvento = '2024-06-18'; break;
+                        case '3': fechaEvento = '2024-06-20'; break;
+                        default: fechaEvento = '2024-06-11';
+                    }
+                    
+                    calendar.gotoDate(fechaEvento);
+                    alert(`Evento: ${titulo}\nFecha: ${fecha}`);
                 });
             });
             
@@ -1608,71 +2162,48 @@
                 fila.addEventListener('click', function() {
                     const proceso = this.querySelector('strong').textContent;
                     const estado = this.querySelector('.badge').textContent;
+                    const fechaInicio = this.querySelector('td:nth-child(3)').textContent;
                     
-                    console.log('Proceso seleccionado:', proceso);
-                    alert(`Proceso: ${proceso}\nEstado: ${estado}`);
+                    // Convertir fecha DD/MM/YYYY a YYYY-MM-DD
+                    const partes = fechaInicio.split('/');
+                    const fechaISO = `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+                    
+                    // Navegar a la fecha de inicio del proceso
+                    calendar.gotoDate(fechaISO);
+                    
+                    alert(`Proceso: ${proceso}\nEstado: ${estado}\nFecha inicio: ${fechaInicio}\n\nNavegando a la fecha en el calendario...`);
                 });
             });
             
-            // Función para resaltar eventos críticos (menos de 3 días)
-            function resaltarEventosCriticos() {
-                const tiempos = document.querySelectorAll('.tiempo-restante');
-                tiempos.forEach(tiempo => {
-                    const texto = tiempo.textContent;
-                    const dias = parseInt(texto.match(/\d+/)?.[0] || 0);
-                    if (dias <= 3 && !tiempo.classList.contains('critico')) {
-                        tiempo.classList.add('critico');
-                        tiempo.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + texto;
-                    }
-                });
-            }
-            
-            resaltarEventosCriticos();
-            
-            // Simular notificación de eventos próximos
-            function verificarEventosHoy() {
-                const hoy = new Date();
-                const diaHoy = hoy.getDate();
-                const mesHoy = hoy.getMonth();
-                
-                if (mesHoy === mesActual) {
-                    const diaHoyElement = document.querySelector(`.dia-calendario .numero-dia[style*="${diaHoy}"]`);
-                    if (diaHoyElement) {
-                        const diaElement = diaHoyElement.closest('.dia-calendario');
-                        if (diaElement && !diaElement.classList.contains('hoy')) {
-                            diaElement.classList.add('hoy');
-                            console.log('¡Hoy es', diaHoy, 'de', meses[mesActual], '!');
-                        }
-                    }
-                }
-            }
-            
-            verificarEventosHoy();
-            
-            // Función para calcular tiempo restante
+            /* Función para actualizar tiempos restantes en la tabla
             function actualizarTiemposRestantes() {
                 const hoy = new Date();
-                const eventos = document.querySelectorAll('.evento-proximo');
+                const filas = document.querySelectorAll('.tabla-procesos tbody tr');
                 
-                eventos.forEach(evento => {
-                    const dia = parseInt(evento.querySelector('.evento-dia').textContent);
-                    const mesTexto = evento.querySelector('.evento-mes').textContent;
+                filas.forEach(fila => {
+                    const fechaFin = fila.querySelector('td:nth-child(4)').textContent;
+                    const partes = fechaFin.split('/');
+                    const fechaFinObj = new Date(partes[2], partes[1] - 1, partes[0]);
+                    const diasRestantes = Math.ceil((fechaFinObj - hoy) / (1000 * 60 * 60 * 24));
                     
-                    // Simular cálculo de días restantes
-                    const diasRestantes = dia - hoy.getDate();
-                    if (diasRestantes > 0 && diasRestantes <= 7) {
-                        const metaElement = evento.querySelector('.evento-meta');
-                        if (metaElement && !metaElement.querySelector('.dias-restantes')) {
-                            const span = document.createElement('span');
-                            span.className = 'dias-restantes';
-                            span.innerHTML = `<i class="fas fa-hourglass-end"></i> ${diasRestantes} días`;
-                            metaElement.appendChild(span);
+                    const tiempoElement = fila.querySelector('.tiempo-restante');
+                    if (tiempoElement) {
+                        tiempoElement.innerHTML = `<i class="fas fa-hourglass-half"></i> ${diasRestantes} días`;
+                        
+                        if (diasRestantes <= 7) {
+                            tiempoElement.classList.add('critico');
+                            tiempoElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${diasRestantes} días`;
                         }
                     }
                 });
-            }
+            }*/
             
             actualizarTiemposRestantes();
+            
+            // Inicializar fecha actual en filtro
+            const hoy = new Date();
+            const hoyFormateado = hoy.toISOString().split('T')[0];
+            filtroFecha.value = hoyFormateado;
         });
     </script>
 </body>
