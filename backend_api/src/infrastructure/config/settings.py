@@ -9,9 +9,8 @@ class Settings(BaseSettings):
     DB_PORT: str = os.getenv("POSTGRES_PORT", "5432")
     DB_NAME: str = os.getenv("POSTGRES_DB", "Escalafon_db")
 
-    # IA (Ollama)
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://motor_ollama:11434")
-    LLM_MODEL: str = "llama3.2"
+    LLM_MODEL: str = "llama3:8b"
     EMBEDDING_MODEL: str = "nomic-embed-text"
 
     @property

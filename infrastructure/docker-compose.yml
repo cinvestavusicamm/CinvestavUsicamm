@@ -5,7 +5,7 @@ services:
   # 1. BASE DE DATOS (PostgreSQL + pgvector)
   # -------------------------------------------------------------------------
   db:
-    image: pgvector/pgvector:pg16  # Imagen oficial con soporte vectorial
+    image: pgvector/pgvector:pg16
     container_name: escalafon_db
     restart: always
     environment:
@@ -15,9 +15,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      # Persistencia de datos (para no perderlos al reiniciar)
       - postgres_data:/var/lib/postgresql/data
-      # Scripts de inicio (creación de tablas y extensión vector)
       - ./database/init_scripts:/docker-entrypoint-initdb.d
     networks:
       - escalafon_net
@@ -27,96 +25,83 @@ services:
       timeout: 5s
       retries: 5
 
-  # -------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
   # 2. MOTOR DE INTELIGENCIA ARTIFICIAL (Ollama)
   # -------------------------------------------------------------------------
   ollama:
     image: ollama/ollama:latest
     container_name: motor_ollama
     volumes:
-      - ollama_models:/root/.ollama  # Guardar los modelos descargados (Llama 3)
+      - ollama_models:/root/.ollama
+      - ./init_ollama.sh:/init_ollama.sh  # opcional
     ports:
       - "11434:11434"
     networks:
       - escalafon_net
     environment:
       - OLLAMA_KEEP_ALIVE=24h
-    # Si tienes GPU NVIDIA, descomenta esto:
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
+      - OLLAMA_GPU_OVERHEAD=0       # fuerza CPU-only
+      - OLLAMA_VULKAN=false
+    
+
 
   # -------------------------------------------------------------------------
-  # 3. BACKEND API (Hexagonal - FastAPI)
+  # 3. BACKEND API (FastAPI)
   # -------------------------------------------------------------------------
   backend:
     container_name: ia_service_core
     build:
-      context: ../backend_api  # Sube un nivel para encontrar el código
+      context: ../backend_api
       dockerfile: Dockerfile
-    command: uvicorn infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload
+    command: uvicorn infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload --app-dir /app/src
     volumes:
-      - ../backend_api:/app  # "Hot reload": cambios en código se reflejan al instante
+      - ../backend_api:/app
     ports:
       - "8003:8003"
     environment:
-      # Conexión a la BD (nombre del servicio 'db')
       POSTGRES_HOST: db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres 
-      POSTGRES_DB: Escalafon_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: escalafon_db
       POSTGRES_PORT: 5432
-      # Conexión a Ollama (nombre del servicio 'ollama')
-      OLLAMA_BASE_URL: http://ollama:11434
-      PÝTHONPATH: /app
+      OLLAMA_BASE_URL: http://motor_ollama:11434
+      PYTHONPATH: /app
     depends_on:
       db:
         condition: service_healthy
-      ollama:
-        condition: service_started
+      
+    networks:
+      - escalafon_net
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c 'import requests; import sys; r=requests.get(\"http://127.0.0.1:8003/health\"); sys.exit(0 if r.status_code==200 else 1)'"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
+
+
+  # -------------------------------------------------------------------------
+  # 4. DJANGO
+  # -------------------------------------------------------------------------
+  django:
+    container_name: escalafon_django
+    build:
+      context: ..
+      dockerfile: apps/Dockerfile
+    volumes:
+      - ../:/app
+    env_file:
+      - ../.env
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8001:8000"
+    depends_on:
+      backend:
+        condition: service_healthy
+      db:
+        condition: service_healthy
     networks:
       - escalafon_net
 
-  django:
-      container_name: escalafon_django
-      build:
-        context: ..                  # apunta a la raíz, donde está manage.py
-        dockerfile: apps/Dockerfile  # tu Dockerfile de Django
-      volumes:
-        - ../:/app                    # para hot reload
-      ports:
-        - "8000:8000"
-      depends_on:
-        - backend
-        - db
-      networks:
-        - escalafon_net
-
-
-  # -------------------------------------------------------------------------
-  # 4. FRONTEND WEB
-  # -------------------------------------------------------------------------
-  #frontend:
-   # container_name: escalafonia_ui
-    #build:
-     # context: ../frontend_web
-      #dockerfile: Dockerfile
-    #volumes:
-     # - ../frontend_web/src:/app/src  # Hot reload para desarrollo frontend
-    #ports:
-     # - "3000:80"  # Exponemos el puerto 80 del contenedor al 3000 de tu PC
-    #depends_on:
-     # - backend
-    #networks:
-     # - escalafon_net
-
-# ---------------------------------------------------------------------------
-# VOLUMENES Y REDES
-# ---------------------------------------------------------------------------
 networks:
   escalafon_net:
     driver: bridge
