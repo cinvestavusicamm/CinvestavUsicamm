@@ -1,229 +1,269 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso al Sistema - SIU</title>
+    <title>Iniciar Sesión | EscalafonIA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     
     <style>
-    
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
+        :root {
+            --guinda: #691C32;
+            --guinda-hover: #521627;
+            --teal: #007A7C;
+            --dorado: #BC955C;
+            --borde: #E5E7EB;
+            --texto-puro: #1E293B;
+            --bg-canvas: #FFFFFF;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .background-carousel {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            background-image: radial-gradient(var(--borde) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--texto-puro);
         }
 
-        .slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
-
-        .slide.active { opacity: 1; }
-
-        
-#slide-1 { background-image: url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80');}
-#slide-2 { background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80'); }
-#slide-3 { background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80'); }
-  
+        /* --- HEADER --- */
         header {
-            background-color: #702032; 
-            color: white;
-            padding: 10px 20px;
+            background-color: var(--guinda);
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--dorado);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 100;
         }
 
         .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
-        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; }
-        .logo img { height: 40px; border-radius: 50%; }
+        .brand-box { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-box img { width: 45px; border-radius: 50%; border: 2px solid white; background: white; }
+        .brand-box h1 { font-family: 'Montserrat'; color: white; font-size: 1.2rem; font-weight: 900; letter-spacing: 0.5px; }
 
-        nav ul { list-style: none; display: flex; gap: 20px; margin: 0; }
-        nav a { color: white; text-decoration: none; font-size: 14px; }
+        nav a { color: white; text-decoration: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-left: 20px; transition: 0.3s; }
+        nav a:hover { color: var(--dorado); }
 
-        /* Contenedor de Login */
+        /* --- LOGIN CARD CON BORDE ANIMADO --- */
         main {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: calc(100vh - 100px);
+            padding: 40px 20px;
         }
 
-        .auth-container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        /* Contenedor del borde animado */
+        .animated-border-box {
+            position: relative;
             width: 100%;
             max-width: 400px;
+            padding: 3px; /* Grosor del borde */
+            background: linear-gradient(90deg, var(--guinda), var(--dorado), var(--teal), var(--guinda));
+            background-size: 300% 300%;
+            border-radius: 28px;
+            animation: border-animation 6s linear infinite;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        @keyframes border-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .auth-card {
+            background: white;
+            width: 100%;
+            padding: 45px 35px;
+            border-radius: 25px;
             text-align: center;
         }
 
-        .logo_jajuar {
+        .avatar-circle {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
+            border: 3px solid var(--guinda);
+            margin: 0 auto 20px;
+            padding: 5px;
+            background: #fff;
         }
 
-        h1 { color: #4a141d; font-size: 24px; margin-bottom: 20px; }
+        h2 { font-family: 'Montserrat'; color: var(--guinda); font-weight: 900; font-size: 1.4rem; margin-bottom: 30px; text-transform: uppercase; }
 
-        .form-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; font-size: 14px; color: #702032; margin-bottom: 5px; }
-        
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--guinda); margin-bottom: 8px; text-transform: uppercase; }
+
+        .input-icon-box { position: relative; }
+        .input-icon-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--dorado); font-size: 1rem; }
+
         input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f5f5f5;
-            box-sizing: border-box;
+            padding: 14px 15px 14px 45px;
+            border: 1.5px solid var(--borde);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: #fdfdfd;
+            transition: 0.3s;
         }
 
-        .btn {
+        input:focus { border-color: var(--teal); outline: none; background: white; box-shadow: 0 0 0 4px rgba(0, 122, 124, 0.1); }
+
+        .btn-access {
             width: 100%;
-            padding: 12px;
-            background-color: #008080; /* Teal como en tu captura */
+            padding: 15px;
+            background: var(--teal);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
             cursor: pointer;
-            font-size: 16px;
+            transition: 0.3s;
             margin-top: 10px;
-        }
-
-        .auth-links { margin-top: 10px; font-size: 14px; }
-        .auth-links a { color: #008080; text-decoration: none; font-weight: bold; }
-
-        /* --- SECCIÓN DE LOGOS INFERIORES --- */
-        .logos-footer-container {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
             display: flex;
-            justify-content: space-around;
             align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .logo-footer-item img {
-            max-height: 40px;
-            width: auto;
-        }
+        .btn-access:disabled { background: #d1d5db; cursor: not-allowed; }
+        .btn-access:not(:disabled):hover { background: #005f61; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0, 122, 124, 0.2); }
 
-        .logo-footer-item span {
-            display: block;
-            font-size: 10px;
-            color: #666;
-            margin-top: 5px;
-        }
+        .links-area { margin-top: 25px; font-size: 0.8rem; border-top: 1px solid #f1f5f9; padding-top: 20px; }
+        .links-area a { color: var(--teal); text-decoration: none; font-weight: 700; margin: 0 5px; }
 
+        .curp-link { font-size: 0.7rem; color: var(--dorado); text-decoration: none; font-weight: 700; display: block; margin-top: 5px; }
+
+        /* --- FOOTER --- */
         footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            background-color: var(--guinda);
+            padding: 2rem 0;
+            border-top: 3px solid var(--dorado);
             text-align: center;
-            padding: 10px;
-            background: rgba(0,0,0,0.5);
             color: white;
-            font-size: 12px;
         }
+
+        .footer-logos-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 15px;
+        }
+
+        .logo-wrap {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo-wrap img { height: 35px; width: auto; object-fit: contain; }
+
+        .footer-text { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+
+        .csrf-hidden { display: none; }
     </style>
 </head>
-
 <body>
-
-    <div class="background-carousel">
-        <div class="slide active" id="slide-1"></div>
-        <div class="slide" id="slide-2"></div>
-        <div class="slide" id="slide-3"></div>
-    </div>
 
     <header>
         <div class="header-container">
-            <div class="logo">
+            <a href="/" class="brand-box">
                 <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
-                EscalafonIA
-            </div>
+                <h1>ESCALAFONIA</h1>
+            </a>
             <nav>
-                <ul>
-                    <li><a href="{% url 'sesion' %}">Iniciar Sesión</a></li>
-                    <li><a href="{% url 'registro' %}">Registrarse</a></li>
-                </ul>
+                <a href="{% url 'registro' %}">Registro</a>
+                <a href="{% url 'sesion' %}" style="color: var(--dorado);">Iniciar Sesión</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <div class="auth-container">
-            <div class="logoI">
-                <img class="logo_jajuar" src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
-            </div>
-            <h1>Iniciar Sesión</h1>
+        <div class="animated-border-box">
+            <div class="auth-card">
+                <img class="avatar-circle" src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="User">
+                <h2>Inicio de sesion</h2>
 
-            <form method="POST" action="{% url 'sesion' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label>Correo institucional</label>
-                    <input type="email" name="correo" placeholder="Correo institucional" required>
-                </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" name="password" placeholder="Contraseña" required>
-                </div>
-                <button class="btn"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
-            </form>
+                <form id="loginForm" method="POST" action="{% url 'sesion' %}">
+                    <div class="csrf-hidden">{% csrf_token %}</div>
+                    
+                    <div class="form-group">
+                        <label for="curp">CURP (18 CARACTERES)</label>
+                        <div class="input-icon-box">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="curp" name="curp" placeholder="Ingresa tu CURP oficial" maxlength="18" required autocomplete="off">
+                        </div>
+                        <a href="https://www.gob.mx/curp/" target="_blank" class="curp-link">
+                            <i class="fas fa-search"></i> ¿No conoces tu CURP? Búscalo aquí
+                        </a>
+                    </div>
 
-            <div class="auth-links">
-                <p><a href="#">¿Olvidaste tu contraseña?</a></p>
-                <p>¿No tienes cuenta? <a href="/registro">Regístrate</a></p>
-            </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <div class="input-icon-box">
+                            <i class="fas fa-key"></i>
+                            <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+                        </div>
+                    </div>
 
-            <div class="logos-footer-container">
-                <div class="logo-footer-item">
-                    <img src="{% static 'imagenes/logosimbolo.png' %}" alt="Cinvestav">
-                    <span>Cinvestav</span>
-                </div>
-                <div class="logo-footer-item">
-                    <img src="{% static 'imagenes/USICAMM.jpg' %}" alt="USICAMM">
+                    <button type="submit" id="submitBtn" class="btn-access" disabled>
+                        <i class="fas fa-sign-in-alt"></i> Entrar al Sistema
+                    </button>
+                </form>
+
+                <div class="links-area">
+                    <p><a href="#">¿Olvidaste tu contraseña?</a></p>
+                    <p>¿Nuevo aquí? <a href="{% url 'registro' %}">Crea tu cuenta</a></p>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer>© 2025 EscalafonIA</footer>
+    <footer>
+        <p class="footer-text">© 2026 ESCALAFONIA </p>
+    </footer>
 
     <script>
-        let bgIndex = 0;
-        const slides = document.querySelectorAll(".slide");
-        setInterval(() => {
-            slides[bgIndex].classList.remove("active");
-            bgIndex = (bgIndex + 1) % slides.length;
-            slides[bgIndex].classList.add("active");
-        }, 8000);
+        const curpInput = document.getElementById('curp');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Validación estructural CURP
+        const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]\d$/;
+
+        curpInput.addEventListener('input', function(e) {
+            let val = e.target.value.toUpperCase().replace(/\s/g, '');
+            e.target.value = val;
+
+            if (val.length === 18 && curpRegex.test(val)) {
+                curpInput.style.borderColor = 'var(--teal)';
+                submitBtn.disabled = false;
+            } else {
+                curpInput.style.borderColor = 'var(--borde)';
+                submitBtn.disabled = true;
+            }
+        });
     </script>
 </body>
 </html>
