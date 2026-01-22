@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Investigador SEP | EscalafonIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --guinda: #691C32; 
+            --guinda-glass: rgba(105, 28, 50, 0.95); 
+            --dorado: #BC955C;
+            --verde-sep: #138871;
+            --bg-body: #F4F7F9; 
+            --blanco: #FFFFFF; 
+            --borde: #E2E8F0;
+            --texto-puro: #1E293B;
+            --texto-gris: #64748B;
+            --negro: #1A1A1A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 270px; background: var(--blanco); border-right: 2px solid var(--guinda); display: flex; flex-direction: column; padding: 1.5rem; z-index: 1000; }
+        .sidebar .brand { text-align: center; margin-bottom: 2rem; }
+        .sidebar .brand img { width: 65px; border-radius: 50%; border: 2px solid var(--guinda); padding: 3px; }
+        .nav-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: var(--texto-gris); text-decoration: none; border-radius: 12px; transition: 0.3s; font-size: 0.9rem; font-weight: 500; }
+        .nav-item:hover { background: #fdf2f4; color: var(--guinda); }
+        .nav-item.active { background: var(--guinda); color: white; font-weight: 600; }
+        .nav-item.back { background: transparent; color: var(--texto-gris); margin-bottom: 1.5rem; font-weight: 700; cursor: pointer; text-decoration: none; padding-left: 5px; }
+        .nav-item.back:hover { color: var(--guinda); transform: translateX(-3px); }
+
+        /* --- WORKSPACE --- */
+        .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Header estandarizado */
+        header { 
+            height: 65px; background: var(--guinda-glass); backdrop-filter: blur(15px); 
+            padding: 0 3rem; display: flex; justify-content: space-between; 
+            align-items: center; border-bottom: 2px solid var(--dorado); color: white; z-index: 999;
+        }
+        header h2 { font-family: 'Montserrat'; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* PERFIL DROPDOWN */
+        .user-profile { position: relative; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .avatar-small { width: 38px; height: 38px; border-radius: 8px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: 700; border: 1px solid var(--dorado); }
+        
+        .dropdown {
+            position: absolute; top: 50px; right: 0; width: 200px; background: white;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none; flex-direction: column; border: 1px solid var(--borde); overflow: hidden;
+        }
+        .dropdown.active { display: flex; }
+        .dropdown-link { padding: 12px 15px; color: var(--texto-puro); text-decoration: none; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .dropdown-link:hover { background: #f8fafc; color: var(--guinda); }
+
+        /* CANVAS */
+        .canvas { flex: 1; overflow-y: auto; padding: 2.5rem 4rem; background: var(--blanco); }
+
+        /* --- CABECERA PERFIL --- */
+        .profile-hero { display: flex; align-items: center; gap: 35px; margin-bottom: 3rem; padding: 2rem; background: #f8fafc; border-radius: 25px; border: 1px solid var(--borde); position: relative; }
+        .photo-uploader { position: relative; width: 140px; height: 140px; }
+        .profile-img { width: 100%; height: 100%; border-radius: 25px; object-fit: cover; border: 4px solid var(--guinda); background: #eee; }
+        .edit-photo-btn { position: absolute; bottom: -10px; right: -10px; background: var(--negro); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; border: 2px solid white; transition: 0.3s; }
+        
+        .hero-text h1 { font-family: 'Montserrat'; font-size: 1.8rem; color: var(--texto-puro); font-weight: 900; }
+        .hero-text p { color: var(--guinda); font-weight: 700; font-size: 1rem; text-transform: uppercase; }
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--verde-sep); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.65rem; font-weight: 800; margin-top: 10px; }
+
+        /* --- INFO GRID --- */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 3rem; }
+        .field { display: flex; flex-direction: column; gap: 8px; }
+        .field label { font-size: 0.7rem; font-weight: 800; color: var(--texto-gris); text-transform: uppercase; letter-spacing: 1px; }
+        .field input { padding: 12px 15px; border-radius: 12px; border: 1.5px solid var(--borde); font-size: 0.9rem; font-weight: 600; color: var(--texto-puro); background: #fcfcfc; transition: 0.3s; }
+        .field input:focus { border-color: var(--guinda); outline: none; }
+        .field input[readonly] { background: #f1f5f9; color: #64748b; cursor: not-allowed; border-style: solid; }
+
+        /* --- SECCIONES BLINDADAS --- */
+        .secure-section { margin-bottom: 3rem; }
+        .section-header { margin-bottom: 20px; border-left: 5px solid var(--guinda); padding-left: 15px; }
+        .section-header h3 { font-family: 'Montserrat'; font-size: 1rem; font-weight: 900; color: var(--texto-puro); }
+        
+        .doc-card { background: #fff; border: 1px solid var(--borde); border-radius: 15px; padding: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 20px; }
+        .doc-icon { width: 50px; height: 50px; background: #fdf2f4; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--guinda); font-size: 1.2rem; }
+        .doc-info { flex: 1; }
+        .doc-info h4 { font-size: 0.85rem; font-weight: 800; color: var(--texto-puro); }
+        .verified-tag { color: var(--verde-sep); font-size: 0.65rem; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 4px; }
+
+        /* --- MÉTRICAS --- */
+        .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 3rem; }
+        .impact-card { background: var(--guinda); color: white; padding: 25px; border-radius: 20px; text-align: center; }
+        .impact-card h5 { font-size: 0.7rem; opacity: 0.8; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; }
+        .impact-card p { font-size: 2rem; font-family: 'Montserrat'; font-weight: 900; color: var(--dorado); }
+
+        .btn-save-profile { background: var(--guinda); color: white; border: none; padding: 16px 45px; border-radius: 12px; font-weight: 900; font-size: 0.85rem; cursor: pointer; float: right; transition: 0.3s; }
+        .btn-save-profile:hover { background: #000; transform: translateY(-2px); }
+
+        /* Footer estandarizado */
+        footer { 
+            height: 45px; background: var(--guinda-glass); backdrop-filter: blur(15px); 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 0.65rem; font-weight: 800; color: white; border-top: 2px solid var(--dorado); 
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <a href="dashboard.html" class="nav-item back"><i class="fas fa-chevron-left"></i> REGRESAR</a>
+        <div class="brand">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+            <h2 style="font-family:'Montserrat'; font-size:0.9rem; color:var(--guinda); margin-top:10px;">ESCALAFONIA</h2>
+        </div>
+        <nav class="nav-group">
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="generar.html" class="nav-item"><i class="fas fa-magic"></i> Generar Cursos</a>
+            <a href="estadisticas.html" class="nav-item"><i class="fas fa-chart-line"></i> Estadísticas</a>
+            <a href="#" class="nav-item active"><i class="fas fa-user-shield"></i> Mi Expediente</a>
+        </nav>
+    </aside>
+
+    <main class="workspace">
+        <header>
+            <h2>Expediente Académico SEP • <span>2026</span></h2>
+            
+            <div class="user-profile" id="profileTrigger">
+                <p style="font-size:0.8rem; font-weight:600;">Dr. Ricardo Mendieta</p>
+                <div class="avatar-small">RM</div>
+                
+                <div class="dropdown" id="userDropdown">
+                    <a href="#" class="dropdown-link"><i class="fas fa-cog"></i> Configuración</a>
+                    <a href="#" class="dropdown-link"><i class="fas fa-question-circle"></i> Ayuda</a>
+                    <a href="login.html" class="dropdown-link" style="color:#E74C3C; border-top:1px solid #eee;"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="canvas">
+            
+            <div class="profile-hero">
+                <div class="photo-uploader">
+                    <img id="avatar-img" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2.5&w=300&h=300&q=80" class="profile-img">
+                    <label for="photo-input" class="edit-photo-btn"><i class="fas fa-camera"></i></label>
+                    <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="previewImage(event)">
+                </div>
+                <div class="hero-text">
+                    <h1>Dr. Ricardo Mendieta R.</h1>
+                    <p>Investigador de Carrera • SEP Federal</p>
+                    <span class="status-badge"><i class="fas fa-check-circle"></i> PERFIL VERIFICADO</span>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="field">
+                    <label>Nombre Completo (Protegido)</label>
+                    <input type="text" value="Ricardo Mendieta Rodriguez" readonly>
+                </div>
+                <div class="field">
+                    <label>CURP (Protegido)</label>
+                    <input type="text" value="MERR850111HDFRRN01" readonly>
+                </div>
+                <div class="field">
+                    <label>Correo de Contacto (Editable)</label>
+                    <input type="email" value="r.mendieta@sep.gob.mx">
+                </div>
+                <div class="field">
+                    <label>Teléfono (Editable)</label>
+                    <input type="tel" value="+52 55 1234 5678">
+                </div>
+            </div>
+
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <h5>Cursos Publicados</h5>
+                    <p>12</p>
+                </div>
+                <div class="impact-card">
+                    <h5>Diplomados Creados</h5>
+                    <p>04</p>
+                </div>
+                <div class="impact-card">
+                    <h5>Impacto Docente</h5>
+                    <p>8.4K</p>
+                </div>
+            </div>
+
+            <div class="secure-section">
+                <div class="section-header"><h3>Cédulas y Títulos Verificados</h3></div>
+                <div class="doc-card">
+                    <div class="doc-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="doc-info">
+                        <h4>Cédula Profesional Federal</h4>
+                        <p>Doctorado en Pedagogía • Registro: 8492033</p>
+                    </div>
+                    <div class="verified-tag"><i class="fas fa-shield-check"></i> SEP Validado</div>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-icon"><i class="fas fa-award"></i></div>
+                    <div class="doc-info">
+                        <h4>Certificación USICAMM 2025</h4>
+                        <p>Evaluador de Carrera Docente • Folio: 992-IA</p>
+                    </div>
+                    <div class="verified-tag"><i class="fas fa-shield-check"></i> SEP Validado</div>
+                </div>
+            </div>
+
+            <button class="btn-save-profile" onclick="alert('Datos de contacto actualizados.')">GUARDAR CAMBIOS</button>
+
+        </div>
+
+        <footer>© 2026 ESCALAFONIA • SISTEMA DE CARRERA PARA MAESTRAS Y MAESTROS</footer>
+    </main>
+
+    <script>
+        // Lógica del Dropdown
+        const trigger = document.getElementById('profileTrigger');
+        const dropdown = document.getElementById('userDropdown');
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('active');
+        });
+        window.addEventListener('click', () => dropdown.classList.remove('active'));
+
+        // Previsualizar foto
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                document.getElementById('avatar-img').src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icono" type="image/x-icono"
+        href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
+    <link rel="stylesheet" href="../../static/css/evaluador.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <header class="barra-superior">
+        <div class="boton">
+            <button id="btn-menu" class="btn-menu" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+        </div>
+        <div class="marca">
+            <h1>EscalafonIA</h1>
+        </div>
+
+        <div class="user-profile">
+            <button id="userButton">
+                <i class="fa-solid fa-user"></i>
+                <span>Zaid Rebollo</span>
+            </button>
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="#"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="#"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <a href="#"><i class="fa fa-sign-out"></i> Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="contenedor-principal">
+
+        <nav class="barra-lateral">
+            <div class="jaguar-brand">
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                    alt="Logo USICAMM">
+            </div>
+            <ul class="menu-principal">
+                <li>
+                    <a class="barra-lateral-link" href="dashboard.html">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="chat_ia.html">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>Chat IA</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="banco_preguntas.html">
+                        <i class="fa-solid fa-clipboard-question"></i>
+                        <span>Banco de preguntas</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="evaluaciones.html">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Evaluaciones</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="validaciones.html">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Validaciones</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="calendario.html">
+                        <i class="fa-solid fa-calendar-alt"></i>
+                        <span>Calendario</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="reportes.html">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="contenido-principal">
+            <div class="contenido">
+                <h1 class="titulo">Dashboard</h1>
+
+
+                <section class="seccion-dashboard">
+                     <!-- Tarjetas de Resumen -->
+                    <h2 class="seccion-titulo"><i class="fas fa-chart-pie"></i> Estadísticas</h2>
+                    <div class="contenedor-tarjetas">
+
+                        <div class="tarjeta">
+                            <div class="tarjeta-icono tarjeta-evaluaciones">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="tarjeta-contenido">
+                                <h3 class="tarjeta-numero">3</h3>
+                                <p class="tarjeta-texto">Evaluaciones pendientes </p>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="tarjeta">
+                            <div class="tarjeta-icono tarjeta-validadas">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="tarjeta-contenido">
+                                <h3 class="tarjeta-numero">1,247</h3>
+                                <p class="tarjeta-texto">Preguntas Aprobadas</p>
+                            </div>
+                        </div>
+                        -->
+                        <div class="tarjeta">
+                            <div class="tarjeta-icono tarjeta-pendientes">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="tarjeta-contenido">
+                                <h3 class="tarjeta-numero">48</h3>
+                                <p class="tarjeta-texto">Preguntas pendientes de validar</p>
+                            </div>
+                        </div>
+
+                        <div class="tarjeta">
+                            <div class="tarjeta-icono tarjeta-fechas">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="tarjeta-contenido">
+                                <h3 class="tarjeta-numero">15</h3>
+                                <p class="tarjeta-texto">Evaluaciones programadas</p>
+                            </div>
+                        </div>
+
+                        <div class="tarjeta">
+                            <div class="tarjeta-icono tarjeta-banco">
+                                <i class="fas fa-box-archive"></i>
+                            </div>
+                            <div class="tarjeta-contenido">
+                                <h3 class="tarjeta-numero">12</h3>
+                                <p class="tarjeta-texto">Preguntas en banco</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                
+
+                <!-- Acciones Rápidas -->
+                <section class="seccion-dashboard">
+                    <h2 class="seccion-titulo">
+                        <i class="fas fa-bolt"></i> Acciones Rápidas
+                    </h2>
+                    <div class="contenedor-acciones">
+                        <a href="generador_ia.html" class="accion-rapida">
+                            <i class="fas fa-robot"></i>
+                            <span>Generar con IA</span>
+                            <small>Crear preguntas automáticamente</small>
+                        </a>
+                        <a href="banco_preguntas.html?nueva=true" class="accion-rapida">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Ver Reportes</span>
+                            <small></small>
+                        </a>
+                        <a href="evaluaciones.html?nueva=true" class="accion-rapida">
+                            <i class="fas fa-file-medical"></i>
+                            <span>Nueva Evaluación</span>
+                            <small>Crear evaluación completa</small>
+                        </a>
+                        <a href="validaciones.html" class="accion-rapida">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span>Revisar Pendientes</span>
+                            <small>48 preguntas pendientes</small>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Actividad Reciente -->
+                <section class="seccion-dashboard">
+                    <div class="encabezado-seccion">
+                        <h2 class="seccion-titulo">
+                            <i class="fas fa-history"></i> Actividad reciente
+                        </h2>
+                        <!--<a href="#" class="ver-todo">Ver todo</a>-->
+                    </div>
+                    <div class="lista-actividad">
+                        <div class="actividad-item">
+                            <div class="actividad-icono actividad-ia">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="actividad-contenido">
+                                <p><strong>Evaluación Matemáticas</strong></p>
+                                <span class="actividad-fecha">Hace 2 horas</span>
+                            </div>
+                        </div>
+                        <div class="actividad-item">
+                            <div class="actividad-icono actividad-validacion">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="actividad-contenido">
+                                <p><strong>Evaluación Ciencias Naturales</strong></p>
+                                <span class="actividad-fecha">Hace 1 día</span>
+                            </div>
+                        </div>
+                        <div class="actividad-item">
+                            <div class="actividad-icono actividad-evaluacion">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="actividad-contenido">
+                                <p><strong>Evaluación TIC y Pedagogía Digital</strong></p>
+                                <span class="actividad-fecha">Hace 3 días</span>
+                            </div>
+                        </div>
+                        <div class="actividad-item">
+                            <div class="actividad-icono actividad-revision">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="actividad-contenido">
+                                <p><strong>Evaluación Gestión Escolar</strong></p>
+                                <span class="actividad-fecha">Hace 1 semana</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="fondo"></div>
+
+    <!-- Scripts -->
+
+    <script src="../../static/js/barra-lateral.js"></script>
+    <script src="../../static/js/menu-usuario.js"></script>
+
+</body>
+
+</html>
