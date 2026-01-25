@@ -22,43 +22,29 @@ def agente_ajax(request):
 
     try:
         payload = {
-            "model": "llama3:8b",
-            "prompt": pregunta,
-            "options": {
-                "temperature": 0.7,
-                "num_predict": 256,   
-                "num_ctx": 2048     
-            }
+            "prompt": pregunta
         }
 
 
-        r = requests.post(FASTAPI_URL, json=payload, timeout=90)
+        r = requests.post(
+            FASTAPI_URL,
+            json=payload,
+            timeout=60
+        )
         r.raise_for_status()
         data = r.json()
 
-        respuesta = None
-
-        if 'response' in data:
-            respuesta = data['response']
-
-        elif 'results' in data and len(data['results']) > 0:
-            respuesta = data['results'][0].get('completion', '')
-
-        elif 'choices' in data and len(data['choices']) > 0:
-            respuesta = data['choices'][0].get('text', '')
+        respuesta = data.get("response")
 
         if not respuesta:
-            respuesta = "El agente no devolvió ninguna respuesta"
+            respuesta = "No se pudo generar una respuesta"
 
-        return JsonResponse({'answer': respuesta})
 
-    except requests.exceptions.Timeout:
-        return JsonResponse({'answer': 'El agente tardó demasiado en responder'}, status=504)
-    except requests.exceptions.ConnectionError:
-        return JsonResponse({'answer': 'No se pudo conectar con el agente'}, status=503)
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Error al llamar a FastAPI: {e}")
-        return JsonResponse({'answer': 'Error en la comunicación con el agente'}, status=500)
+        if not respuesta:
+            respuesta = "No se pudo generar una respuesta"
+
+        return JsonResponse({"answer": respuesta})
+
     except Exception as e:
         logger.exception(f"Error inesperado en agente_ajax: {e}")
         return JsonResponse({'answer': 'Ocurrió un error inesperado'})

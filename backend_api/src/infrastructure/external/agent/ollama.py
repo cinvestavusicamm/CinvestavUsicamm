@@ -11,7 +11,7 @@ class OllamaAdapter(LLMService):
 
     def __init__(self):
         self.base_url = settings.OLLAMA_BASE_URL  
-        self.model = settings.LLM_MODEL or "llama3:8b"
+        self.model = settings.LLM_MODEL or "phi3:mini"
         self.embed_model = settings.EMBEDDING_MODEL or "nomic-embed-text"
         self.client = httpx.AsyncClient(timeout=60.0)
 
