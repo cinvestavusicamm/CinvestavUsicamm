@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views.auth_views import sesion, registro, cerrar_sesion
 from .views.dashboard_views import dashboard
 from .views.admin_views import panel_admin
@@ -23,4 +23,7 @@ urlpatterns = [
 
     path('chat/', chat, name='chat'),
     path('agente-ajax/', agente_ajax, name='agente_ajax'),
+
+    path('evaluador/', include('apps.users.role_urls.evaluador_urls')),
+
 ]

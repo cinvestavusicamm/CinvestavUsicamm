@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     DB_NAME: str = os.getenv("POSTGRES_DB", "Escalafon_db")
 
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://motor_ollama:11434")
-    LLM_MODEL: str = "llama3:8b"
+    LLM_MODEL: str = "phi3:mini"
     EMBEDDING_MODEL: str = "nomic-embed-text"
 
     @property

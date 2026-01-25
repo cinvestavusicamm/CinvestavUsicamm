@@ -40,6 +40,8 @@ def sesion(request):
 
             elif usuario.rol.nombre_rol == 'Usuario':
                 return redirect('dashboard')
+            elif usuario.rol.nombre_rol == 'Evaluador':
+                return redirect('evaluador:dashboard')
 
             else:
                 messages.error(request, 'Rol no reconocido')

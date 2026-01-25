@@ -14,45 +14,52 @@ OLLAMA_BASE_URL = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}"
 class OllamaAdapter:
     """Adaptador para interactuar con Ollama LLM y embeddings."""
 
-    def __init__(self, model: str = "llama3:8b", embed_model: str = "nomic-embed-text"):
+    def __init__(self, model: str = "phi3:mini", embed_model: str = "nomic-embed-text"):
         self.base_url = OLLAMA_BASE_URL
         self.model = model
         self.embed_model = embed_model
         self.client = httpx.AsyncClient(timeout=120.0)
 
     async def generate_response(self, prompt: str) -> str:
-        """Genera respuesta de texto usando Ollama LLM (/v1/completions)."""
+        """Genera respuesta usando Ollama Chat API (/v1/chat/completions)."""
         try:
             logger.info(f"Generando respuesta con modelo: {self.model}")
-            logger.info(f"Prompt: {prompt[:100]}...")
 
             response = await self.client.post(
-                f"{self.base_url}/v1/completions",
+                f"{self.base_url}/v1/chat/completions",
                 json={
                     "model": self.model,
-                    "prompt": prompt,
-                    "max_tokens": 512,
-                    "temperature": 0.7
+                    "messages": [
+                        {"role": "system", "content": "Responde de forma clara y concisa."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "options": {
+                        "temperature": 0.2,
+                        "num_predict": 120,
+                        "num_ctx": 1024
+                    }
                 },
-                timeout=120.0
+                timeout=30.0
             )
 
             if response.status_code == 200:
                 data = response.json()
-                # Ollama devuelve la respuesta en "completion" dentro de results
-                if "results" in data and len(data["results"]) > 0:
-                    return data["results"][0].get("completion", "")
-                return ""
-            else:
-                logger.error(f"Error de Ollama (completions): {response.status_code} - {response.text}")
-                return f"Error: Ollama respondió con código {response.status_code}"
+                return (
+                    data.get("choices", [{}])[0]
+                    .get("message", {})
+                    .get("content", "")
+                )
 
-        except httpx.ConnectError as e:
-            logger.error(f"No se pudo conectar a Ollama en {self.base_url}: {e}")
-            return "Error: No se pudo conectar al servicio de IA"
+            logger.error(f"Ollama error: {response.status_code} - {response.text}")
+            return "Error: el modelo no pudo generar respuesta."
+
+        except httpx.TimeoutException:
+            logger.error("Timeout con Ollama")
+            return "El agente tardó demasiado en responder."
         except Exception as e:
             logger.error(f"Error generando respuesta: {e}")
-            return f"Error generando respuesta: {str(e)}"
+            return "Error interno del agente."
+
 
     async def get_embedding(self, text: str) -> Optional[List[float]]:
         """Obtiene embedding de Ollama."""
