@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     # IA (Ollama)
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://motor_ollama:11434")
-    LLM_MODEL: str = "llama3.2"
+    LLM_MODEL: str = "llama3.2:3b"
     EMBEDDING_MODEL: str = "nomic-embed-text"
 
     @property
