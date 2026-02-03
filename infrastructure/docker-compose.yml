@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # -------------------------------------------------------------------------
   # 1. BASE DE DATOS (PostgreSQL + pgvector)
@@ -107,3 +105,6 @@ networks:
 volumes:
   postgres_data:
   ollama_models:
+
+
+  

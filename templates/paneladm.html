@@ -1,11 +1,13 @@
+{% load static%}
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PANEL ADMIN| EscalafonIA Jaguar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -24,11 +26,22 @@
         }
 
         @keyframes jaguarFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: var(--font-main);
@@ -57,7 +70,8 @@
         }
 
         .jaguar-logo {
-            height: 95px; width: 95px;
+            height: 95px;
+            width: 95px;
             border-radius: 50%;
             border: 3px solid var(--dorado);
             background: white;
@@ -65,16 +79,24 @@
             object-fit: cover;
         }
 
-        .nav-menu { flex: 1; padding-top: 25px; }
+        .nav-menu {
+            flex: 1;
+            padding-top: 25px;
+        }
 
         .nav-link {
             padding: 15px 30px;
-            display: flex; align-items: center;
-            color: white; text-decoration: none;
-            transition: 0.3s; gap: 12px; font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            gap: 12px;
+            font-size: 1.1rem;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background: rgba(255, 255, 255, 0.1);
             border-left: 6px solid var(--dorado);
             color: var(--dorado);
@@ -82,7 +104,12 @@
         }
 
         /* --- MAIN CONTAINER --- */
-        .main-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         .top-bar {
             background: white;
@@ -94,12 +121,30 @@
             z-index: 100;
         }
 
-        .welcome-msg { font-family: var(--font-title); color: var(--guinda); font-weight: 700; font-size: 1.4rem; }
+        .welcome-msg {
+            font-family: var(--font-title);
+            color: var(--guinda);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
 
-        .admin-profile { cursor: pointer; padding: 8px 15px; border-radius: 10px; transition: 0.2s; }
-        .admin-profile:hover { background: #f8f8f8; }
+        .admin-profile {
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
 
-        .scrollable-content { flex: 1; overflow-y: auto; padding: 35px; padding-bottom: 120px; }
+        .admin-profile:hover {
+            background: #f8f8f8;
+        }
+
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 35px;
+            padding-bottom: 120px;
+        }
 
         /* --- ESTADÍSTICAS --- */
         .stats-row {
@@ -117,7 +162,11 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
         }
 
-        .stat-card h2 { color: var(--guinda); font-size: 2.3rem; margin-top: 5px; }
+        .stat-card h2 {
+            color: var(--guinda);
+            font-size: 2.3rem;
+            margin-top: 5px;
+        }
 
         /* --- CRUD CARD --- */
         .crud-card {
@@ -137,98 +186,251 @@
             margin-bottom: 20px;
         }
 
-        table { width: 100%; border-collapse: collapse; font-size: 1rem; }
-        th { text-align: left; padding: 15px; background: #fafafa; color: var(--guinda); font-weight: 700; }
-        td { padding: 15px; border-bottom: 1px solid #f2f2f2; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
 
-        .btn { border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.3s; }
-        .btn-add { background: var(--verde); color: white; }
-        .btn-action { background: none; font-size: 1.4rem; cursor: pointer; border: none; margin: 0 8px; }
+        th {
+            text-align: left;
+            padding: 15px;
+            background: #fafafa;
+            color: var(--guinda);
+            font-weight: 700;
+        }
 
-        .status-toggle { cursor: pointer; font-size: 2rem; color: var(--verde); }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f2f2f2;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-add {
+            background: var(--verde);
+            color: white;
+        }
+
+        .btn-action {
+            background: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            border: none;
+            margin: 0 8px;
+        }
+
+        .status-toggle {
+            cursor: pointer;
+            font-size: 2rem;
+            color: var(--verde);
+        }
 
         /* --- IA WIDGET --- */
         .ia-widget {
-            background: var(--blanco); border-radius: 22px; display: flex; flex-direction: column;
-            overflow: hidden; border: 2px solid var(--turquesa-claro); height: 580px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            background: var(--blanco);
+            border-radius: 22px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid var(--turquesa-claro);
+            height: 580px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         }
 
         .ia-header {
             background: linear-gradient(135deg, var(--turquesa), #005f61);
-            padding: 1.2rem; color: white; display: flex; align-items: center; gap: 12px;
+            padding: 1.2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .ia-header img { width: 45px; height: 45px; border-radius: 50%; background: white; border: 2px solid var(--dorado); }
+        .ia-header img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--dorado);
+        }
 
-        .chat-area { flex: 1; padding: 1.2rem; background: #F9FBFF; overflow-y: auto; font-size: 1rem; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 12px; max-width: 88%; line-height: 1.4; }
-        .msg-bot { background: white; border: 1px solid #eee; align-self: flex-start; }
-        .msg-user { background: var(--turquesa); color: white; align-self: flex-end; }
+        .chat-area {
+            flex: 1;
+            padding: 1.2rem;
+            background: #F9FBFF;
+            overflow-y: auto;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            padding: 10px 15px;
+            border-radius: 12px;
+            max-width: 88%;
+            line-height: 1.4;
+        }
+
+        .msg-bot {
+            background: white;
+            border: 1px solid #eee;
+            align-self: flex-start;
+        }
+
+        .msg-user {
+            background: var(--turquesa);
+            color: white;
+            align-self: flex-end;
+        }
 
         /* --- MODALES ESTILIZADOS (VISTA AGREGAR/EDITAR) --- */
         .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); display: none; justify-content: center;
-            align-items: center; z-index: 1000; backdrop-filter: blur(4px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
         }
 
         .modal-content {
-            background: white; width: 90%; max-width: 600px; padding: 35px;
-            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            max-height: 90vh; overflow-y: auto; border: 3px solid var(--guinda);
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid var(--guinda);
         }
 
         .modal-content h3 {
-            font-family: var(--font-title); color: var(--guinda);
-            font-weight: 800; text-transform: uppercase; margin-bottom: 25px;
-            border-bottom: 2px solid var(--dorado); padding-bottom: 10px;
+            font-family: var(--font-title);
+            color: var(--guinda);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--dorado);
+            padding-bottom: 10px;
         }
 
         /* Rejilla para los campos del formulario */
-        #formUsuario, #formEditarUsuario {
+        #formUsuario,
+        #formEditarUsuario {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             text-align: left;
         }
 
-        .form-full { grid-column: span 2; }
-
-        label {
-            display: block; font-size: 12px; color: var(--guinda);
-            font-weight: 700; text-transform: uppercase; margin-bottom: 5px;
+        .form-full {
+            grid-column: span 2;
         }
 
-        input, select {
-            width: 100%; padding: 12px; border: 2px solid var(--borde-input);
-            border-radius: 8px; background-color: #F9FAFB; font-size: 14px;
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--guinda);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--borde-input);
+            border-radius: 8px;
+            background-color: #F9FAFB;
+            font-size: 14px;
             transition: 0.3s;
         }
 
-        input:focus, select:focus {
-            border-color: var(--turquesa); outline: none; background-color: white;
+        input:focus,
+        select:focus {
+            border-color: var(--turquesa);
+            outline: none;
+            background-color: white;
             box-shadow: 0 0 0 3px rgba(0, 122, 124, 0.1);
         }
 
         .modal-actions {
-            grid-column: span 2; display: flex; justify-content: flex-end;
-            gap: 12px; margin-top: 20px;
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
         }
 
-        .btn-save { background: var(--guinda); color: white; padding: 12px 30px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; }
-        .btn-save:hover { background: #4e1425; transform: translateY(-2px); }
-        .btn-cancel { background: #E5E7EB; color: #374151; padding: 12px 30px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; }
+        .btn-save {
+            background: var(--guinda);
+            color: white;
+            padding: 12px 30px;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            background: #4e1425;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #E5E7EB;
+            color: #374151;
+            padding: 12px 30px;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
 
         /* --- FOOTER FIJO --- */
         .fixed-footer {
-            background: var(--guinda); color: white; padding: 15px 40px;
-            border-top: 5px solid var(--dorado); position: fixed; bottom: 0; right: 0;
-            width: calc(100% - 300px); z-index: 200; display: flex;
-            justify-content: space-between; align-items: center;
+            background: var(--guinda);
+            color: white;
+            padding: 15px 40px;
+            border-top: 5px solid var(--dorado);
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: calc(100% - 300px);
+            z-index: 200;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .footer-logo-box { display: flex; align-items: center; gap: 15px; }
-        .footer-logo-box img { height: 45px; border-radius: 50%; background: white; padding: 2px; }
+        .footer-logo-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-logo-box img {
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            padding: 2px;
+        }
     </style>
 </head>
 
@@ -260,7 +462,8 @@
                         <p style="font-size:1.1rem; font-weight:700;">{{ request.session.usuario_nombre }}</p>
                         <small style="color:var(--turquesa); font-weight: 600;">Sesión Segura</small>
                     </div>
-                    <div style="width:50px; height:50px; border-radius:50%; background:var(--dorado); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 1.2rem;">
+                    <div
+                        style="width:50px; height:50px; border-radius:50%; background:var(--dorado); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 1.2rem;">
                         AM</div>
                 </div>
             </div>
@@ -268,14 +471,19 @@
 
         <main class="scrollable-content">
             <div class="stats-row">
-                <div class="stat-card"><small>Total Registros</small>
-                    <h2>1,284</h2>
+                <div class="stat-card">
+                    <small>Total Registros</small>
+                    <h2>{{ total_registros }}</h2>
                 </div>
-                <div class="stat-card" style="border-color: var(--verde);"><small>Activos</small>
-                    <h2>1,126</h2>
+
+                <div class="stat-card" style="border-color: var(--verde);">
+                    <small>Activos</small>
+                    <h2>{{ activos }}</h2>
                 </div>
-                <div class="stat-card" style="border-color: var(--dorado);"><small>En Revisión</small>
-                    <h2>158</h2>
+
+                <div class="stat-card" style="border-color: var(--dorado);">
+                    <small>En Revisión</small>
+                    <h2>{{ en_revision }}</h2>
                 </div>
             </div>
 
@@ -284,7 +492,7 @@
                     <section class="crud-card">
                         <div class="card-header">
                             <h4><i class="fas fa-user-shield"></i> Administradores</h4>
-                            <button class="btn btn-add" onclick="abrirFormulario('Administrador')"><i
+                            <button class="btn btn-add" onclick="abrirFormulario()"><i
                                     class="fas fa-plus"></i> AGREGAR POR CURP</button>
                         </div>
                         <table>
@@ -304,14 +512,17 @@
                                     <td>{{ u.nombre }} {{ u.apellido_paterno }}</td>
                                     <td>
                                         {{ u.correo }}<br>
-                                        <small>{{ u.institucion.nombre }}</small>
+                                        <small>{{ u.institucion.nombre }}</small   >
                                     </td>
                                     <td>
                                         {% if u.activo %}
-                                        <i class="fas fa-toggle-on status-toggle"></i>
+                                        <i class="fas fa-toggle-on status-toggle"
+                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
                                         {% else %}
-                                        <i class="fas fa-toggle-off status-toggle"></i>
+                                        <i class="fas fa-toggle-off status-toggle"
+                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
                                         {% endif %}
+
                                     </td>
                                     <td>
                                         <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
@@ -335,7 +546,7 @@
                         <div class="card-header">
                             <h4><i class="fas fa-chalkboard-teacher"></i> Docentes</h4>
                             <button class="btn btn-add" style="background: var(--turquesa);"
-                                onclick="abrirFormulario('Docente')">AGREGAR POR CURP</button>
+                                onclick="abrirFormulario()">AGREGAR POR CURP</button>
                         </div>
                         <table>
                             <thead>
@@ -358,10 +569,13 @@
                                     </td>
                                     <td>
                                         {% if u.activo %}
-                                        <i class="fas fa-toggle-on status-toggle"></i>
+                                        <i class="fas fa-toggle-on status-toggle"
+                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
                                         {% else %}
-                                        <i class="fas fa-toggle-off status-toggle"></i>
+                                        <i class="fas fa-toggle-off status-toggle"
+                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
                                         {% endif %}
+
                                     </td>
                                     <td>
                                         <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
@@ -388,13 +602,16 @@
                             <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
                                 alt="IA">
                             <div>
-                                <p style="font-weight: 700;">Jaguar Asistente IA</p><small>En línea para consulta</small>
+                                <p style="font-weight: 700;">Jaguar Asistente IA</p><small>En línea para
+                                    consulta</small>
                             </div>
                         </div>
                         <div class="chat-area" id="chat-box">
-                            <div class="msg msg-bot">Bienvenido al Centro de Gestión. ¿En qué trámite puedo apoyarte hoy?</div>
+                            <div class="msg msg-bot">Bienvenido al Centro de Gestión. ¿En qué trámite puedo apoyarte
+                                hoy?</div>
                         </div>
-                        <div style="padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white;">
+                        <div
+                            style="padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white;">
                             <input type="text" id="chat-input" placeholder="Escribe tu duda..."
                                 style="flex:1; border: 1px solid #ddd; padding: 12px; border-radius: 8px; outline: none; font-size: 1rem;">
                             <button onclick="enviarMensaje()"
@@ -419,6 +636,8 @@
     <div id="modalUsuario" class="modal">
         <div class="modal-content">
             <h3>Registrar Usuario</h3>
+ 
+
             <form id="formUsuario">
                 {% csrf_token %}
                 <div class="form-full">
@@ -468,7 +687,7 @@
 
                 <div class="form-full">
                     <label>Contraseña</label>
-                    <input type="password" name="contraseña" required>
+                    <input type="password" name="contrasena" required>
                 </div>
 
                 <div class="modal-actions">
@@ -528,7 +747,7 @@
 
                 <div class="form-full">
                     <label>Nueva Contraseña (opcional)</label>
-                    <input type="password" name="contraseña">
+                    <input type="password" name="contrasena">
                 </div>
 
                 <div class="modal-actions">
@@ -538,113 +757,16 @@
             </form>
         </div>
     </div>
-
     <script>
-        function abrirFormulario() {
-            document.getElementById('modalUsuario').style.display = 'flex';
-        }
-
-        function cerrarModal() {
-            document.getElementById('modalUsuario').style.display = 'none';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('formUsuario');
-
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-
-                fetch("{% url 'agregar_usuario_ajax' %}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                    },
-                    body: formData
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Usuario creado correctamente');
-                            location.reload();
-                        } else {
-                            let errores = '';
-                            for (let campo in data.error) {
-                                errores += `${campo}: ${data.error[campo].join(', ')}\n`;
-                            }
-                            alert(errores);
-                        }
-                    })
-                    .catch(() => alert('Error del servidor'));
-            });
-        });
+        const agregarUsuarioURL = "{% url 'agregar_usuario_ajax' %}";
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
     </script>
-    <script>
-        function abrirModalEditar() {
-            document.getElementById('modalEditarUsuario').style.display = 'flex';
-        }
 
-        function cerrarModalEditar() {
-            document.getElementById('modalEditarUsuario').style.display = 'none';
-        }
+    <script src="{% static 'js/agregarusuario-admin.js' %}?v=3"></script>
+    <script src="{% static 'js/editarusuario-admin.js' %}?v=3"></script>
+    <script src="{% static 'js/toggle-admin.js' %}?v=3"></script>
+    <script src="{% static 'js/chatbot-admin.js' %}"></script>
 
-        function editarUsuario(id) {
-            fetch(`/usuario/${id}/obtener/`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const form = document.getElementById('formEditarUsuario');
-                        form.elements['id_usuario'].value = data.id_usuario;
-                        form.elements['nombre'].value = data.nombre;
-                        form.elements['apellido_paterno'].value = data.apellido_paterno;
-                        form.elements['apellido_materno'].value = data.apellido_materno;
-                        form.elements['correo'].value = data.correo;
-                        form.elements['curp'].value = data.curp;
-                        form.elements['rol'].value = data.rol;
-                        form.elements['institucion'].value = data.institucion;
-                        form.elements['contraseña'].value = '';
-
-                        abrirModalEditar();
-
-                        form.onsubmit = function (e) {
-                            e.preventDefault();
-                            enviarEdicionUsuario(id);
-                        }
-                    } else {
-                        alert(data.error);
-                    }
-                });
-        }
-
-        function enviarEdicionUsuario(id) {
-            const form = document.getElementById('formEditarUsuario');
-            const formData = new FormData(form);
-
-            fetch(`/usuario/${id}/editar/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: formData
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Usuario actualizado correctamente');
-                        location.reload();
-                    } else {
-                        let errores = '';
-                        if (typeof data.error === 'object') {
-                            for (let campo in data.error) {
-                                errores += `${campo}: ${data.error[campo]}\n`;
-                            }
-                        } else {
-                            errores = data.error;
-                        }
-                        alert('Error: ' + errores);
-                    }
-                });
-        }
-    </script>
 </body>
+
 </html>

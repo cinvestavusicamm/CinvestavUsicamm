@@ -11,22 +11,28 @@ def panel_admin(request):
         return redirect('sesion')
 
     admins = Usuario.objects.select_related('rol', 'institucion') \
-        .filter(rol__nombre_rol='Administrador')
+        .filter(rol__nombre_rol='Administrador_sys')
 
     docentes = Usuario.objects.select_related('rol', 'institucion') \
         .filter(rol__nombre_rol='Docente')
-    
+
     instituciones = Institucion.objects.all()
     roles = Rol.objects.exclude(nombre_rol='Administrador')
+
+    total_registros = Usuario.objects.count()
+    activos = Usuario.objects.filter(activo=True).count()
+    en_revision = Usuario.objects.filter(activo=False).count()
 
     return render(request, 'paneladm.html', {
         'admins': admins,
         'docentes': docentes,
+        'instituciones': instituciones,
+        'roles': roles,
+
+        'total_registros': total_registros,
+        'activos': activos,
+        'en_revision': en_revision,
+
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
-        'instituciones': Institucion.objects.all(),
-        'roles': Rol.objects.all(),
-
     })
-
-

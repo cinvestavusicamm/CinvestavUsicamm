@@ -19,27 +19,26 @@
 
         const formData = new FormData(addUserForm);
 
-        fetch("{% url 'agregar_usuario_ajax' %}", {
+        fetch(agregarUsuarioURL, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
+                'X-CSRFToken': csrfToken
             },
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            if(data.success){
+            if (data.success) {
                 formMessage.style.color = 'green';
                 formMessage.innerText = 'Usuario agregado correctamente';
                 addUserForm.reset();
-                // Aquí podrías actualizar la tabla de usuarios sin recargar
             } else {
                 formMessage.style.color = 'red';
-                formMessage.innerText = data.error || 'Ocurrió un error';
+                formMessage.innerText = JSON.stringify(data.error);
             }
         })
-        .catch(error => {
+        .catch(() => {
             formMessage.style.color = 'red';
-            formMessage.innerText = 'Error al enviar el formulario';
+            formMessage.innerText = 'Error del servidor';
         });
     });

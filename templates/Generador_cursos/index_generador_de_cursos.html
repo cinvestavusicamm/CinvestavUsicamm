@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Creador | EscalafonIA</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --guinda: #691C32;
+            --guinda-trans: rgba(105, 28, 50, 0.95);
+            --negro: #1A1A1A;
+            --turquesa: #007A7C;
+            --dorado: #BC955C;
+            --bg-body: #F4F7FA;
+            --blanco: #FFFFFF;
+            --borde: #D1D5DB;
+            /* Borde más definido */
+            --texto-negro: #1F2937;
+            --texto-gris: #64748B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            color: var(--texto-negro);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar-creador {
+            width: 280px;
+            background: var(--blanco);
+            padding: 2rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--borde);
+            z-index: 1000;
+        }
+
+        .sidebar-creador .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-creador .brand img {
+            width: 65px;
+            border-radius: 50%;
+            border: 2px solid var(--guinda);
+            background: var(--blanco);
+            padding: 4px;
+        }
+
+        .sidebar-creador .brand h2 {
+            font-family: 'Montserrat';
+            font-size: 1rem;
+            color: var(--guinda);
+            margin-top: 12px;
+            font-weight: 900;
+        }
+
+        .nav-global {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            color: var(--texto-gris);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .nav-item:hover {
+            background: #f8fafc;
+            color: var(--guinda);
+        }
+
+        .nav-item.active {
+            background: var(--guinda);
+            color: white;
+            box-shadow: 0 4px 12px rgba(105, 28, 50, 0.2);
+        }
+
+        .nav-item.back-btn {
+            color: var(--texto-negro);
+            border: 1px solid var(--borde);
+            margin-bottom: 15px;
+        }
+
+        /* --- WORKSPACE --- */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            background: var(--guinda-trans);
+            padding: 0.8rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--dorado);
+            z-index: 900;
+            color: white;
+        }
+
+        .top-bar h2 {
+            font-family: 'Montserrat';
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* PERFIL DROPDOWN */
+        .profile-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--dorado);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        .dropdown-user {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 220px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--borde);
+            z-index: 1100;
+        }
+
+        .dropdown-user.active {
+            display: flex;
+        }
+
+        .dropdown-link {
+            padding: 12px 15px;
+            color: var(--texto-negro);
+            font-size: 0.8rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dropdown-link:hover {
+            background: #f8fafc;
+            color: var(--guinda);
+        }
+
+        .canvas {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 2.5rem;
+        }
+
+        /* CARRUSEL */
+        .welcome-carousel {
+            position: relative;
+            height: 180px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(105, 28, 50, 0.1);
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: 1s;
+            opacity: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(105, 28, 50, 0.9) 0%, rgba(0, 0, 0, 0.2) 100%);
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ESTADÍSTICAS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--borde);
+            border-bottom: 4px solid var(--guinda);
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 0.65rem;
+            color: var(--texto-gris);
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--negro);
+            font-family: Montserrat;
+        }
+
+        /* TABLA DE CURSOS CON BORDES DEFINIDOS */
+        .course-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--borde);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            margin-bottom: 2rem;
+        }
+
+        .course-container h3 {
+            font-family: Montserrat;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            text-align: left;
+            padding: 0 20px;
+            font-size: 0.7rem;
+            color: var(--texto-gris);
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .row-card {
+            background: white;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .row-card td {
+            padding: 18px 20px;
+            border-top: 2px solid var(--borde);
+            border-bottom: 2px solid var(--borde);
+            vertical-align: middle;
+        }
+
+        .row-card td:first-child {
+            border-left: 2px solid var(--borde);
+            border-radius: 12px 0 0 12px;
+            border-left: 6px solid var(--guinda);
+        }
+
+        .row-card td:last-child {
+            border-right: 2px solid var(--borde);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .row-card:hover {
+            transform: scale(1.01);
+            background: #fdfdfd;
+            border-color: var(--guinda);
+        }
+
+        /* STATUS PILLS */
+        .status-pill {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .status-check {
+            background: #ECFDF5;
+            color: #065F46;
+        }
+
+        .status-pending {
+            background: #FFFBEB;
+            color: #92400E;
+        }
+
+        .status-obs {
+            background: #FEF2F2;
+            color: #9A3412;
+        }
+
+        /* BOTÓN MOTIVACIONAL CRISTALINO */
+        .motivation-glass {
+            background: rgba(0, 122, 124, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 122, 124, 0.3);
+            padding: 30px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            transition: 0.4s;
+            cursor: pointer;
+        }
+
+        .motivation-glass:hover {
+            background: rgba(0, 122, 124, 0.2);
+            transform: translateY(-5px);
+            border-color: var(--turquesa);
+        }
+
+        .motivation-glass h2 {
+            font-family: Montserrat;
+            font-weight: 900;
+            color: var(--turquesa);
+            font-size: 1.4rem;
+        }
+
+        .motivation-glass p {
+            color: var(--texto-gris);
+            font-size: 0.9rem;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .btn-create-anim {
+            background: var(--turquesa);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 800;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 122, 124, 0.3);
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 400px;
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            border: 4px solid var(--guinda);
+        }
+
+        footer {
+            height: 45px;
+            background: var(--guinda);
+            color: white;
+            text-align: center;
+            line-height: 45px;
+            font-size: 0.75rem;
+            border-top: 2px solid var(--dorado);
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar-creador">
+        <div class="brand">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                alt="Logo">
+            <h2>ESCALAFONIA</h2>
+        </div>
+        <nav class="nav-global">
+            <a href="javascript:history.back()" class="nav-item back-btn">
+                <i class="fas fa-chevron-left"></i> Regresar
+            </a>
+            <a href="{% url 'generador_cursos:index_generador' %}" class="nav-item active">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-item">
+                <i class="fas fa-magic"></i> Creación de cursos
+            </a>
+            <a href="{% url 'generador_cursos:cursos' %}" class="nav-item">
+                <i class="fas fa-folder"></i> Mis cursos
+            </a>
+            <a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-item">
+                <i class="fas fa-chart-line"></i> Estadísticas
+            </a>
+            <a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-item">
+                <i class="fas fa-user-circle"></i> Mi perfil
+            </a>
+        </nav>
+    </aside>
+
+    <main class="workspace">
+        <header class="top-bar">
+            <h2>Panel de <span>Control Docente</span></h2>
+            <div class="profile-container" onclick="toggleDropdown()">
+                <div style="text-align:right">
+                    <p style="font-size:0.75rem; font-weight:800; margin:0;">Mtro. Ricardo Mendieta</p>
+                    <small style="color:var(--dorado); font-weight:800; font-size:0.6rem;">CREADOR SENIOR</small>
+                </div>
+                <div class="avatar-circle">RM</div>
+                <div class="dropdown-user" id="userMenu">
+                    <a href="#" class="dropdown-link"><i class="fas fa-question-circle"></i> Ayuda</a>
+                    <a href="{% url 'logout' %}" class="dropdown-link" style="color:#ef4444;"><i
+                            class="fas fa-sign-out-alt"></i> Salir</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="canvas">
+            <div class="welcome-carousel">
+                <div class="slide active"
+                    style="background-image: url('https://images.unsplash.com/photo-1544531585-9847b68c8c86?q=80&w=1200&auto=format&fit=crop')">
+                    <div class="slide-content">
+                        <h2>Estructuras Pedagógicas 2026</h2>
+                        <p>Diseña módulos alineados a los marcos curriculares vigentes de la NEM.</p>
+                    </div>
+                </div>
+                <div class="slide"
+                    style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop')">
+                    <div class="slide-content">
+                        <h2>Validación USICAMM</h2>
+                        <p>Asegura el éxito de los docentes con contenidos de alta calidad.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Cursos Activos</h4>
+                    <p>12</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Validados</h4>
+                    <p>08</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Observaciones</h4>
+                    <p>02</p>
+                </div>
+            </div>
+
+            <div class="course-container">
+                <h3>Catálogo de Trayectorias</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Curso / Contenido</th>
+                            <th>Proceso</th>
+                            <th>Estado USICAMM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-card">
+                            <td><strong>La Nueva Escuela Mexicana</strong></td>
+                            <td>Admisión 2026</td>
+                            <td><button class="status-pill status-check"
+                                    onclick="showStatus('aceptado', 'NEM')">ACEPTADO</button></td>
+                        </tr>
+                        <tr class="row-card">
+                            <td><strong>Cultura Digital TICCAD</strong></td>
+                            <td>Admisión Media Superior</td>
+                            <td><button class="status-pill status-pending"
+                                    onclick="showStatus('revision', 'Digital')">EN REVISIÓN</button></td>
+                        </tr>
+                        <tr class="row-card">
+                            <td><strong>Estrategias de Neuroeducación</strong></td>
+                            <td>Puntos Extra</td>
+                            <td><button class="status-pill status-obs"
+                                    onclick="showStatus('obs', 'Neuro')">OBSERVACIONES</button></td>
+                        </tr>
+                        <tr class="row-card">
+                            <td><strong>Liderazgo Directivo</strong></td>
+                            <td>Promoción Vertical</td>
+                            <td><button class="status-pill status-check"
+                                    onclick="showStatus('aceptado', 'Liderazgo')">ACEPTADO</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="motivation-glass" onclick="window.location.href='generador.html'">
+                <div>
+                    <h2>¡Vamos a crear, Mtro. Mendieta!</h2>
+                    <p>Hoy es un gran día para diseñar el futuro de la educación nacional.</p>
+                </div>
+                <button class="btn-create-anim">EMPEZAR CREACIÓN <i class="fas fa-magic"></i></button>
+            </div>
+        </div>
+
+        <footer>ESCALAFONIA 2026</footer>
+    </main>
+
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal-content">
+            <div id="modalIcon" style="font-size: 3.5rem; margin-bottom: 15px;"></div>
+            <h3 id="modalTitle" style="font-family: Montserrat; font-weight: 900; margin-bottom: 10px;"></h3>
+            <p id="modalDescription"></p>
+            <button
+                style="width:100%; padding:12px; background:var(--negro); color:white; border:none; margin-top:25px; border-radius:10px; cursor:pointer; font-weight:800;"
+                onclick="closeModal()">ENTENDIDO</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() { document.getElementById('userMenu').classList.toggle('active'); }
+        window.onclick = function (event) { if (!event.target.closest('.profile-container')) { document.getElementById('userMenu').classList.remove('active'); } }
+
+        const slides = document.querySelectorAll('.slide');
+        let current = 0;
+        setInterval(() => {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }, 5000);
+
+        function showStatus(type, name) {
+            const modal = document.getElementById('statusModal');
+            modal.style.display = 'flex';
+            if (type === 'aceptado') {
+                document.getElementById('modalIcon').innerHTML = '<i class="fas fa-check-circle" style="color:#2E7D32"></i>';
+                document.getElementById('modalTitle').innerText = 'CURSO ACEPTADO';
+                document.getElementById('modalDescription').innerText = `El curso "${name}" ha sido validado y ya otorga puntaje en el catálogo nacional.`;
+            } else if (type === 'revision') {
+                document.getElementById('modalIcon').innerHTML = '<i class="fas fa-clock" style="color:#F57F17"></i>';
+                document.getElementById('modalTitle').innerText = 'EN REVISIÓN';
+                document.getElementById('modalDescription').innerText = `USICAMM está analizando la estructura de "${name}". Recibirás noticias pronto.`;
+            } else {
+                document.getElementById('modalIcon').innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#C62828"></i>';
+                document.getElementById('modalTitle').innerText = 'OBSERVACIONES';
+                document.getElementById('modalDescription').innerText = `Se han detectado áreas de mejora en "${name}". Por favor, ajusta la narrativa.`;
+            }
+        }
+        function closeModal() { document.getElementById('statusModal').style.display = 'none'; }
+    </script>
+</body>
+
+</html>

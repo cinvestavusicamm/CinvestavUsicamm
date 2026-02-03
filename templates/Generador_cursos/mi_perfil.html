@@ -107,14 +107,26 @@
             <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
             <h2 style="font-family:'Montserrat'; font-size:0.9rem; color:var(--guinda); margin-top:10px;">ESCALAFONIA</h2>
         </div>
-        <nav class="nav-group">
-             <a href="dashboard.html" class="nav-item back"><i class="fas fa-chevron-left"></i> Regresar</a>
-            <a href="dashboard.html" class="nav-item"><i class="fas fa-th-large"></i> Dashboard</a>
-            <a href="generar.html" class="nav-item"><i class="fas fa-magic"></i> Generar Cursos</a>
-            <a href="mis-cursos.html" class="nav-item"><i class="fas fa-folder"></i> Mis Cursos</a>
-            <a href="estadisticas.html" class="nav-item"><i class="fas fa-chart-line"></i> Estadísticas</a>
-            <a href="#" class="nav-item active"><i class="fas fa-user-shield"></i> Mi perfil</a>
-        </nav>
+        <nav class="nav-global">
+    <a href="javascript:history.back()" class="nav-item back-btn">
+        <i class="fas fa-chevron-left"></i> Regresar
+    </a>
+    <a href="{% url 'generador_cursos:index_generador' %}" class="nav-item active">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-item">
+        <i class="fas fa-magic"></i> Creación de cursos
+    </a>
+    <a href="{% url 'generador_cursos:cursos' %}" class="nav-item">
+        <i class="fas fa-folder"></i> Mis cursos
+    </a>
+    <a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-item">
+        <i class="fas fa-chart-line"></i> Estadísticas
+    </a>
+    <a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-item">
+        <i class="fas fa-user-circle"></i> Mi perfil
+    </a>
+</nav>
     </aside>
 
     <main class="workspace">
@@ -128,7 +140,7 @@
                 <div class="dropdown" id="userDropdown">
                     <a href="#" class="dropdown-link"><i class="fas fa-cog"></i> Configuración</a>
                     <a href="#" class="dropdown-link"><i class="fas fa-question-circle"></i> Ayuda</a>
-                    <a href="login.html" class="dropdown-link" style="color:#E74C3C; border-top:1px solid #eee;"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                    <a href="{% url 'logout' %}" class="dropdown-link" style="color:#E74C3C; border-top:1px solid #eee;"><i class="fas fa-sign-out-alt"></i> Salir</a>
                 </div>
             </div>
         </header>

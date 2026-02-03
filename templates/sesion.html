@@ -205,6 +205,36 @@
             <div class="auth-card">
                 <img class="avatar-circle" src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="User">
                 <h2>Inicio de sesion</h2>
+                 <div class="messages-container" id="messagesContainer">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags|default:'info' }}">
+                                <i class="fas 
+                                    {% if message.tags == 'error' %}fa-exclamation-circle
+                                    {% elif message.tags == 'success' %}fa-check-circle
+                                    {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                                    {% else %}fa-info-circle
+                                    {% endif %}
+                                "></i>
+                                <span>{{ message }}</span>
+                                <button class="close-btn" onclick="this.parentElement.remove()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <!-- NUEVO: Para errores de formulario no relacionados con messages -->
+                    {% if form.errors %}
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Por favor corrige los errores del formulario.</span>
+                            <button class="close-btn" onclick="this.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
 
                 <form id="loginForm" method="POST" action="{% url 'sesion' %}">
                     <div class="csrf-hidden">{% csrf_token %}</div>

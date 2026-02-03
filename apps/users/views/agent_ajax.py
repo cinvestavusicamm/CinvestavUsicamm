@@ -29,7 +29,7 @@ def agente_ajax(request):
         r = requests.post(
             FASTAPI_URL,
             json=payload,
-            timeout=60
+            timeout=180
         )
         r.raise_for_status()
         data = r.json()

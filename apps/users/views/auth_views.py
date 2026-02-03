@@ -8,11 +8,11 @@ from django.utils import timezone
 
 def sesion(request):
     if request.method == 'POST':
-        correo = request.POST['correo']
+        curp = request.POST['curp']
         password = request.POST['password']
 
         try:
-            usuario = Usuario.objects.select_related('rol').get(correo=correo)
+            usuario = Usuario.objects.select_related('rol').get(curp=curp)
         except Usuario.DoesNotExist:
             messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
@@ -22,30 +22,33 @@ def sesion(request):
             return redirect('sesion')
 
         if usuario.check_password(password):
-            request.session.clear()
+            request.session.flush()
+
+            rol = usuario.rol.nombre_rol.strip()
 
             request.session['usuario_id'] = usuario.id_usuario
             request.session['usuario_nombre'] = usuario.nombre
-            request.session['usuario_rol'] = usuario.rol.nombre_rol
+            request.session['usuario_rol'] = rol
 
-            
             usuario.ultimo_acceso = timezone.now()
             usuario.save(update_fields=['ultimo_acceso'])
 
-            if usuario.rol.nombre_rol == 'Administrador':
-                    return redirect('panel_admin')
+            if rol == 'Administrador_sys':
+                return redirect('panel_admin')
 
-            elif usuario.rol.nombre_rol == 'Docente':
+            elif rol == 'Docente':
                 return redirect('panel_docente')
 
-            elif usuario.rol.nombre_rol == 'Usuario':
-                return redirect('dashboard')
-            elif usuario.rol.nombre_rol == 'Evaluador':
+            elif rol == 'evaluador':
                 return redirect('evaluador:dashboard')
 
+            elif rol == 'generador_cursos':
+                return redirect('generador_cursos:index_generador')  # o el que tengas
+
             else:
-                messages.error(request, 'Rol no reconocido')
+                messages.error(request, f'Rol no reconocido: {rol}')
                 return redirect('sesion')
+
 
         messages.error(request, 'Usuario o contraseña incorrectos')
 

@@ -47,8 +47,9 @@ class OllamaAdapter(LLMService):
                 json={
                     "model": self.model,
                     "prompt": prompt,
-                    "temperature": 0.7,
-                    "max_tokens": 512
+                    "temperature": 0.5,
+                    "max_tokens": 150,
+                    "num_ctx":1024
                 },
                 timeout=120.0
             )
