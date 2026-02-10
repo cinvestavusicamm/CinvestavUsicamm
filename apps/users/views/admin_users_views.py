@@ -29,8 +29,6 @@ def crear_admin(request):
 
     return render(request, 'crear_admin.html')
 
-
-    
 def agregar_usuario_ajax(request):
     if not request.session.get('usuario_id'):
         return JsonResponse({'success': False, 'error': {'auth': ['No autorizado']}})

@@ -33,16 +33,16 @@ def sesion(request):
             usuario.ultimo_acceso = timezone.now()
             usuario.save(update_fields=['ultimo_acceso'])
 
-            if rol == 'Administrador_sys':
+            if rol == 'Administrador':
                 return redirect('panel_admin')
 
             elif rol == 'Docente':
                 return redirect('panel_docente')
 
-            elif rol == 'evaluador':
+            elif rol == 'Evaluador':
                 return redirect('evaluador:dashboard')
 
-            elif rol == 'generador_cursos':
+            elif rol == 'Generador':
                 return redirect('generador_cursos:index_generador')  # o el que tengas
 
             else:
