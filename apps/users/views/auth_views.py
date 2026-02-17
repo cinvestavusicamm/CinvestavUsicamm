@@ -14,11 +14,11 @@ def sesion(request):
         try:
             usuario = Usuario.objects.select_related('rol').get(curp=curp)
         except Usuario.DoesNotExist:
-            messages.error(request, 'Usuario o contraseña incorrectos')
+            messages.error(request, 'Usuario no existe')
             return redirect('sesion')
 
         if not usuario.activo:
-            messages.error(request, 'El usuario no está activo')
+            messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
 
         if usuario.check_password(password):
@@ -43,7 +43,7 @@ def sesion(request):
                 return redirect('evaluador:dashboard')
 
             elif rol == 'Generador':
-                return redirect('generador_cursos:index_generador')  # o el que tengas
+                return redirect('generador_cursos:index_generador') 
 
             else:
                 messages.error(request, f'Rol no reconocido: {rol}')

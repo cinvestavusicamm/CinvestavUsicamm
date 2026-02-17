@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 
 def crear_admin(request):
     if request.method == 'POST':
-        rol_admin = Rol.objects.get(nombre_rol='Administrador_sys')
+        rol_admin = Rol.objects.get(nombre_rol='Administrador')
         institucion = Institucion.objects.first()
 
         Usuario.objects.create(
@@ -103,6 +103,7 @@ def editar_usuario_ajax(request, id):
             usuario.apellido_paterno = request.POST.get('apellido_paterno')
             usuario.apellido_materno = request.POST.get('apellido_materno')
             usuario.correo = request.POST.get('correo')
+            usuario.rol_nombre = request.POST.get('rol')
             usuario.curp = request.POST.get('curp')
 
             from apps.users.models import Rol, Institucion
@@ -115,7 +116,7 @@ def editar_usuario_ajax(request, id):
 
             nueva_pass = request.POST.get('contraseña')
             if nueva_pass:  
-                usuario.contraseña = make_password(nueva_pass)
+                usuario.contrasena = make_password(nueva_pass)
 
             usuario.save()
             return JsonResponse({'success': True})
