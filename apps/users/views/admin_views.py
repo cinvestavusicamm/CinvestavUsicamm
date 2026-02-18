@@ -7,8 +7,8 @@ from django.views.decorators.cache import never_cache
 
 @never_cache
 def panel_admin(request):
-    #if not request.session.get('usuario_id'):
-     #   return redirect('sesion')
+    if not request.session.get('usuario_id'):
+        return redirect('sesion')
 
     admins = Usuario.objects.select_related('rol', 'institucion') \
         .filter(rol__nombre_rol='Administrador')
