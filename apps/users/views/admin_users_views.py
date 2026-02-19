@@ -103,7 +103,7 @@ def editar_usuario_ajax(request, id):
             usuario.apellido_paterno = request.POST.get('apellido_paterno')
             usuario.apellido_materno = request.POST.get('apellido_materno')
             usuario.correo = request.POST.get('correo')
-            usuario.rol_nombre = request.POST.get('rol')
+            usuario.rol = request.POST.get('rol')
             usuario.curp = request.POST.get('curp')
 
             from apps.users.models import Rol, Institucion
