@@ -27,5 +27,7 @@ urlpatterns = [
 
     path('evaluador/', include('apps.users.role_urls.evaluador_urls')),
     path('generador/', include('apps.users.role_urls.generador_urls')),
+#    path('docente/', include('apps.users.role_urls.docente_urls')),
+
 
 ]
