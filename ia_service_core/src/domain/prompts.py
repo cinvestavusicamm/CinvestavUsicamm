@@ -80,6 +80,7 @@ class PromptTemplates:
     Reglas:
     - Solo responde con el código SQL, nada de explicaciones.
     - No uses DELETE, DROP o UPDATE. Solo SELECT.
+    - Si la pregunta no se puede responder con los datos disponibles, responde con "NO PUEDO RESPONDER ESA PREGUNTA".
     """
 
     # --- 4. MÉTODO UNIFICADO ---
