@@ -78,11 +78,15 @@
             display: grid; grid-template-columns: 1fr 1.2fr;
             align-items: center; gap: 3rem; padding: 2rem 0;
         }
+        
+        /* Actualizado para el video del jaguar */
         .jaguar-hero-img {
-            width: 100%; max-width: 350px; border-radius: 50%;
+            width: 100%; max-width: 350px; aspect-ratio: 1 / 1; border-radius: 50%;
             border: 8px solid white; animation: floatJaguar 5s ease-in-out infinite;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            object-fit: cover; /* Asegura que el video llene el círculo sin deformarse */
         }
+        
         .welcome-text h1 { font-family: 'Montserrat'; font-size: 2.5rem; color: var(--guinda); font-weight: 800; margin-bottom: 1rem; }
         .info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
         .card { 
@@ -171,7 +175,7 @@
     <main id="index-page" class="page-content page-active animate__animated animate__fadeIn">
         <div class="welcome-container">
             <div class="animate__animated animate__zoomIn">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar IA" class="jaguar-hero-img">
+                <video src="http://googleusercontent.com/generated_video_content/1651929752141279446" class="jaguar-hero-img" autoplay loop muted playsinline></video>
             </div>
             <div class="welcome-text">
                 <h2 style="color: var(--dorado); letter-spacing: 3px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase;">Gestión de Talento</h2>

@@ -118,6 +118,7 @@
         }
 
         .puntaje-valor { font-weight: 800; color: var(--turquesa); }
+        .puntaje-pendiente { font-weight: 800; color: #f39c12; }
 
         /* --- Timeline del Proceso --- */
         .timeline {
@@ -130,10 +131,11 @@
 
         .timeline-step {
             text-align: center;
-            font-size: 0.65rem;
-            width: 25%;
+            font-size: 0.60rem;
+            width: 20%;
             font-weight: bold;
             color: #ccc;
+            line-height: 1.2;
         }
 
         .timeline-step.active { color: var(--guinda); }
@@ -201,16 +203,20 @@
                 <p style="font-size:0.8rem; color:#666;">Incentivos por niveles para personal con funciones docentes.</p>
                 
                 <div class="puntaje-box">
-                    <div class="puntaje-item"><span>Formación Profesional:</span> <span class="puntaje-valor">15/15 pts</span></div>
-                    <div class="puntaje-item"><span>Antigüedad (12 años):</span> <span class="puntaje-valor">22/35 pts</span></div>
-                    <div class="puntaje-item"><span>Examen de Aptitudes:</span> <span class="puntaje-valor">Pendiente</span></div>
+                    <div class="puntaje-item"><span>Formación Profesional:</span> <span class="puntaje-valor">15 / 15 pts</span></div>
+                    <div class="puntaje-item"><span>Antigüedad (12 años):</span> <span class="puntaje-valor">22 / 35 pts</span></div>
+                    <div class="puntaje-item"><span>Desarrollo Profesional (Cursos):</span> <span class="puntaje-valor">20 / 20 pts</span></div>
+                    <div class="puntaje-item" style="margin-top: 8px; border-top: 1px dashed #ccc; padding-top: 8px;">
+                        <span>Apreciación (Examen):</span> <span class="puntaje-pendiente">Pendiente / 30 pts</span>
+                    </div>
                 </div>
 
                 <div class="timeline">
-                    <div class="timeline-step active"><i class="fas fa-file-signature"></i>Registro</div>
-                    <div class="timeline-step active"><i class="fas fa-check-circle"></i>Validación</div>
-                    <div class="timeline-step"><i class="fas fa-edit"></i>Examen</div>
-                    <div class="timeline-step"><i class="fas fa-list-ol"></i>Resultados</div>
+                    <div class="timeline-step active" title="Acuerdo, Convocatoria y VENUS"><i class="fas fa-bullhorn"></i>Convocatoria</div>
+                    <div class="timeline-step active" title="Citas, Registro y Verificación Documental"><i class="fas fa-file-signature"></i>Registro</div>
+                    <div class="timeline-step" title="Multifactoriales y Apreciación de Conocimientos (CENEVAL)"><i class="fas fa-laptop-code"></i>Apreciación</div>
+                    <div class="timeline-step" title="Consulta de Resultados y Recurso de Reconsideración"><i class="fas fa-search"></i>Resultados</div>
+                    <div class="timeline-step" title="Publicación de Listado Nominal y Evento Público de Asignación"><i class="fas fa-award"></i>Asignación</div>
                 </div>
                 <button style="width:100%; background:var(--guinda); color:white; border:none; padding:12px; border-radius:10px; font-weight:bold; cursor:pointer;">REVISAR ESTATUS</button>
             </div>
@@ -219,9 +225,9 @@
                 <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
                 <h3 style="margin-top:0; font-family:'Montserrat';"><i class="fas fa-paw"></i> Jaguar IA Predictiva</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6;">
-                    Maestra Elena, su puntaje acumulado actual es de <strong>37 puntos</strong> (sin considerar el examen).
+                    Maestra Elena, su puntaje acumulado actual es de <strong>57 puntos</strong> (sin considerar la apreciación).
                     <br><br>
-                    Basado en las tendencias de su zona escolar, usted necesita obtener al menos <strong>24 puntos</strong> en la valoración de conocimientos para asegurar el incentivo O1.
+                    Basado en las tendencias de su zona escolar, usted necesita obtener al menos <strong>24 puntos</strong> de los 30 posibles en la Apreciación de conocimientos para asegurar el incentivo O1.
                 </p>
                 <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-top: 10px;">
                     <i class="fas fa-lightbulb" style="color:var(--dorado)"></i> <strong>Tip de la IA:</strong> Refuerce el eje de <em>"Gestión Escolar"</em>, representa el 30% de su examen final.
