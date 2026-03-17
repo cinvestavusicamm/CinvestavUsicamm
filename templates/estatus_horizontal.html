@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatus del Proceso | EscalafonIA Jaguar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --guinda: #691C32;
+            --dorado: #BC955C;
+            --turquesa: #007A7C;
+            --bg-gris: #F4F7F6;
+            --blanco: #FFFFFF;
+            --gris-claro: #E0E0E0;
+            --exito: #2E7D32;
+            --alerta: #F57F17;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-gris);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header Institucional Vino --- */
+        .header-main {
+            background: var(--guinda);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--dorado);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand img { width: 60px; border-radius: 50%; border: 2px solid var(--dorado); background: white; padding: 2px; }
+        .brand-text h1 { font-family: 'Montserrat'; margin: 0; font-size: 1.4rem; font-weight: 800; }
+        .brand-text span { font-size: 0.75rem; font-weight: 700; color: var(--dorado); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- Barra de Navegación Superior --- */
+        .nav-actions-top {
+            background: #fff;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between; /* Modificado para tener título a la izquierda y botones a la derecha */
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .breadcrumb {
+            font-family: 'Montserrat';
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .breadcrumb span { color: var(--guinda); font-weight: 800; }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-nav {
+            font-family: 'Montserrat';
+            font-weight: 700;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back { border: 2px solid var(--guinda); color: var(--guinda); background: transparent; }
+        .btn-back:hover { background: var(--guinda); color: white; }
+
+        /* --- Contenedor Principal --- */
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        /* --- Tarjetas Comunes --- */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-family: 'Montserrat';
+            color: var(--guinda);
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--bg-gris);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- Timeline Vertical Detallado --- */
+        .timeline-vertical {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 20px;
+        }
+
+        .timeline-vertical::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gris-claro);
+            border-radius: 3px;
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .step:last-child { margin-bottom: 0; }
+
+        .step-marker {
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--gris-claro);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            color: transparent; /* Ocultar icono por defecto */
+            z-index: 2;
+        }
+
+        .step.completado .step-marker {
+            border-color: var(--exito);
+            background: var(--exito);
+            color: white;
+        }
+
+        .step.actual .step-marker {
+            border-color: var(--alerta);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(245, 127, 23, 0.2);
+        }
+
+        .step.actual .step-marker::after {
+            content: '';
+            width: 9px;
+            height: 9px;
+            background: var(--alerta);
+            border-radius: 50%;
+        }
+
+        .step-content {
+            background: var(--bg-gris);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--gris-claro);
+        }
+
+        .step.completado .step-content { border-left-color: var(--exito); }
+        .step.actual .step-content { 
+            border-left-color: var(--alerta); 
+            background: #FFFDE7; /* Fondo amarillento muy claro */
+        }
+
+        .step-title {
+            font-family: 'Montserrat';
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .step-date {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--turquesa);
+            background: rgba(0, 122, 124, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        /* --- Panel Lateral (Puntajes y Documentos) --- */
+        .score-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dashed #ddd;
+            font-size: 0.85rem;
+        }
+
+        .score-item:last-child { border-bottom: none; }
+        .score-label { color: #555; }
+        .score-value { font-weight: 800; color: var(--guinda); }
+        .score-value.pendiente { color: var(--alerta); }
+        .score-total {
+            background: rgba(105, 28, 50, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-family: 'Montserrat';
+        }
+
+        .doc-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .doc-btn:hover {
+            border-color: var(--guinda);
+            color: var(--guinda);
+            background: rgba(105, 28, 50, 0.02);
+        }
+
+        .doc-btn i.fa-download { color: var(--turquesa); }
+
+        /* --- Footer --- */
+        .footer-vino {
+            background: var(--guinda);
+            color: white;
+            padding: 30px 40px;
+            border-top: 5px solid var(--dorado);
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .legal { font-size: 0.7rem; opacity: 0.7; max-width: 800px; margin: 0 auto; line-height: 1.4; }
+
+    </style>
+</head>
+<body>
+
+    <header class="header-main">
+        <div class="brand">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+            <div class="brand-text">
+                <h1>EscalafonIA Jaguar</h1>
+                <span>Procesos de Carrera Magisterial 2026</span>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-weight: 700; font-size: 0.9rem;">Maestra Elena Pérez</div>
+            <div style="font-size: 0.65rem; color: var(--dorado);">Folio USICAMM: 08-2026-X4</div>
+        </div>
+    </header>
+
+    <nav class="nav-actions-top">
+        <div class="breadcrumb">
+            Inicio > Convocatorias > <span>Estatus Promoción Horizontal</span>
+        </div>
+        <div class="nav-buttons">
+            <a href="#" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR AL MENÚ</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-route"></i> Ruta del Proceso</h2>
+            <p style="font-size: 0.9rem; color: #666;">Seguimiento detallado de su participación en el proceso de Promoción Horizontal 2026.</p>
+
+            <div class="timeline-vertical">
+                
+                <div class="step completado">
+                    <div class="step-marker"><i class="fas fa-check"></i></div>
+                    <div class="step-content">
+                        <h3 class="step-title">1. Convocatoria y Acuerdos</h3>
+                        <p class="step-desc">Publicación del acuerdo y convocatoria en la página de USICAMM. Generación de usuario en Plataforma VENUS.</p>
+                        <span class="step-date">Finalizado: 15 Ene 2026</span>
+                    </div>
+                </div>
+
+                <div class="step completado">
+                    <div class="step-marker"><i class="fas fa-check"></i></div>
+                    <div class="step-content">
+                        <h3 class="step-title">2. Registro y Verificación</h3>
+                        <p class="step-desc">Generación de cita y entrega documental para validación de los elementos multifactoriales.</p>
+                        <span class="step-date">Finalizado: 28 Feb 2026</span>
+                    </div>
+                </div>
+
+                <div class="step actual">
+                    <div class="step-marker"></div>
+                    <div class="step-content">
+                        <h3 class="step-title">3. Apreciación de Conocimientos</h3>
+                        <p class="step-desc">Aplicación del instrumento de apreciación de conocimientos y aptitudes (CENEVAL). Revise su sede y horario.</p>
+                        <div style="margin-top: 10px;">
+                            <span class="step-date" style="background: rgba(245, 127, 23, 0.1); color: var(--alerta);">Próximo evento: 18 May 2026</span>
+                            <button style="margin-left: 10px; background: var(--alerta); border: none; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: bold;">VER DETALLES SEDE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-marker"></div>
+                    <div class="step-content">
+                        <h3 class="step-title" style="color:#999;">4. Consulta de Resultados</h3>
+                        <p class="step-desc">Publicación de resultados por participante y periodo para recurso de reconsideración.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-marker"></div>
+                    <div class="step-content">
+                        <h3 class="step-title" style="color:#999;">5. Asignación de Incentivos</h3>
+                        <p class="step-desc">Publicación del listado nominal ordenado de resultados y evento público de asignación.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+            <div class="card" style="margin-bottom: 20px;">
+                <h2 class="card-title" style="font-size: 1.1rem;"><i class="fas fa-chart-pie"></i> Mis Multifactoriales</h2>
+                <ul class="score-list">
+                    <li class="score-item">
+                        <span class="score-label">Formación Profesional</span>
+                        <span class="score-value">15 / 15</span>
+                    </li>
+                    <li class="score-item">
+                        <span class="score-label">Antigüedad</span>
+                        <span class="score-value">22 / 35</span>
+                    </li>
+                    <li class="score-item">
+                        <span class="score-label">Desarrollo Profesional</span>
+                        <span class="score-value">20 / 20</span>
+                    </li>
+                    <li class="score-item">
+                        <span class="score-label">Apreciación (Examen)</span>
+                        <span class="score-value pendiente">Pendiente / 30</span>
+                    </li>
+                </ul>
+                <div class="score-total">
+                    <div style="font-size: 0.8rem; color: #666; font-weight: 600;">Puntaje Parcial Acumulado</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--guinda);">57 <span style="font-size: 1rem; color: #999;">/ 70</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title" style="font-size: 1.1rem;"><i class="fas fa-folder-open"></i> Expediente Digital</h2>
+                
+                <a href="#" class="doc-btn">
+                    <div>
+                        <i class="fas fa-file-pdf" style="color:#D32F2F; margin-right: 8px;"></i> Ficha de Registro Oficial
+                    </div>
+                    <i class="fas fa-download"></i>
+                </a>
+
+                <a href="#" class="doc-btn">
+                    <div>
+                        <i class="fas fa-file-pdf" style="color:#D32F2F; margin-right: 8px;"></i> Constancia de Validación
+                    </div>
+                    <i class="fas fa-download"></i>
+                </a>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <button style="background: transparent; border: 2px solid var(--turquesa); color: var(--turquesa); padding: 10px 15px; border-radius: 8px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.3s; width: 100%;">
+                        <i class="fas fa-headset"></i> MESA DE AYUDA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-vino">
+        <div class="legal">
+            Sistema alineado con la <strong>Ley General del Sistema para la Carrera de las Maestras y los Maestros</strong>. La transparencia de este proceso es garantizada por la auditoría interna de la SEP y protegida por la LGPDPPSO.
+        </div>
+        <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 15px;">
+            ESCALAFONIA JAGUAR V1.0 | USICAMM MÉXICO 2026
+        </div>
+    </footer>
+
+</body>
+</html>
