@@ -1,5 +1,6 @@
 import os
 import logging
+import json  # <--- Agregado
 from typing import List, Optional
 import httpx
 
@@ -60,6 +61,55 @@ class OllamaAdapter:
             logger.error(f"Error generando respuesta: {e}")
             return "Error interno del agente."
 
+    async def generate_streaming_response(self, prompt: str):
+        """Genera respuesta en streaming usando Ollama"""
+        try:
+            logger.info(f"Generando streaming con modelo: {self.model}")
+            
+            async with self.client.stream(
+                "POST",
+                f"{self.base_url}/v1/chat/completions",
+                json={
+                    "model": self.model,
+                    "messages": [
+                        {"role": "system", "content": "Responde de forma clara y concisa."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "stream": True,
+                    "options": {
+                        "temperature": 0.2,
+                        "num_predict": 500,
+                        "num_ctx": 1024
+                    }
+                },
+                timeout=120.0
+            ) as response:
+                
+                buffer = ""
+                async for chunk in response.aiter_bytes():
+                    buffer += chunk.decode('utf-8')
+                    
+                    while '\n' in buffer:
+                        line, buffer = buffer.split('\n', 1)
+                        if line.startswith('data: '):
+                            data = line[6:].strip()
+                            if data == '[DONE]':
+                                break
+                            
+                            try:
+                                if data:
+                                    chunk_data = json.loads(data)
+                                    if "choices" in chunk_data and chunk_data["choices"]:
+                                        delta = chunk_data["choices"][0].get("delta", {})
+                                        content = delta.get("content", "")
+                                        if content:
+                                            yield content
+                            except json.JSONDecodeError:
+                                continue
+                                
+        except Exception as e:
+            logger.error(f"Error en streaming: {e}")
+            yield f"Error: {str(e)}"
 
     async def get_embedding(self, text: str) -> Optional[List[float]]:
         """Obtiene embedding de Ollama."""
