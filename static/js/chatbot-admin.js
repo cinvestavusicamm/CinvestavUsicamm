@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+
 let animacionActiva = false;
 
 function enviarMensaje() {
@@ -19,7 +20,6 @@ function enviarMensaje() {
 
     if (!mensaje) return;
 
-    // Mensaje del usuario
     const userMsg = document.createElement("div");
     userMsg.className = "msg msg-user";
     userMsg.innerText = mensaje;
@@ -28,17 +28,14 @@ function enviarMensaje() {
     input.value = "";
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Crear contenedor para mensaje del bot con mejor estructura
     const botContainer = document.createElement("div");
     botContainer.className = "msg msg-bot";
     
-    // Span para el texto
     const botText = document.createElement("span");
     botText.className = "bot-text";
     botText.innerText = "";
     botContainer.appendChild(botText);
     
-    // Cursor animado
     const cursor = document.createElement("span");
     cursor.className = "typing-cursor";
     cursor.innerText = "▌";
@@ -48,7 +45,6 @@ function enviarMensaje() {
     chatBox.appendChild(botContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Hacer la petición
     fetch(agenteAjaxURL, {
         method: "POST",
         headers: {
@@ -133,6 +129,7 @@ function enviarMensaje() {
         botContainer.innerHTML = "El asistente no está disponible";
     });
 }
+
 
 // Función para obtener el token CSRF
 function getCsrfToken() {
