@@ -7,7 +7,7 @@ def dashboard(request):
     if not request.session.get('usuario_id'):
         return redirect('sesion')
 
-    return render(request, 'index.html', {
+    return render(request, 'bienvenida.html', {
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
     })

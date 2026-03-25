@@ -14,7 +14,7 @@ def sesion(request):
         try:
             usuario = Usuario.objects.select_related('rol').get(curp=curp)
         except Usuario.DoesNotExist:
-            messages.error(request, 'Usuario no existe')
+            messages.error(request, 'Contaseña o usuario incorrectos')
             return redirect('sesion')
 
         if not usuario.activo:
@@ -37,7 +37,7 @@ def sesion(request):
                 return redirect('panel_admin')
 
             elif rol == 'Docente':
-                return redirect('panel_docente')
+                return redirect('Docente:panel_docente')
 
             elif rol == 'Evaluador':
                 return redirect('evaluador:dashboard')

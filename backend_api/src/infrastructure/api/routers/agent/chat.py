@@ -51,12 +51,13 @@ async def ask_agent_streaming(
         async def generate():
             try:
                 # Enviar un mensaje inicial para mejor experiencia
-                await asyncio.sleep(0.1)  # Pequeña pausa para efecto natural
+                await asyncio.sleep(0.1)
                 
                 # Usar el método streaming del use case
                 async for chunk in use_case.run_streaming(prompt):
-                    if chunk and chunk.strip():  # Solo enviar chunks no vacíos
-                        # Formato más limpio para el frontend
+                    # CORRECCIÓN: Solo verificar que no sea None, PERMITIR espacios
+                    if chunk is not None and chunk != "":  # Cambiado: quitamos .strip()
+                        # Los espacios se conservan
                         yield f"data: {json.dumps({'token': chunk, 'type': 'content'})}\n\n"
                 
                 # Mensaje de finalización

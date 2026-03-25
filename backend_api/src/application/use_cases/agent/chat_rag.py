@@ -2,52 +2,51 @@ from application.ports.agent.output import VectorRepository, LLMService
 from domain.agent.prompts import PromptTemplates
 from typing import AsyncGenerator
 import logging
+import asyncio
+import random
 
 logger = logging.getLogger(__name__)
 
 class ChatRAGUseCase:
-    """
-    Orquesta: Pregunta -> Vector -> Búsqueda -> Prompt -> Respuesta
-    """
     def __init__(self, db: VectorRepository, llm: LLMService):
         self.db = db
         self.llm = llm
 
     async def run(self, user_query: str) -> str:
-        """Método original - respuesta completa"""
-        query_vector = await self.llm.get_embedding(user_query)
-        
-        if not query_vector:
-            query_vector = [0.0] * 768  
-
-        context_chunks = await self.db.search_similarity(query_vector, limit=2)
-        context_text = "\n---\n".join(context_chunks) if context_chunks else "Sin contexto relevante."
-
-        full_prompt = PromptTemplates.get_rag_prompt(user_query, context_text)
-
-        response = await self.llm.generate_response(full_prompt)
-        return response
+        try:
+            user_query = user_query.strip()
+            prompt = PromptTemplates.get_system_prompt() + f"\n\nUsuario: {user_query}\n\nJaqui:"
+            response = await self.llm.generate_response(prompt)
+            return response
+        except Exception as e:
+            logger.error(f"Error en run: {e}")
+            return "Lo siento, tuve un problema técnico."
 
     async def run_streaming(self, user_query: str) -> AsyncGenerator[str, None]:
-        """Método para streaming"""
         try:
-            # 1. Obtener embedding
-            query_vector = await self.llm.get_embedding(user_query)
+            user_query = user_query.strip()
+            query_lower = user_query.lower()
             
-            if not query_vector:
-                query_vector = [0.0] * 768
-
-            # 2. Buscar contexto
-            context_chunks = await self.db.search_similarity(query_vector, limit=2)
-            context_text = "\n---\n".join(context_chunks) if context_chunks else "Sin contexto relevante."
-
-            # 3. Construir prompt
-            full_prompt = PromptTemplates.get_rag_prompt(user_query, context_text)
-
-            # 4. Streaming de la respuesta
-            async for chunk in self.llm.generate_streaming_response(full_prompt):
+            if any(saludo in query_lower for saludo in ['hola', 'buenos', 'que tal', 'hey']):
+                respuestas = [
+                    "¡Hola! ¿En qué puedo ayudarte con temas docentes hoy?",
+                    "¡Hola! ¿Qué necesitas saber sobre USICAMM, derechos docentes o escalafón?"
+                ]
+                respuesta = random.choice(respuestas)
+                for char in respuesta:
+                    yield char
+                    await asyncio.sleep(0.01)
+                return
+            
+            prompt = PromptTemplates.get_system_prompt() + f"\n\nUsuario: {user_query}\n\nJaqui:"
+            
+            async for chunk in self.llm.generate_streaming_response(prompt):
                 yield chunk
+                await asyncio.sleep(0.01)
                 
         except Exception as e:
-            logger.error(f"Error en run_streaming: {e}")
-            yield f"Error al generar respuesta: {str(e)}"
+            logger.error(f"Error en streaming: {e}")
+            error_msg = "Lo siento, ocurrió un error."
+            for char in error_msg:
+                yield char
+                await asyncio.sleep(0.01)

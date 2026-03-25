@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'apps.users',
 ]
 
@@ -34,8 +33,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # Opcional: Middleware para AJAX
-    # 'utils.middleware.error_middleware.AjaxErrorMiddleware',
 ]
 
 DATABASES = {
@@ -69,8 +66,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Configuración de logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
