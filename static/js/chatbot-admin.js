@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const input = document.getElementById("chat-input");
+
     if (input) {
         input.addEventListener("keypress", function(e) {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -9,9 +10,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
-
-
-let animacionActiva = false;
 
 function enviarMensaje() {
     const input = document.getElementById("chat-input");
@@ -30,20 +28,29 @@ function enviarMensaje() {
 
     const botContainer = document.createElement("div");
     botContainer.className = "msg msg-bot";
-    
+
     const botText = document.createElement("span");
     botText.className = "bot-text";
-    botText.innerText = "";
+    botText.textContent = "";
+    botText.style.whiteSpace = "pre-wrap";
     botContainer.appendChild(botText);
-    
+
     const cursor = document.createElement("span");
     cursor.className = "typing-cursor";
     cursor.innerText = "▌";
     cursor.style.animation = "parpadeo 0.8s infinite";
+    cursor.style.display = "none"; 
     botContainer.appendChild(cursor);
-    
+
     chatBox.appendChild(botContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
+
+    let puntos = 0;
+    botText.textContent = "Jacqui pensando";
+    const thinkingInterval = setInterval(() => {
+        puntos = (puntos + 1) % 4;
+        botText.textContent = "Jacqui pensando" + ".".repeat(puntos);
+    }, 500);
 
     fetch(agenteAjaxURL, {
         method: "POST",
@@ -60,69 +67,68 @@ function enviarMensaje() {
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
-        
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let textoCompleto = "";
         let buffer = "";
+        let inicioRespuesta = false;
 
         function leerStream() {
             reader.read().then(({ done, value }) => {
                 if (done) {
-                    // Terminar animación
+                    clearInterval(thinkingInterval);
                     cursor.style.display = "none";
-                    botText.innerText = textoCompleto;
                     return;
                 }
 
-                const chunk = decoder.decode(value);
+                const chunk = decoder.decode(value, { stream: true });
                 buffer += chunk;
-                
-                // Procesar líneas completas
+
                 const lines = buffer.split('\n');
                 buffer = lines.pop() || "";
-                
+
                 lines.forEach(line => {
                     line = line.trim();
-                    if (line.startsWith('data:')) {
+
+                    if (line.startsWith("data:")) {
                         const data = line.substring(5).trim();
-                        if (data && data !== '[DONE]') {
-                            try {
-                                const parsed = JSON.parse(data);
-                                
-                                if (parsed.type === 'done') {
-                                    cursor.style.display = "none";
-                                    botText.innerText = textoCompleto;
-                                } 
-                                else if (parsed.type === 'error') {
-                                    botText.innerText = "Error: " + parsed.message;
-                                    cursor.style.display = "none";
-                                } 
-                                else if (parsed.token) {
-                                    // Agregar el token de forma suave
-                                    textoCompleto += parsed.token;
-                                    botText.innerText = textoCompleto;
-                                    chatBox.scrollTop = chatBox.scrollHeight;
-                                }
-                            } catch (e) {
-                                // Si no es JSON, agregar como texto plano
-                                textoCompleto += data;
-                                botText.innerText = textoCompleto;
-                                chatBox.scrollTop = chatBox.scrollHeight;
+
+                        if (data === "[DONE]") {
+                            clearInterval(thinkingInterval);
+                            cursor.style.display = "none";
+                            return;
+                        }
+
+                        if (data) {
+                            if (!inicioRespuesta) {
+                                inicioRespuesta = true;
+                                clearInterval(thinkingInterval);
+                                botText.textContent = "";
+                                cursor.style.display = "inline";
                             }
+
+                            // Acumular el token actual
+                            textoCompleto += data;
+                            
+                            // Mostrar el texto acumulado
+                            botText.textContent = textoCompleto;
+                            chatBox.scrollTop = chatBox.scrollHeight;
                         }
                     }
                 });
 
-                leerStream();
+                leerStream(); // ← Llamada recursiva dentro de la función
             }).catch(error => {
                 console.error('Error leyendo stream:', error);
-                botText.innerText = textoCompleto || "Error en la transmisión";
+                clearInterval(thinkingInterval);
+                botText.textContent = textoCompleto || "Error en la transmisión";
                 cursor.style.display = "none";
             });
         }
 
-        leerStream();
+        leerStream(); // ← Llamada inicial para comenzar el stream
+
     })
     .catch(error => {
         console.error('Error:', error);
@@ -130,20 +136,22 @@ function enviarMensaje() {
     });
 }
 
-
-// Función para obtener el token CSRF
 function getCsrfToken() {
     const name = 'csrftoken';
     let cookieValue = null;
+
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
+
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
+
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
         }
     }
+
     return cookieValue;
 }
