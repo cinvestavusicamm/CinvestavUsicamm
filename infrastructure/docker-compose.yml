@@ -87,24 +87,31 @@ services:
       dockerfile: apps/Dockerfile
     volumes:
       - ../:/app
+      - static_volume:/app/staticfiles  # Volumen para archivos estáticos
     env_file:
       - ../.env
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000"
     ports:
       - "8001:8000"
     depends_on:
       backend:
         condition: service_healthy
+      db:
+        condition: service_healthy
     networks:
       - escalafon_net
-
-networks:
-  escalafon_net:
-    driver: bridge
+    environment:
+      - DEBUG=False
+      - ALLOWED_HOSTS=localhost,127.0.0.1,web
 
 volumes:
   postgres_data:
   ollama_models:
+  static_volume:  
 
-
-  
+networks:
+  escalafon_net:
+    driver: bridge

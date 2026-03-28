@@ -7,7 +7,6 @@ def prueba(request):
     return render(request, 'prueba.html')
 
 def foros(request):
-    """Foros colaborativos de práctica docente"""
     if not request.session.get('usuario_id'):
         return redirect('sesion')
     
