@@ -3,16 +3,6 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Base de Datos
-<<<<<<< HEAD
-    DB_USER: str = os.getenv("POSTGRES_USER", "postgres")
-    DB_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
-    DB_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
-    DB_PORT: str = os.getenv("POSTGRES_PORT", "5432")
-    DB_NAME: str = os.getenv("POSTGRES_DB", "Escalafon_db")
-
-    OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://motor_ollama:11434")
-    LLM_MODEL: str = "phi3:mini"
-=======
     DB_USER: str = os.getenv("POSTGRES_USER", "user")
     DB_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "password")
     DB_HOST: str = os.getenv("POSTGRES_HOST", "db")
@@ -21,8 +11,7 @@ class Settings(BaseSettings):
 
     # IA (Ollama)
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://motor_ollama:11434")
-    LLM_MODEL: str = "llama3.2"
->>>>>>> agente-prueba
+    LLM_MODEL: str = "llama3.2:3b"
     EMBEDDING_MODEL: str = "nomic-embed-text"
 
     @property

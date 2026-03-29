@@ -1,19 +1,10 @@
-<<<<<<< HEAD
-from infrastructure.persistence.agent.vector_repo import PostgresVectorRepo
-from infrastructure.external.agent.ollama import OllamaAdapter
-from application.use_cases.agent.chat_rag import ChatRAGUseCase
-from application.use_cases.agent.ingest_doc import IngestDocUseCase
-from application.use_cases.agent.ingest_text import IngestTextUseCase
-=======
 from src.infrastructure.persistence.vector_repo import PostgresVectorRepo
 from src.infrastructure.external.ollama import OllamaAdapter
 from src.application.use_cases.chat_rag import ChatRAGUseCase
 from src.application.use_cases.ingest_doc import IngestDocUseCase
 from src.application.use_cases.ingest_text import IngestTextUseCase
->>>>>>> agente-prueba
 
-# Instancias Globales (Singleton)
-# Se crean una sola vez al arrancar la app
+# Instancias Globales
 db_instance = PostgresVectorRepo()
 llm_instance = OllamaAdapter()
 
