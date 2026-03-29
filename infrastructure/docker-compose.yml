@@ -1,18 +1,9 @@
-<<<<<<< HEAD
-=======
-version: '3.8'
-
->>>>>>> agente-prueba
 services:
   # -------------------------------------------------------------------------
   # 1. BASE DE DATOS (PostgreSQL + pgvector)
   # -------------------------------------------------------------------------
   db:
-<<<<<<< HEAD
     image: pgvector/pgvector:pg16
-=======
-    image: pgvector/pgvector:pg16  # Imagen oficial con soporte vectorial
->>>>>>> agente-prueba
     container_name: escalafon_db
     restart: always
     environment:
@@ -22,13 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-<<<<<<< HEAD
       - postgres_data:/var/lib/postgresql/data
-=======
-      # Persistencia de datos (para no perderlos al reiniciar)
-      - postgres_data:/var/lib/postgresql/data
-      # Scripts de inicio (creación de tablas y extensión vector)
->>>>>>> agente-prueba
       - ./database/init_scripts:/docker-entrypoint-initdb.d
     networks:
       - escalafon_net
@@ -38,38 +23,20 @@ services:
       timeout: 5s
       retries: 5
 
-<<<<<<< HEAD
     # -------------------------------------------------------------------------
-=======
-  # -------------------------------------------------------------------------
->>>>>>> agente-prueba
   # 2. MOTOR DE INTELIGENCIA ARTIFICIAL (Ollama)
   # -------------------------------------------------------------------------
   ollama:
     image: ollama/ollama:latest
     container_name: motor_ollama
     volumes:
-<<<<<<< HEAD
-      - ollama_models:/root/.ollama
-      - ./init_ollama.sh:/init_ollama.sh  # opcional
-=======
       - ollama_models:/root/.ollama  # Guardar los modelos descargados (Llama 3)
->>>>>>> agente-prueba
     ports:
       - "11434:11434"
     networks:
       - escalafon_net
     environment:
       - OLLAMA_KEEP_ALIVE=24h
-<<<<<<< HEAD
-      - OLLAMA_GPU_OVERHEAD=0       # fuerza CPU-only
-      - OLLAMA_VULKAN=false
-    
-
-
-  # -------------------------------------------------------------------------
-  # 3. BACKEND API (FastAPI)
-=======
     # Si tienes GPU NVIDIA, descomenta esto:
     # deploy:
     #   resources:
@@ -81,12 +48,10 @@ services:
 
   # -------------------------------------------------------------------------
   # 3. BACKEND API (Hexagonal - FastAPI)
->>>>>>> agente-prueba
   # -------------------------------------------------------------------------
   backend:
     container_name: ia_service_core
     build:
-<<<<<<< HEAD
       context: ../backend_api
       dockerfile: Dockerfile
     command: uvicorn infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload --app-dir /app/src
@@ -95,23 +60,11 @@ services:
     ports:
       - "8003:8003"
     environment:
-=======
-      context: ../backend_api  # Sube un nivel para encontrar el código
-      dockerfile: Dockerfile
-    command: uvicorn src.infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload
-    volumes:
-      - ../backend_api:/app  # "Hot reload": cambios en código se reflejan al instante
-    ports:
-      - "8003:8003"
-    environment:
-      # Conexión a la BD (nombre del servicio 'db')
->>>>>>> agente-prueba
       POSTGRES_HOST: db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: escalafon_db
       POSTGRES_PORT: 5432
-<<<<<<< HEAD
       OLLAMA_BASE_URL: http://motor_ollama:11434
       PYTHONPATH: /app
     depends_on:
@@ -165,42 +118,3 @@ volumes:
 networks:
   escalafon_net:
     driver: bridge
-=======
-      # Conexión a Ollama (nombre del servicio 'ollama')
-      OLLAMA_BASE_URL: http://ollama:11434
-    depends_on:
-      db:
-        condition: service_healthy
-      ollama:
-        condition: service_started
-    networks:
-      - escalafon_net
-
-  # -------------------------------------------------------------------------
-  # 4. FRONTEND WEB
-  # -------------------------------------------------------------------------
-  frontend:
-    container_name: escalafonia_ui
-    build:
-      context: ../frontend_web
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend_web/src:/app/src  # Hot reload para desarrollo frontend
-    ports:
-      - "3000:80"  # Exponemos el puerto 80 del contenedor al 3000 de tu PC
-    depends_on:
-      - backend
-    networks:
-      - escalafon_net
-
-# ---------------------------------------------------------------------------
-# VOLUMENES Y REDES
-# ---------------------------------------------------------------------------
-networks:
-  escalafon_net:
-    driver: bridge
-
-volumes:
-  postgres_data:
-  ollama_models:
->>>>>>> agente-prueba
