@@ -9,11 +9,11 @@ It also creates the global asyncio.Semaphore(1) that protects the
 
 import asyncio
 
-from ms_validation.application.validate_process import ValidateProcessUseCase
-from ms_validation.application.ingest_rules import IngestRulesUseCase
-from ms_validation.infrastructure.adapters.ollama_llm import OllamaLLMAdapter
-from ms_validation.infrastructure.adapters.qdrant_vector_repo import QdrantVectorRepo
-from ms_validation.infrastructure.config import settings
+from ms_validation.src.application.validate_process import ValidateProcessUseCase
+from ms_validation.src.application.ingest_rules import IngestRulesUseCase
+from ms_validation.src.infrastructure.adapters.ollama_llm import OllamaLLMAdapter
+from ms_validation.src.infrastructure.adapters.qdrant_vector_repo import QdrantVectorRepo
+from ms_validation.src.infrastructure.config import settings
 
 # ──────────────────────────────────────────────
 # Concrete adapter instances

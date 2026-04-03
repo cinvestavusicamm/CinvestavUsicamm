@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: dev_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  ms_chat:
+    build:
+      context: .
+      dockerfile: ia_service_core/Dockerfile
+    command: /bin/sh -c "uv install --editable /app/ia_common || pip install -e /app/ia_common && uvicorn src.infrastructure.api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/src --reload-dir /app/ia_common"
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://dev:dev@db:5432/dev_db
+      QDRANT_URL: http://qdrant:6333
+    depends_on:
+      - db
+      - qdrant
+    volumes:
+      - ./ia_service_core:/app
+      - ./ia_common:/app/ia_common
+
+  ms_validation:
+    build:
+      context: .
+      dockerfile: ms_validation/Dockerfile
+    command: /bin/sh -c "pip install -e /app/ia_common && uvicorn infrastructure.api.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app/ms_validation/src --reload-dir /app/ia_common"
+    ports:
+      - "8001:8001"
+    environment:
+      # CRÍTICO: Agregamos /app al PYTHONPATH para que encuentre ia_common
+      # y /app/ms_validation/src para que encuentre tu código de validación
+      PYTHONPATH: "/app/ms_validation/src:/app"
+      OLLAMA_BASE_URL: "http://172.20.0.1:11434"
+      QDRANT_URL: "http://qdrant:6333"
+      QDRANT_COLLECTION: "ms_validation_rules"
+      LLM_MODEL: "phi3:mini"
+      EMBEDDING_MODEL: "nomic-embed-text"
+    depends_on:
+      - qdrant
+    volumes:
+      - ./ms_validation:/app/ms_validation
+      - ./ia_common:/app/ia_common
+
+  frontend_web:
+    build:
+      context: ./frontend_web
+      dockerfile: Dockerfile
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend_web:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+volumes:
+  db_data:
+  qdrant_storage:

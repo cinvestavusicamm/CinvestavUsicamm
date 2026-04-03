@@ -33,7 +33,7 @@ class QdrantVectorRepo(VectorRepository):
 
     async def _get_client(self) -> AsyncQdrantClient:
         if self._client is None:
-            # Quitamos 'http://' si el cliente ya lo maneja o lo necesita limpio
+        
             clean_url = self._url.replace("http://", "")
             self._client = AsyncQdrantClient(host=clean_url.split(":")[0], port=int(clean_url.split(":")[1]))
             await self._ensure_collection()
@@ -86,7 +86,7 @@ class QdrantVectorRepo(VectorRepository):
             
             return [hit.payload.get("content", "") for hit in response.points if hit.payload]
         except Exception as e:
-            # Si falla el nuevo método, intentamos el tradicional como fallback
+            
             try:
                 logger.warning("Fallo query_points, intentando search tradicional...")
                 hits = await client.search(
@@ -98,3 +98,26 @@ class QdrantVectorRepo(VectorRepository):
             except Exception as e2:
                 logger.error("Error crítico en búsqueda Qdrant: %s", str(e2))
                 return []
+            
+    async def delete_by_filename(self, filename: str) -> None:
+        """Elimina todos los vectores asociados a un documento específico."""
+        from qdrant_client.models import Filter, FieldCondition, MatchValue
+        
+        client = await self._get_client()
+        try:
+            await client.delete(
+                collection_name=self._collection_name,
+                points_selector=Filter(
+                    must=[
+                        FieldCondition(
+
+                            key="filename", 
+                            match=MatchValue(value=filename)
+                        )
+                    ]
+                )
+            )
+            logger.info("Vectores del documento '%s' eliminados de Qdrant.", filename)
+        except Exception as e:
+            logger.error("Error al eliminar en Qdrant: %s", str(e))
+            raise

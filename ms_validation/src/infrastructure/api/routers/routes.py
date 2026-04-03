@@ -1,9 +1,9 @@
-"""ms_validation.presentation.routes
+"""infrastructure.api.routers.routes
 
 FastAPI router exposing the validation endpoint.
 
 Concurrency guard:
-  A global asyncio.Semaphore(1) protects the 6 GB VRAM of Phi-3.
+  A global asyncio.Semaphore(1) protects the 6 GB VRAM of Phi-3 / Llama 3.2.
   If the semaphore cannot be acquired within SEMAPHORE_TIMEOUT seconds
   the endpoint returns HTTP 429 (Too Many Requests) instead of queuing
   indefinitely and risking OOM.
@@ -19,17 +19,14 @@ import logging
 
 from fastapi import APIRouter, HTTPException
 
-from ms_validation.src.application.validate_process import ValidateProcessUseCase
-from ms_validation.src.domain.exceptions import LLMOutputParseError, VRAMBusyError
-from ms_validation.src.domain.schemas import (
-    ProcessInput,
-    ValidationResponse,
-)
-from ms_validation.src.infrastructure.config import settings
-from ms_validation.src.infrastructure.dependencies import (
-    get_validate_use_case,
-    phi_semaphore,
-)
+# Importaciones limpias apuntando directamente a las capas hexagonales
+from application.validate_process import ValidateProcessUseCase
+from domain.exceptions import LLMOutputParseError, VRAMBusyError
+from domain.schemas import ProcessInput, ValidationResponse
+
+# Rutas actualizadas a la nueva ubicación física de los archivos
+from infrastructure.config.settings import settings
+from infrastructure.api.dependencies import get_validate_use_case, phi_semaphore
 
 logger = logging.getLogger("ms_validation.api")
 
