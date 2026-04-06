@@ -44,8 +44,6 @@ services:
     ports:
       - "8001:8001"
     environment:
-      # CRÍTICO: Agregamos /app al PYTHONPATH para que encuentre ia_common
-      # y /app/ms_validation/src para que encuentre tu código de validación
       PYTHONPATH: "/app/ms_validation/src:/app"
       OLLAMA_BASE_URL: "http://172.20.0.1:11434"
       QDRANT_URL: "http://qdrant:6333"
@@ -69,6 +67,53 @@ services:
       - ./frontend_web:/app
     environment:
       - CHOKIDAR_USEPOLLING=true
+
+  # =========================================================
+  # MS_REPORTS: MOTOR DE REPORTES EFÍMEROS Y WORKERS ASÍNCRONOS
+  # =========================================================
+  redis_reports:
+    image: redis:7-alpine
+    container_name: redis_reports
+    ports:
+      - "6380:6379"
+
+  ms_reports_api:
+    build:
+      context: ./ms_reports
+      dockerfile: Dockerfile
+    container_name: ms_reports_api
+    # Sobrescribimos el CMD para activar la recarga en caliente (hot-reload)
+    command: /bin/sh -c "uvicorn infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload --reload-dir /srv/ms3_reports/src"
+    ports:
+      - "8003:8003"
+    environment:
+      PYTHONPATH: "/srv/ms3_reports/src:/srv/ms3_reports"
+      MS3_REDIS_URL: "redis://redis_reports:6379"
+      DATABASE_URL: "postgresql://dev:dev@db:5432/dev_db"
+      TZ: "America/Mexico_City"
+    depends_on:
+      - db
+      - redis_reports
+      - qdrant
+    volumes:
+      - ./ms_reports:/srv/ms3_reports
+
+  ms_reports_worker:
+    build:
+      context: ./ms_reports
+      dockerfile: Dockerfile
+    container_name: ms_reports_worker
+    command: celery -A infrastructure.workers.celery_app worker --loglevel=info --concurrency=2
+    environment:
+      PYTHONPATH: "/srv/ms3_reports/src:/srv/ms3_reports"
+      MS3_REDIS_URL: "redis://redis_reports:6379"
+      DATABASE_URL: "postgresql://dev:dev@db:5432/dev_db"
+      TZ: "America/Mexico_City"
+    depends_on:
+      - db
+      - redis_reports
+    volumes:
+      - ./ms_reports:/srv/ms3_reports
 
 volumes:
   db_data:
