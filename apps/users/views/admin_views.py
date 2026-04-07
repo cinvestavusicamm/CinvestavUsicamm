@@ -17,7 +17,7 @@ def panel_admin(request):
         .filter(rol__nombre_rol='Docente')
 
     instituciones = Institucion.objects.all()
-    roles = Rol.objects.exclude(nombre_rol='Administrador')
+    roles = Rol.objects.all()
 
     total_registros = Usuario.objects.count()
     activos = Usuario.objects.filter(activo=True).count()

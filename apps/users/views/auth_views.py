@@ -14,7 +14,7 @@ def sesion(request):
         try:
             usuario = Usuario.objects.select_related('rol').get(curp=curp)
         except Usuario.DoesNotExist:
-            messages.error(request, 'Contaseña o usuario incorrectos')
+            messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
 
         if not usuario.activo:
