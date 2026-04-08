@@ -1,44 +1,54 @@
 # Estado Actual de la Arquitectura (As-Is)
-**Fecha:** Abril 2026 | **Fase:** Híbrida Temprana
+**Fecha:** 08 Abril 2026 | **Fase:** Monolito Distribuido
 
-## Diagrama C4: Contenedores
-Actualmente, el monolito de Django centraliza tanto la UI como la lógica principal. Los microservicios de IA (`backend_api`, `ia_service_core`, `ms_reports`) operan de manera satelital, generando fragmentación en los flujos de RAG y duplicidad de adaptadores.
+## Resumen del Diagnóstico
+El ecosistema actual opera bajo un anti-patrón conocido como **"Monolito Distribuido"**. Aunque existen múltiples repositorios y servicios (Django, `ia_service_core`, `ms_reports`), están fuertemente acoplados por dos puntos críticos:
+1. **Shared Database:** Todos los servicios leen/escriben en la misma base de datos PostgreSQL (`dev_db`).
+2. **Integración Síncrona Bloqueante:** Django actúa como proxy inverso, deteniendo sus propios hilos (hasta por 180s) esperando la respuesta de la IA.
+
+## Diagrama C4 (Nivel Contenedores)
 
 ```mermaid
-graph TD
-    User((Usuario / USICAMM))
-    
-    subgraph Ecosistema EscalafonIA
-        UI[Django Monolith UI\napps/views]
-        Core[Django Core\nModelos/Permisos]
-        DB[(PostgreSQL Central)]
-        
-        MSR[ms_reports\nFastAPI/Celery]
-        MSV[ms_validation\nFastAPI]
-        IA_Core[ia_service_core\nRAG Orquestador]
-        IA_Back[backend_api\nFragmento RAG]
-        
-        Qdrant[(Qdrant Vector DB)]
-        Redis[(Redis Cache/Broker)]
-    end
-    
-    Ollama[Ollama LLM Externo]
+flowchart TD
+    %% Actores
+    User((Usuario\nDocente/Evaluador))
 
-    User --> UI
-    UI --> Core
-    Core --> DB
+    %% Monolito
+    subgraph Monolith [Núcleo Django - Monolito]
+        Auth[Módulo Sesiones]
+        Ajax[Vistas Ajax Proxy]
+    end
+
+    %% Microservicios
+    subgraph Microservices [Microservicios AI / Workers]
+        IA[ia_service_core\nFastAPI]
+        Validation[ms_validation\nFastAPI]
+        Reports[ms_reports\nCelery/FastAPI]
+        Common[[ia_common\nLibrería Compartida]]
+    end
+
+    %% Infraestructura
+    subgraph Infra [Infraestructura de Datos Compartida]
+        DB[(PostgreSQL\nShared DB)]
+        Vector[(Qdrant\nBase Vectorial)]
+        Redis[(Redis\nBroker/Cache)]
+    end
+
+    %% Conexiones
+    User -->|HTTP (Cookies)| Auth
+    User -->|AJAX| Ajax
+    Ajax -->|HTTP Síncrono (Sin Auth Real)| IA
     
-    Core -->|HTTP Sync| MSR
-    Core -->|HTTP Sync| MSV
-    Core -->|HTTP Sync| IA_Core
+    Auth -->|Lee/Escribe| DB
+    IA -->|Lee/Escribe (SQLAlchemy)| DB
+    Reports -->|Lee/Escribe| DB
     
-    MSR --> Redis
-    MSR --> Qdrant
-    IA_Core --> Qdrant
-    IA_Back --> Qdrant
+    IA -->|Búsqueda RAG| Vector
+    Validation -->|Búsqueda| Vector
+    Reports -->|Búsqueda Manuales| Vector
     
-    IA_Core --> Ollama
-    MSR --> Ollama
+    Common -.-> IA
+    Common -.-> Validation
     
-    style DB fill:#3366cc,color:#fff
-    style Qdrant fill:#ff9900,color:#fff
+    style DB fill:#ffcccb,stroke:#ff0000,stroke-width:2px
+    style Ajax fill:#ffcccb,stroke:#ff0000,stroke-width:2px
