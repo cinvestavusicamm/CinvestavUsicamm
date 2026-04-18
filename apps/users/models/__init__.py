@@ -11,3 +11,4 @@ from .proceso_escalafon import ProcesoEscalafon
 from .documents import Document
 from .prom import Prom
 from .proceso_aprobacion_cursos import ProcesoAprobacionCursos
+from .retroalimentacion_ia_curso import RetroalimentacionIaCurso

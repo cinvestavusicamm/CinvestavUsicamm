@@ -3,7 +3,7 @@ from . import (
     Usuario, Rol, Institucion,
     Direccion, Estado, Municipio,
     CP, Colonia, TipoHogar,
-    ProcesoEscalafon, Document, Prom
+    ProcesoEscalafon, Document, Prom, ProcesoAprobacionCursos, RetroalimentacionIaCurso
 )
 admin.site.register(Usuario)
 admin.site.register(Rol)
@@ -17,3 +17,5 @@ admin.site.register(TipoHogar)
 admin.site.register(ProcesoEscalafon)
 admin.site.register(Document)
 admin.site.register(Prom)
+admin.site.register(ProcesoAprobacionCursos)
+admin.site.register(RetroalimentacionIaCurso)
