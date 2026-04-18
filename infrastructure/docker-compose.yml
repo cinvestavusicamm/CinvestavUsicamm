@@ -68,7 +68,7 @@ services:
     networks:
       - escalafon_net
     healthcheck:
-      test: [ "CMD-SHELL", "python3 -c 'import requests; import sys; r=requests.get(\"http://127.0.0.1:8001/health\"); sys.exit(0 if r.status_code==200 else 1)'" ]
+      test: [ "CMD-SHELL", "python3 -c 'import requests; import sys; r=requests.get(\"http://127.0.0.1:8003/health\"); sys.exit(0 if r.status_code==200 else 1)'" ]
       interval: 5s
       retries: 5
       timeout: 5s
