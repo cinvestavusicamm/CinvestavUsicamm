@@ -1,6 +1,6 @@
 from django.db import models
 from .usuario import Usuario
-from .curso import Curso  # falta de tener este modelo
+#from .curso import Curso  # falta de tener este modelo
 
 
 class ProcesoAprobacionCursos(models.Model):
@@ -9,12 +9,12 @@ class ProcesoAprobacionCursos(models.Model):
         db_column='id_proceso'
     )
 
-    curso = models.ForeignKey(
-        Curso,
-        on_delete=models.CASCADE,
-        db_column='id_curso',
-        related_name='aprobaciones'
-    )
+    #curso = models.ForeignKey(
+        #Curso,
+     #   on_delete=models.CASCADE,
+      #  db_column='id_curso',
+       # related_name='aprobaciones'
+    #)
 
     evaluador = models.ForeignKey(
         Usuario,
