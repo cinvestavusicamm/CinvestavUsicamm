@@ -94,7 +94,7 @@ def registro(request):
             apellido_paterno=apellido_paterno,
             apellido_materno=apellido_materno,
             correo=correo,
-            contraseña=make_password(password1),
+            contrasena=make_password(password1),
             curp=curp,
             rol=rol,
             institucion_id=institucion_id,
