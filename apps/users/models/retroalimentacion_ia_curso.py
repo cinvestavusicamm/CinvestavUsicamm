@@ -6,11 +6,11 @@ class RetroalimentacionIaCurso(models.Model):
     id_retroalimentacion = models.AutoField(primary_key=True)
     
     # Llave Foránea: Asumiendo que tienes un modelo llamado 'Curso'
-    id_curso = models.ForeignKey(
-        'Curso', 
-        on_delete=models.CASCADE, 
-        db_column='id_curso'
-    )
+   # id_curso = models.ForeignKey(
+        #'Curso', 
+    #    on_delete=models.CASCADE, 
+     #   db_column='id_curso'
+    #)
     
     sugerencias = models.TextField()
     confianza_pbt = models.DecimalField(max_digits=5, decimal_places=2)
