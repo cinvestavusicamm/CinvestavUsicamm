@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
+from apps.users.constants import ROLE_ADMIN, ROLE_DOCENTE
 
 @never_cache
 def panel_admin(request):
@@ -11,10 +12,10 @@ def panel_admin(request):
         return redirect('sesion')
 
     admins = Usuario.objects.select_related('rol', 'institucion') \
-        .filter(rol__nombre_rol='Administrador')
+        .filter(rol__nombre_rol=ROLE_ADMIN)
 
     docentes = Usuario.objects.select_related('rol', 'institucion') \
-        .filter(rol__nombre_rol='Docente')
+        .filter(rol__nombre_rol=ROLE_DOCENTE)
 
     instituciones = Institucion.objects.all()
     roles = Rol.objects.all()

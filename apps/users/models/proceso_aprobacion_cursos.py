@@ -1,6 +1,6 @@
 from django.db import models
 from .usuario import Usuario
-from .curso import Curso  # falta de tener este modelo
+#from .curso import Curso
 
 
 class ProcesoAprobacionCursos(models.Model):
