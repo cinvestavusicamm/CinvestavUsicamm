@@ -5,6 +5,12 @@ from django.contrib.auth.hashers import make_password
 from ..models import Institucion, Usuario, Rol
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
+from apps.users.constants import (
+    ROLE_ADMIN,
+    ROLE_DOCENTE,
+    ROLE_EVALUADOR,
+    ROLE_GENERADOR,
+)
 
 def sesion(request):
     if request.method == 'POST':
@@ -33,16 +39,16 @@ def sesion(request):
             usuario.ultimo_acceso = timezone.now()
             usuario.save(update_fields=['ultimo_acceso'])
 
-            if rol == 'Administrador':
+            if rol == ROLE_ADMIN:
                 return redirect('panel_admin')
 
-            elif rol == 'Docente':
+            elif rol == ROLE_DOCENTE:
                 return redirect('Docente:panel_docente')
 
-            elif rol == 'Evaluador':
+            elif rol == ROLE_EVALUADOR:
                 return redirect('evaluador:dashboard')
 
-            elif rol == 'Generador':
+            elif rol == ROLE_GENERADOR:
                 return redirect('generador_cursos:index_generador') 
 
             else:
@@ -81,14 +87,14 @@ def registro(request):
             messages.error(request, 'La CURP ya está registrada')
             return redirect('registro')
 
-        rol = Rol.objects.get(nombre_rol='Usuario')
+        rol = Rol.objects.get(nombre_rol=ROLE_DOCENTE)
 
         Usuario.objects.create(
             nombre=nombre,
             apellido_paterno=apellido_paterno,
             apellido_materno=apellido_materno,
             correo=correo,
-            contraseña=make_password(password1),
+            contrasena=make_password(password1),
             curp=curp,
             rol=rol,
             institucion_id=institucion_id,

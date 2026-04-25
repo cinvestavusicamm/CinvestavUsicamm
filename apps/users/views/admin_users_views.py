@@ -7,11 +7,12 @@ from ..forms import UsuarioForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
+from apps.users.utils.api_response import respuesta_ok, respuesta_error
+from apps.users.constants import ROLE_ADMIN
 
 def crear_admin(request):
     if request.method == 'POST':
-        rol_admin = Rol.objects.get(nombre_rol='Administrador')
-        
+        rol_admin = Rol.objects.get(nombre_rol=ROLE_ADMIN)
         institucion = Institucion.objects.get(id_institucion=request.POST['institucion'])
 
         Usuario.objects.create(
@@ -35,7 +36,7 @@ def crear_admin(request):
 
 def agregar_usuario_ajax(request):
     if not request.session.get('usuario_id'):
-        return JsonResponse({'success': False, 'error': {'auth': ['No autorizado']}})
+        return respuesta_error(request, 'No autorizado')
 
     if request.method == 'POST':
         form = UsuarioForm(request.POST)
@@ -46,31 +47,25 @@ def agregar_usuario_ajax(request):
             usuario.activo = True
             usuario.save()
 
-            return JsonResponse({'success': True})
+            return respuesta_ok(request, 'Usuario agregado correctamente')
 
-        return JsonResponse({
-            'success': False,
-            'error': form.errors
-        })
+        return respuesta_error(request, form.errors)
 
-    return JsonResponse({'success': False, 'error': {'method': ['Método no permitido']}})
+    return respuesta_error(request, 'Método no permitido')
 
 
 
 def toggle_usuario(request, id):
     if not request.session.get('usuario_id'):
-        return JsonResponse({'success': False, 'error': 'No autorizado'})
+        return respuesta_error(request, 'No autorizado')
 
     if request.method != 'POST':
-        return JsonResponse({'success': False, 'error': 'Método no permitido'})
+        return respuesta_error(request, 'Método no permitido')
 
     usuario_actual = request.session.get('usuario_id')
 
     if int(id) == int(usuario_actual):
-        return JsonResponse({
-            'success': False,
-            'error': 'No puedes desactivar tu propia cuenta'
-        })
+        return respuesta_error(request, 'No puedes desactivar tu propia cuenta')
 
     try:
         usuario = Usuario.objects.get(id_usuario=id)
@@ -82,23 +77,22 @@ def toggle_usuario(request, id):
         activos = Usuario.objects.filter(activo=True).count()
         en_revision = total - activos
 
-        return JsonResponse({
-            'success': True,
-            'activo': usuario.activo,          # clave unificada con JS
+        return respuesta_ok(request, 'Usuario desactivado correctamente', {
+            'activo': usuario.activo,
             'contadores': {
                 'total': total,
                 'activos': activos,
-                'en_revision': en_revision
+                'en_revision': en_revision,
             }
         })
 
     except Usuario.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Usuario no encontrado'})
+        return respuesta_error(request, 'Usuario no encontrado')
 
 
 def editar_usuario_ajax(request, id):
     if not request.session.get('usuario_id'):
-        return JsonResponse({'success': False, 'error': 'No autorizado'})
+        return respuesta_error(request, 'No autorizado')
 
     if request.method == 'POST':
         try:
@@ -121,21 +115,21 @@ def editar_usuario_ajax(request, id):
                 usuario.contrasena = make_password(nueva_pass)
 
             usuario.save()
-            return JsonResponse({'success': True})
+            return respuesta_ok(request, 'Usuario actualizado correctamente')
 
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+            return respuesta_error(request, str(e))
 
-    return JsonResponse({'success': False, 'error': 'Método no permitido'})
+    return respuesta_error(request, 'Método no permitido')
 
 def obtener_usuario_ajax(request, id):
     if not request.session.get('usuario_id'):
-        return JsonResponse({'success': False, 'error': 'No autorizado'})
+        return respuesta_error(request, 'No autorizado')
 
     try:
         usuario = Usuario.objects.get(id_usuario=id)
 
-        return JsonResponse({
+        return respuesta_ok(request, 'Usuario obtenido correctamente', {
             'success': True,
             'id_usuario': usuario.id_usuario,
             'nombre': usuario.nombre,
@@ -148,7 +142,7 @@ def obtener_usuario_ajax(request, id):
         })
 
     except Usuario.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Usuario no encontrado'})
+        return respuesta_error(request, 'Usuario no encontrado')
 
 
 
