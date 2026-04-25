@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from ..models import Usuario, Rol, Institucion
+from apps.users.models import Rol, Institucion
 from ..forms import UsuarioForm
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +11,8 @@ from django.views.decorators.csrf import csrf_protect
 def crear_admin(request):
     if request.method == 'POST':
         rol_admin = Rol.objects.get(nombre_rol='Administrador')
-        institucion = Institucion.objects.first()
+        
+        institucion = Institucion.objects.get(id_institucion=request.POST['institucion'])
 
         Usuario.objects.create(
             nombre=request.POST['nombre'],
@@ -27,7 +29,9 @@ def crear_admin(request):
         messages.success(request, 'Administrador creado correctamente')
         return redirect('sesion')
 
-    return render(request, 'crear_admin.html')
+    instituciones = Institucion.objects.all()
+    return render(request, 'crear_admin.html', {'instituciones': instituciones})
+
 
 def agregar_usuario_ajax(request):
     if not request.session.get('usuario_id'):
@@ -103,10 +107,8 @@ def editar_usuario_ajax(request, id):
             usuario.apellido_paterno = request.POST.get('apellido_paterno')
             usuario.apellido_materno = request.POST.get('apellido_materno')
             usuario.correo = request.POST.get('correo')
-            usuario.rol = request.POST.get('rol')
             usuario.curp = request.POST.get('curp')
 
-            from apps.users.models import Rol, Institucion
             rol_nombre = request.POST.get('rol')
             if rol_nombre:
                 usuario.rol = Rol.objects.get(nombre_rol=rol_nombre)
@@ -114,7 +116,7 @@ def editar_usuario_ajax(request, id):
             if institucion_id:
                 usuario.institucion = Institucion.objects.get(id_institucion=institucion_id)
 
-            nueva_pass = request.POST.get('contraseña')
+            nueva_pass = request.POST.get('contrasena')
             if nueva_pass:  
                 usuario.contrasena = make_password(nueva_pass)
 
