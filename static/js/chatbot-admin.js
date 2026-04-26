@@ -92,15 +92,23 @@ function enviarMensaje() {
                     line = line.trim();
 
                     if (line.startsWith("data:")) {
-                        const data = line.substring(5).trim();
+                        const rawData = line.substring(6);
 
-                        if (data === "[DONE]") {
+                        if (rawData.trim() === "[DONE]") {
                             clearInterval(thinkingInterval);
                             cursor.style.display = "none";
                             return;
                         }
 
-                        if (data) {
+                        if (rawData.trim()) {
+                            // Decodificar JSON para obtener el token exacto con espacios
+                            let token;
+                            try {
+                                token = JSON.parse(rawData);
+                            } catch(e) {
+                                token = rawData;
+                            }
+
                             if (!inicioRespuesta) {
                                 inicioRespuesta = true;
                                 clearInterval(thinkingInterval);
@@ -108,10 +116,7 @@ function enviarMensaje() {
                                 cursor.style.display = "inline";
                             }
 
-                            // Acumular el token actual
-                            textoCompleto += data;
-                            
-                            // Mostrar el texto acumulado
+                            textoCompleto += token;
                             botText.textContent = textoCompleto;
                             chatBox.scrollTop = chatBox.scrollHeight;
                         }

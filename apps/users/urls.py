@@ -3,7 +3,6 @@ from .views.auth_views import sesion, registro, cerrar_sesion
 from .views.dashboard_views import dashboard
 from .views.admin_views import panel_admin
 from .views.admin_users_views import crear_admin, agregar_usuario_ajax, editar_usuario_ajax, toggle_usuario, obtener_usuario_ajax
-from .views.chat_views import chat
 from .views.agent_ajax import agente_ajax
 
 urlpatterns = [
@@ -22,7 +21,6 @@ urlpatterns = [
     path('usuario/<int:id>/editar/', editar_usuario_ajax, name='editar_usuario_ajax'),
     path('toggle-usuario/<int:id>/', toggle_usuario, name='toggle_usuario'),
 
-    path('chat/', chat, name='chat'),
     path('agente-ajax/', agente_ajax, name='agente_ajax'),
 
     path('evaluador/', include('apps.users.role_urls.evaluador_urls')),

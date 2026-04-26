@@ -1,10 +1,6 @@
 from django.db import models
 from .usuario import Usuario
-<<<<<<< HEAD
-#from .curso import Curso
-=======
 #from .curso import Curso  # falta de tener este modelo
->>>>>>> db6fd441cdcc88aaccbf2721e1722f0786fb77b5
 
 
 class ProcesoAprobacionCursos(models.Model):

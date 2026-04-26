@@ -47,7 +47,6 @@ def agente_ajax(request):
 
 
 def agente_streaming(pregunta):
-    """Vista para streaming de respuestas tipo SSE"""
 
     def generar_stream():
         try:
@@ -70,8 +69,7 @@ def agente_streaming(pregunta):
 
                         if data.get("type") == "content":
                             token = data.get("token", "")
-                            # Enviar cada token inmediatamente sin esperar espacios
-                            yield f"data: {token}\n\n"
+                            yield f"data: {json.dumps(token)}\n\n"
 
                         elif data.get("type") == "done":
                             yield "data: [DONE]\n\n"

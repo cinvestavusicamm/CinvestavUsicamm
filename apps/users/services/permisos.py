@@ -1,8 +1,23 @@
-def es_evaluador(user):
-    return getattr(user, 'rol', None) == 'EVALUADOR'
+from functools import wraps
+from django.shortcuts import redirect
+from django.views.decorators.cache import never_cache
+from apps.users.constants import ROLE_ADMIN, ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR
 
-def es_admin(user):
-    return getattr(user, 'rol', None) == 'ADMIN'
 
-def es_generador(user):
-    return getattr(user, 'rol', None) == 'GENERADOR'
+def requiere_rol(*roles_permitidos):
+
+    def decorator(view_func):
+        @wraps(view_func)
+        @never_cache
+        def wrapper(request, *args, **kwargs):
+            if not request.session.get('usuario_id'):
+                return redirect('sesion')
+
+            rol_usuario = request.session.get('usuario_rol')
+            if rol_usuario not in roles_permitidos:
+                return redirect('sesion')
+
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+

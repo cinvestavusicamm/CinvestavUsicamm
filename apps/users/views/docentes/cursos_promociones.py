@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from apps.users.services.permisos import requiere_rol
+from apps.users.constants import ROLE_DOCENTE
 
+@requiere_rol(ROLE_DOCENTE)
 def cursos_promociones(request):
-    if request.session.get('usuario_rol') !='Docente':
-        return redirect('sesion')
     return render(request, 'cursos_promociones.html')

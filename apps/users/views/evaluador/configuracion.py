@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from apps.users.services.permisos import requiere_rol
+from apps.users.constants import ROLE_EVALUADOR
 
+@requiere_rol(ROLE_EVALUADOR)
 def configuracion(request):
-    if request.session.get('usuario_rol') != 'Evaluador':
-        return redirect('sesion') 
     return render(request, 'evaluador/configuracion.html')
