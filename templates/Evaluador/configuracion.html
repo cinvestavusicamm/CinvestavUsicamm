@@ -4,24 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icono" type="image/x-icono"
+    <link rel="icon" type="image/x-icon"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="../../static/css/evaluador.css">
     <link rel="stylesheet" href="../../static/css/chat-eva.css">
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>EscalafonIa</title>
+    <title>EscalafonIA</title>
 
 </head>
 
 <body>
     <header class="barra-superior">
-        <div class="boton">
-            <button id="btn-menu" class="btn-menu" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
-        </div>
+
         <div class="marca">
-            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIa</span></a></h1>
-        </div>
+            <div class="boton">
+                <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
         </div>
 
         <div class="user-profile">
@@ -38,11 +45,7 @@
     </header>
     <div class="contenedor-principal">
         <nav class="barra-lateral">
-            <div class="jaguar-brand">
-                <a href="{% url 'evaluador:dashboard' %}"><img
-                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
-                        alt="Logo EscalafonIa"></a>
-            </div>
+
             <ul class="menu-principal">
                 <li>
                     <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
@@ -87,7 +90,7 @@
 
         <div class="principal">
             <div class="contenido">
-                <h1 class="titulo">Configuración</h1>
+                <h1 class="titulo"><i class="fa-solid fa-gear"></i> Configuración</h1>
                 <br><br>
 
                 <!-- Tabs de navegación -->
@@ -122,15 +125,21 @@
                             <div class="form-grid-2">
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-user"></i> Nombre(s)</label>
-                                    <input type="text" value="Diego Zaid" placeholder="Tu nombre">
+                                    <input type="text" value="Diego Zaid" placeholder="Tu nombre" readonly>
+                                    <small class="form-hint">El nombre no puede ser modificado</small>
+
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-user-tag"></i> Apellido Paterno</label>
-                                    <input type="text" value="Garcia" placeholder="Apellido paterno">
+                                    <input type="text" value="Garcia" placeholder="Apellido paterno" readonly>
+                                    <small class="form-hint">El apellido paterno no puede ser modificado</small>
+
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-user-tag"></i> Apellido Materno</label>
-                                    <input type="text" value="Rebollo" placeholder="Apellido materno">
+                                    <input type="text" value="Rebollo" placeholder="Apellido materno" readonly>
+                                    <small class="form-hint">El apellido materno no puede ser modificado</small>
+
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-regular fa-envelope"></i> Correo Electrónico</label>
@@ -423,6 +432,9 @@
                     </div>
                 </div>
             </div>
+            <footer class="contenedor-footer">
+               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+            </footer>
         </div>
     </div>
 
@@ -487,7 +499,7 @@
                 document.getElementById(`panel-${tabId}`).classList.add('active');
             });
         });
-        
+
 
         // Password strength checker
         const nuevaPass = document.getElementById('pass-nueva');
@@ -800,7 +812,7 @@
                 });
             }
         });
-        
+
 
         // Close modal when clicking outside
         window.onclick = function (event) {

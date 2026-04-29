@@ -10,16 +10,24 @@
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
     <link rel="stylesheet" href="../../static/css/chat-eva.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>EscalafonIa</title>
+    <title>EscalafonIA</title>
 </head>
 
 <body>
     <header class="barra-superior">
-        <div class="boton">
-            <button id="btn-menu" class="btn-menu" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
-        </div>
+
         <div class="marca">
-            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIa</span></a></h1>
+            <div class="boton">
+                <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
         </div>
 
         <div class="user-profile">
@@ -36,14 +44,9 @@
     </header>
     <div class="contenedor-principal">
         <nav class="barra-lateral">
-            <div class="jaguar-brand">
-                <a href="{% url 'evaluador:dashboard' %}"><img
-                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
-                        alt="Logo EscalafonIa"></a>
-            </div>
             <ul class="menu-principal">
                 <li>
-                    <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
+                    <a class="barra-lateral-link activo" href="{% url 'evaluador:dashboard' %}">
                         <i class="fa-solid fa-chart-pie"></i>
                         <span>Dashboard</span>
                     </a>
@@ -228,6 +231,9 @@
                 </section>
 
             </div>
+            <footer class="contenedor-footer">
+               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+            </footer>
         </div>
     </div>
 
@@ -254,7 +260,7 @@
     <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
-    <script src="../../static/js/accesibilidad.js"></script> 
+    <script src="../../static/js/accesibilidad.js"></script>
     <script src="../../static/js/chat-eva.js"></script>
 
 </body>
