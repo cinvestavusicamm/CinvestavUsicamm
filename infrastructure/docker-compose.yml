@@ -22,26 +22,32 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
     # -------------------------------------------------------------------------
-    # 2. MOTOR DE INTELIGENCIA ARTIFICIAL (Ollama)
-    # -------------------------------------------------------------------------
+  # 2. MOTOR DE INTELIGENCIA ARTIFICIAL (Ollama)
+  # -------------------------------------------------------------------------
   ollama:
     image: ollama/ollama:latest
     container_name: motor_ollama
     volumes:
-      - ollama_models:/root/.ollama
-      - ./init_ollama.sh:/init_ollama.sh
+      - ollama_models:/root/.ollama  # Guardar los modelos descargados (Llama 3)
     ports:
       - "11434:11434"
     networks:
       - escalafon_net
     environment:
       - OLLAMA_KEEP_ALIVE=24h
-      - OLLAMA_GPU_OVERHEAD=0
-      - OLLAMA_VULKAN=false
+    # Si tienes GPU NVIDIA, descomenta esto:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
 
   # -------------------------------------------------------------------------
-  # 3. BACKEND API (FastAPI)
+  # 3. BACKEND API (Hexagonal - FastAPI)
   # -------------------------------------------------------------------------
   backend:
     container_name: ia_service_core

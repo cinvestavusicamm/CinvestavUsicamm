@@ -1,7 +1,7 @@
 """ms_validation.infrastructure.adapters.ollama_llm
 
 Adaptador para Ollama con Modo JSON nativo activado.
-Garantiza que la salida sea un objeto JSON puro, eliminando comentarios y texto extra.
+Garantiza que la salida sea un objeto JSON, eliminando comentarios y texto extra.
 """
 
 import logging
@@ -50,7 +50,7 @@ class OllamaLLMAdapter(LLMService):
             "options": {
                 "temperature": self.temperature,
                 "num_predict": 1024, # Suficiente para un dictamen
-                "num_ctx": 4096,     # Balanceado para evitar OOM en RTX 4050
+                "num_ctx": 4096,     # Contexto amplio para entender reglas complejas
                 "stop": ["\n\n", "###"]
             }
         }

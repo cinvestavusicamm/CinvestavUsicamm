@@ -1,4 +1,4 @@
-"""ms_validation.main
+"""infrastructure.api.main
 
 This is the Composition Root: it assembles the FastAPI app, registers
 middleware, and mounts routes.
@@ -11,9 +11,10 @@ import uuid
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-# 1. Importar ambos routers (Validación e Ingesta)
-from ms_validation.presentation.routes import router as validation_router
-from ms_validation.presentation.rules import router as rules_router
+# 1. Importaciones actualizadas a la nueva estructura Hexagonal
+# Apuntamos a 'infrastructure.api.routers' sin usar el prefijo 'src.' ni 'ms_validation.'
+from infrastructure.api.routers.routes import router as validation_router
+from infrastructure.api.routers.rules import router as rules_router
 
 # ──────────────────────────────────────────────
 # Logging (Traceability)
@@ -65,10 +66,8 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 # ── Routes Registration ──
-# 2. Registrar el router original de validación
+# 2. Registrar los routers usando los alias correctos
 app.include_router(validation_router, prefix="/api", tags=["Validación"])
-
-# 3. Registrar el NUEVO router de ingesta de normativas
 app.include_router(rules_router, prefix="/api/rules", tags=["Base de Conocimiento"])
 
 # ── Health check ──
