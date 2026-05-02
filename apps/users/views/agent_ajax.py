@@ -1,8 +1,9 @@
 import requests
-from django.http import StreamingHttpResponse, JsonResponse
+from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
+from utils.api_response import respuesta_ok, respuesta_error
 
 logger = logging.getLogger(__name__)
 
@@ -13,16 +14,28 @@ FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
 @csrf_exempt
 def agente_ajax(request):
     if not request.session.get('usuario_id'):
-        return JsonResponse({'answer': 'No autorizado'}, status=401)
+        return respuesta_error(
+                                    request,
+                                    mensaje="No autorizado",
+                                    status=401
+                                )
 
     if request.method != "POST":
-        return JsonResponse({'answer': 'Método no permitido'}, status=405)
+        return respuesta_error(
+                                    request,
+                                    mensaje="Método no permitido",
+                                    status=405
+                                )
 
     pregunta = request.POST.get('pregunta', '').strip()
     usar_stream = request.POST.get('stream') == 'true'
 
     if not pregunta:
-        return JsonResponse({'answer': 'No se recibió pregunta'}, status=400)
+        return respuesta_error(
+                                    request,
+                                    mensaje="La pregunta no puede estar vacía",
+                                    status=400
+                                )
 
     if usar_stream:
         return agente_streaming(pregunta)
@@ -39,11 +52,20 @@ def agente_ajax(request):
         data = r.json()
 
         respuesta = data.get("response", "No se pudo generar una respuesta")
-        return JsonResponse({"answer": respuesta})
+        return respuesta_ok(
+                                request,
+                                mensaje="Respuesta generada correctamente",
+                                datos={"answer": respuesta}
+                            )
 
     except Exception as e:
         logger.exception(f"Error inesperado en agente_ajax: {e}")
-        return JsonResponse({'answer': 'Ocurrió un error inesperado'})
+        return respuesta_error(
+                                request,
+                                mensaje="Ocurrió un error inesperado",
+                                errores=str(e),
+                                status=500
+                            )
 
 
 def agente_streaming(pregunta):
@@ -69,17 +91,17 @@ def agente_streaming(pregunta):
 
                         if data.get("type") == "content":
                             token = data.get("token", "")
-                            yield f"data: {json.dumps(token)}\n\n"
+                            yield f"data: {json.dumps({'estado': 'ok', 'token': token})}\n\n"
 
                         elif data.get("type") == "done":
-                            yield "data: [DONE]\n\n"
+                            yield f"data: {json.dumps({'estado': 'ok', 'done': True})}\n\n"
 
                     except:
                         continue
 
         except Exception as e:
             logger.exception(f"Error en streaming: {e}")
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            yield f"data: {json.dumps({'estado': 'error', 'error': str(e)})}\n\n"
 
     response = StreamingHttpResponse(
         generar_stream(),
