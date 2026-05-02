@@ -234,7 +234,7 @@
     <main class="main-container animate__animated animate__fadeIn">
         <header class="top-bar">
             <div class="user-welcome">
-                <h1>Maestra Elena Pérez <span class="curp-badge"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
+                <h1>{{ usuario.nombre }} {{ usuario.apellido_paterno }} <span class="curp-badge"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
                 <p class="security-note">Acceso RBAC restringido según LGPDPPSO | Datos encriptados</p>
             </div>
             <div class="notifications">
@@ -242,7 +242,7 @@
                 <i class="fas fa-bell fa-lg" style="color: var(--guinda); cursor: pointer; position: relative;">
                     <span style="position: absolute; top: -5px; right: -5px; background: red; width: 8px; height: 8px; border-radius: 50%;"></span>
                 </i>
-                <img src="https://ui-avatars.com/api/?name=Elena+Perez&background=BC955C&color=fff" style="border-radius: 50%; width: 40px; margin-left: 15px; border: 2px solid var(--guinda);">
+                <img src="https://ui-avatars.com/api/?name={{ usuario.nombre|urlencode }}+{{ usuario.apellido_paterno|urlencode }}&background=BC955C&color=fff" style="border-radius: 50%; width: 40px; margin-left: 15px; border: 2px solid var(--guinda);">
             </div>
         </header>
 
@@ -251,10 +251,10 @@
                 <div class="card">
                     <div class="card-title">Resumen de Historial (Solo Lectura)</div>
                     <div class="profile-summary">
-                        <div class="stat-box"><span>Antigüedad</span><strong>12 Años</strong></div>
+                        <div class="stat-box"><span>Cursos activos</span><strong>{{ total_cursos }}</strong></div>
                         <div class="stat-box"><span>Nivel</span><strong>Carrera Mag. E</strong></div>
-                        <div class="stat-box"><span>Incentivo</span><strong>35% (K1)</strong></div>
-                        <div class="stat-box"><span>Entidad</span><strong>CDMX</strong></div>
+                        <div class="stat-box"><span>Institución</span><strong>{{ usuario.institucion.nombre|default:"-" }}</strong></div>
+                        <div class="stat-box"><span>CURP</span><strong>{{ usuario.curp }}</strong></div>
                     </div>
                 </div>
 
@@ -278,11 +278,15 @@
 
                 <div class="card">
                     <div class="card-title">Progreso de Rutas (Completar)</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size: 0.85rem; font-weight: 600;">Eje: Inclusión en el Aula</span>
-                        <span style="font-size: 0.75rem; color: var(--turquesa);">85% completado</span>
+                    {% for curso in cursos %}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+                        <span style="font-size: 0.85rem; font-weight: 600;">{{ curso.nombre }}</span>
+                        <span style="font-size: 0.75rem; color: var(--turquesa);">{{ curso.ciclo_escolar }}</span>
                     </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 85%;"></div></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                    {% empty %}
+                    <p style="font-size: 0.85rem; color: #666;">Aún no tienes cursos activos registrados.</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -292,7 +296,7 @@
                     <span class="ai-tag"><i class="fas fa-microchip"></i> JAGUAR IA</span>
                     <h3 style="margin: 1rem 0 0.5rem; font-family: 'Montserrat'; font-size: 1rem;">Sugerencia de Formación</h3>
                     <p style="font-size: 0.75rem; line-height: 1.5; opacity: 0.95;">
-                        Elena, tras analizar tu perfil, te sugerimos completar el curso <em>"Estrategias de Equidad"</em> para mejorar tu puntaje.
+                        {{ usuario.nombre }}, revisa tus cursos activos para mantener actualizado tu avance.
                     </p>
                     <button class="btn-sm" style="background: white; color: var(--turquesa); margin-top: 1rem; width: 100%;">Inscribirme Ahora</button>
                 </div>
@@ -301,7 +305,7 @@
                     <div class="card-title" style="font-size: 0.9rem;">Estatus de Promoción (Consulta)</div>
                     <div style="text-align: center; padding: 10px;">
                         <i class="fas fa-user-clock fa-3x" style="color: var(--dorado); margin-bottom: 1rem;"></i>
-                        <p style="font-size: 0.75rem; color: #666;">Folio: #MX-2026-99</p>
+                        <p style="font-size: 0.75rem; color: #666;">CURP: {{ usuario.curp }}</p>
                         <p style="font-size: 0.8rem; font-weight: 600;">Validación de Portafolio en Proceso</p>
                         <div class="progress-bar" style="height: 5px;"><div class="progress-fill" style="width: 60%; background: var(--turquesa);"></div></div>
                     </div>

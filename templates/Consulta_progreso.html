@@ -194,7 +194,7 @@
         </div>
         <div style="text-align: right;">
             <div style="font-size: 0.75rem; font-weight: 800; letter-spacing: 1px;">PORTAFOLIO DIGITAL</div>
-            <div style="font-size: 0.6rem; opacity: 0.8;">FOLIO: USICAMM-2026-ELENA</div>
+            <div style="font-size: 0.6rem; opacity: 0.8;">CURP: {{ usuario.curp }}</div>
         </div>
     </header>
 
@@ -243,7 +243,7 @@
                             <div class="item-icon"><i class="fas fa-graduation-cap" style="color: var(--dorado);"></i></div>
                             <div>
                                 <span style="display:block; font-size: 0.85rem; font-weight: 700;">Cursos de Formación Continua</span>
-                                <small style="color: #666;">Acumulado: 120 / 200 horas necesarias para puntaje máximo.</small>
+                                <small style="color: #666;">Cursos activos registrados: {{ total_cursos }}</small>
                                 <div class="progress-mini"><div class="progress-mini-fill" style="width: 60%;"></div></div>
                             </div>
                         </div>
@@ -281,10 +281,9 @@
                 </div>
                 
                 <div class="ia-insight">
-                    <strong>¡Hola Elena!</strong><br><br>
-                    He analizado tu portafolio y detecté que el rubro de <strong>Posgrado</strong> está vacío. <br><br>
-                    <i class="fas fa-exclamation-circle" style="color: var(--alerta);"></i> <strong>Riesgo:</strong> Estás dejando de percibir <strong>15 puntos</strong> directos. <br><br>
-                    <i class="fas fa-lightbulb" style="color: var(--dorado);"></i> <strong>Recomendación:</strong> Sube tu acta de examen o título de Maestría antes del cierre (45 días).
+                    <strong>¡Hola {{ usuario.nombre }}!</strong><br><br>
+                    Tienes <strong>{{ total_cursos }} cursos activos</strong> asociados a tu perfil. <br><br>
+                    <i class="fas fa-lightbulb" style="color: var(--dorado);"></i> <strong>Recomendación:</strong> mantén tus evidencias actualizadas para reflejar tu avance real.
                 </div>
 
                 <div style="padding: 15px; background: white; border-radius: 12px; margin-top: 15px; border: 1px solid #eee;">

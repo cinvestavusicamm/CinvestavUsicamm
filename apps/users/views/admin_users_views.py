@@ -1,30 +1,56 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password
-from ..models import Usuario, Rol, Institucion
-from apps.users.models import Rol, Institucion
+import logging
+from apps.users.models import Rol, Institucion, Usuario
 from ..forms import UsuarioForm
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.csrf import csrf_protect
 from apps.users.utils.api_response import respuesta_ok, respuesta_error
 from apps.users.constants import ROLE_ADMIN
+from apps.users.services.bitacora_service import BitacoraService
+from apps.users.services.user_service import UserService
+
+
+logger = logging.getLogger(__name__)
+
+
+def _registrar_bitacora(request, tipo_evento, descripcion, detalles=None):
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return
+
+    try:
+        BitacoraService.registrar(
+            usuario_id=usuario_id,
+            tipo_evento=tipo_evento,
+            descripcion=descripcion,
+            request=request,
+            detalles=detalles,
+        )
+    except Exception as exc:
+        logger.warning("No se pudo registrar bitácora: %s", exc)
 
 def crear_admin(request):
     if request.method == 'POST':
         rol_admin = Rol.objects.get(nombre_rol=ROLE_ADMIN)
         institucion = Institucion.objects.get(id_institucion=request.POST['institucion'])
 
-        Usuario.objects.create(
-            nombre=request.POST['nombre'],
-            apellido_paterno=request.POST['apellido_paterno'],
-            apellido_materno=request.POST.get('apellido_materno', ''),
-            correo=request.POST['correo'],
-            contrasena=make_password(request.POST['password']),
-            curp=request.POST['curp'],
-            rol=rol_admin,
-            institucion=institucion,
-            activo=True
+        usuario = UserService.crear_usuario({
+            'nombre': request.POST['nombre'],
+            'apellido_paterno': request.POST['apellido_paterno'],
+            'apellido_materno': request.POST.get('apellido_materno', ''),
+            'correo': request.POST['correo'],
+            'contrasena': request.POST['password'],
+            'curp': request.POST['curp'],
+            'rol': rol_admin,
+            'institucion': institucion,
+            'activo': True,
+        })
+
+        _registrar_bitacora(
+            request,
+            'ADMIN_CREADO',
+            f'Creó al administrador {usuario.id_usuario}',
+            {'usuario_creado': usuario.id_usuario},
         )
 
         messages.success(request, 'Administrador creado correctamente')
@@ -42,10 +68,24 @@ def agregar_usuario_ajax(request):
         form = UsuarioForm(request.POST)
 
         if form.is_valid():
-            usuario = form.save(commit=False)
+            usuario = UserService.crear_usuario({
+                'nombre': form.cleaned_data['nombre'],
+                'apellido_paterno': form.cleaned_data['apellido_paterno'],
+                'apellido_materno': form.cleaned_data.get('apellido_materno'),
+                'correo': form.cleaned_data['correo'],
+                'contrasena': form.cleaned_data['contrasena'],
+                'curp': form.cleaned_data['curp'],
+                'rol': form.cleaned_data['rol'],
+                'institucion': form.cleaned_data['institucion'],
+                'activo': True,
+            })
 
-            usuario.activo = True
-            usuario.save()
+            _registrar_bitacora(
+                request,
+                'USUARIO_CREADO',
+                f'Creó al usuario {usuario.id_usuario}',
+                {'usuario_creado': usuario.id_usuario},
+            )
 
             return respuesta_ok(request, 'Usuario agregado correctamente')
 
@@ -68,22 +108,23 @@ def toggle_usuario(request, id):
         return respuesta_error(request, 'No puedes desactivar tu propia cuenta')
 
     try:
-        usuario = Usuario.objects.get(id_usuario=id)
-        usuario.activo = not usuario.activo
-        usuario.save(update_fields=['activo'])
+        usuario = UserService.alternar_activo(id)
 
-        # Opcional: contadores en vivo
-        total = Usuario.objects.count()
-        activos = Usuario.objects.filter(activo=True).count()
-        en_revision = total - activos
+        _registrar_bitacora(
+            request,
+            'USUARIO_ACTUALIZADO',
+            f'Cambió el estado del usuario {usuario.id_usuario}',
+            {
+                'usuario_actualizado': usuario.id_usuario,
+                'activo': usuario.activo,
+            },
+        )
+
+        contadores = UserService.obtener_contadores()
 
         return respuesta_ok(request, 'Usuario desactivado correctamente', {
             'activo': usuario.activo,
-            'contadores': {
-                'total': total,
-                'activos': activos,
-                'en_revision': en_revision,
-            }
+            'contadores': contadores,
         })
 
     except Usuario.DoesNotExist:
@@ -96,25 +137,24 @@ def editar_usuario_ajax(request, id):
 
     if request.method == 'POST':
         try:
-            usuario = Usuario.objects.get(id_usuario=id)
-            usuario.nombre = request.POST.get('nombre')
-            usuario.apellido_paterno = request.POST.get('apellido_paterno')
-            usuario.apellido_materno = request.POST.get('apellido_materno')
-            usuario.correo = request.POST.get('correo')
-            usuario.curp = request.POST.get('curp')
+            usuario = UserService.editar_usuario(id, {
+                'nombre': request.POST.get('nombre'),
+                'apellido_paterno': request.POST.get('apellido_paterno'),
+                'apellido_materno': request.POST.get('apellido_materno'),
+                'correo': request.POST.get('correo'),
+                'curp': request.POST.get('curp'),
+                'rol': request.POST.get('rol'),
+                'institucion': request.POST.get('institucion'),
+                'contrasena': request.POST.get('contrasena'),
+            })
 
-            rol_nombre = request.POST.get('rol')
-            if rol_nombre:
-                usuario.rol = Rol.objects.get(nombre_rol=rol_nombre)
-            institucion_id = request.POST.get('institucion')
-            if institucion_id:
-                usuario.institucion = Institucion.objects.get(id_institucion=institucion_id)
+            _registrar_bitacora(
+                request,
+                'USUARIO_EDITADO',
+                f'Editó al usuario {usuario.id_usuario}',
+                {'usuario_editado': usuario.id_usuario},
+            )
 
-            nueva_pass = request.POST.get('contrasena')
-            if nueva_pass:  
-                usuario.contrasena = make_password(nueva_pass)
-
-            usuario.save()
             return respuesta_ok(request, 'Usuario actualizado correctamente')
 
         except Exception as e:
@@ -127,7 +167,7 @@ def obtener_usuario_ajax(request, id):
         return respuesta_error(request, 'No autorizado')
 
     try:
-        usuario = Usuario.objects.get(id_usuario=id)
+        usuario = UserService.obtener_usuario(id)
 
         return respuesta_ok(request, 'Usuario obtenido correctamente', {
             'success': True,

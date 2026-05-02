@@ -184,7 +184,7 @@
             </div>
         </div>
         <div style="text-align: right;">
-            <div style="font-weight: 700; font-size: 0.9rem;">Maestra Elena Pérez</div>
+            <div style="font-weight: 700; font-size: 0.9rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</div>
             <div style="font-size: 0.65rem; color: var(--dorado);">Sesión encriptada (LGPDPPSO)</div>
         </div>
     </header>
@@ -196,11 +196,12 @@
 
     <div class="container">
         <aside class="forum-categories">
-            <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Temas NEM</h4>
-            <div class="category-item active"><i class="fas fa-users"></i> Inclusión Educativa</div>
-            <div class="category-item"><i class="fas fa-flask"></i> Saberes Científicos</div>
-            <div class="category-item"><i class="fas fa-book"></i> Fomento a la Lectura</div>
-            <div class="category-item"><i class="fas fa-comments"></i> Proyectos Comunitarios</div>
+            <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Cursos</h4>
+            {% for curso in cursos %}
+            <div class="category-item {% if forloop.first %}active{% endif %}"><i class="fas fa-book"></i> {{ curso.nombre }}</div>
+            {% empty %}
+            <div class="category-item active"><i class="fas fa-info-circle"></i> Sin cursos activos</div>
+            {% endfor %}
             <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
             <div class="category-item" style="color: var(--dorado);"><i class="fas fa-star"></i> Mis Discusiones</div>
         </aside>
@@ -213,27 +214,47 @@
                 </div>
             </div>
 
+            {% for item in foro_items %}
+                {% for foro in item.foros %}
             <div class="post-card">
                 <div class="post-header">
                     <div class="user-meta">
-                        <img src="https://ui-avatars.com/api/?name=Ricardo+M&background=007A7C&color=fff" alt="Avatar">
+                        <img src="https://ui-avatars.com/api/?name={{ item.curso.nombre|urlencode }}&background=007A7C&color=fff" alt="Avatar">
                         <div>
-                            <div class="name">Mtro. Ricardo Mendoza</div>
-                            <div class="role">SECUNDARIA TÉCNICA 42</div>
+                            <div class="name">{{ foro.titulo }}</div>
+                            <div class="role">{{ item.curso.nombre }}</div>
                         </div>
                     </div>
-                    <span style="font-size: 0.7rem; color: #bbb;">Hace 2 horas</span>
+                    <span style="font-size: 0.7rem; color: #bbb;">{{ foro.fecha_creacion|date:"d/m/Y" }}</span>
                 </div>
                 <div class="post-content">
-                    <h3>¿Cómo evaluar campos formativos sin caer en lo cuantitativo?</h3>
-                    <p>Compañeros, estoy trabajando el campo de Ética y Naturaleza. Me gustaría saber qué instrumentos de evaluación formativa les han funcionado mejor para registrar el avance cualitativo en proyectos comunitarios.</p>
+                    <h3>{{ foro.titulo }}</h3>
+                    <p>{{ foro.descripcion }}</p>
                 </div>
                 <div class="post-actions">
-                    <span><i class="far fa-comment"></i> 14 Comentarios</span>
-                    <span><i class="far fa-heart"></i> 8 Reacciones</span>
+                    <span><i class="far fa-comment"></i> Foro activo</span>
+                    <span><i class="far fa-folder"></i> {{ item.curso.ciclo_escolar }}</span>
                     <span style="color: var(--turquesa); font-weight: bold;"><i class="fas fa-robot"></i> Resumen IA disponible</span>
                 </div>
             </div>
+                {% empty %}
+                    {% if forloop.first %}
+                    <div class="post-card">
+                        <div class="post-content">
+                            <h3>Sin foros activos</h3>
+                            <p>No hay foros registrados para tus cursos activos.</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% empty %}
+            <div class="post-card">
+                <div class="post-content">
+                    <h3>Sin cursos activos</h3>
+                    <p>Aún no tienes cursos activos para mostrar foros.</p>
+                </div>
+            </div>
+            {% endfor %}
         </main>
 
         <aside class="forum-sidebar">
@@ -241,7 +262,7 @@
                 <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
                 <h4 style="margin-top: 0; font-family: 'Montserrat';"><i class="fas fa-paw"></i> Guía Jaguar IA</h4>
                 <p style="font-size: 0.75rem; line-height: 1.5;">
-                    Maestra Elena, hoy se discute mucho sobre la <strong>Inclusión en Zonas Rurales</strong>.
+                    {{ usuario.nombre }}, aquí verás discusiones relacionadas con tus cursos activos.
                     <br><br>
                     He analizado los comentarios y aquí hay un recurso oficial de la SEP que podría interesarles:
                 </p>

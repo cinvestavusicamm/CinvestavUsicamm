@@ -135,7 +135,7 @@
             <span>EscalafonIA Jaguar</span>
         </div>
         <div style="color: white; font-size: 0.75rem; text-align: right;">
-            <strong>Maestra Elena Pérez</strong>
+            <strong>{{ usuario.nombre }} {{ usuario.apellido_paterno }}</strong>
         </div>
     </header>
 
@@ -248,7 +248,7 @@
                 <div class="alert-box">
                     <h5 style="color: var(--rojo-alerta); font-size: 0.7rem; margin-bottom: 5px;">ACCIÓN CRÍTICA:</h5>
                     <p style="font-size: 0.75rem; line-height: 1.4; color: #555;">
-                        Elena, el sistema detecta que tu <strong>Título de Maestría</strong> no ha sido cargado. Este documento representa <strong>15 puntos</strong> en tu evaluación multifactorial.
+                        {{ usuario.nombre }}, revisa que tus documentos y cursos estén actualizados para fortalecer tu evaluación multifactorial.
                     </p>
                 </div>
 

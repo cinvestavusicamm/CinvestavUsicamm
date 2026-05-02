@@ -35,4 +35,4 @@ class ProcesoAprobacionCursos(models.Model):
         db_table = 'proceso_aprobacion_cursos'
 
     def __str__(self):
-        return f"{self.curso} - {self.decision}"
+        return f"{self.evaluador} - {self.decision}"

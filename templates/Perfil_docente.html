@@ -189,10 +189,10 @@
 
     <div class="container">
         <aside class="profile-side">
-            <img src="https://ui-avatars.com/api/?name=Elena+Perez&background=BC955C&color=fff" alt="Foto Docente">
-            <h3>Elena Pérez</h3>
+            <img src="https://ui-avatars.com/api/?name={{ usuario.nombre|urlencode }}+{{ usuario.apellido_paterno|urlencode }}&background=BC955C&color=fff" alt="Foto Docente">
+            <h3>{{ usuario.nombre }} {{ usuario.apellido_paterno }}</h3>
             <span>Docente de Educación Primaria</span>
-            <div class="curp-box">CURP: PEEX840512MDF</div>
+            <div class="curp-box">CURP: {{ usuario.curp }}</div>
             
             <div style="margin-top: 25px; text-align: left;">
                 <div style="font-size: 0.7rem; font-weight: bold; color: var(--turquesa); margin-bottom: 5px;">
@@ -245,7 +245,7 @@
                     <i class="fas fa-lightbulb"></i> Resumen Jaguar IA (Llama 3.1)
                 </h5>
                 <p style="font-size: 0.75rem; line-height: 1.5; margin: 0; opacity: 0.9;">
-                    Maestra Elena, su perfil es **idóneo** para la convocatoria de Promoción 2026. <br><br>
+                    {{ usuario.nombre }}, tu perfil se encuentra activo dentro de la plataforma. <br><br>
                     Según su historial consultado, tiene el puntaje máximo en antigüedad, pero le sugerimos completar 20 horas adicionales de formación para asegurar la posición de liderazgo.
                 </p>
             </div>

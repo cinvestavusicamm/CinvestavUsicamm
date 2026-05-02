@@ -5,29 +5,33 @@ from django.contrib.auth.hashers import make_password
 from ..models import Institucion, Usuario, Rol
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
-from apps.users.constants import (
-    ROLE_ADMIN,
-    ROLE_DOCENTE,
-    ROLE_EVALUADOR,
-    ROLE_GENERADOR,
-)
+from apps.users.constants import (ROLE_ADMIN,ROLE_DOCENTE,ROLE_EVALUADOR,ROLE_GENERADOR,)
+from apps.users.services.login_security_service import LoginSecurityService
 
 def sesion(request):
     if request.method == 'POST':
         curp = request.POST['curp']
         password = request.POST['password']
+        ip= LoginSecurityService.obtener_ip(request)
+
+        if LoginSecurityService.esta_bloqueado(curp, ip):
+            messages.error(request, 'Demasiados intentos fallidos. Intente nuevamente más tarde.')
+            return redirect('sesion')
 
         try:
             usuario = Usuario.objects.select_related('rol').get(curp=curp)
         except Usuario.DoesNotExist:
+            LoginSecurityService.registrar_fallo(curp, ip)
             messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
 
         if not usuario.activo:
+            LoginSecurityService.registrar_fallo(curp, ip)
             messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
 
         if usuario.check_password(password):
+            LoginSecurityService.limpiar_intentos(curp, ip)
             request.session.flush()
 
             rol = usuario.rol.nombre_rol.strip()
@@ -54,8 +58,7 @@ def sesion(request):
             else:
                 messages.error(request, f'Rol no reconocido: {rol}')
                 return redirect('sesion')
-
-
+        LoginSecurityService.registrar_fallo(curp, ip)
         messages.error(request, 'Usuario o contraseña incorrectos')
 
     return render(request, 'sesion.html')
