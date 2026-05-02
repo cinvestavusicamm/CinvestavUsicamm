@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo Operativo | EscalafonIA Jaguar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/main.css">
+    
+    <style>
+        /* Solo agregamos estos pequeños estilos locales para que el ACORDEÓN funcione 
+           sin tocar el main.css global */
+        .card-body { display: none; padding: 20px; background: #fff; }
+        .card-modelo.active .card-body { display: block; }
+        .card-modelo.active .chevron { transform: rotate(180deg); }
+        .card-header { cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-radius: 8px; color: white; margin-bottom: 5px; }
+        .bg-dorado { background: var(--dorado); color: var(--guinda); }
+        .bg-guinda { background: var(--guinda); }
+        .bg-turquesa { background: var(--turquesa); }
+        .bg-gris-oscuro { background: #444; }
+        .list-items { list-style: none; padding: 0; }
+        .list-items li { margin-bottom: 12px; font-size: 0.9rem; display: flex; gap: 10px; align-items: flex-start; }
+    </style>
+</head>
+<body>
+
+    <header class="header-main">
+        <div class="brand">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+            <div class="brand-text">
+                <h1>EscalafonIA Jaguar</h1>
+                <span>Procesos de Carrera Magisterial 2026</span>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-weight: 700; font-size: 0.9rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</div>
+            <div style="font-size: 0.65rem; color: var(--dorado);">Folio USICAMM: {{ proceso.folio }}</div>
+        </div>
+    </header>
+
+    <nav class="nav-actions-top">
+        <div class="breadcrumb">
+            Inicio > Sistema > <span>Modelo Operativo</span>
+        </div>
+        <a href="{% url 'panel_docente' %}" class="btn-back"><i class="fas fa-arrow-left"></i> REGRESAR AL MENÚ</a>
+    </nav>
+
+    <div class="container">
+        <main>
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-network-wired"></i> ¿Cómo funciona mi plataforma?</h2>
+                <p style="color: #666; margin-bottom: 25px;">Haz clic en cada sección para conocer cómo cuidamos y procesamos tu información.</p>
+
+                <div class="modelo-grid">
+                    <div class="card-modelo">
+                        <div class="card-header bg-dorado" onclick="toggleAccordion(this)">
+                            <div style="font-weight: bold;"><i class="fas fa-bolt"></i> Acciones de impacto inmediato</div>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-items">
+                                <li><i class="fas fa-id-card" style="color:var(--guinda)"></i> <span><strong>Pre-registro inteligente:</strong> CURP + consentimiento explícito.</span></li>
+                                <li><i class="fas fa-check-double" style="color:var(--guinda)"></i> <span><strong>Elegibilidad automática:</strong> Datos certificados e interoperables.</span></li>
+                                <li><i class="fas fa-trash-alt" style="color:var(--guinda)"></i> <span><strong>Cero Papel:</strong> Eliminación de copias físicas innecesarias.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card-modelo">
+                        <div class="card-header bg-guinda" onclick="toggleAccordion(this)">
+                            <div style="font-weight: bold;"><i class="fas fa-robot"></i> Uso estratégico de IA</div>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-items">
+                                <li><i class="fas fa-magic" style="color:var(--guinda)"></i> <span><strong>Validación automática:</strong> Algoritmos de visión computacional.</span></li>
+                                <li><i class="fas fa-user-shield" style="color:var(--guinda)"></i> <span><strong>Seguridad:</strong> Identificación de casos para revisión humana.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card-modelo">
+                        <div class="card-header bg-turquesa" onclick="toggleAccordion(this)">
+                            <div style="font-weight: bold;"><i class="fas fa-database"></i> Fuentes de información</div>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-items">
+                                <li><i class="fas fa-server" style="color:var(--turquesa)"></i> <span><strong>Interoperabilidad:</strong> Conexión directa con RENAPO y Profesiones.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="card ia-card">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <i class="fas fa-paw" style="color: var(--dorado); font-size: 1.5rem;"></i>
+                    <h3 style="color: var(--dorado); margin: 0; font-size: 1rem;">Cerebro Jaguar</h3>
+                </div>
+                <p style="font-size: 0.85rem; color: white;">
+                    <strong>¡Hola, Maestra Elena!</strong><br><br>
+                    Yo me encargo de conectarme con bases de datos oficiales para que no tengas que ir a entregar copias ni hacer filas.
+                </p>
+                <div style="margin-top: 15px; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px;">
+                    <small style="color: var(--dorado);">¿Sabías qué? Tu pre-registro ahora toma solo 3 minutos.</small>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer-vino">
+        <div class="legal">
+            SISTEMA ALINEADO CON LA LEY GENERAL DEL SISTEMA PARA LA CARRERA DE LAS MAESTRAS Y LOS MAESTROS | MÉXICO 2026
+        </div>
+    </footer>
+
+    <div class="chat-widget">
+        <div class="chat-toggle-btn" onclick="toggleChatWindow()">
+            <i class="fas fa-paw"></i>
+        </div>
+    </div>
+
+    <script>
+        function toggleAccordion(headerElement) {
+            headerElement.parentElement.classList.toggle('active');
+        }
+        function toggleChatWindow() { /* Tu script de chat aquí */ }
+    </script>
+</body>
+</html>

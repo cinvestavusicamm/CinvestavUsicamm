@@ -145,7 +145,7 @@
     </nav>
 
     <div class="countdown-bar">
-        <i class="fas fa-clock"></i> RESTAN: 45 DÍAS PARA EL CIERRE DE CARGA
+        <i class="fas fa-clock"></i> RESTAN: {{ proceso.datos_multifactores.dias_restantes }} DÍAS PARA EL CIERRE DE CARGA
     </div>
 
     <div class="container">
@@ -154,13 +154,13 @@
             <div class="status-grid">
                 <div class="status-card">
                     <h4 style="font-size: 0.65rem; color: #777;">PUNTAJE MULTIFACTORIAL</h4>
-                    <div class="status-value">78 / 100 <span style="font-size: 0.7rem; color: #999;">pts</span></div>
-                    <div class="progress-container"><div class="progress-bar" style="width: 78%;"></div></div>
+                    <div class="status-value">{{ proceso.datos_multifactores.puntaje_multifactorial.actual }} / {{ proceso.datos_multifactores.puntaje_multifactorial.max }} <span style="font-size: 0.7rem; color: #999;">pts</span></div>
+                    <div class="progress-container"><div class="progress-bar" style="width: {{ proceso.datos_multifactores.puntaje_multifactorial.porcentaje }}%;"></div></div>
                 </div>
                 <div class="status-card" style="border-left-color: var(--dorado);">
                     <h4 style="font-size: 0.65rem; color: #777;">HORAS DE FORMACIÓN</h4>
-                    <div class="status-value">120 / 200 <span style="font-size: 0.7rem; color: #999;">hrs</span></div>
-                    <div class="progress-container"><div class="progress-bar" style="width: 60%; background: var(--dorado);"></div></div>
+                    <div class="status-value">{{ proceso.datos_multifactores.horas_formacion.actual }} / {{ proceso.datos_multifactores.horas_formacion.max }} <span style="font-size: 0.7rem; color: #999;">hrs</span></div>
+                    <div class="progress-container"><div class="progress-bar" style="width: {{ proceso.datos_multifactores.horas_formacion.porcentaje }}%; background: var(--dorado);"></div></div>
                 </div>
             </div>
 
