@@ -4,27 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GENERADOR DE CURSOS - Jaguar IA 2026</title>
+    <title>JAGUAR IA · Cursos USICAMM 2026</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700;800;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root {
-            --guinda: #691C32;
-            --turquesa: #007A7C;
-            --dorado: #BC955C;
-            --bg: #F8FAFC;
-            --white: #FFFFFF;
-            --text: #1F2937;
-            --borde: #E2E8F0;
-        }
-
+        /* ===== RESET Y VARIABLES ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        :root {
+            --guinda: #691C32;
+            --guinda-light: #8a2a45;
+            --turquesa: #007A7C;
+            --turquesa-light: #1a9a9c;
+            --dorado: #BC955C;
+            --dorado-light: #d4af37;
+            --bg: #F4F7FB;
+            --white: #FFFFFF;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --borde: #E9EEF3;
+            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.03), 0 2px 5px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 15px 25px -10px rgba(0, 0, 0, 0.05), 0 5px 10px -5px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 25px 40px -15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.25s ease;
         }
 
         body {
@@ -36,81 +45,237 @@
             color: var(--text);
         }
 
-        /* --- SIDEBAR --- */
+        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 280px;
             background: var(--white);
-            border-right: 2px solid var(--guinda);
+            border-right: 1px solid var(--borde);
             display: flex;
             flex-direction: column;
-            padding: 25px;
+            padding: 28px 18px;
             transition: 0.3s;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.02);
+            z-index: 20;
         }
 
         .brand {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .brand img {
-            width: 60px;
+            width: 75px;
             border-radius: 50%;
-            border: 2px solid var(--guinda);
-            padding: 3px;
+            border: 3px solid var(--dorado);
+            padding: 5px;
+            background: white;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .brand img:hover {
+            transform: scale(1.02);
+            border-color: var(--turquesa);
+        }
+
+        .brand h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            color: var(--guinda);
+            margin-top: 12px;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
-            color: #64748B;
+            gap: 14px;
+            padding: 12px 18px;
+            color: var(--text-light);
             text-decoration: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 5px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            transition: var(--transition);
             cursor: pointer;
-            transition: 0.2s;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 1.1rem;
         }
 
         .nav-item:hover {
-            background: #f8fafc;
+            background: #F1F5F9;
             color: var(--guinda);
+            transform: translateX(3px);
         }
 
         .nav-item.active {
             background: var(--guinda);
             color: white;
+            box-shadow: 0 8px 16px -8px var(--guinda);
         }
 
         .nav-item.back-btn {
             color: var(--text);
-            margin-bottom: 15px;
-            border: 1px solid #eee;
+            border: 1px solid var(--borde);
+            margin-bottom: 20px;
+            background: #FAFAFC;
         }
 
-        /* --- WORKSPACE --- */
+        /* ===== WORKSPACE ===== */
         .workspace {
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            background: var(--bg);
         }
 
+        /* HEADER completamente vino con texto blanco */
         header {
-            height: 75px;
+            height: 70px;
+            /* un poco más pequeño */
             background: var(--guinda);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
+            padding: 0 30px;
             color: white;
-            border-bottom: 3px solid var(--dorado);
-            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.02);
+            z-index: 15;
         }
 
+        .header-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+        }
+
+        .header-title span {
+            color: white;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 40px;
+            margin-left: 8px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Botones del header: blancos con texto vino */
+        .btn-outline,
+        .btn-solid {
+            padding: 6px 16px;
+            /* más pequeños */
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--guinda);
+            border: 1.5px solid white;
+        }
+
+        .btn-outline:hover {
+            background: var(--guinda-light);
+            color: white;
+            border-color: var(--guinda-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -8px white;
+        }
+
+        .btn-solid {
+            background: white;
+            color: var(--guinda);
+            box-shadow: 0 8px 16px -10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-solid:hover {
+            background: var(--guinda-light);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -12px var(--guinda);
+        }
+
+        /* Menú de usuario */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-icon {
+            font-size: 1.8rem;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-icon:hover {
+            transform: scale(1.05);
+            color: var(--dorado);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            min-width: 150px;
+            z-index: 100;
+            overflow: hidden;
+            border: 1px solid var(--borde);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .dropdown-menu a:hover {
+            background: #F1F5F9;
+            color: var(--guinda);
+        }
+
+        .dropdown-menu a i {
+            width: 20px;
+            color: var(--guinda);
+        }
+
+        .user-menu:hover .dropdown-menu,
+        .dropdown-menu:hover {
+            display: block;
+        }
+
+        /* Canvas principal */
         .canvas {
             flex: 1;
             overflow-y: auto;
@@ -119,56 +284,104 @@
             flex-direction: column;
             align-items: center;
             scroll-behavior: smooth;
+            background: #F9FCFE;
         }
 
         .feed-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
         }
 
-        /* --- BLOQUES --- */
+        /* Bloques de curso (sin cambios) */
         .block {
             background: var(--white);
-            border-radius: 20px;
+            border-radius: 32px;
             padding: 40px;
             margin-bottom: 40px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-md);
             border-left: 6px solid var(--turquesa);
             position: relative;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 122, 124, 0.08);
+            animation: fadeUp 0.4s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .block:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
         }
 
         .block.editing {
             border-left-color: var(--dorado);
-            background: #FFFEF7;
+            background: #FFFDF8;
         }
 
         .block-label {
             position: absolute;
             top: -14px;
-            left: 25px;
-            background: #111827;
+            left: 30px;
+            background: var(--text);
             color: white;
-            padding: 5px 15px;
-            font-size: 0.6rem;
-            font-weight: 900;
-            border-radius: 6px;
+            padding: 5px 22px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            border-radius: 40px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+        }
+
+        .badge-purpose {
+            position: absolute;
+            top: -14px;
+            right: 30px;
+            background: var(--dorado);
+            color: var(--text);
+            padding: 5px 22px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+        }
+
+        .badge-purpose.puntos {
+            background: var(--turquesa);
+            color: white;
         }
 
         .btn-edit-block {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 60px;
             background: #F1F5F9;
             border: 1px solid var(--borde);
-            color: var(--texto-gris);
-            padding: 6px 14px;
-            border-radius: 8px;
+            color: var(--text-light);
+            padding: 6px 18px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 0.7rem;
-            font-weight: 800;
-            transition: 0.2s;
+            font-weight: 700;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 10;
         }
 
         .btn-edit-block:hover {
@@ -176,136 +389,286 @@
             color: white;
         }
 
+        /* Barrita de asistente IA */
+        .ai-assist-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .btn-ai-assist {
+            background: var(--turquesa);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-ai-assist:hover {
+            background: var(--turquesa-light);
+            transform: scale(1.1);
+        }
+
         .h1-input {
-            font-family: 'Montserrat';
-            font-size: 1.6rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
             color: var(--guinda);
             margin-bottom: 15px;
             outline: none;
             font-weight: 900;
+            line-height: 1.2;
         }
 
         .p-input {
             font-size: 0.95rem;
-            line-height: 1.8;
-            color: #4B5563;
+            line-height: 1.7;
+            color: var(--text-light);
             outline: none;
-            margin-bottom: 15px;
-            text-align: justify;
+            margin-bottom: 25px;
         }
 
-        /* --- COMPONENTES --- */
         .grid-info {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            background: #F8FAFC;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #E2E8F0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            background: #F8FBFE;
+            padding: 24px;
+            border-radius: 24px;
+            border: 1px solid var(--borde);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
         }
 
-        .audio-container {
-            background: #111827;
-            border-radius: 15px;
+        .grid-info div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid-info i {
+            color: var(--turquesa);
+            width: 22px;
+            font-size: 1.1rem;
+        }
+
+        .info-card {
+            background: #e6f7f7;
+            border-radius: 20px;
             padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid var(--turquesa);
+            font-size: 0.95rem;
+        }
+
+        /* Elementos multimedia (sin cambios) */
+        .audio-container {
+            background: linear-gradient(145deg, #1a1e2b, #0f121c);
+            border-radius: 60px;
+            padding: 16px 25px;
             margin: 20px 0;
             color: white;
             display: flex;
             align-items: center;
             gap: 20px;
-        }
-
-        .match-row {
-            display: grid;
-            grid-template-columns: 1fr 40px 1fr;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .match-item {
-            padding: 10px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
+            box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.3);
         }
 
         .video-box {
             width: 100%;
-            height: 250px;
-            background: #000;
-            border-radius: 15px;
+            height: 260px;
+            background: linear-gradient(145deg, #1a1e2b, #0f121c);
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             flex-direction: column;
+            margin: 20px 0;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
         }
 
-        /* --- QUIZ --- */
+        .video-box:hover {
+            transform: scale(1.01);
+            box-shadow: 0 25px 35px -10px black;
+        }
+
+        /* Quizzes */
         .quiz-item {
-            padding: 15px;
-            border: 1.5px solid #F1F5F9;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            padding: 22px;
+            border: 1.5px solid var(--borde);
+            border-radius: 24px;
+            margin-bottom: 20px;
             position: relative;
-            background: #fafafa;
+            background: white;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-delete-q {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 12px;
+            right: 12px;
             color: #ef4444;
             cursor: pointer;
             font-size: 0.8rem;
             border: none;
-            background: none;
+            background: #FEE2E2;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .btn-delete-q:hover {
+            background: #ef4444;
+            color: white;
         }
 
         .option-editable {
             display: block;
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            background: #fff;
-            border: 1px solid #eee;
+            padding: 12px 18px;
+            margin: 10px 0;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            background: #F9FCFE;
+            border: 1px solid #E9EEF3;
             outline: none;
+            transition: 0.1s;
         }
 
         .option-editable.correct {
-            border-left: 4px solid var(--turquesa);
-            background: #f0fdf4;
+            border-left: 6px solid var(--turquesa);
+            background: #F0FDF9;
+            font-weight: 500;
         }
 
-        /* --- LOCK OVERLAY --- */
+        .add-content-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 25px 0 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-add {
+            background: white;
+            border: 1.5px dashed var(--turquesa);
+            color: var(--turquesa);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            background: var(--turquesa);
+            color: white;
+            border: 1.5px solid var(--turquesa);
+            transform: translateY(-2px);
+        }
+
+        .content-item {
+            position: relative;
+            margin: 25px 0;
+            padding: 20px;
+            border: 1px solid var(--borde);
+            border-radius: 28px;
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-remove-item {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #FEE2E2;
+            color: #ef4444;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            z-index: 5;
+            transition: var(--transition);
+        }
+
+        .btn-remove-item:hover {
+            background: #ef4444;
+            color: white;
+        }
+
         .lock-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.96);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
             z-index: 50;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
+            border-radius: 32px;
             text-align: center;
             padding: 20px;
         }
 
-        /* --- PANEL AI --- */
+        /* ===== PANEL IA ===== */
         .ai-panel {
-            width: 360px;
+            width: 380px;
             background: var(--white);
             border-left: 1px solid var(--borde);
             display: flex;
             flex-direction: column;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.03);
+            z-index: 25;
+        }
+
+        /* Header del panel también en vino con texto blanco */
+        .panel-header {
+            padding: 20px 25px;
+            font-weight: 800;
+            background: var(--guinda);
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-header img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--dorado);
         }
 
         .chat-box {
@@ -314,59 +677,119 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            background: #F8FAFC;
+            gap: 18px;
+            background: #F9FCFE;
         }
 
         .bubble {
-            padding: 15px;
-            border-radius: 18px;
-            font-size: 0.85rem;
+            padding: 16px 22px;
+            border-radius: 24px;
+            font-size: 0.9rem;
             line-height: 1.5;
+            max-width: 90%;
+            box-shadow: var(--shadow-sm);
+            animation: popIn 0.2s ease;
+            color: white;
         }
 
         .bubble.ia {
-            background: white;
-            border-left: 5px solid var(--turquesa);
+            background: var(--guinda-light);
             align-self: flex-start;
+            border-bottom-left-radius: 6px;
         }
 
         .bubble.user {
             background: var(--guinda);
-            color: white;
             align-self: flex-end;
+            border-bottom-right-radius: 6px;
+        }
+
+        .quick-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quick-option-btn {
+            background: white;
+            border: 1.5px solid var(--turquesa);
+            color: var(--turquesa);
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .quick-option-btn:hover {
+            background: var(--turquesa);
+            color: white;
+            transform: translateX(5px);
         }
 
         .input-area {
             padding: 25px;
             border-top: 1px solid var(--borde);
+            background: white;
         }
 
         textarea {
             width: 100%;
             height: 90px;
-            padding: 15px;
+            padding: 18px;
             border: 2px solid #F1F5F9;
-            border-radius: 12px;
+            border-radius: 28px;
             resize: none;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             outline: none;
             font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        textarea:focus {
+            border-color: var(--turquesa);
+            box-shadow: 0 0 0 3px rgba(0, 122, 124, 0.1);
         }
 
         .btn-main {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: var(--guinda);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 40px;
             font-weight: 800;
             cursor: pointer;
-            transition: 0.3s;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            box-shadow: 0 10px 20px -10px var(--guinda);
         }
 
-        /* --- VISTA DOCENTE OVERLAY BOTON --- */
+        .btn-main:hover {
+            background: var(--guinda-light);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -12px var(--guinda);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--guinda);
+            color: white;
+            text-align: center;
+            padding: 15px 30px;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Botón flotante */
         #btn-docente-back {
             position: fixed;
             bottom: 30px;
@@ -374,124 +797,439 @@
             z-index: 2000;
             background: var(--guinda);
             color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
+            padding: 16px 32px;
+            border-radius: 60px;
             border: none;
             font-weight: 800;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 30px -12px var(--guinda);
             cursor: pointer;
             display: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        #btn-docente-back:hover {
+            transform: scale(1.02);
+            background: var(--guinda-light);
         }
 
         .hidden {
             display: none !important;
         }
+
+        /* Cargos verticales en tarjetas */
+        .cargos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .cargo-card {
+            background: #F8FBFE;
+            border: 1px solid var(--borde);
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .cargo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--turquesa);
+        }
+
+        .cargo-card i {
+            font-size: 2rem;
+            color: var(--guinda);
+            margin-bottom: 10px;
+        }
+
+        .cargo-card h4 {
+            font-weight: 800;
+            color: var(--guinda);
+            font-size: 1rem;
+        }
+
+        .cargo-card p {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+
+        [data-tooltip]:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            display: none;
+            z-index: 100;
+        }
+
+        [data-tooltip]:hover:before {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
-
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="brand">
-            <img
-                src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
-            <h2
-                style="font-family:Montserrat; font-weight:900; color:var(--guinda); margin-top:10px; font-size: 1.1rem;">
-                ESCALAFONIA</h2>
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar IA">
+            <h2>ESCALAFONIA</h2>
         </div>
-
         <nav class="nav-global">
-            <a href="javascript:history.back()" class="nav-item back-btn">
+            <a href="#" class="nav-item back-btn" onclick="history.back()">
                 <i class="fas fa-chevron-left"></i> Regresar
             </a>
-            <a href="{% url 'generador_cursos:index_generador' %}" class="nav-item active">
+            <a href="#" class="nav-item active">
                 <i class="fas fa-th-large"></i> Dashboard
             </a>
-            <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-magic"></i> Creación de cursos
             </a>
-            <a href="{% url 'generador_cursos:cursos' %}" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-folder"></i> Mis cursos
             </a>
-            <a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-chart-line"></i> Estadísticas
             </a>
-            <a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-user-circle"></i> Mi perfil
             </a>
         </nav>
-
-        <div style="margin-top: auto; border-top: 1px solid #eee; padding-top: 15px;">
-            <a href="#" class="nav-item"><i class="fas fa-question-circle"></i> AYUDA</a>
-            <a href="login.html" class="nav-item" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> SALIR</a>
-        </div>
+        <div style="margin-top: auto; border-top: 1px solid var(--borde); padding-top: 20px;"></div>
     </aside>
 
     <button id="btn-docente-back" onclick="togglePreviewMode()"><i class="fas fa-edit"></i> REGRESAR AL EDITOR</button>
 
     <div class="workspace">
         <header>
-            <div style="font-weight: 900; font-size: 0.75rem;">SISTEMA JAGUAR: <span id="status"
-                    style="color:var(--dorado)">AUTORÍA DE TRAYECTORIA</span></div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-main" style="width:auto; padding:8px 20px; background:var(--negro)"
-                    onclick="togglePreviewMode()">
+            <div class="header-title">SISTEMA JAGUAR · <span>GENERADOR USICAMM 2026</span></div>
+            <div class="header-actions">
+                <button class="btn-outline" onclick="togglePreviewMode()">
                     <i class="fas fa-eye"></i> VISTA DOCENTE
                 </button>
-                <button class="btn-main" style="width:auto; padding:8px 20px; background:var(--turquesa)"
-                    onclick="subirAAprobacion()">
+                <button class="btn-solid" onclick="subirAAprobacion()">
                     <i class="fas fa-cloud-upload-alt"></i> SUBIR A USICAMM
                 </button>
+                <div class="user-menu">
+                    <i class="fas fa-user-circle user-icon"></i>
+                    <div class="dropdown-menu">
+                        <a href="#" onclick="mostrarAyuda()"><i class="fas fa-question-circle"></i> Ayuda</a>
+                        <a href="#" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                    </div>
+                </div>
             </div>
         </header>
 
         <main class="canvas" id="mainCanvas">
-            <div id="loader"><i class="fas fa-cog fa-spin"></i> JAGUAR IA CONSTRUYENDO CURSO...</div>
+            <div id="loader" style="display:none; text-align:center; margin-top:30vh;">
+                <i class="fas fa-cog fa-spin fa-3x" style="color:var(--turquesa);"></i>
+                <p style="margin-top:20px; font-weight:600;">JAGUAR IA CONSTRUYENDO CURSO...</p>
+            </div>
             <div id="feed-central" class="feed-container">
                 <div id="placeholder" style="text-align: center; margin-top: 20vh; color: #94A3B8;">
                     <i class="fas fa-pen-fancy" style="font-size: 5rem; opacity: 0.2; margin-bottom: 20px;"></i>
-                    <h2 style="font-family:Montserrat; font-weight:900;">Panel generador de cursos</h2>
-                    <p>Introduce el tema central y Jaguar IA generará los niveles de la trayectoria pedagógica
-                        requerida.</p>
+                    <h2 style="font-family:Montserrat; font-weight:900;">Generador de cursos</h2>
+                    <p style="font-size:1rem;">Selecciona una opción en el asistente para comenzar.</p>
                 </div>
             </div>
         </main>
+
+        <footer class="footer">
+            <p>© 2026 JAGUAR IA · Todos los derechos reservados · Plataforma oficial USICAMM</p>
+        </footer>
     </div>
 
     <aside class="ai-panel" id="aiPanel">
-        <div style="padding:20px; font-weight:900; color:var(--guinda); border-bottom:1px solid #eee;">ASISTENTE JAGUAR
+        <div class="panel-header">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
+            ASISTENTE JAGUAR
         </div>
-        <div class="chat-box" id="chat-box">
-            <div class="bubble ia">Hola, Mtro. Mendieta. Estoy lista para generar la trayectoria siguiendo el orden
-                pedagógico exacto. <br><br><b>¿Cuál es el tema hoy?</b></div>
-        </div>
+        <div class="chat-box" id="chat-box"></div>
         <div class="input-area">
-            <textarea id="user-input" placeholder="Ej: Liderazgo y Supervisión en la NEM..."></textarea>
-            <button class="btn-main" onclick="procesarIA()">GENERAR </button>
+            <textarea id="user-input" placeholder="Escribe tu mensaje..."></textarea>
+            <button class="btn-main" onclick="procesarIA()">ENVIAR</button>
         </div>
     </aside>
 
     <script>
-        let cursoActual = "";
+        // ---------- ESTADO GLOBAL ----------
+        let modoCreacion = null; // 'guiado' o 'manual'
+        let cursoActual = {
+            tipo: '',
+            proposito: '', // 'requisitos' o 'puntos'
+            tema: '',
+            duracion: '',
+            publico: '',
+            cargo: '' // Nuevo: para vertical, el cargo específico
+        };
+        let pasoGuiado = 0;
+        let enModoEditor = true;
+
+        const knowledgeBase = {
+            horizontal: {
+                desc: "Promoción Horizontal: aumento salarial (35-41%) sin cambiar de puesto.",
+                requisitos: "Requisitos: 2 años mínimo, plaza definitiva. Fechas 2026: convocatorias 20 feb, registro 27 abr-3 may, examen 25-26 jul.",
+                examen: "Enfoque: Pedagógico y de aula (estrategias didácticas, inclusión, planeación). Casos prácticos de convivencia escolar.",
+                cursos: "Cursos válidos: 'Estrategias Didácticas (20h)', 'Inclusión Educativa (40h)', 'Evaluación Formativa (30h)'."
+            },
+            vertical: {
+                desc: "Promoción Vertical: ascenso a director/supervisor (cambio de función).",
+                requisitos: "Requisitos: licenciatura acorde, 4 años experiencia. Registro en enero-febrero, resultados mediados de año.",
+                examen: "Enfoque: Administrativo y de gestión (liderazgo, resolución de conflictos, normativa legal, gestión de recursos).",
+                cursos: "Cursos válidos: 'Gestión Directiva (20h)', 'Liderazgo Escolar (40h)', 'Normativa Educativa (30h)'."
+            },
+            horas: {
+                desc: "Horas Adicionales: incrementar carga horaria.",
+                requisitos: "Requisitos: ser docente de hora/semana/mes.",
+                examen: "Similar a promoción horizontal, pero con énfasis en la materia específica.",
+                cursos: "Cursos: 'Actualización en Matemáticas (20h)', 'Didáctica del Español (30h)'."
+            }
+        };
+
+        // Cargos para promoción vertical
+        const cargosVerticales = [
+            { nombre: 'Director', icono: 'fa-user-tie', desc: 'Gestión escolar y liderazgo' },
+            { nombre: 'Subdirector', icono: 'fa-user-graduate', desc: 'Apoyo a dirección y coordinación' },
+            { nombre: 'ATP', icono: 'fa-chalkboard-user', desc: 'Asesoría técnico-pedagógica' },
+            { nombre: 'Supervisor', icono: 'fa-clipboard-list', desc: 'Supervisión de zona escolar' }
+        ];
+
+        window.onload = function() {
+            mostrarOpcionesIniciales();
+        };
+
+        function mostrarOpcionesIniciales() {
+            const chat = document.getElementById('chat-box');
+            const opcionesDiv = document.createElement('div');
+            opcionesDiv.className = 'bubble ia';
+            opcionesDiv.innerHTML = `
+                <strong>✨ ¡Hola!</strong><br><br>
+                Soy tu asistente para cursos USICAMM.<br>
+                <b>Escribe "guiado"</b> para creación paso a paso o <b>"manual"</b> para empezar desde cero.<br><br>
+                <b>⚡ Generación rápida (un clic)</b>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+                    <button class="quick-option-btn" onclick="generarCursoRapido('vertical', '20h', 'Gestión Directiva', 'requisitos', 'Director')">📊 Director 20h Requisitos</button>
+                    <button class="quick-option-btn" onclick="generarCursoRapido('vertical', '40h', 'Liderazgo Escolar', 'puntos', 'Subdirector')">📊 Subdirector 40h Puntos</button>
+                    <button class="quick-option-btn" onclick="generarCursoRapido('vertical', '30h', 'Asesoría Pedagógica', 'requisitos', 'ATP')">📊 ATP 30h Requisitos</button>
+                    <button class="quick-option-btn" onclick="generarCursoRapido('vertical', '25h', 'Supervisión Escolar', 'puntos', 'Supervisor')">📊 Supervisor 25h Puntos</button>
+                    <button class="quick-option-btn" onclick="generarCursoRapido('horizontal', '20h', 'Estrategias Didácticas', 'requisitos')">📈 Horizontal 20h Requisitos</button>
+                    <button class="quick-option-btn" onclick="generarCursoRapido('horizontal', '40h', 'Inclusión Educativa', 'puntos')">📈 Horizontal 40h Puntos</button>
+                    <button class="quick-option-btn" onclick="generarCursoRapido('horas', '20h', 'Actualización Docente', 'requisitos')">⏱️ Horas 20h Requisitos</button>
+                    <button class="quick-option-btn" onclick="generarCursoRapido('horas', '30h', 'Didáctica Específica', 'puntos')">⏱️ Horas 30h Puntos</button>
+                </div>
+                <hr style="margin:15px 0; border-color:var(--borde);">
+                <p><i class="fas fa-info-circle"></i> Información útil:</p>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+                    <button class="quick-option-btn" style="padding:8px 12px;" onclick="mostrarInfo('horizontal')">📈 Promoción Horizontal</button>
+                    <button class="quick-option-btn" style="padding:8px 12px;" onclick="mostrarInfo('vertical')">📊 Promoción Vertical</button>
+                    <button class="quick-option-btn" style="padding:8px 12px;" onclick="mostrarInfo('cursos')">📚 Cursos válidos</button>
+                </div>
+            `;
+            chat.appendChild(opcionesDiv);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function generarCursoRapido(tipo, duracion, tema, proposito, cargo = '') {
+            let tipoTexto = '';
+            if (tipo === 'vertical') tipoTexto = 'Promoción Vertical';
+            else if (tipo === 'horizontal') tipoTexto = 'Promoción Horizontal';
+            else if (tipo === 'horas') tipoTexto = 'Horas Adicionales';
+
+            cursoActual = {
+                tipo: tipoTexto,
+                duracion: duracion,
+                tema: tema,
+                proposito: proposito,
+                publico: 'Docentes',
+                cargo: cargo
+            };
+            pasoGuiado = 5;
+            agregarMensaje('user', `${tipoTexto} ${cargo ? '· ' + cargo : ''} ${duracion} - ${tema} (${proposito})`);
+            generarCursoCompleto();
+        }
+
+        function mostrarInfo(tipo) {
+            let msg = '';
+            if (tipo === 'horizontal') {
+                msg = `<b>📈 Promoción Horizontal</b><br>${knowledgeBase.horizontal.desc}<br><br><b>Examen:</b> ${knowledgeBase.horizontal.examen}<br><b>Cursos:</b> ${knowledgeBase.horizontal.cursos}`;
+            } else if (tipo === 'vertical') {
+                msg = `<b>📊 Promoción Vertical</b><br>${knowledgeBase.vertical.desc}<br><br><b>Examen:</b> ${knowledgeBase.vertical.examen}<br><b>Cursos:</b> ${knowledgeBase.vertical.cursos}`;
+                // Agregar cargos
+                msg += `<br><br><b>Cargos disponibles:</b><div class="cargos-grid" style="margin-top:10px;">`;
+                cargosVerticales.forEach(c => {
+                    msg += `<div class="cargo-card" onclick="seleccionarCargo('${c.nombre}')">
+                        <i class="fas ${c.icono}"></i>
+                        <h4>${c.nombre}</h4>
+                        <p>${c.desc}</p>
+                    </div>`;
+                });
+                msg += `</div>`;
+            } else if (tipo === 'cursos') {
+                msg = `<b>📚 Cursos Extracurriculares</b><br>• Vigencia: máximo 3 años<br>• Horas: mínimo 20 por constancia, máximo 200 acumuladas<br>• Validez: solo del Catálogo Nacional (UPN, CAM, Normales)<br>• Puntaje: 10-20 puntos`;
+            }
+            agregarMensaje('user', `Info sobre ${tipo}`);
+            agregarMensaje('ia', msg);
+        }
+
+        function seleccionarCargo(cargo) {
+            agregarMensaje('user', `Cargo seleccionado: ${cargo}`);
+            if (modoCreacion === 'guiado' && pasoGuiado === 0) {
+                cursoActual.cargo = cargo;
+                cursoActual.tipo = 'Promoción Vertical';
+                pasoGuiado = 1;
+                agregarMensaje('ia', `Has elegido el cargo de <b>${cargo}</b>. Ahora, dime: ¿este curso es para <b>cumplir requisitos</b> o para <b>ganar puntos</b>?`);
+            } else {
+                Swal.fire({
+                    title: `¿Crear curso para ${cargo}?`,
+                    text: "Puedes generarlo rápidamente.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, crear',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        generarCursoRapido('vertical', '30h', `Gestión para ${cargo}`, 'requisitos', cargo);
+                    }
+                });
+            }
+        }
+
+        function seleccionarModo(modo) {
+            modoCreacion = modo;
+            agregarMensaje('user', modo === 'guiado' ? 'Creación guiada' : 'Creación manual');
+            if (modo === 'guiado') {
+                pasoGuiado = 0;
+                const msg = `
+                    <b>Perfecto. Comencemos: ¿Para qué tipo de promoción es el curso?</b>
+                    <div class="quick-options">
+                        <button class="quick-option-btn" onclick="seleccionarTipo('vertical')">📊 Promoción Vertical</button>
+                        <button class="quick-option-btn" onclick="seleccionarTipo('horizontal')">📈 Promoción Horizontal</button>
+                        <button class="quick-option-btn" onclick="seleccionarTipo('horas')">⏱️ Horas Adicionales</button>
+                    </div>
+                    <p style="margin-top:10px;">O escríbelo directamente (ej: "vertical").</p>
+                `;
+                agregarMensaje('ia', msg);
+            } else {
+                generarCursoVacio();
+                agregarMensaje('ia', 'He creado una estructura base vacía. Puedes editar el título y propósito usando el botón "EDITAR" en el primer bloque, y añadir contenido con los botones.');
+            }
+        }
+
+        function seleccionarTipo(tipo) {
+            let tipoTexto = '';
+            if (tipo === 'vertical') tipoTexto = 'Promoción Vertical';
+            else if (tipo === 'horizontal') tipoTexto = 'Promoción Horizontal';
+            else if (tipo === 'horas') tipoTexto = 'Horas Adicionales';
+
+            cursoActual.tipo = tipoTexto;
+            if (tipo === 'vertical') {
+                let cargosHtml = `<b>Elige un cargo:</b><div class="cargos-grid" style="margin-top:10px;">`;
+                cargosVerticales.forEach(c => {
+                    cargosHtml += `<div class="cargo-card" onclick="seleccionarCargo('${c.nombre}')">
+                        <i class="fas ${c.icono}"></i>
+                        <h4>${c.nombre}</h4>
+                        <p>${c.desc}</p>
+                    </div>`;
+                });
+                cargosHtml += `</div>`;
+                agregarMensaje('user', tipoTexto);
+                agregarMensaje('ia', cargosHtml);
+            } else {
+                pasoGuiado = 1;
+                agregarMensaje('user', tipoTexto);
+                agregarMensaje('ia', `Has elegido <b>${tipoTexto}</b>. Ahora, dime: ¿este curso es para <b>cumplir requisitos</b> (con examen y certificado) o para <b>ganar puntos</b> (solo contenido, sin examen)?`);
+            }
+        }
 
         function procesarIA() {
             const input = document.getElementById('user-input');
-            cursoActual = input.value.trim();
-            if (!cursoActual) return;
+            const texto = input.value.trim().toLowerCase();
+            if (!texto) return;
 
-            agregarMensaje('user', cursoActual);
-            input.value = "";
-            document.getElementById('loader').style.display = "block";
-            document.getElementById('placeholder').style.display = "none";
+            agregarMensaje('user', texto);
 
-            setTimeout(() => {
-                document.getElementById('loader').style.display = "none";
-                generarTrayectoriaCompleta(cursoActual);
-                agregarMensaje('ia', `<b>${cursoActual}</b> generado con éxito siguiendo el orden pedagógico solicitado.`);
-                setTimeout(() => {
-                    agregarMensaje('ia', `<b>¿Quieres editar algo?</b> He habilitado la edición del certificado y la gestión de reactivos.`);
-                }, 800);
-            }, 3000);
+            if (texto.includes('horizontal') && (texto.includes('info') || texto.includes('qué es') || texto.includes('cómo es'))) {
+                mostrarInfo('horizontal');
+            } else if (texto.includes('vertical') && (texto.includes('info') || texto.includes('qué es') || texto.includes('cómo es'))) {
+                mostrarInfo('vertical');
+            } else if (texto.includes('curso') && texto.includes('válido')) {
+                mostrarInfo('cursos');
+            } else if (modoCreacion === null) {
+                if (texto.includes('guiado') || texto.includes('creación guiada')) {
+                    seleccionarModo('guiado');
+                } else if (texto.includes('manual') || texto.includes('creación manual')) {
+                    seleccionarModo('manual');
+                } else {
+                    agregarMensaje('ia', 'Por favor, escribe "guiado" para comenzar la creación asistida o "manual" para empezar desde cero, o usa los botones de generación rápida.');
+                }
+            } else if (modoCreacion === 'guiado') {
+                manejarFlujoGuiado(texto);
+            } else {
+                agregarMensaje('ia', 'Puedes preguntarme sobre requisitos o usar los botones para añadir contenido. ¿Necesitas alguna sugerencia?');
+            }
+
+            input.value = '';
+        }
+
+        function manejarFlujoGuiado(texto) {
+            const lower = texto.toLowerCase();
+            switch (pasoGuiado) {
+                case 0:
+                    if (lower.includes('vertical')) seleccionarTipo('vertical');
+                    else if (lower.includes('horizontal')) seleccionarTipo('horizontal');
+                    else if (lower.includes('hora')) seleccionarTipo('horas');
+                    else agregarMensaje('ia', 'Por favor, elige: Vertical, Horizontal o Horas Adicionales.');
+                    break;
+                case 1:
+                    if (lower.includes('requisito')) {
+                        cursoActual.proposito = 'requisitos';
+                        pasoGuiado = 2;
+                        agregarMensaje('ia', 'Perfecto. ¿Cuál es el tema principal del curso? (Ej: Liderazgo, Evaluación formativa)');
+                    } else if (lower.includes('punto') || lower.includes('ganar')) {
+                        cursoActual.proposito = 'puntos';
+                        pasoGuiado = 2;
+                        agregarMensaje('ia', 'Perfecto. ¿Cuál es el tema principal del curso? (Ej: Liderazgo, Evaluación formativa)');
+                    } else {
+                        agregarMensaje('ia', 'Responde: "requisitos" o "puntos".');
+                    }
+                    break;
+                case 2:
+                    cursoActual.tema = texto;
+                    pasoGuiado = 3;
+                    agregarMensaje('ia', '¿Cuántas horas/semanas de duración estimada? (Ej: 20 horas, 4 semanas)');
+                    break;
+                case 3:
+                    cursoActual.duracion = texto;
+                    pasoGuiado = 4;
+                    agregarMensaje('ia', '¿A qué perfil de docente va dirigido? (Ej: Docentes de secundaria, Aspirantes a dirección)');
+                    break;
+                case 4:
+                    cursoActual.publico = texto;
+                    pasoGuiado = 5;
+                    agregarMensaje('ia', 'Generando curso personalizado...');
+                    generarCursoCompleto();
+                    break;
+                default:
+                    agregarMensaje('ia', 'Ya hemos generado el curso. Puedes editarlo o añadir contenido.');
+            }
         }
 
         function agregarMensaje(rol, texto) {
@@ -503,132 +1241,305 @@
             chat.scrollTop = chat.scrollHeight;
         }
 
-        function toggleEdit(btn) {
-            const block = btn.parentElement;
-            const isEditing = block.classList.toggle('editing');
-            const targets = block.querySelectorAll('[contenteditable]');
-            targets.forEach(t => t.contentEditable = isEditing);
-            btn.innerHTML = isEditing ? '<i class="fas fa-save"></i> GUARDAR' : '<i class="fas fa-pen"></i> EDITAR';
+        function generarCursoCompleto() {
+            document.getElementById('loader').style.display = "block";
+            document.getElementById('placeholder').style.display = "none";
+
+            setTimeout(() => {
+                try {
+                    document.getElementById('loader').style.display = "none";
+                    renderizarCurso(true);
+                } catch (error) {
+                    console.error("Error al renderizar curso:", error);
+                    document.getElementById('loader').style.display = "none";
+                    document.getElementById('feed-central').innerHTML = `<div class="block" style="text-align:center; color:red;">Error al generar el curso. Intenta de nuevo.</div>`;
+                }
+            }, 2000);
         }
 
-        function eliminarPregunta(btn) {
-            if (confirm('¿Eliminar este reactivo?')) btn.parentElement.remove();
+        function generarCursoVacio() {
+            document.getElementById('loader').style.display = "none";
+            document.getElementById('placeholder').style.display = "none";
+            cursoActual = {
+                tipo: 'Personalizado',
+                proposito: 'requisitos',
+                tema: 'Nuevo Curso',
+                duracion: 'Por definir',
+                publico: 'Docentes',
+                cargo: ''
+            };
+            renderizarCurso(false);
         }
 
-        function generarTrayectoriaCompleta(tema) {
-            const feed = document.getElementById('feed-central');
-            feed.innerHTML = `
-                <div class="block">
+        function renderizarCurso(conDatos) {
+            const tema = cursoActual.tema || 'Curso sin título';
+            const tipo = cursoActual.tipo ? cursoActual.tipo : 'Personalizado';
+            const proposito = cursoActual.proposito || 'requisitos';
+            const esPuntos = proposito === 'puntos';
+            const esVertical = tipo.toLowerCase().includes('vertical');
+            const esHorizontal = tipo.toLowerCase().includes('horizontal');
+            const cargo = cursoActual.cargo || '';
+
+            const badgeClass = esPuntos ? 'badge-purpose puntos' : 'badge-purpose';
+            const badgeText = esPuntos ? '🎯 PARA GANAR PUNTOS' : '📋 PARA REQUISITOS';
+
+            let html = `
+                <div class="block" id="bloque0" data-bloque="0">
+                    <span class="block-label">Módulo 1: PRESENTACIÓN</span>
+                    <span class="${badgeClass}">${badgeText}</span>
+                    <div class="ai-assist-bar">
+                        <button class="btn-ai-assist" onclick="solicitarAyudaIA('bloque0', 'presentación')" title="Ayuda de IA"><i class="fas fa-robot"></i></button>
+                    </div>
                     <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <span class="block-label">Módulo 1: Encuadre</span>
                     <h1 class="h1-input" contenteditable="false">${tema}</h1>
-                    <p class="p-input" contenteditable="false"><b>Descripción:</b> Curso autogestivo diseñado para el fortalecimiento de habilidades directivas en Educación Media Superior.</p>
+                    <p class="p-input" contenteditable="false"><b>Descripción:</b> Curso diseñado para ${tipo} ${cargo ? '· ' + cargo : ''} - ${esPuntos ? 'Acumulación de puntos' : 'Cumplimiento de requisitos'} en USICAMM.</p>
                     <div class="grid-info">
-                        <div><strong>Modalidad:</strong> En Línea</div>
-                        <div><strong>Acreditación:</strong> 70/100 Mínimo</div>
-                        <div><strong>Fechas:</strong> 08 de enero al 16 de enero 2026</div>
-                        <div><strong>Requisitos:</strong> Participantes en Promoción Vertical</div>
-                    </div>
-                </div>
-
-                <div class="block">
-                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <span class="block-label">Módulo 2: Introducción al Tema</span>
-                    <h1 class="h1-input" contenteditable="false">Narrativa y Significados de la NEM</h1>
-                    <p class="p-input" contenteditable="false">La Nueva Escuela Mexicana (NEM) es el marco filosófico que rige la educación actual, centrada en el humanismo y la equidad comunitaria. El directivo actúa como un líder pedagógico que guía el aprendizaje hacia la excelencia técnica y social, eliminando las Barreras para el Aprendizaje y la Participación (BAP).</p>
-                </div>
-
-                <div class="block">
-                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <span class="block-label">Módulo 3: Audio Análisis</span>
-                    <h1 class="h1-input" contenteditable="false">Podcast: Liderazgo y Supervisión</h1>
-                    <div class="audio-container"><i class="fas fa-play"></i> Reproducir Reflexión de Autoría</div>
-                    <div id="audioQuizContainer" style="margin-top:20px;"></div>
-                </div>
-
-                <div class="block">
-                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <span class="block-label">Módulo 4: Ejercicio de Relación</span>
-                    <h1 class="h1-input" contenteditable="false">Dominio de Conceptos Clave</h1>
-                    <div id="matchingContainer"></div>
-                </div>
-
-                <div class="block">
-                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <span class="block-label">Módulo 5: Recursos Visuales</span>
-                    <h1 class="h1-input" contenteditable="false">Video: Gestión Estratégica</h1>
-                    <div class="video-box"><i class="fas fa-play-circle fa-4x"></i><span>Sugerencia de Video Institucional</span></div>
-                </div>
-
-                <div class="block" id="finalExamBlock">
-                    <div class="lock-overlay docente-lock hidden">
-                        <i class="fas fa-lock fa-3x" style="color:var(--guinda)"></i>
-                        <h2 style="margin-top:15px;">EXAMEN FINAL BLOQUEADO</h2>
-                        <p>Completa todos los módulos previos para habilitar.</p>
-                    </div>
-                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <span class="block-label">Módulo 6: Evaluación Final</span>
-                    <h1 class="h1-input" contenteditable="false">Examen de Acreditación (20 Reactivos)</h1>
-                    <div id="finalQuizContainer"></div>
-                </div>
-
-                <div class="block" style="border-left-color: var(--dorado)">
-                    <div class="lock-overlay docente-lock hidden">
-                        <i class="fas fa-lock fa-3x" style="color:var(--guinda)"></i>
-                        <h2 style="margin-top:15px;">CERTIFICADO BLOQUEADO</h2>
-                        <p>Acredita con mínimo 70 puntos para desbloquear.</p>
-                    </div>
-                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <span class="block-label">Nivel 7: Documento Oficial</span>
-                    <div style="border:10px double var(--guinda); padding:40px; text-align:center; background:white;">
-                        <h2 style="color:var(--guinda); font-family:Montserrat;" contenteditable="false">CONSTANCIA DE ACREDITACIÓN</h2>
-                        <p style="margin-top:15px;" contenteditable="false">Se otorga a:</p>
-                        <h1 style="font-family:Montserrat; font-size:2rem; border-bottom:2px solid #111; display:inline-block; margin:10px 0;" contenteditable="false">NOMBRE DEL DOCENTE</h1>
-                        <p style="font-weight:700; color:var(--dorado)" contenteditable="false">CURSO: ${tema.toUpperCase()}</p>
-                        <p style="font-size:0.7rem; color:var(--texto-gris); margin-top:20px;" contenteditable="false">VALIDADO POR COMITÉ USICAMM 2026</p>
+                        <div><i class="fas fa-tag"></i> <strong>Tipo:</strong> ${tipo} ${cargo ? '· ' + cargo : ''}</div>
+                        <div><i class="fas fa-clock"></i> <strong>Duración:</strong> ${cursoActual.duracion || 'Por definir'}</div>
+                        <div><i class="fas fa-users"></i> <strong>Público:</strong> ${cursoActual.publico || 'Docentes'}</div>
+                        <div><i class="fas fa-star"></i> <strong>Acreditación:</strong> ${esPuntos ? 'No aplica (solo puntos)' : '70/100 mínimo'}</div>
                     </div>
                 </div>
             `;
 
-            // Quiz de Audio (6 preguntas)
-            const audioQuiz = document.getElementById('audioQuizContainer');
-            for (let i = 1; i <= 6; i++) {
-                audioQuiz.innerHTML += `
-                    <div class="quiz-item">
-                        <strong contenteditable="false">Pregunta Audio ${i}:</strong>
-                        <span contenteditable="false" style="display:block;">Referente al análisis del audio...</span>
-                        <div class="option-editable correct" contenteditable="false">Respuesta Basada en el Podcast</div>
-                        <div class="option-editable" contenteditable="false">Opción B</div>
+            if (conDatos && (esHorizontal || esVertical)) {
+                let infoExamen = esHorizontal ? knowledgeBase.horizontal.examen : knowledgeBase.vertical.examen;
+                let infoCursos = esHorizontal ? knowledgeBase.horizontal.cursos : knowledgeBase.vertical.cursos;
+                html += `
+                    <div class="block" style="border-left-color: var(--dorado); background: #FFF4E6;">
+                        <span class="block-label">INFORMACIÓN CLAVE</span>
+                        <div class="ai-assist-bar">
+                            <button class="btn-ai-assist" onclick="solicitarAyudaIA('info', 'información clave')" title="Ayuda de IA"><i class="fas fa-robot"></i></button>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-graduation-cap" style="color:var(--guinda); margin-right:10px;"></i>
+                            <strong>Examen:</strong> ${infoExamen}
+                        </div>
+                        <div class="info-card" style="margin-top:10px;">
+                            <i class="fas fa-book" style="color:var(--guinda); margin-right:10px;"></i>
+                            <strong>Cursos que valen:</strong> ${infoCursos}
+                        </div>
                     </div>
                 `;
             }
 
-            // Relaciones (10)
-            const matchCont = document.getElementById('matchingContainer');
-            for (let i = 1; i <= 10; i++) {
-                matchCont.innerHTML += `
-                    <div class="match-row">
-                        <div class="match-item">Concepto ${i}</div>
-                        <i class="fas fa-link" style="color:var(--dorado)"></i>
-                        <div class="match-target" contenteditable="false">Definición técnica ${i}</div>
+            const modulosBase = esVertical ?
+                ['Gestión y Liderazgo', 'Normativa Legal', 'Resolución de Conflictos', 'Administración de Recursos', 'Ética Directiva'] :
+                ['Fundamentos de la NEM', 'Estrategias Didácticas', 'Evaluación Formativa', 'Inclusión Educativa', 'Planeación por Proyectos'];
+
+            for (let i = 0; i < 5; i++) {
+                html += `
+                    <div class="block" id="bloque${i + 1}" data-bloque="${i + 1}">
+                        <div class="ai-assist-bar">
+                            <button class="btn-ai-assist" onclick="solicitarAyudaIA('bloque${i + 1}', 'módulo ${i + 2}')" title="Ayuda de IA"><i class="fas fa-robot"></i></button>
+                        </div>
+                        <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
+                        <span class="block-label">Módulo ${i + 2}: ${modulosBase[i]}</span>
+                        <h1 class="h1-input" contenteditable="false">${modulosBase[i]}</h1>
+                        <p class="p-input" contenteditable="false">Contenido del módulo. Puedes editarlo y añadir videos, audios o quizzes.</p>
+                        
+                        <div class="contenido-modulo" id="contenido-bloque${i + 1}"></div>
+
+                        <div class="add-content-buttons">
+                            <button class="btn-add" onclick="agregarVideo(${i + 1})"><i class="fas fa-video"></i> Video</button>
+                            <button class="btn-add" onclick="agregarAudio(${i + 1})"><i class="fas fa-headphones"></i> Audio</button>
+                            <button class="btn-add" onclick="agregarQuiz(${i + 1})"><i class="fas fa-question-circle"></i> Quiz</button>
+                        </div>
                     </div>
                 `;
             }
 
-            // Examen Final (20)
-            const finalQuiz = document.getElementById('finalQuizContainer');
-            for (let i = 1; i <= 20; i++) {
-                finalQuiz.innerHTML += `
-                    <div class="quiz-item">
-                        <button class="btn-delete-q" onclick="eliminarPregunta(this)"><i class="fas fa-trash"></i></button>
-                        <strong contenteditable="false">Examen Final - Reactivo ${i}:</strong> 
-                        <span contenteditable="false" style="display:block;">${tema} pregunta ${i}...</span>
-                        <div class="option-editable correct" contenteditable="false">Correcta</div>
-                        <div class="option-editable" contenteditable="false">Incorrecta B</div>
-                        <div class="option-editable" contenteditable="false">Incorrecta C</div>
+            if (!esPuntos) {
+                html += `
+                    <div class="block" id="bloqueFinal" data-bloque="final">
+                        <div class="lock-overlay docente-lock hidden">
+                            <i class="fas fa-lock fa-3x" style="color:var(--guinda)"></i>
+                            <h2 style="margin-top:15px;">EXAMEN FINAL BLOQUEADO</h2>
+                            <p>Completa todos los módulos previos para habilitar.</p>
+                        </div>
+                        <div class="ai-assist-bar">
+                            <button class="btn-ai-assist" onclick="solicitarAyudaIA('final', 'examen final')" title="Ayuda de IA"><i class="fas fa-robot"></i></button>
+                        </div>
+                        <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
+                        <span class="block-label">Evaluación Final</span>
+                        <h1 class="h1-input" contenteditable="false">Examen de Acreditación</h1>
+                        <div id="finalQuizContainer" class="contenido-modulo"></div>
+                        <div class="add-content-buttons">
+                            <button class="btn-add" onclick="agregarPreguntaFinal()"><i class="fas fa-plus"></i> Añadir pregunta</button>
+                        </div>
+                    </div>
+                    <div class="block" style="border-left-color: var(--dorado)" id="bloqueCertificado">
+                        <div class="lock-overlay docente-lock hidden">
+                            <i class="fas fa-lock fa-3x" style="color:var(--guinda)"></i>
+                            <h2 style="margin-top:15px;">CERTIFICADO BLOQUEADO</h2>
+                            <p>Acredita con mínimo 70 puntos para desbloquear.</p>
+                        </div>
+                        <div class="ai-assist-bar">
+                            <button class="btn-ai-assist" onclick="solicitarAyudaIA('certificado', 'certificado')" title="Ayuda de IA"><i class="fas fa-robot"></i></button>
+                        </div>
+                        <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
+                        <span class="block-label">Documento Oficial</span>
+                        <div style="border:10px double var(--guinda); padding:40px; text-align:center; background:white; border-radius:24px;">
+                            <h2 style="color:var(--guinda); font-family:Montserrat;" contenteditable="false">CONSTANCIA DE ACREDITACIÓN</h2>
+                            <p style="margin-top:15px;" contenteditable="false">Se otorga a:</p>
+                            <h1 style="font-family:Montserrat; font-size:2rem; border-bottom:2px solid #111; display:inline-block; margin:10px 0;" contenteditable="false">NOMBRE DEL DOCENTE</h1>
+                            <p style="font-weight:700; color:var(--dorado)" contenteditable="false">CURSO: ${tema.toUpperCase()}</p>
+                            <p style="font-size:0.7rem; color:var(--text-light); margin-top:20px;" contenteditable="false">VALIDADO POR COMITÉ USICAMM 2026</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="block" style="border-left-color: var(--dorado); background: #F0FDF4;">
+                        <div class="ai-assist-bar">
+                            <button class="btn-ai-assist" onclick="solicitarAyudaIA('info-puntos', 'información de puntos')" title="Ayuda de IA"><i class="fas fa-robot"></i></button>
+                        </div>
+                        <span class="block-label">INFORMACIÓN</span>
+                        <div style="text-align:center; padding:20px;">
+                            <i class="fas fa-info-circle fa-3x" style="color:var(--turquesa);"></i>
+                            <h3 style="margin:15px 0;">Curso para acumulación de puntos</h3>
+                            <p>Este curso no incluye examen final ni certificado bloqueado. Los participantes obtendrán horas de formación válidas para el sistema de puntos USICAMM.</p>
+                        </div>
                     </div>
                 `;
             }
+
+            const feed = document.getElementById('feed-central');
+            if (feed) {
+                feed.innerHTML = html;
+            } else {
+                console.error("No se encontró el elemento feed-central");
+            }
+
+            if (conDatos) {
+                setTimeout(() => {
+                    agregarVideo(1, true);
+                    agregarAudio(2, true);
+                    agregarQuiz(3, true);
+                    if (!esPuntos) {
+                        const finalContainer = document.getElementById('finalQuizContainer');
+                        if (finalContainer) {
+                            finalContainer.appendChild(crearPreguntaQuiz(esVertical ?
+                                '¿Cuál es el primer paso en un protocolo de protección civil escolar?' :
+                                '¿Qué estrategia favorece la inclusión en el aula?'));
+                            finalContainer.appendChild(crearPreguntaQuiz(esVertical ?
+                                '¿Qué documento normativo rige la gestión escolar?' :
+                                '¿Cómo se evalúa formativamente?'));
+                        }
+                    }
+                }, 200);
+            }
+        }
+
+        function solicitarAyudaIA(bloque, nombreModulo) {
+            const input = document.getElementById('user-input');
+            input.value = `Ayúdame a mejorar el contenido del módulo "${nombreModulo}"`;
+            input.focus();
+            Swal.fire({
+                title: 'Asistente IA',
+                text: `Escribe tu solicitud para el módulo "${nombreModulo}" y presiona ENVIAR.`,
+                icon: 'info',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        // Funciones de contenido (sin cambios)
+        function agregarVideo(bloqueId, ejemplo = false) {
+            const contenedor = document.getElementById(`contenido-bloque${bloqueId}`);
+            if (!contenedor) return;
+            const videoItem = document.createElement('div');
+            videoItem.className = 'content-item';
+            videoItem.innerHTML = `
+                <button class="btn-remove-item" onclick="eliminarContenido(this)"><i class="fas fa-times"></i></button>
+                <div class="video-box">
+                    <i class="fas fa-play-circle fa-4x" style="color:var(--dorado);"></i>
+                    <span contenteditable="true" style="margin-top:10px;">${ejemplo ? 'Video: ' + (cursoActual.tipo && cursoActual.tipo.includes('Vertical') ? 'Liderazgo directivo' : 'Estrategias de aula') : 'Nuevo video'}</span>
+                </div>
+                <p contenteditable="true" style="margin-top:10px; font-size:0.9rem;">Descripción del video (editable)</p>
+            `;
+            contenedor.appendChild(videoItem);
+        }
+
+        function agregarAudio(bloqueId, ejemplo = false) {
+            const contenedor = document.getElementById(`contenido-bloque${bloqueId}`);
+            if (!contenedor) return;
+            const audioItem = document.createElement('div');
+            audioItem.className = 'content-item';
+            audioItem.innerHTML = `
+                <button class="btn-remove-item" onclick="eliminarContenido(this)"><i class="fas fa-times"></i></button>
+                <div class="audio-container">
+                    <i class="fas fa-play-circle fa-2x" style="color:var(--dorado);"></i>
+                    <span contenteditable="true">${ejemplo ? 'Podcast: ' + (cursoActual.tipo && cursoActual.tipo.includes('Vertical') ? 'Toma de decisiones' : 'Práctica reflexiva') : 'Nuevo audio'}</span>
+                </div>
+            `;
+            contenedor.appendChild(audioItem);
+        }
+
+        function agregarQuiz(bloqueId, ejemplo = false) {
+            const contenedor = document.getElementById(`contenido-bloque${bloqueId}`);
+            if (!contenedor) return;
+            const quizItem = document.createElement('div');
+            quizItem.className = 'content-item';
+            quizItem.innerHTML = `
+                <button class="btn-remove-item" onclick="eliminarContenido(this)"><i class="fas fa-times"></i></button>
+                <strong contenteditable="true">${ejemplo ? 'Quiz: Conceptos clave' : 'Nuevo quiz'}</strong>
+                <div class="quiz-preguntas" id="quiz-${Date.now()}"></div>
+                <button class="btn-add" style="margin-top:10px;" onclick="agregarPreguntaAQuiz(this)"><i class="fas fa-plus"></i> Añadir pregunta</button>
+            `;
+            contenedor.appendChild(quizItem);
+
+            if (ejemplo) {
+                const pregDiv = quizItem.querySelector('.quiz-preguntas');
+                pregDiv.appendChild(crearPreguntaQuiz('Pregunta de ejemplo 1'));
+                pregDiv.appendChild(crearPreguntaQuiz('Pregunta de ejemplo 2'));
+            }
+        }
+
+        function crearPreguntaQuiz(textoPregunta = 'Nueva pregunta') {
+            const div = document.createElement('div');
+            div.className = 'quiz-item';
+            div.innerHTML = `
+                <button class="btn-delete-q" onclick="eliminarPregunta(this)"><i class="fas fa-trash"></i></button>
+                <strong contenteditable="true">${textoPregunta}</strong>
+                <div class="option-editable correct" contenteditable="true">Opción correcta</div>
+                <div class="option-editable" contenteditable="true">Opción incorrecta 1</div>
+                <div class="option-editable" contenteditable="true">Opción incorrecta 2</div>
+                <div class="option-editable" contenteditable="true">Opción incorrecta 3</div>
+                <small style="color:var(--turquesa); display:block; margin-top:8px;">💡 La opción con borde verde es la correcta.</small>
+            `;
+            return div;
+        }
+
+        function agregarPreguntaAQuiz(boton) {
+            const quizItem = boton.closest('.content-item');
+            const preguntasDiv = quizItem.querySelector('.quiz-preguntas');
+            preguntasDiv.appendChild(crearPreguntaQuiz('Nueva pregunta'));
+        }
+
+        function agregarPreguntaFinal() {
+            const container = document.getElementById('finalQuizContainer');
+            if (container) container.appendChild(crearPreguntaQuiz('Nueva pregunta del examen final'));
+        }
+
+        function eliminarPregunta(btn) {
+            if (confirm('¿Eliminar esta pregunta?')) {
+                btn.closest('.quiz-item').remove();
+            }
+        }
+
+        function eliminarContenido(btn) {
+            if (confirm('¿Eliminar este elemento?')) {
+                btn.closest('.content-item').remove();
+            }
+        }
+
+        function toggleEdit(btn) {
+            const block = btn.closest('.block');
+            const isEditing = block.classList.toggle('editing');
+            const targets = block.querySelectorAll('[contenteditable]');
+            targets.forEach(t => t.contentEditable = isEditing);
+            btn.innerHTML = isEditing ? '<i class="fas fa-save"></i> GUARDAR' : '<i class="fas fa-pen"></i> EDITAR';
         }
 
         function togglePreviewMode() {
@@ -636,33 +1547,70 @@
             const sidebar = document.getElementById('sidebar');
             const aiPanel = document.getElementById('aiPanel');
             const btnDocenteBack = document.getElementById('btn-docente-back');
+            const botonesEditar = document.querySelectorAll('.btn-edit-block');
+            const botonesAdd = document.querySelectorAll('.add-content-buttons');
 
             const isHidden = sidebar.classList.toggle('hidden');
             aiPanel.classList.toggle('hidden');
             locks.forEach(l => l.classList.toggle('hidden'));
 
-            // Mostrar/Ocultar boton regresar flotante
+            botonesEditar.forEach(b => b.style.display = isHidden ? 'none' : 'block');
+            botonesAdd.forEach(b => b.style.display = isHidden ? 'none' : 'flex');
+
             btnDocenteBack.style.display = isHidden ? 'block' : 'none';
+            enModoEditor = !isHidden;
 
             Swal.fire({
                 title: isHidden ? 'Vista Docente Activada' : 'Modo Editor Activado',
-                text: isHidden ? 'El examen y certificado están bloqueados.' : 'Puedes editar los reactivos y el certificado.',
+                text: isHidden ? 'Los estudiantes ven el curso con restricciones.' : 'Puedes editar contenidos.',
                 icon: 'info',
                 timer: 2000,
-                showConfirmButton: false
+                showConfirmButton: false,
+                background: 'white'
             });
         }
 
         function subirAAprobacion() {
             Swal.fire({
                 title: '¿Subir a USICAMM?',
-                text: "El curso se enviará para evaluación nacional.",
+                text: "El curso se enviará para validación.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#691C32',
-                confirmButtonText: 'SÍ, ENVIAR'
+                confirmButtonText: 'SÍ, ENVIAR',
+                cancelButtonText: 'CANCELAR',
+                background: 'white'
             }).then((res) => {
-                if (res.isConfirmed) Swal.fire('¡Éxito!', 'Trayectoria enviada correctamente.', 'success');
+                if (res.isConfirmed) Swal.fire('¡Éxito!', 'Curso enviado correctamente.', 'success');
+            });
+        }
+
+        function historyBack() {
+            Swal.fire('Demostración', 'Regresar a la pantalla anterior.', 'info');
+        }
+
+        function mostrarAyuda() {
+            Swal.fire({
+                title: 'Ayuda',
+                text: 'Plataforma de creación de cursos USICAMM. Usa el asistente para generar contenido.',
+                icon: 'info',
+                confirmButtonColor: '#691C32'
+            });
+        }
+
+        function cerrarSesion() {
+            Swal.fire({
+                title: 'Cerrar sesión',
+                text: '¿Estás seguro de que deseas salir?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#691C32',
+                confirmButtonText: 'SALIR',
+                cancelButtonText: 'CANCELAR'
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    Swal.fire('¡Hasta luego!', 'Sesión cerrada.', 'success');
+                }
             });
         }
     </script>
