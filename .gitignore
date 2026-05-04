@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.log
 *.pot
 *.pyc
@@ -18,3 +19,20 @@ env/
 
 .DS_Store
 Thumbs.db
+=======
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Docker
+postgres_data/
+ollama_models/
+
+# VS Code
+.vscode/
+
+# Sistema
+.DS_Store
+>>>>>>> agente-prueba

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expediente de Carrera | EscalafonIA Jaguar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root {
+            --guinda: #691C32;
+            --dorado: #BC955C;
+            --turquesa: #007A7C;
+            --turquesa-soft: #F0F9FA;
+            --blanco: #FFFFFF;
+            --texto: #333333;
+            --gris-claro: #F8F9FA;
+            --rojo-alerta: #C62828;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Open Sans', sans-serif; background-color: var(--gris-claro); color: var(--texto); }
+
+        header {
+            background-color: var(--guinda);
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--dorado);
+        }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand img { height: 40px; width: 40px; border-radius: 50%; background: white; padding: 2px; }
+        .brand span { font-family: 'Montserrat'; font-weight: 800; color: white; font-size: 1rem; }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 5%;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .btn-nav {
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-back { border: 1.5px solid var(--turquesa); color: var(--turquesa); }
+        .btn-back:hover { background: var(--turquesa); color: white; }
+        .btn-exit { border: 1.5px solid #ddd; color: #777; }
+        .btn-exit:hover { background: var(--rojo-alerta); border-color: var(--rojo-alerta); color: white; }
+
+        .countdown-bar {
+            background: var(--turquesa);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-family: 'Montserrat';
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .container { 
+            padding: 1.5rem 5%; 
+            max-width: 1500px; 
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 0.8fr; 
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .main-column { grid-column: span 2; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+        /* --- Métricas --- */
+        .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .status-card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--turquesa);
+        }
+        .status-value { font-family: 'Montserrat'; font-size: 1.5rem; font-weight: 800; color: var(--guinda); }
+        .progress-container { width: 100%; background: #eee; height: 8px; border-radius: 4px; margin: 8px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--turquesa); }
+
+        /* --- Cursos Recomendados --- */
+        .courses-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .course-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #eee; }
+        .course-img { width: 100%; height: 110px; object-fit: cover; }
+        .course-info { padding: 1rem; }
+        .course-tag { font-size: 0.6rem; background: var(--turquesa-soft); color: var(--turquesa); padding: 3px 6px; border-radius: 4px; font-weight: 800; }
+        .btn-turquesa { background: var(--turquesa); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 700; cursor: pointer; width: 100%; font-size: 0.7rem; margin-top: 10px; }
+
+        /* --- Timeline Ampliada --- */
+        .timeline-container { border-left: 2px solid #eee; padding-left: 20px; margin-top: 15px; }
+        .timeline-item { position: relative; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #f1f1f1; }
+        .timeline-item::before { content: ''; width: 12px; height: 12px; background: var(--dorado); position: absolute; left: -27px; top: 4px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 3px var(--turquesa-soft); }
+        .timeline-item h4 { font-size: 0.9rem; color: var(--guinda); font-weight: 700; margin-bottom: 2px; }
+        .timeline-date { font-weight: 800; color: var(--turquesa); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .timeline-meta { font-size: 0.7rem; color: #888; display: flex; gap: 10px; margin-top: 5px; }
+
+        /* --- IA JAGUAR --- */
+        .ai-box { 
+            background: var(--turquesa-soft); 
+            border: 2px solid var(--turquesa); 
+            border-radius: 15px; 
+            padding: 1.5rem;
+        }
+        .ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+        .ai-header i { font-size: 1.5rem; color: var(--turquesa); }
+        .ai-header span { font-family: 'Montserrat'; font-weight: 800; color: var(--turquesa); font-size: 1rem; }
+
+        .alert-box { background: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border-left: 4px solid var(--rojo-alerta); }
+        .btn-guinda-full { background: var(--guinda); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; font-size: 0.8rem; text-transform: uppercase; }
+
+        footer { background: var(--guinda); color: white; padding: 1.5rem; text-align: center; border-top: 4px solid var(--dorado); font-size: 0.7rem; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+            <span>EscalafonIA Jaguar</span>
+        </div>
+        <div style="color: white; font-size: 0.75rem; text-align: right;">
+            <strong>{{ usuario.nombre }} {{ usuario.apellido_paterno }}</strong>
+        </div>
+    </header>
+
+    <nav class="top-nav">
+        <a href="#" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR AL DASHBOARD</a>
+        <a href="#" class="btn-nav btn-exit"><i class="fas fa-sign-out-alt"></i> SALIR</a>
+    </nav>
+
+    <div class="countdown-bar">
+        <i class="fas fa-clock"></i> RESTAN: {{ proceso.datos_multifactores.dias_restantes }} DÍAS PARA EL CIERRE DE CARGA
+    </div>
+
+    <div class="container">
+        
+        <div class="main-column animate__animated animate__fadeIn">
+            <div class="status-grid">
+                <div class="status-card">
+                    <h4 style="font-size: 0.65rem; color: #777;">PUNTAJE MULTIFACTORIAL</h4>
+                    <div class="status-value">{{ proceso.datos_multifactores.puntaje_multifactorial.actual }} / {{ proceso.datos_multifactores.puntaje_multifactorial.max }} <span style="font-size: 0.7rem; color: #999;">pts</span></div>
+                    <div class="progress-container"><div class="progress-bar" style="width: {{ proceso.datos_multifactores.puntaje_multifactorial.porcentaje }}%;"></div></div>
+                </div>
+                <div class="status-card" style="border-left-color: var(--dorado);">
+                    <h4 style="font-size: 0.65rem; color: #777;">HORAS DE FORMACIÓN</h4>
+                    <div class="status-value">{{ proceso.datos_multifactores.horas_formacion.actual }} / {{ proceso.datos_multifactores.horas_formacion.max }} <span style="font-size: 0.7rem; color: #999;">hrs</span></div>
+                    <div class="progress-container"><div class="progress-bar" style="width: {{ proceso.datos_multifactores.horas_formacion.porcentaje }}%; background: var(--dorado);"></div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-family: 'Montserrat'; font-size: 0.9rem; color: var(--guinda); margin-bottom: 1rem;"><i class="fas fa-star"></i> RECOMENDACIONES JAGUAR</h3>
+                <div class="courses-row">
+                    <div class="course-card">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300" class="course-img">
+                        <div class="course-info">
+                            <span class="course-tag">+40 HORAS</span>
+                            <h4 style="font-size: 0.75rem; margin-top: 5px;">IA Generativa Docente</h4>
+                            <button class="btn-turquesa">INSCRIBIRME</button>
+                        </div>
+                    </div>
+                    <div class="course-card">
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=300" class="course-img">
+                        <div class="course-info">
+                            <span class="course-tag">+40 HORAS</span>
+                            <h4 style="font-size: 0.75rem; margin-top: 5px;">Inclusión en la NEM</h4>
+                            <button class="btn-turquesa">INSCRIBIRME</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-family: 'Montserrat'; font-size: 0.9rem; color: var(--guinda); margin-bottom: 1rem;"><i class="fas fa-award"></i> HISTORIAL DE CURSOS VALIDADOS</h3>
+                <div class="timeline-container">
+                    <div class="timeline-item">
+                        <span class="timeline-date">FEBRERO 2024</span>
+                        <h4>Diplomado en Neuroeducación y Aprendizaje</h4>
+                        <p style="font-size: 0.75rem; color: #555;">Centro de Actualización del Magisterio (CAM).</p>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 120 hrs</span>
+                            <span><i class="fas fa-check-circle" style="color: var(--turquesa);"></i> Validado por USICAMM</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">AGOSTO 2023</span>
+                        <h4>Taller Intensivo de Diseño Universal (DUA)</h4>
+                        <p style="font-size: 0.75rem; color: #555;">Secretaría de Educación Pública (SEP).</p>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 40 hrs</span>
+                            <span><i class="fas fa-check-circle" style="color: var(--turquesa);"></i> Validado</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">MAYO 2023</span>
+                        <h4>Habilidades Digitales para la Docencia 4.0</h4>
+                        <p style="font-size: 0.75rem; color: #555;">Plataforma Educativa MéxicoX.</p>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 20 hrs</span>
+                            <span><i class="fas fa-check-circle" style="color: var(--turquesa);"></i> Validado</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">NOVIEMBRE 2022</span>
+                        <h4>Curso: Liderazgo y Gestión Escolar Efectiva</h4>
+                        <p style="font-size: 0.75rem; color: #555;">Universidad Pedagógica Nacional (UPN).</p>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 30 hrs</span>
+                            <span><i class="fas fa-check-circle" style="color: var(--turquesa);"></i> Validado</span>
+                        </div>
+                    </div>
+                    <div class="timeline-item" style="border: none; padding-bottom: 0;">
+                        <span class="timeline-date">JUNIO 2022</span>
+                        <h4>Estrategias Pedagógicas Post-Pandemia</h4>
+                        <p style="font-size: 0.75rem; color: #555;">Instancia Estatal de Formación Continua.</p>
+                        <div class="timeline-meta">
+                            <span><i class="fas fa-clock"></i> 40 hrs</span>
+                            <span><i class="fas fa-check-circle" style="color: var(--turquesa);"></i> Validado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-section animate__animated animate__fadeInRight">
+            <div class="ai-box">
+                <div class="ai-header">
+                    <i class="fas fa-paw"></i>
+                    <span>JAGUAR IA AUDITORÍA</span>
+                </div>
+                
+                <div class="alert-box">
+                    <h5 style="color: var(--rojo-alerta); font-size: 0.7rem; margin-bottom: 5px;">ACCIÓN CRÍTICA:</h5>
+                    <p style="font-size: 0.75rem; line-height: 1.4; color: #555;">
+                        {{ usuario.nombre }}, revisa que tus documentos y cursos estén actualizados para fortalecer tu evaluación multifactorial.
+                    </p>
+                </div>
+
+                <div style="background: white; padding: 1rem; border-radius: 10px; border-left: 4px solid var(--dorado); margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--dorado); font-size: 0.7rem; margin-bottom: 5px;">ESTRATEGIA:</h5>
+                    <p style="font-size: 0.75rem; line-height: 1.4; color: #555;">
+                        Al completar las 80 horas de capacitación pendientes, asegurarás los 13 puntos de formación continua faltantes.
+                    </p>
+                </div>
+
+                <button class="btn-guinda-full">
+                    <i class="fas fa-upload"></i> CARGAR MAESTRÍA
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 UNIDAD DEL SISTEMA PARA LA CARRERA DE LAS MAESTRAS Y LOS MAESTROS</p>
+    </footer>
+
+</body>
+</html>

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from infrastructure.api.routers.agent.chat import router as chat_router
 from infrastructure.api.routers.agent.upload import router as upload_router
 from infrastructure.api.routers.agent.learn import router as learn_router
-
+from src.infrastructure.api.routers import chat, upload, learn 
 app = FastAPI(title="EscalafonIA System", version="2.1.0")
 
 app.add_middleware(

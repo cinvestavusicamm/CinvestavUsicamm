@@ -1,0 +1,31 @@
+from django.shortcuts import render
+from apps.users.services.permisos import requiere_rol
+from apps.users.constants import ROLE_DOCENTE
+from apps.users.models import Usuario
+from apps.users.services.curso_service import CursoService
+from apps.users.services.proceso_escalafon_service import ProcesoEscalafonService
+
+@requiere_rol(ROLE_DOCENTE)
+def cursos_promociones(request):
+    usuario_id = request.session.get('usuario_id')
+    usuario = Usuario.objects.get(id_usuario=usuario_id)
+    cursos = CursoService.obtener_cursos_docente(usuario_id)
+    procesos = ProcesoEscalafonService.obtener_procesos_usuario(usuario_id)
+    proceso = procesos.first() if procesos else None
+    puntaje_multifactorial = 0
+    horas_formacion = 0
+    if proceso and proceso.datos_multifactores:
+        datos = proceso.datos_multifactores
+        puntaje_multifactorial = datos.get('puntaje_multifactorial', 0)
+        horas_formacion = datos.get('horas_formacion', 0)
+
+    context = {
+        'usuario': usuario,
+        'cursos': cursos,
+        'total_cursos': cursos.count(),
+        'proceso': proceso,
+        'puntaje_multifactorial': puntaje_multifactorial,
+        'horas_formacion': horas_formacion,
+    }
+
+    return render(request, 'cursos_promociones.html', context)

@@ -1,23 +1,21 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from ..models import Institucion, Usuario, Rol
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.cache import never_cache
+from apps.users.constants import ROLE_ADMIN, ROLE_DOCENTE
+from apps.users.services.permisos import requiere_rol
 
 @never_cache
+@requiere_rol(ROLE_ADMIN)
 def panel_admin(request):
-    #if not request.session.get('usuario_id'):
-     #   return redirect('sesion')
 
     admins = Usuario.objects.select_related('rol', 'institucion') \
-        .filter(rol__nombre_rol='Administrador')
+        .filter(rol__nombre_rol=ROLE_ADMIN)
 
     docentes = Usuario.objects.select_related('rol', 'institucion') \
-        .filter(rol__nombre_rol='Docente')
+        .filter(rol__nombre_rol=ROLE_DOCENTE)
 
     instituciones = Institucion.objects.all()
-    roles = Rol.objects.exclude(nombre_rol='Administrador')
+    roles = Rol.objects.all()
 
     total_registros = Usuario.objects.count()
     activos = Usuario.objects.filter(activo=True).count()

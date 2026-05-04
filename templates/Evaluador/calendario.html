@@ -10,14 +10,8 @@
     <!-- FullCalendar CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
     <link rel="stylesheet" href="../../static/css/evaluador.css">
-    <title>Calendario - Creador de Evaluaciones</title>
+    <title>EscalafonIA</title>
     <style>
-        /* ===== RESET Y ESTILOS BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
         :root {
             /* Colores principales */
@@ -27,7 +21,7 @@
             --color-exito: #27ae60;
             --color-advertencia: #f39c12;
             --color-error: #e74c3c;
-            
+
             /* Colores para eventos */
             --color-evento-evaluacion: #e74c3c;
             --color-evento-plazo: #3498db;
@@ -37,7 +31,7 @@
             --color-evento-personal: #1abc9c;
             --color-evento-capacitacion: #16a085;
             --color-evento-convocatoria: #8e44ad;
-            
+
             /* Colores neutros */
             --color-fondo: #f8f9fa;
             --color-fondo-card: #ffffff;
@@ -45,49 +39,15 @@
             --color-texto: #2c3e50;
             --color-texto-secundario: #6c757d;
             --color-texto-claro: #95a5a6;
-            
+
             /* Sombras */
-            --sombra-suave: 0 2px 8px rgba(0,0,0,0.08);
-            --sombra-media: 0 4px 12px rgba(0,0,0,0.1);
-            --sombra-fuerte: 0 8px 24px rgba(0,0,0,0.12);
-            
+            --sombra-suave: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --sombra-media: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --sombra-fuerte: 0 8px 24px rgba(0, 0, 0, 0.12);
+
             /* Bordes */
             --radio-borde: 10px;
             --radio-borde-grande: 16px;
-        }
-
-        /* ===== CONTENIDO PRINCIPAL ===== */
-        .contenido-principal {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: auto;
-            background-color: var(--color-fondo);
-        }
-
-        .contenido {
-            flex: 1;
-            padding: 30px 35px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .encabezado-pagina {
-            margin-bottom: 30px;
-        }
-
-        .titulo {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--color-primario);
-            margin-bottom: 5px;
-        }
-
-        .subtitulo {
-            font-size: 16px;
-            color: var(--color-texto-secundario);
-            font-weight: 400;
         }
 
         /* ===== BARRA DE HERRAMIENTAS CALENDARIO ===== */
@@ -620,6 +580,7 @@
                 opacity: 0;
                 transform: translateY(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -743,14 +704,37 @@
             box-shadow: var(--sombra-suave);
         }
 
-        .color-option[data-color="evaluacion"] { background: var(--color-evento-evaluacion); }
-        .color-option[data-color="plazo"] { background: var(--color-evento-plazo); }
-        .color-option[data-color="revision"] { background: var(--color-evento-revision); }
-        .color-option[data-color="publicacion"] { background: var(--color-evento-publicacion); }
-        .color-option[data-color="reunion"] { background: var(--color-evento-reunion); }
-        .color-option[data-color="personal"] { background: var(--color-evento-personal); }
-        .color-option[data-color="capacitacion"] { background: var(--color-evento-capacitacion); }
-        .color-option[data-color="convocatoria"] { background: var(--color-evento-convocatoria); }
+        .color-option[data-color="evaluacion"] {
+            background: var(--color-evento-evaluacion);
+        }
+
+        .color-option[data-color="plazo"] {
+            background: var(--color-evento-plazo);
+        }
+
+        .color-option[data-color="revision"] {
+            background: var(--color-evento-revision);
+        }
+
+        .color-option[data-color="publicacion"] {
+            background: var(--color-evento-publicacion);
+        }
+
+        .color-option[data-color="reunion"] {
+            background: var(--color-evento-reunion);
+        }
+
+        .color-option[data-color="personal"] {
+            background: var(--color-evento-personal);
+        }
+
+        .color-option[data-color="capacitacion"] {
+            background: var(--color-evento-capacitacion);
+        }
+
+        .color-option[data-color="convocatoria"] {
+            background: var(--color-evento-convocatoria);
+        }
 
         .modal-footer {
             padding: 20px 25px;
@@ -803,6 +787,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -911,30 +896,6 @@
             border-left: 4px solid var(--color-evento-convocatoria) !important;
         }
 
-        /* ===== SCROLLBAR PERSONALIZADO ===== */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--color-fondo);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(105, 28, 50, 0.2);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(105, 28, 50, 0.3);
-        }
-
-        .lista-proximos-eventos::-webkit-scrollbar,
-        .tabla-procesos::-webkit-scrollbar {
-            width: 6px;
-        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
@@ -949,21 +910,21 @@
                 gap: 15px;
                 align-items: stretch;
             }
-            
+
             .herramientas-derecha {
                 flex-direction: column;
                 gap: 15px;
             }
-            
+
             .controles-calendario {
                 justify-content: center;
             }
-            
+
             .filtros {
                 justify-content: center;
                 flex-wrap: wrap;
             }
-            
+
             .leyenda-grid {
                 grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             }
@@ -974,11 +935,11 @@
                 padding: 0 15px;
                 height: 60px;
             }
-            
+
             .marca h1 {
                 font-size: 18px;
             }
-            
+
             .barra-lateral {
                 position: fixed;
                 top: 0;
@@ -988,11 +949,11 @@
                 margin-left: -260px;
                 box-shadow: var(--sombra-fuerte);
             }
-            
+
             .barra-lateral.mostrar {
                 margin-left: 0;
             }
-            
+
             #fondo.activo {
                 position: fixed;
                 top: 0;
@@ -1004,54 +965,54 @@
                 z-index: 999;
                 backdrop-filter: blur(2px);
             }
-            
+
             .contenido {
                 padding: 20px 15px;
             }
-            
+
             .calendario-principal {
                 padding: 15px;
                 height: 500px;
             }
-            
+
             .leyenda-eventos,
             .proximos-eventos,
             .calendario-procesos {
                 padding: 20px;
             }
-            
+
             .evento-proximo {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .evento-fecha {
                 width: 100%;
             }
-            
+
             .evento-meta {
                 justify-content: center;
                 flex-wrap: wrap;
             }
-            
+
             .tabla-procesos {
                 font-size: 13px;
             }
-            
+
             .tabla-procesos th,
             .tabla-procesos td {
                 padding: 10px;
             }
-            
+
             .fc-event {
                 font-size: 10px !important;
                 padding: 2px 4px !important;
             }
-            
+
             .form-row {
                 grid-template-columns: 1fr;
             }
-            
+
             .modal {
                 max-width: 95%;
             }
@@ -1061,49 +1022,49 @@
             .barra-superior {
                 height: 56px;
             }
-            
+
             #userButton span {
                 display: none;
             }
-            
+
             #userButton {
                 padding: 8px 12px;
                 width: 44px;
                 justify-content: center;
             }
-            
+
             .contenido {
                 padding: 15px;
             }
-            
+
             .herramientas-izquierda {
                 flex-wrap: wrap;
                 justify-content: center;
             }
-            
+
             .navegacion-mes {
                 flex-wrap: wrap;
                 justify-content: center;
             }
-            
+
             .mes-actual {
                 min-width: 100%;
                 text-align: center;
                 margin: 10px 0;
             }
-            
+
             .calendario-principal {
                 height: 450px;
             }
-            
+
             .leyenda-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
-            
+
             .fc-daygrid-day-number {
                 font-size: 12px;
             }
-            
+
             .color-options {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -1113,23 +1074,29 @@
 
 <body>
     <header class="barra-superior">
-        <div class="boton">
-            <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+
         <div class="marca">
-            <h1>EscalafonIA</h1>
+            <div class="boton">
+                <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
         </div>
 
         <div class="user-profile">
             <button id="userButton">
-                <i class="fa-solid fa-user-tie"></i>
-                <span>Zaid Rebollo</span>
+                <i class="fa-solid fa-chevron-down"></i>
+                <i class="fa-solid fa-user"></i>
             </button>
             <div class="menu-dropdown" id="menuDropdown">
-                <a href="#"><i class="fa-solid fa-user"></i> Mi Perfil</a>
-                <a href="#"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <a href="{% url 'evaluador:perfil' %}"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'evaluador:configuracion' %}"><i class="fa-solid fa-gear"></i> Configuración</a>
                 <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Cerrar sesión</a>
             </div>
         </div>
@@ -1137,10 +1104,6 @@
 
     <div class="contenedor-principal">
         <nav class="barra-lateral">
-            <div class="jaguar-brand">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
-                    alt="Logo USICAMM">
-            </div>
             <ul class="menu-principal">
                 <li>
                     <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
@@ -1148,12 +1111,7 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li>
-                    <a class="barra-lateral-link" href="{% url 'evaluador:chat' %}">
-                        <i class="fa-solid fa-robot"></i>
-                        <span>Chat IA</span>
-                    </a>
-                </li>
+                <div class="divisor"></div>
                 <li>
                     <a class="barra-lateral-link" href="{% url 'evaluador:banco_preguntas' %}">
                         <i class="fa-solid fa-clipboard-question"></i>
@@ -1172,8 +1130,9 @@
                         <span>Validaciones</span>
                     </a>
                 </li>
+                <div class="divisor"></div>
                 <li>
-                    <a class="barra-lateral-link" href="{% url 'evaluador:calendario' %}">
+                    <a class="barra-lateral-link activo" href="{% url 'evaluador:calendario' %}">
                         <i class="fa-solid fa-calendar-alt"></i>
                         <span>Calendario</span>
                     </a>
@@ -1187,7 +1146,7 @@
             </ul>
         </nav>
 
-        <main class="contenido-principal">
+        <div class="principal">
             <div class="contenido">
                 <div class="encabezado-pagina">
                     <h1 class="titulo">
@@ -1202,10 +1161,10 @@
                         <button class="btn btn-primary" id="btnNuevoEvento">
                             <i class="fas fa-plus-circle"></i> Nuevo Evento
                         </button>
-                        
-                        
+
+
                     </div>
-                    
+
                     <div class="herramientas-derecha">
                         <div class="controles-calendario">
                             <div class="navegacion-mes">
@@ -1279,7 +1238,7 @@
                             Ver todos
                         </button>
                     </div>
-                    
+
                     <div class="lista-proximos-eventos">
                         <!-- Evento 1 -->
                         <div class="evento-proximo" data-id="1">
@@ -1342,36 +1301,36 @@
 
                 <!-- Calendario de Procesos USICAMM -->
                 <div class="calendario-procesos">
-                    
+
                     <div class="seccion-header">
                         <h2><i class="fas fa-calendar-check"></i> Calendario de Procesos USICAMM 2026</h2>
                     </div>
 
                     <div class="barra-herramientas">
-                    <div class="herramientas-izquierda">
-                        
-                        
-                        <!-- Filtros -->
-                        <div class="filtros">
-                            <select class="filtro-select" id="filtroTipo">
-                                <option value="">Todos los tipos</option>
-                                <option value="evaluacion">Promoción horizontal</option>
-                                <option value="plazo">Promoción vertical</option>
-                            </select>
-                            
-                            <input type="date" class="filtro-select" id="filtroFecha">
-                            
-                            <button class="btn-filtro" id="btnAplicarFiltro">
-                                <i class="fas fa-filter"></i> Filtrar
-                            </button>
-                            
-                            <button class="btn-filtro" id="btnLimpiarFiltro">
-                                <i class="fas fa-times"></i> Limpiar
-                            </button>
+                        <div class="herramientas-izquierda">
+
+
+                            <!-- Filtros -->
+                            <div class="filtros">
+                                <select class="filtro-select" id="filtroTipo">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="evaluacion">Promoción horizontal</option>
+                                    <option value="plazo">Promoción vertical</option>
+                                </select>
+
+                                <input type="date" class="filtro-select" id="filtroFecha">
+
+                                <button class="btn-filtro" id="btnAplicarFiltro">
+                                    <i class="fas fa-filter"></i> Filtrar
+                                </button>
+
+                                <button class="btn-filtro" id="btnLimpiarFiltro">
+                                    <i class="fas fa-times"></i> Limpiar
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                    
+
                     <div class="tabla-procesos">
                         <table>
                             <thead>
@@ -1486,7 +1445,10 @@
                     </div>
                 </div>
             </div>
-        </main>
+            <footer class="contenedor-footer">
+               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+            </footer>
+        </div>
     </div>
 
     <!-- Modal Nuevo Evento -->
@@ -1498,26 +1460,27 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="modal-body">
                 <form id="formNuevoEvento">
                     <div class="form-group">
                         <label for="eventoTitulo">Título del Evento *</label>
-                        <input type="text" id="eventoTitulo" class="form-control" placeholder="Ej: Evaluación Primaria" required>
+                        <input type="text" id="eventoTitulo" class="form-control" placeholder="Ej: Evaluación Primaria"
+                            required>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="eventoFecha">Fecha *</label>
                             <input type="date" id="eventoFecha" class="form-control" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="eventoHoraInicio">Hora Inicio</label>
                             <input type="time" id="eventoHoraInicio" class="form-control" value="09:00">
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="eventoTipo">Tipo de Evento *</label>
@@ -1533,18 +1496,19 @@
                                 <option value="convocatoria">Convocatoria</option>
                             </select>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="eventoHoraFin">Hora Fin</label>
                             <input type="time" id="eventoHoraFin" class="form-control" value="12:00">
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="eventoUbicacion">Ubicación</label>
-                        <input type="text" id="eventoUbicacion" class="form-control" placeholder="Ej: Plataforma en línea, Sala 3, etc.">
+                        <input type="text" id="eventoUbicacion" class="form-control"
+                            placeholder="Ej: Plataforma en línea, Sala 3, etc.">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="eventoColor">Color del Evento</label>
                         <div class="color-options">
@@ -1559,20 +1523,22 @@
                         </div>
                         <input type="hidden" id="eventoColor" value="evaluacion">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="eventoDescripcion">Descripción</label>
-                        <textarea id="eventoDescripcion" class="form-control textarea" placeholder="Descripción detallada del evento..."></textarea>
+                        <textarea id="eventoDescripcion" class="form-control textarea"
+                            placeholder="Descripción detallada del evento..."></textarea>
                     </div>
                 </form>
             </div>
-            
+
             <div class="modal-footer">
                 <button type="button" class="btn-cancelar" id="btnCancelarEvento">Cancelar</button>
                 <button type="button" class="btn-guardar" id="btnGuardarEvento">
                     <i class="fas fa-save"></i> Guardar Evento
                 </button>
             </div>
+
         </div>
     </div>
 
@@ -1595,7 +1561,7 @@
         if (boton) {
             boton.addEventListener('click', accionarMenu);
         }
-        
+
         if (fondo) {
             fondo.addEventListener('click', accionarMenu);
         }
@@ -1607,13 +1573,13 @@
 
         // Toggle menú usuario
         if (userButton && menuDropdown) {
-            userButton.addEventListener('click', function(e) {
+            userButton.addEventListener('click', function (e) {
                 e.stopPropagation();
                 menuDropdown.classList.toggle('active');
             });
 
             // Cerrar menú al hacer clic fuera
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!userButton.contains(e.target) && !menuDropdown.contains(e.target)) {
                     menuDropdown.classList.remove('active');
                 }
@@ -1627,7 +1593,7 @@
 
             links.forEach(link => {
                 const href = link.getAttribute("href");
-                
+
                 if (href !== "#" && href === nombrePaginaActual) {
                     link.classList.add("activo");
                 }
@@ -1663,10 +1629,10 @@
             const hoy = new Date();
             const fechaFormateada = hoy.toISOString().split('T')[0];
             eventoFechaInput.value = fechaFormateada;
-            
+
             // Seleccionar primer color por defecto
             seleccionarColor('evaluacion');
-            
+
             modalNuevoEvento.classList.add('active');
         }
 
@@ -1683,7 +1649,7 @@
             colorOptions.forEach(option => {
                 option.classList.remove('selected');
             });
-            
+
             // Agregar selección nueva
             const selectedOption = document.querySelector(`.color-option[data-color="${color}"]`);
             if (selectedOption) {
@@ -1694,14 +1660,14 @@
 
         // Event listeners para color options
         colorOptions.forEach(option => {
-            option.addEventListener('click', function() {
+            option.addEventListener('click', function () {
                 const color = this.getAttribute('data-color');
                 seleccionarColor(color);
             });
         });
 
         // Sincronizar tipo de evento con color
-        eventoTipoSelect.addEventListener('change', function() {
+        eventoTipoSelect.addEventListener('change', function () {
             const tipo = this.value;
             if (tipo) {
                 seleccionarColor(tipo);
@@ -1714,20 +1680,20 @@
         btnCancelarEvento.addEventListener('click', cerrarModalNuevoEvento);
 
         // Cerrar modal al hacer clic fuera
-        modalNuevoEvento.addEventListener('click', function(e) {
+        modalNuevoEvento.addEventListener('click', function (e) {
             if (e.target === this) {
                 cerrarModalNuevoEvento();
             }
         });
 
         // Guardar nuevo evento
-        btnGuardarEvento.addEventListener('click', function() {
+        btnGuardarEvento.addEventListener('click', function () {
             // Validar formulario
             if (!formNuevoEvento.checkValidity()) {
                 alert('Por favor, completa los campos requeridos (*)');
                 return;
             }
-            
+
             // Obtener datos del formulario
             const titulo = eventoTituloInput.value;
             const fecha = eventoFechaInput.value;
@@ -1737,7 +1703,7 @@
             const ubicacion = eventoUbicacionInput.value || 'Por definir';
             const color = eventoColorInput.value;
             const descripcion = eventoDescripcionInput.value || 'Sin descripción';
-            
+
             // Traducir tipo para mostrar
             const tiposTraducidos = {
                 'evaluacion': 'Evaluación',
@@ -1749,7 +1715,7 @@
                 'capacitacion': 'Capacitación',
                 'convocatoria': 'Convocatoria'
             };
-            
+
             // Crear objeto evento
             const nuevoEvento = {
                 title: titulo,
@@ -1764,16 +1730,16 @@
                     lugar: ubicacion
                 }
             };
-            
+
             // Agregar evento al calendario
             calendar.addEvent(nuevoEvento);
-            
+
             // Cerrar modal y limpiar formulario
             cerrarModalNuevoEvento();
-            
+
             // Mostrar mensaje de éxito
             alert(`Evento "${titulo}" agregado exitosamente para el ${fecha}`);
-            
+
             // Navegar a la fecha del evento
             calendar.gotoDate(fecha);
         });
@@ -1781,7 +1747,7 @@
         // ========================
         // FULLCALENDAR IMPLEMENTACIÓN
         // ========================
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Inicializar calendario
             const calendarEl = document.getElementById('calendar');
             calendar = new FullCalendar.Calendar(calendarEl, {
@@ -2001,7 +1967,7 @@
                         }
                     }
                 ],
-                eventClick: function(info) {
+                eventClick: function (info) {
                     const evento = info.event;
                     const tipo = evento.extendedProps.tipo;
                     const tiposTraducidos = {
@@ -2014,10 +1980,10 @@
                         'capacitacion': 'Capacitación',
                         'convocatoria': 'Convocatoria'
                     };
-                    
+
                     alert(`${evento.title}\n\nTipo: ${tiposTraducidos[tipo]}\nFecha: ${evento.start.toLocaleDateString('es-MX')}\nHora: ${evento.extendedProps.hora}\nLugar: ${evento.extendedProps.lugar}\n\n${evento.extendedProps.descripcion}`);
                 },
-                datesSet: function(info) {
+                datesSet: function (info) {
                     // Actualizar mes actual en la barra de herramientas
                     const fecha = info.view.currentStart;
                     const mes = fecha.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
@@ -2032,21 +1998,21 @@
             // ========================
             // CONTROLES DEL CALENDARIO
             // ========================
-            
+
             // Navegación entre meses
-            document.getElementById('btnAnteriorMes').addEventListener('click', function() {
+            document.getElementById('btnAnteriorMes').addEventListener('click', function () {
                 calendar.prev();
             });
-            
-            document.getElementById('btnSiguienteMes').addEventListener('click', function() {
+
+            document.getElementById('btnSiguienteMes').addEventListener('click', function () {
                 calendar.next();
             });
-            
+
             // Botón Hoy
-            document.getElementById('btnHoy').addEventListener('click', function() {
+            document.getElementById('btnHoy').addEventListener('click', function () {
                 calendar.today();
             });
-            
+
             // ========================
             // FILTROS DE EVENTOS
             // ========================
@@ -2056,12 +2022,12 @@
             const btnLimpiarFiltro = document.getElementById('btnLimpiarFiltro');
 
             // Aplicar filtros
-            btnAplicarFiltro.addEventListener('click', function() {
+            btnAplicarFiltro.addEventListener('click', function () {
                 aplicarFiltros();
             });
 
             // Limpiar filtros
-            btnLimpiarFiltro.addEventListener('click', function() {
+            btnLimpiarFiltro.addEventListener('click', function () {
                 filtroTipo.value = '';
                 filtroFecha.value = '';
                 aplicarFiltros();
@@ -2071,16 +2037,16 @@
             function aplicarFiltros() {
                 const tipoFiltro = filtroTipo.value;
                 const fechaFiltro = filtroFecha.value;
-                
+
                 // Obtener todos los eventos
                 const eventos = calendar.getEvents();
-                
+
                 // Limpiar eventos filtrados anteriores
                 eventosFiltrados.forEach(evento => {
                     evento.remove();
                 });
                 eventosFiltrados = [];
-                
+
                 // Si no hay filtros, mostrar todos los eventos
                 if (!tipoFiltro && !fechaFiltro) {
                     eventos.forEach(evento => {
@@ -2088,34 +2054,34 @@
                     });
                     return;
                 }
-                
+
                 // Aplicar filtros
                 eventos.forEach(evento => {
                     const tipoEvento = evento.extendedProps.tipo;
                     const fechaEvento = evento.start;
                     const fechaEventoStr = fechaEvento ? fechaEvento.toISOString().split('T')[0] : '';
-                    
+
                     let mostrar = true;
-                    
+
                     // Filtrar por tipo
                     if (tipoFiltro && tipoEvento !== tipoFiltro) {
                         mostrar = false;
                     }
-                    
+
                     // Filtrar por fecha
                     if (fechaFiltro && fechaEventoStr !== fechaFiltro) {
                         mostrar = false;
                     }
-                    
+
                     // Mostrar u ocultar evento según filtros
                     evento.setProp('display', mostrar ? 'auto' : 'none');
-                    
+
                     // Si el evento está oculto por filtros, agregarlo a la lista de filtrados
                     if (!mostrar) {
                         eventosFiltrados.push(evento);
                     }
                 });
-                
+
                 // Mostrar mensaje si no hay resultados
                 const eventosVisibles = eventos.length - eventosFiltrados.length;
                 if (eventosVisibles === 0) {
@@ -2126,55 +2092,55 @@
             // ========================
             // EVENTOS ADICIONALES
             // ========================
-            
+
             // Botón ver todos eventos
-            document.getElementById('btnVerTodosEventos').addEventListener('click', function(e) {
+            document.getElementById('btnVerTodosEventos').addEventListener('click', function (e) {
                 e.preventDefault();
                 calendar.changeView('listMonth');
             });
-            
+
             // Hacer clic en próximos eventos
             const proximosEventos = document.querySelectorAll('.evento-proximo');
             proximosEventos.forEach(evento => {
-                evento.addEventListener('click', function() {
+                evento.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
                     const titulo = this.querySelector('h3').textContent;
-                    const fecha = this.querySelector('.evento-dia').textContent + 
-                                  ' ' + this.querySelector('.evento-mes').textcontent;
-                    
+                    const fecha = this.querySelector('.evento-dia').textContent +
+                        ' ' + this.querySelector('.evento-mes').textcontent;
+
                     // Navegar a la fecha del evento en el calendario
                     let fechaEvento;
-                    switch(id) {
+                    switch (id) {
                         case '1': fechaEvento = '2024-06-15'; break;
                         case '2': fechaEvento = '2024-06-18'; break;
                         case '3': fechaEvento = '2024-06-20'; break;
                         default: fechaEvento = '2024-06-11';
                     }
-                    
+
                     calendar.gotoDate(fechaEvento);
                     alert(`Evento: ${titulo}\nFecha: ${fecha}`);
                 });
             });
-            
+
             // Hacer clic en filas de la tabla de procesos
             const filasProcesos = document.querySelectorAll('.tabla-procesos tbody tr');
             filasProcesos.forEach(fila => {
-                fila.addEventListener('click', function() {
+                fila.addEventListener('click', function () {
                     const proceso = this.querySelector('strong').textContent;
                     const estado = this.querySelector('.badge').textContent;
                     const fechaInicio = this.querySelector('td:nth-child(3)').textContent;
-                    
+
                     // Convertir fecha DD/MM/YYYY a YYYY-MM-DD
                     const partes = fechaInicio.split('/');
                     const fechaISO = `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-                    
+
                     // Navegar a la fecha de inicio del proceso
                     calendar.gotoDate(fechaISO);
-                    
+
                     alert(`Proceso: ${proceso}\nEstado: ${estado}\nFecha inicio: ${fechaInicio}\n\nNavegando a la fecha en el calendario...`);
                 });
             });
-            
+
             /* Función para actualizar tiempos restantes en la tabla
             function actualizarTiemposRestantes() {
                 const hoy = new Date();
@@ -2197,9 +2163,9 @@
                     }
                 });
             }*/
-            
+
             actualizarTiemposRestantes();
-            
+
             // Inicializar fecha actual en filtro
             const hoy = new Date();
             const hoyFormateado = hoy.toISOString().split('T')[0];

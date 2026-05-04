@@ -18,30 +18,27 @@ services:
     networks:
       - escalafon_net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d escalafon_db"]
+      test: [ "CMD-SHELL", "pg_isready -U user -d escalafon_db" ]
       interval: 5s
       timeout: 5s
       retries: 5
-
     # -------------------------------------------------------------------------
-  # 2. MOTOR DE INTELIGENCIA ARTIFICIAL (Ollama)
-  # -------------------------------------------------------------------------
+    # 2. MOTOR DE INTELIGENCIA ARTIFICIAL (Ollama)
+    # -------------------------------------------------------------------------
   ollama:
     image: ollama/ollama:latest
     container_name: motor_ollama
     volumes:
       - ollama_models:/root/.ollama
-      - ./init_ollama.sh:/init_ollama.sh  # opcional
+      - ./init_ollama.sh:/init_ollama.sh
     ports:
       - "11434:11434"
     networks:
       - escalafon_net
     environment:
       - OLLAMA_KEEP_ALIVE=24h
-      - OLLAMA_GPU_OVERHEAD=0       # fuerza CPU-only
+      - OLLAMA_GPU_OVERHEAD=0
       - OLLAMA_VULKAN=false
-    
-
 
   # -------------------------------------------------------------------------
   # 3. BACKEND API (FastAPI)
@@ -67,15 +64,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      
+
     networks:
       - escalafon_net
     healthcheck:
-      test: ["CMD-SHELL", "python3 -c 'import requests; import sys; r=requests.get(\"http://127.0.0.1:8003/health\"); sys.exit(0 if r.status_code==200 else 1)'"]
+      test: [ "CMD-SHELL", "python3 -c 'import requests; import sys; r=requests.get(\"http://127.0.0.1:8003/health\"); sys.exit(0 if r.status_code==200 else 1)'" ]
       interval: 5s
       retries: 5
       timeout: 5s
-
 
   # -------------------------------------------------------------------------
   # 4. DJANGO
@@ -87,24 +83,31 @@ services:
       dockerfile: apps/Dockerfile
     volumes:
       - ../:/app
+      - static_volume:/app/staticfiles
     env_file:
       - ../.env
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+            python manage.py migrate && echo '--------------Aplicacion corriendo en http://localhost:8001' &&
+            gunicorn core.wsgi:application --bind 0.0.0.0:8000 --timeout 180 --worker-class gevent --workers 2"
     ports:
       - "8001:8000"
     depends_on:
       backend:
         condition: service_healthy
+      db:
+        condition: service_healthy
     networks:
       - escalafon_net
-
-networks:
-  escalafon_net:
-    driver: bridge
+    environment:
+      - DEBUG=False
+      - ALLOWED_HOSTS=localhost,127.0.0.1,web
 
 volumes:
   postgres_data:
   ollama_models:
+  static_volume:
 
-
-  
+networks:
+  escalafon_net:
+    driver: bridge

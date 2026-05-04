@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,50 +8,51 @@
     <link rel="icono" type="image/x-icono"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="../../static/css/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/chat-eva.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Dashboard</title>
+    <title>EscalafonIA</title>
 </head>
 
 <body>
     <header class="barra-superior">
-        <div class="boton">
-            <button id="btn-menu" class="btn-menu" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
-        </div>
+
         <div class="marca">
-            <h1>EscalafonIA</h1>
+            <div class="boton">
+                <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
         </div>
 
         <div class="user-profile">
             <button id="userButton">
+                <i class="fa-solid fa-chevron-down"></i>
                 <i class="fa-solid fa-user"></i>
-                <span>Zaid Rebollo</span>
             </button>
             <div class="menu-dropdown" id="menuDropdown">
-                <a href="#"><i class="fa-solid fa-user"></i> Mi Perfil</a>
-                <a href="#"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <a href="{% url 'evaluador:perfil' %}"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'evaluador:configuracion' %}"><i class="fa-solid fa-gear"></i> Configuración</a>
                 <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Cerrar sesión</a>
             </div>
         </div>
     </header>
     <div class="contenedor-principal">
         <nav class="barra-lateral">
-            <div class="jaguar-brand">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
-                    alt="Logo USICAMM">
-            </div>
             <ul class="menu-principal">
                 <li>
-                    <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
+                    <a class="barra-lateral-link activo" href="{% url 'evaluador:dashboard' %}">
                         <i class="fa-solid fa-chart-pie"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li>
-                    <a class="barra-lateral-link" href="{% url 'evaluador:chat' %}">
-                        <i class="fa-solid fa-robot"></i>
-                        <span>Chat IA</span>
-                    </a>
-                </li>
+                <div class="divisor"></div>
                 <li>
                     <a class="barra-lateral-link" href="{% url 'evaluador:banco_preguntas' %}">
                         <i class="fa-solid fa-clipboard-question"></i>
@@ -69,6 +71,8 @@
                         <span>Validaciones</span>
                     </a>
                 </li>
+                <div class="divisor"></div>
+
                 <li>
                     <a class="barra-lateral-link" href="{% url 'evaluador:calendario' %}">
                         <i class="fa-solid fa-calendar-alt"></i>
@@ -84,10 +88,13 @@
             </ul>
         </nav>
 
-        <main class="contenido-principal">
+        <div class="principal">
             <div class="contenido">
-                <h1 class="titulo">Dashboard</h1>
-
+                <div class="encabezado-pagina">
+                    <h1 class="titulo">
+                        <i class="fa-solid fa-chart-pie"></i> Dashboard
+                    </h1>
+                </div>
 
                 <section class="seccion-dashboard">
                     <h2 class="seccion-titulo"><i class="fas fa-chart-pie"></i> Estadísticas</h2>
@@ -145,7 +152,7 @@
                     </div>
                 </section>
 
-                
+
 
                 <!-- Acciones Rápidas -->
                 <section class="seccion-dashboard">
@@ -225,15 +232,37 @@
                 </section>
 
             </div>
-        </main>
+            <footer class="contenedor-footer">
+               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+            </footer>
+        </div>
     </div>
 
     <div id="fondo"></div>
 
-    <!-- Scripts -->
+    <button class="btn-chatbot" id="btn-chatbot"><i class="fa-solid fa-robot"></i></button>
+    <div id="ventana-chatbot" class="ventana-oculto-chatbot">
+        <div class="cabecera-chatbot">
+            <p>Chatbot</p>
+            <button class="btn-cerrar-chatbot" id="btn-cerrar-chatbot"><i class="fa-solid fa-circle-xmark"></i></button>
+        </div>
+        <div class="chatbot">
+            <div class="mensajes-chatbot" id="mensajes-chatbot">
 
+            </div>
+            <div class="input-chatbot">
+                <input type="text" id="mensaje-input-chatbot" placeholder="Escribe tu mensaje...">
+                <button id="btn-microfono"><i class="fa-solid fa-microphone"></i></button>
+                <button id="btn-enviar-mensaje-chatbot"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
+    <script src="../../static/js/accesibilidad.js"></script>
+    <script src="../../static/js/chat-eva.js"></script>
 
 </body>
 
