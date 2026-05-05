@@ -20,4 +20,4 @@ def index_docente(request):
         'total_cursos': cursos.count(),
         'proceso': proceso,
     }
-    return render(request, 'index_docente.html', context)
+    return render(request, 'docente/index_docente.html', context)

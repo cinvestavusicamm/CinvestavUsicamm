@@ -57,7 +57,7 @@ def crear_admin(request):
         return redirect('sesion')
 
     instituciones = Institucion.objects.all()
-    return render(request, 'crear_admin.html', {'instituciones': instituciones})
+    return render(request, 'administrador/crear_admin.html', {'instituciones': instituciones})
 
 
 def agregar_usuario_ajax(request):

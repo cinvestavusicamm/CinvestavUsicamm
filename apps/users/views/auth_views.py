@@ -61,7 +61,7 @@ def sesion(request):
         LoginSecurityService.registrar_fallo(curp, ip)
         messages.error(request, 'Usuario o contraseña incorrectos')
 
-    return render(request, 'sesion.html')
+    return render(request, 'docente/sesion.html')
 
 
 
@@ -107,7 +107,7 @@ def registro(request):
         messages.success(request, 'Cuenta creada correctamente')
         return redirect('sesion')
 
-    return render(request, 'registro.html', {
+    return render(request, 'docente/registro.html', {
     'instituciones': instituciones
 })
 

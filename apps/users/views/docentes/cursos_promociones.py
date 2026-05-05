@@ -28,4 +28,4 @@ def cursos_promociones(request):
         'horas_formacion': horas_formacion,
     }
 
-    return render(request, 'cursos_promociones.html', context)
+    return render(request, 'docente/cursos_promociones.html', context)

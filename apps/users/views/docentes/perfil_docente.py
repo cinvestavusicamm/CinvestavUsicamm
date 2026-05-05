@@ -15,4 +15,4 @@ def perfil_docente(request):
         'usuario': usuario,
         'proceso': proceso
     }
-    return render(request, 'perfil_docente.html', context)
+    return render(request, 'docente/perfil_docente.html', context)

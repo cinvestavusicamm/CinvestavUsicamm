@@ -21,7 +21,7 @@ def panel_admin(request):
     activos = Usuario.objects.filter(activo=True).count()
     en_revision = Usuario.objects.filter(activo=False).count()
 
-    return render(request, 'paneladm.html', {
+    return render(request, 'administrador/paneladm.html', {
         'admins': admins,
         'docentes': docentes,
         'instituciones': instituciones,

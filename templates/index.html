@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,7 +28,7 @@
 
         <div class="header-nav">
             <a href="javascript:void(0)" onclick="showPage('guide')" class="btn-nav">GUÍA TÉCNICA</a>
-            <a href="#" class="btn-nav" style="background: var(--dorado); color: var(--guinda); border: none;">
+            <a href="{% url 'sesion' %}" class="btn-nav" style="background: var(--dorado); color: var(--guinda); border: none;">
                 <i class="fas fa-user-circle"></i> INICIAR SESIÓN
             </a>
         </div>
@@ -59,7 +60,7 @@
                 </div>
 
                 <div style="display: flex; gap: 20px; align-items: center;">
-                    <a href="#" class="btn-main">Iniciar Registro</a>
+                    <a href="{% url 'registro' %}" class="btn-main">Iniciar Registro</a>
                     <a href="javascript:void(0)" onclick="showPage('guide')" style="text-decoration: none; color: var(--texto); font-weight: bold; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-play-circle fa-2x" style="color: var(--turquesa);"></i> Ver Guía
                     </a>

@@ -1,5 +1,5 @@
 from django.urls import path
-#from apps.users.views.evaluador.dashboard import dashboard
+from apps.users.views.evaluador.dashboard import dashboard
 from apps.users.views.evaluador.chat import chat
 from apps.users.views.evaluador.banco_preguntas import banco_preguntas
 from apps.users.views.evaluador.evaluaciones import evaluaciones
@@ -12,7 +12,7 @@ from apps.users.views.evaluador.configuracion import configuracion
 app_name = 'evaluador'
 
 urlpatterns = [
-    #path('dashboard/', dashboard, name='dashboard'),
+    path('dashboard/', dashboard, name='dashboard'),
     path('chat/', chat, name='chat'),
     path('banco-preguntas/', banco_preguntas, name='banco_preguntas'),
     path('evaluaciones/', evaluaciones, name='evaluaciones'),

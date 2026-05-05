@@ -29,7 +29,7 @@
             Inicio > Docente > <span>Portafolio Digital</span>
         </div>
         <div class="nav-buttons">
-            <a href="#" class="btn-back"><i class="fas fa-chevron-left"></i> REGRESAR</a>
+            <a href="{% url 'Docente:panel_docente' %}" class="btn-back"><i class="fas fa-chevron-left"></i> REGRESAR</a>
         </div>
     </nav>
 
@@ -74,7 +74,7 @@
                 </div>
                 
                 <p style="font-size: 0.9rem;">
-                    <strong>¡Hola Elena!</strong><br><br>
+                    <strong>¡Hola {{ usuario.nombre }}!</strong><br><br>
                     He analizado tu portafolio y detecté que el rubro de <strong>Posgrado</strong> está vacío. <br><br>
                     <i class="fas fa-exclamation-circle" style="color: var(--alerta);"></i> Estás dejando de percibir <strong>15 puntos</strong> directos.
                 </p>

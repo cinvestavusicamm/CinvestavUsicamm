@@ -28,4 +28,4 @@ def consultar_progreso(request):
         'puntaje_actual': puntaje_actual,
         'horas_formacion': horas_formacion,
     }
-    return render(request, 'Consulta_progreso.html', context)
+    return render(request, 'docente/Consulta_progreso.html', context)

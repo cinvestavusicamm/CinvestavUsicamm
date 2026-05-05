@@ -4,25 +4,24 @@ from .institucion import Institucion
 
 class Curso(models.Model):
     id_curso = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=200)
+    titulo = models.CharField(max_length=200)  # nombre → titulo
     descripcion = models.TextField(blank=True, null=True)
+    
     docente = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,
         related_name="cursos_impartidos",
-        db_column='docente_id'
+        db_column='id_creador'  
     )
-    institucion = models.ForeignKey(
-        Institucion,
-        on_delete=models.CASCADE,
-        db_column='institucion_id'
-    )
-    ciclo_escolar = models.CharField(max_length=20)
+    estado = models.CharField(max_length=50, blank=True, null=True, default='Borrador')
+    generado_con_ia = models.BooleanField(default=False)
+    version = models.IntegerField(default=1)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    activo = models.BooleanField(default=True)
-
+    fecha_aprobacion = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'cursos'
+        managed = False 
 
     def __str__(self):
-        return self.nombre
+        return self.titulo

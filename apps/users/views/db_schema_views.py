@@ -5,7 +5,6 @@ from django.db import connection
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
-
 from apps.users.constants import ROLE_ADMIN
 from apps.users.services.permisos import requiere_rol
 

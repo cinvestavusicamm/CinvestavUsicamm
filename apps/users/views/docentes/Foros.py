@@ -23,4 +23,4 @@ def foros(request):
         'cursos': cursos,
         'foro_items': foro_items,
     }
-    return render(request, 'Foros.html', context)
+    return render(request, 'docente/Foros.html', context)

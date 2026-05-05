@@ -15,4 +15,4 @@ def promociones_docente(request):
         'usuario': usuario,
         'proceso': proceso
     }
-    return render(request, 'Rutas_promociones.html', context)
+    return render(request, 'docente/Rutas_promociones.html', context)

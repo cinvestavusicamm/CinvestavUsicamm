@@ -13,14 +13,13 @@ class ChatRequest(BaseModel):
     query: str
 
 class ChatRequestStream(BaseModel):
-    prompt: str  # Para compatibilidad con agent_ajax.py
+    prompt: str  
 
 @router.post("/ask")
 async def ask_agent(
     request: ChatRequest,
     use_case: ChatRAGUseCase = Depends(get_chat_use_case)
 ):
-    """Endpoint para chat normal"""
     try:
         response = await use_case.run(request.query)
         return {"response": response}
@@ -33,9 +32,7 @@ async def ask_agent_streaming(
     request: Request,
     use_case: ChatRAGUseCase = Depends(get_chat_use_case)
 ):
-    """Endpoint para streaming"""
     try:
-        # Leer el JSON de la petición
         data = await request.json()
         query = data.get("query") or data.get("prompt") or ""
         
@@ -47,12 +44,9 @@ async def ask_agent_streaming(
         
         async def generate():
             try:
-                # Usar el nuevo método streaming del use case
                 async for chunk in use_case.run_streaming(query):
-                    # Enviar cada chunk como evento SSE
                     yield f"data: {json.dumps({'token': chunk})}\n\n"
                 
-                # Marcar finalización
                 yield "data: [DONE]\n\n"
                 
             except Exception as e:

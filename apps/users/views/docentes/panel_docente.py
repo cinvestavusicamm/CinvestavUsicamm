@@ -20,4 +20,4 @@ def panel_docente(request):
         'total_cursos': cursos.count(),
         'proceso': proceso,
     }
-    return render(request, 'panel_docente.html', context)
+    return render(request, 'docente/panel_docente.html', context)
