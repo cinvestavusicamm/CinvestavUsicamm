@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../../static/css/evaluador.css">
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
     <link rel="stylesheet" href="../../static/css/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
     <link rel="icon" type="image/x-icon"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,14 +15,14 @@
 </head>
 
 <body>
-        <header class="barra-superior">
-        
+    <header class="barra-superior">
+
         <div class="marca">
             <div class="boton">
-            <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+                <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
             <div class="logo-jaguar">
                 <a href="{% url 'evaluador:dashboard' %}"><img
                         src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
@@ -45,7 +46,7 @@
 
     <div class="contenedor-principal">
         <nav class="barra-lateral">
-           
+
             <ul class="menu-principal">
                 <li>
                     <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
@@ -88,7 +89,7 @@
             </ul>
         </nav>
 
-        <div class="principal">
+        <div class="principal" id="principal">
             <div class="contenido">
                 <div class="encabezado-pagina">
                     <h1 class="titulo">
@@ -99,7 +100,7 @@
                 <!-- Barra de Herramientas -->
                 <div class="barra-herramientas">
                     <div class="herramientas-izquierda">
-                        
+
                         <button class="btn btn-outline" id="btnFiltrarIA">
                             <i class="fas fa-robot"></i> Solo IA
                         </button>
@@ -107,9 +108,9 @@
                             <i class="fas fa-users"></i> Solo Humanas
                         </button>
                     </div>
-                    
+
                     <div class="herramientas-derecha">
-                        
+
                         <div class="contador-revision">
                             <span id="contadorPendientes">48</span> preguntas pendientes
                         </div>
@@ -210,32 +211,40 @@
                         <!-- Contenido de la pregunta -->
                         <div class="pregunta-contenido">
                             <div class="pregunta-enunciado">
-                                Un docente observa que varios estudiantes tienen dificultades para comprender el concepto de fracciones equivalentes. Según el enfoque de la Nueva Escuela Mexicana, ¿cuál de las siguientes estrategias sería más efectiva para abordar esta situación?
+                                Un docente observa que varios estudiantes tienen dificultades para comprender el
+                                concepto de fracciones equivalentes. Según el enfoque de la Nueva Escuela Mexicana,
+                                ¿cuál de las siguientes estrategias sería más efectiva para abordar esta situación?
                             </div>
 
                             <div class="pregunta-opciones">
                                 <div class="opcion correcta">
                                     <div class="opcion-indice">A</div>
                                     <div class="opcion-texto">
-                                        Diseñar una actividad donde los estudiantes utilicen materiales concretos (como círculos fraccionarios) para explorar diferentes representaciones de fracciones equivalentes a través de la manipulación directa.
+                                        Diseñar una actividad donde los estudiantes utilicen materiales concretos (como
+                                        círculos fraccionarios) para explorar diferentes representaciones de fracciones
+                                        equivalentes a través de la manipulación directa.
                                     </div>
                                 </div>
                                 <div class="opcion">
                                     <div class="opcion-indice">B</div>
                                     <div class="opcion-texto">
-                                        Asignar ejercicios adicionales del libro de texto para que los estudiantes practiquen la simplificación de fracciones hasta dominar el procedimiento mecánico.
+                                        Asignar ejercicios adicionales del libro de texto para que los estudiantes
+                                        practiquen la simplificación de fracciones hasta dominar el procedimiento
+                                        mecánico.
                                     </div>
                                 </div>
                                 <div class="opcion">
                                     <div class="opcion-indice">C</div>
                                     <div class="opcion-texto">
-                                        Explicar nuevamente el concepto en el pizarrón, mostrando más ejemplos resueltos para que los estudiantes copien y memoricen.
+                                        Explicar nuevamente el concepto en el pizarrón, mostrando más ejemplos resueltos
+                                        para que los estudiantes copien y memoricen.
                                     </div>
                                 </div>
                                 <div class="opcion">
                                     <div class="opcion-indice">D</div>
                                     <div class="opcion-texto">
-                                        Recomendar a los estudiantes que busquen videos tutoriales en internet como tarea extraescolar.
+                                        Recomendar a los estudiantes que busquen videos tutoriales en internet como
+                                        tarea extraescolar.
                                     </div>
                                 </div>
                             </div>
@@ -247,7 +256,13 @@
                                     <h4>Justificación generada por IA</h4>
                                 </div>
                                 <div class="justificacion-texto">
-                                    La opción A es la más alineada con la Nueva Escuela Mexicana porque: 1) Promueve el aprendizaje activo y experiencial mediante materiales concretos; 2) Fomenta la construcción del conocimiento a través de la manipulación y exploración; 3) Se enfoca en la comprensión conceptual más que en la memorización mecánica; 4) Permite la socialización del aprendizaje cuando los estudiantes trabajan en equipos; 5) Desarrolla competencias matemáticas a través de la resolución de problemas contextualizados.
+                                    La opción A es la más alineada con la Nueva Escuela Mexicana porque: 1) Promueve el
+                                    aprendizaje activo y experiencial mediante materiales concretos; 2) Fomenta la
+                                    construcción del conocimiento a través de la manipulación y exploración; 3) Se
+                                    enfoca en la comprensión conceptual más que en la memorización mecánica; 4) Permite
+                                    la socialización del aprendizaje cuando los estudiantes trabajan en equipos; 5)
+                                    Desarrolla competencias matemáticas a través de la resolución de problemas
+                                    contextualizados.
                                 </div>
                             </div>
                         </div>
@@ -256,7 +271,7 @@
                     <!-- Panel de Validación -->
                     <div class="panel-validacion">
                         <h2><i class="fas fa-clipboard-check"></i> Acciones de Validación</h2>
-                        
+
                         <!-- Acciones principales -->
                         <div class="acciones-validacion">
                             <div class="accion-btn aprobar" id="btnAprobar">
@@ -266,7 +281,7 @@
                                 <div class="accion-titulo">Aprobar</div>
                                 <div class="accion-descripcion">La pregunta cumple con todos los criterios</div>
                             </div>
-                            
+
                             <div class="accion-btn rechazar" id="btnRechazar">
                                 <div class="accion-icono">
                                     <i class="fas fa-times"></i>
@@ -274,7 +289,7 @@
                                 <div class="accion-titulo">Rechazar</div>
                                 <div class="accion-descripcion">No cumple con los estándares requeridos</div>
                             </div>
-                            
+
                             <div class="accion-btn revisar" id="btnRevisar">
                                 <div class="accion-icono">
                                     <i class="fas fa-edit"></i>
@@ -282,7 +297,7 @@
                                 <div class="accion-titulo">Revisar</div>
                                 <div class="accion-descripcion">Requiere modificaciones menores</div>
                             </div>
-                            
+
                             <div class="accion-btn omitir" id="btnOmitir">
                                 <div class="accion-icono">
                                     <i class="fas fa-forward"></i>
@@ -295,24 +310,24 @@
                         <!-- Comentarios -->
                         <div class="comentarios-validacion">
                             <h3><i class="fas fa-comment-dots"></i> Comentarios y Observaciones</h3>
-                            <textarea class="textarea-comentario" id="comentariosValidacion" 
-                                      placeholder="Escribe aquí tus observaciones, sugerencias o razones para rechazar/modificar la pregunta..."></textarea>
+                            <textarea class="textarea-comentario" id="comentariosValidacion"
+                                placeholder="Escribe aquí tus observaciones, sugerencias o razones para rechazar/modificar la pregunta..."></textarea>
                         </div>
 
                     </div>
                 </div>
 
-                
+
             </div>
             <footer class="contenedor-footer">
-               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+                <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
             </footer>
         </div>
     </div>
 
     <div id="fondo"></div>
 
-        <button class="btn-chatbot" id="btn-chatbot"><i class="fa-solid fa-robot"></i></button>
+    <button class="btn-chatbot" id="btn-chatbot"><i class="fa-solid fa-robot"></i></button>
     <div id="ventana-chatbot" class="ventana-oculto-chatbot">
         <div class="cabecera-chatbot">
             <p>Chatbot</p>
@@ -333,30 +348,30 @@
     <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
     <script src="../../static/js/chat-eva.js"></script>
-    <script src="../../static/js/accesibilidad.js"></script> 
+    <script src="../../static/js/accesibilidad.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
 
     <!-- Scripts -->
     <script>
         // Script para funcionalidades de validaciones
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Variables de estado
             let preguntaActual = 1;
             const totalPreguntas = 48;
             const pendientes = document.querySelectorAll('.pendiente-item');
-            
+
             // Actualizar contadores
             function actualizarContadores() {
                 document.getElementById('numeroActual').textContent = preguntaActual;
                 document.getElementById('totalPendientes').textContent = totalPreguntas;
                 document.getElementById('contadorPendientes').textContent = totalPreguntas;
             }
-            
+
             // Inicializar contadores
             actualizarContadores();
-            
+
             // Navegación entre preguntas
-            document.getElementById('btnAnterior')?.addEventListener('click', function() {
+            document.getElementById('btnAnterior')?.addEventListener('click', function () {
                 if (preguntaActual > 1) {
                     preguntaActual--;
                     actualizarContadores();
@@ -364,8 +379,8 @@
                     console.log('Pregunta anterior:', preguntaActual);
                 }
             });
-            
-            document.getElementById('btnSiguiente')?.addEventListener('click', function() {
+
+            document.getElementById('btnSiguiente')?.addEventListener('click', function () {
                 if (preguntaActual < totalPreguntas) {
                     preguntaActual++;
                     actualizarContadores();
@@ -373,7 +388,7 @@
                     console.log('Pregunta siguiente:', preguntaActual);
                 }
             });
-            
+
             // Actualizar pregunta activa en la lista
             function actualizarPreguntaActiva() {
                 pendientes.forEach(item => {
@@ -384,70 +399,70 @@
                     }
                 });
             }
-            
+
             // Hacer clic en items de la lista
             pendientes.forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', function () {
                     const itemId = parseInt(this.getAttribute('data-id'));
                     preguntaActual = itemId;
                     actualizarContadores();
                     actualizarPreguntaActiva();
-                    
+
                     // Simular cambio de pregunta (en realidad cambiaría el contenido)
                     console.log('Cargando pregunta:', itemId);
                 });
             });
-            
+
             // Acciones de validación
-            document.getElementById('btnAprobar')?.addEventListener('click', function() {
+            document.getElementById('btnAprobar')?.addEventListener('click', function () {
                 const comentarios = document.getElementById('comentariosValidacion').value;
                 console.log('Pregunta aprobada', {
                     pregunta: preguntaActual,
                     comentarios: comentarios
                 });
-                
+
                 // Simular aprobación
                 alert(`Pregunta #${preguntaActual} aprobada correctamente.`);
                 siguientePregunta();
             });
-            
-            document.getElementById('btnRechazar')?.addEventListener('click', function() {
+
+            document.getElementById('btnRechazar')?.addEventListener('click', function () {
                 const comentarios = document.getElementById('comentariosValidacion').value;
                 if (!comentarios.trim()) {
                     alert('Por favor, ingresa los motivos del rechazo en los comentarios.');
                     return;
                 }
-                
+
                 console.log('Pregunta rechazada', {
                     pregunta: preguntaActual,
                     comentarios: comentarios
                 });
-                
+
                 alert(`Pregunta #${preguntaActual} rechazada.`);
                 siguientePregunta();
             });
-            
-            document.getElementById('btnRevisar')?.addEventListener('click', function() {
+
+            document.getElementById('btnRevisar')?.addEventListener('click', function () {
                 const comentarios = document.getElementById('comentariosValidacion').value;
                 if (!comentarios.trim()) {
                     alert('Por favor, ingresa las modificaciones sugeridas.');
                     return;
                 }
-                
+
                 console.log('Pregunta enviada a revisión', {
                     pregunta: preguntaActual,
                     comentarios: comentarios
                 });
-                
+
                 alert(`Pregunta #${preguntaActual} enviada a revisión.`);
                 siguientePregunta();
             });
-            
-            document.getElementById('btnOmitir')?.addEventListener('click', function() {
+
+            document.getElementById('btnOmitir')?.addEventListener('click', function () {
                 console.log('Pregunta omitida:', preguntaActual);
                 siguientePregunta();
             });
-            
+
             function siguientePregunta() {
                 if (preguntaActual < totalPreguntas) {
                     preguntaActual++;
@@ -458,35 +473,35 @@
                     alert('¡Has revisado todas las preguntas pendientes!');
                 }
             }
-            
+
             // Filtros
-            document.getElementById('filtroPrioridad')?.addEventListener('change', function() {
+            document.getElementById('filtroPrioridad')?.addEventListener('change', function () {
                 console.log('Filtrando por prioridad:', this.value);
             });
-            
-            document.getElementById('filtroAsignatura')?.addEventListener('change', function() {
+
+            document.getElementById('filtroAsignatura')?.addEventListener('change', function () {
                 console.log('Filtrando por asignatura:', this.value);
             });
-            
-            document.getElementById('filtroOrden')?.addEventListener('change', function() {
+
+            document.getElementById('filtroOrden')?.addEventListener('change', function () {
                 console.log('Ordenando por:', this.value);
             });
-            
+
             // Botones de la barra de herramientas
-            document.getElementById('btnModoRapido')?.addEventListener('click', function() {
+            document.getElementById('btnModoRapido')?.addEventListener('click', function () {
                 this.classList.toggle('btn-primary');
                 this.classList.toggle('btn-success');
                 const modoRapido = this.classList.contains('btn-success');
                 console.log('Modo rápido:', modoRapido ? 'ACTIVADO' : 'DESACTIVADO');
             });
-            
-            document.getElementById('btnFiltrarIA')?.addEventListener('click', function() {
+
+            document.getElementById('btnFiltrarIA')?.addEventListener('click', function () {
                 this.classList.toggle('btn-outline');
                 this.classList.toggle('btn-primary');
                 console.log('Filtrar solo IA:', this.classList.contains('btn-primary'));
             });
-            
-            document.getElementById('btnFiltrarHumanas')?.addEventListener('click', function() {
+
+            document.getElementById('btnFiltrarHumanas')?.addEventListener('click', function () {
                 this.classList.toggle('btn-outline');
                 this.classList.toggle('btn-primary');
                 console.log('Filtrar solo humanas:', this.classList.contains('btn-primary'));

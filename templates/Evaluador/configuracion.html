@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../static/css/evaluador.css">
     <link rel="stylesheet" href="../../static/css/chat-eva.css">
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>EscalafonIA</title>
 
@@ -88,7 +89,7 @@
             </ul>
         </nav>
 
-        <div class="principal">
+        <div class="principal" id="principal">
             <div class="contenido">
                 <h1 class="titulo"><i class="fa-solid fa-gear"></i> Configuración</h1>
                 <br><br>
@@ -252,6 +253,19 @@
                                     <span class="toggle-slider"></span>
                                 </label>
                             </div>
+                            <div class="accessibility-option" style="display:none">
+                                <div class="option-info">
+                                    <i class="fa-solid fa-moon"></i>
+                                    <div>
+                                        <h4>Tema Oscuro</h4>
+                                        <p>Activa el modo oscuro</p>
+                                    </div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="darkTheme">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -369,44 +383,18 @@
                                 <div class="option-info">
                                     <i class="fa-solid fa-text-height"></i>
                                     <div>
-                                        <h4>Tamaño del Texto</h4>
-                                        <p>Ajusta el tamaño de la fuente</p>
+                                        <h4>Redimensionamiento</h4>
+                                        <p>Ajusta el tamaño de la fuente (hasta 200%)</p>
                                     </div>
                                 </div>
                                 <div class="range-control">
-                                    <input type="range" id="fontSize" min="12" max="28" step="1" value="16">
+                                    <input type="range" id="fontSize" min="12" max="32" step="1" value="16">
                                     <span id="fontSizeValue" class="range-value">16px</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Cursor y Puntero -->
-                    <div class="config-card">
-                        <div class="config-card-header">
-                            <i class="fa-solid fa-mouse-pointer"></i>
-                            <h3>Cursor y Navegación</h3>
-                            <p>Personaliza la apariencia del cursor</p>
-                        </div>
-                        <div class="accessibility-options">
-                            <div class="accessibility-option">
-                                <div class="option-info">
-                                    <i class="fa-solid fa-arrow-pointer"></i>
-                                    <div>
-                                        <h4>Tamaño del Cursor</h4>
-                                        <p>Selecciona el tamaño del cursor</p>
-                                    </div>
-                                </div>
-                                <div class="cursor-size-selector">
-                                    <button class="cursor-option" data-size="small" title="Cursor pequeño">◉</button>
-                                    <button class="cursor-option" data-size="medium" title="Cursor mediano">◉</button>
-                                    <button class="cursor-option" data-size="large" title="Cursor grande">◉</button>
-                                    <button class="cursor-option" data-size="xlarge"
-                                        title="Cursor extra grande">◉</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Panel Preferencias -->
@@ -584,173 +572,86 @@
             if (strengthText) strengthText.textContent = '';
         }
 
-        // Theme selection
+        // Theme selection - keyboard accessible + saves to AccessibilityManager
         document.querySelectorAll('.theme-option').forEach(option => {
-            option.addEventListener('click', function () {
-                document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
-                const theme = this.getAttribute('data-theme');
-                aplicarTema(theme);
+            option.setAttribute('tabindex', '0');
+            option.setAttribute('role', 'button');
+
+            function selectTheme(opt) {
+                const theme = opt.getAttribute('data-theme');
+                document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                if (window.accessibilityManager) {
+                    window.accessibilityManager.state.darkTheme = (theme === 'dark');
+                    window.accessibilityManager.applySetting('darkTheme');
+                    window.accessibilityManager.saveSettings();
+                    window.accessibilityManager.updatePanelValues();
+                    const panelToggle = document.getElementById('acc-darkTheme');
+                    if (panelToggle) panelToggle.checked = (theme === 'dark');
+                    const configToggle = document.getElementById('darkTheme');
+                    if (configToggle) configToggle.checked = (theme === 'dark');
+                } else {
+                    document.body.classList.toggle('dark-theme', theme === 'dark');
+                }
                 mostrarNotificacion(`Tema ${theme === 'light' ? 'claro' : 'oscuro'} aplicado`);
+            }
+
+            option.addEventListener('click', function () { selectTheme(this); });
+            option.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectTheme(this);
+                }
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const next = this.nextElementSibling;
+                    if (next) next.focus();
+                }
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prev = this.previousElementSibling;
+                    if (prev) prev.focus();
+                }
             });
         });
 
-        function aplicarTema(theme) {
-            if (theme === 'dark') {
-                document.body.classList.add('dark-theme');
-            } else {
-                document.body.classList.remove('dark-theme');
+        // Syncing theme visual state with AccessibilityManager on load
+        function syncThemeVisual() {
+            if (!window.accessibilityManager) return;
+            const isDark = window.accessibilityManager.state.darkTheme;
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                const theme = opt.getAttribute('data-theme');
+                opt.classList.toggle('active', (theme === 'dark') === isDark);
+            });
+        }
+        syncThemeVisual();
+
+        // Notificaciones para cambios de accesibilidad (delegado al AccessibilityManager)
+        window.addEventListener('accessibilityChanged', function (e) {
+            const { key, value } = e.detail;
+            const messages = {
+                grayscale: value ? 'Escala de grises activada' : 'Escala de grises desactivada',
+                highContrast: value ? 'Alto contraste activado' : 'Alto contraste desactivado',
+                invertColors: value ? 'Inversión de colores activada' : 'Inversión de colores desactivada',
+                darkTheme: value ? 'Tema oscuro activado' : 'Tema claro activado',
+                readingMask: value ? 'Máscara de lectura activada' : 'Máscara de lectura desactivada',
+                readingGuide: value ? 'Guía de lectura activada' : 'Guía de lectura desactivada',
+                highlightLinks: value ? 'Enlaces resaltados' : 'Resaltado de enlaces desactivado',
+                dyslexicFont: value ? 'Fuente para dislexia activada' : 'Fuente para dislexia desactivada',
+                screenReader: value ? 'Lector de pantalla activado' : 'Lector de pantalla desactivado',
+                lineSpacing: `Espaciado vertical ajustado a ${value}`,
+                letterSpacing: `Espaciado horizontal ajustado a ${value}px`,
+                fontSize: `Redimensionamiento ajustado a ${value}px`
+            };
+            if (key === 'darkTheme') {
+                document.querySelectorAll('.theme-option').forEach(opt => {
+                    const theme = opt.getAttribute('data-theme');
+                    opt.classList.toggle('active', (theme === 'dark') === value);
+                });
             }
-        }
-
-        // Accesibilidad functions
-        const grayscaleToggle = document.getElementById('grayscale');
-        const highContrastToggle = document.getElementById('highContrast');
-        const invertColorsToggle = document.getElementById('invertColors');
-        const screenReaderToggle = document.getElementById('screenReader');
-        const readingMaskToggle = document.getElementById('readingMask');
-        const readingGuideToggle = document.getElementById('readingGuide');
-        const highlightLinksToggle = document.getElementById('highlightLinks');
-        const dyslexicFontToggle = document.getElementById('dyslexicFont');
-        const lineSpacing = document.getElementById('lineSpacing');
-        const letterSpacing = document.getElementById('letterSpacing');
-        const fontSize = document.getElementById('fontSize');
-
-        if (grayscaleToggle) {
-            grayscaleToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('grayscale');
-                } else {
-                    document.body.classList.remove('grayscale');
-                }
-                mostrarNotificacion(this.checked ? 'Escala de grises activada' : 'Escala de grises desactivada');
-            });
-        }
-
-        if (highContrastToggle) {
-            highContrastToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('high-contrast');
-                } else {
-                    document.body.classList.remove('high-contrast');
-                }
-                mostrarNotificacion(this.checked ? 'Alto contraste activado' : 'Alto contraste desactivado');
-            });
-        }
-
-        if (invertColorsToggle) {
-            invertColorsToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('invert-colors');
-                } else {
-                    document.body.classList.remove('invert-colors');
-                }
-                mostrarNotificacion(this.checked ? 'Inversión de colores activada' : 'Inversión de colores desactivada');
-            });
-        }
-
-        if (screenReaderToggle) {
-            screenReaderToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('screen-reader');
-                } else {
-                    document.body.classList.remove('screen-reader');
-                }
-                mostrarNotificacion(this.checked ? 'Lector de pantalla activado' : 'Lector de pantalla desactivado');
-            });
-        }
-
-        if (readingMaskToggle) {
-            readingMaskToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('reading-mask');
-                } else {
-                    document.body.classList.remove('reading-mask');
-                }
-                mostrarNotificacion(this.checked ? 'Máscara de lectura activada' : 'Máscara de lectura desactivada');
-            });
-        }
-
-        if (readingGuideToggle) {
-            readingGuideToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('reading-guide');
-                } else {
-                    document.body.classList.remove('reading-guide');
-                }
-                mostrarNotificacion(this.checked ? 'Guía de lectura activada' : 'Guía de lectura desactivada');
-            });
-        }
-
-        if (highlightLinksToggle) {
-            highlightLinksToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('highlight-links');
-                } else {
-                    document.body.classList.remove('highlight-links');
-                }
-                mostrarNotificacion(this.checked ? 'Enlaces resaltados' : 'Resaltado de enlaces desactivado');
-            });
-        }
-
-        if (dyslexicFontToggle) {
-            dyslexicFontToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    document.body.classList.add('dyslexic-font');
-                } else {
-                    document.body.classList.remove('dyslexic-font');
-                }
-                mostrarNotificacion(this.checked ? 'Fuente para dislexia activada' : 'Fuente para dislexia desactivada');
-            });
-        }
-
-        if (lineSpacing) {
-            const lineSpacingValue = document.getElementById('lineSpacingValue');
-            lineSpacing.addEventListener('input', function () {
-                const value = this.value;
-                lineSpacingValue.textContent = value;
-                document.body.style.lineHeight = value;
-                mostrarNotificacion(`Espaciado vertical ajustado a ${value}`, 'info');
-            });
-        }
-
-        if (letterSpacing) {
-            const letterSpacingValue = document.getElementById('letterSpacingValue');
-            letterSpacing.addEventListener('input', function () {
-                const value = this.value;
-                letterSpacingValue.textContent = value + 'px';
-                document.body.style.letterSpacing = value + 'px';
-                mostrarNotificacion(`Espaciado horizontal ajustado a ${value}px`, 'info');
-            });
-        }
-
-        if (fontSize) {
-            const fontSizeValue = document.getElementById('fontSizeValue');
-            fontSize.addEventListener('input', function () {
-                const value = this.value;
-                fontSizeValue.textContent = value + 'px';
-                document.body.style.fontSize = value + 'px';
-                mostrarNotificacion(`Tamaño de texto ajustado a ${value}px`, 'info');
-            });
-        }
-
-        // Cursor size selector
-        document.querySelectorAll('.cursor-option').forEach(option => {
-            option.addEventListener('click', function () {
-                const size = this.getAttribute('data-size');
-                document.querySelectorAll('.cursor-option').forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
-
-                let cursorSize = 'auto';
-                switch (size) {
-                    case 'small': cursorSize = 'auto'; break;
-                    case 'medium': cursorSize = '24px'; break;
-                    case 'large': cursorSize = '32px'; break;
-                    case 'xlarge': cursorSize = '48px'; break;
-                }
-                document.body.style.cursor = `url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${parseInt(cursorSize)}" height="${parseInt(cursorSize)}" viewBox="0 0 24 24"%3E%3Cpath fill="black" d="M5 3l14 9-5.5 2.5L12 20l-3-6-4-11z"/%3E%3C/svg%3E') ${parseInt(cursorSize) / 2} 0, auto`;
-                mostrarNotificacion(`Cursor ${size === 'small' ? 'pequeño' : size === 'medium' ? 'mediano' : size === 'large' ? 'grande' : 'extra grande'} seleccionado`);
-            });
+            if (messages[key]) {
+                mostrarNotificacion(messages[key], 'info');
+            }
         });
 
         // Modal functions
@@ -789,30 +690,6 @@
                 }, 3000);
             }
         }
-
-        // Al final del script en configuracion.html, añadir:
-        document.addEventListener('DOMContentLoaded', function () {
-            // Sincronizar con el manager global de accesibilidad
-            if (window.accessibilityManager) {
-                // Actualizar los controles cuando cambien desde el panel flotante
-                window.addEventListener('accessibilityChanged', function (e) {
-                    const { key, value } = e.detail;
-
-                    // Actualizar los controles en la página de configuración
-                    const element = document.getElementById(`config-${key}`);
-                    if (element) {
-                        if (element.type === 'checkbox') {
-                            element.checked = value;
-                        } else if (element.type === 'range') {
-                            element.value = value;
-                            const display = document.getElementById(`${key}Value`);
-                            if (display) display.textContent = value + (key === 'fontSize' ? 'px' : key === 'letterSpacing' ? 'px' : '');
-                        }
-                    }
-                });
-            }
-        });
-
 
         // Close modal when clicking outside
         window.onclick = function (event) {
