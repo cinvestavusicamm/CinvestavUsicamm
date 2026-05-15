@@ -67,41 +67,66 @@ def agente_ajax(request):
                                 status=500
                             )
 
-
 def agente_streaming(pregunta):
+    logger.info(f"Iniciando streaming para pregunta: {pregunta[:50]}...")
 
     def generar_stream():
         try:
+            logger.info(f"Conectando a FASTAPI_STREAM_URL: {FASTAPI_STREAM_URL}")
+            
             with requests.post(
                 FASTAPI_STREAM_URL,
                 json={"prompt": pregunta},
                 stream=True,
                 timeout=(30, None)
             ) as r:
-
+                logger.info(f"Respuesta del servicio: status={r.status_code}")
+                
+                if r.status_code != 200:
+                    yield f"data: {json.dumps({'error': f'Error del servicio: {r.status_code}'})}\n\n"
+                    return
+                
+                line_count = 0
                 for line in r.iter_lines(decode_unicode=True):
                     if not line:
                         continue
+                    
+                    line_count += 1
+                    logger.debug(f"Línea recibida {line_count}: {line[:100]}")
 
                     if line.startswith("data:"):
                         line = line[len("data:"):].strip()
 
                     try:
                         data = json.loads(line)
+                        logger.debug(f"Datos parseados: {data}")
 
                         if data.get("type") == "content":
                             token = data.get("token", "")
-                            yield f"data: {json.dumps({'estado': 'ok', 'token': token})}\n\n"
+                            logger.debug(f"Enviando token: {token}")
+                            yield f"data: {json.dumps({'token': token})}\n\n"
 
                         elif data.get("type") == "done":
-                            yield f"data: {json.dumps({'estado': 'ok', 'done': True})}\n\n"
+                            logger.info("Stream completado")
+                            yield f"data: {json.dumps({'done': True})}\n\n"
 
-                    except:
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Error parseando JSON: {e}, línea: {line}")
                         continue
 
+                if line_count == 0:
+                    logger.warning("No se recibieron líneas del servicio")
+                    yield f"data: {json.dumps({'error': 'No se recibió respuesta del asistente'})}\n\n"
+
+        except requests.exceptions.Timeout:
+            logger.error("Timeout conectando al servicio")
+            yield f"data: {json.dumps({'error': 'Tiempo de espera agotado'})}\n\n"
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"Error de conexión: {e}")
+            yield f"data: {json.dumps({'error': 'No se pudo conectar con el asistente'})}\n\n"
         except Exception as e:
-            logger.exception(f"Error en streaming: {e}")
-            yield f"data: {json.dumps({'estado': 'error', 'error': str(e)})}\n\n"
+            logger.exception(f"Error inesperado en streaming: {e}")
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
     response = StreamingHttpResponse(
         generar_stream(),

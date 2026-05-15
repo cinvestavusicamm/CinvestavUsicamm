@@ -28,29 +28,24 @@ function enviarMensaje() {
 
     const botContainer = document.createElement("div");
     botContainer.className = "msg msg-bot";
-
     const botText = document.createElement("span");
     botText.className = "bot-text";
-    botText.textContent = "";
-    botText.style.whiteSpace = "pre-wrap";
+    botText.textContent = "Jacqui pensando";
     botContainer.appendChild(botText);
-
-    const cursor = document.createElement("span");
-    cursor.className = "typing-cursor";
-    cursor.innerText = "▌";
-    cursor.style.animation = "parpadeo 0.8s infinite";
-    cursor.style.display = "none"; 
-    botContainer.appendChild(cursor);
-
     chatBox.appendChild(botContainer);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    let puntos = 0;
-    botText.textContent = "Jacqui pensando";
-    const thinkingInterval = setInterval(() => {
-        puntos = (puntos + 1) % 4;
-        botText.textContent = "Jacqui pensando" + ".".repeat(puntos);
+    let textoCompleto = "";
+    let thinkingInterval = setInterval(() => {
+        let puntos = (botText.textContent.match(/\./g) || []).length;
+        if (botText.textContent.includes("pensando")) {
+            puntos = (puntos + 1) % 4;
+            botText.textContent = "Jacqui pensando" + ".".repeat(puntos);
+        }
     }, 500);
+
+    console.log("Enviando petición a:", agenteAjaxURL);
+    console.log("Mensaje:", mensaje);
 
     fetch(agenteAjaxURL, {
         method: "POST",
@@ -63,81 +58,77 @@ function enviarMensaje() {
             stream: "true"
         })
     })
-    .then(response => {
+    .then(async response => {
+        console.log("Respuesta recibida, status:", response.status);
+        console.log("Headers:", [...response.headers.entries()]);
+        
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        let textoCompleto = "";
         let buffer = "";
-        let inicioRespuesta = false;
 
-        function leerStream() {
-            reader.read().then(({ done, value }) => {
-                if (done) {
-                    clearInterval(thinkingInterval);
-                    cursor.style.display = "none";
-                    return;
+        while (true) {
+            const { done, value } = await reader.read();
+            
+            if (done) {
+                console.log("Stream completado");
+                clearInterval(thinkingInterval);
+                if (!textoCompleto) {
+                    botText.textContent = "No se recibió respuesta";
                 }
+                break;
+            }
 
-                const chunk = decoder.decode(value, { stream: true });
-                buffer += chunk;
+            const chunk = decoder.decode(value, { stream: true });
+            console.log("Chunk recibido:", chunk);
+            buffer += chunk;
 
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || "";
+            const lines = buffer.split('\n\n');
+            buffer = lines.pop() || "";
 
-                lines.forEach(line => {
-                    line = line.trim();
-
-                    if (line.startsWith("data:")) {
-                        const rawData = line.substring(6);
-
-                        if (rawData.trim() === "[DONE]") {
-                            clearInterval(thinkingInterval);
-                            cursor.style.display = "none";
-                            return;
-                        }
-
-                        if (rawData.trim()) {
-                            // Decodificar JSON para obtener el token exacto con espacios
-                            let token;
-                            try {
-                                token = JSON.parse(rawData);
-                            } catch(e) {
-                                token = rawData;
-                            }
-
-                            if (!inicioRespuesta) {
-                                inicioRespuesta = true;
+            for (const line of lines) {
+                console.log("Procesando línea:", line);
+                
+                if (line.trim().startsWith("data:")) {
+                    const rawData = line.substring(5).trim();
+                    console.log("Raw data:", rawData);
+                    
+                    if (rawData && rawData !== "[DONE]") {
+                        try {
+                            const data = JSON.parse(rawData);
+                            console.log("Datos parseados:", data);
+                            
+                            if (data.token !== undefined) {
+                                if (botText.textContent.includes("pensando")) {
+                                    clearInterval(thinkingInterval);
+                                    botText.textContent = "";
+                                }
+                                textoCompleto += data.token;
+                                botText.textContent = textoCompleto;
+                                chatBox.scrollTop = chatBox.scrollHeight;
+                            } else if (data.done === true) {
+                                console.log("Stream marcado como done");
                                 clearInterval(thinkingInterval);
-                                botText.textContent = "";
-                                cursor.style.display = "inline";
+                            } else if (data.error) {
+                                console.error("Error del servidor:", data.error);
+                                clearInterval(thinkingInterval);
+                                botText.textContent = `Error: ${data.error}`;
                             }
-
-                            textoCompleto += token;
-                            botText.textContent = textoCompleto;
-                            chatBox.scrollTop = chatBox.scrollHeight;
+                        } catch (e) {
+                            console.error("Error parseando JSON:", e, rawData);
                         }
                     }
-                });
-
-                leerStream(); // ← Llamada recursiva dentro de la función
-            }).catch(error => {
-                console.error('Error leyendo stream:', error);
-                clearInterval(thinkingInterval);
-                botText.textContent = textoCompleto || "Error en la transmisión";
-                cursor.style.display = "none";
-            });
+                }
+            }
         }
-
-        leerStream(); // ← Llamada inicial para comenzar el stream
-
     })
     .catch(error => {
-        console.error('Error:', error);
-        botContainer.innerHTML = "El asistente no está disponible";
+        console.error('Error en fetch:', error);
+        clearInterval(thinkingInterval);
+        botText.textContent = "Error: No se pudo conectar con el asistente";
     });
 }
 

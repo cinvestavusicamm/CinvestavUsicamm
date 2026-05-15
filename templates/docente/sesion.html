@@ -1,34 +1,37 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión | EscalafonIA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap"
+        rel="stylesheet">
+
     <style>
         :root {
             --guinda: #691C32;
             --guinda-hover: #521627;
-            --teal: #007A7C;
             --dorado: #BC955C;
             --borde: #E5E7EB;
             --texto-puro: #1E293B;
-            --bg-canvas: #FFFFFF;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             height: 100vh;
             display: flex;
             flex-direction: column;
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
-            background-image: radial-gradient(var(--borde) 1px, transparent 1px);
-            background-size: 32px 32px;
+            background-color: #f5f5f5;
             color: var(--texto-puro);
         }
 
@@ -37,7 +40,7 @@
             background-color: var(--guinda);
             padding: 1rem 0;
             border-bottom: 3px solid var(--dorado);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 100;
         }
 
@@ -50,14 +53,43 @@
             align-items: center;
         }
 
-        .brand-box { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .brand-box img { width: 45px; border-radius: 50%; border: 2px solid white; background: white; }
-        .brand-box h1 { font-family: 'Montserrat'; color: white; font-size: 1.2rem; font-weight: 900; letter-spacing: 0.5px; }
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
 
-        nav a { color: white; text-decoration: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-left: 20px; transition: 0.3s; }
-        nav a:hover { color: var(--dorado); }
+        .brand-box img {
+            width: 45px;
+            border-radius: 50%;
+            border: 2px solid white;
+            background: white;
+        }
 
-        /* --- LOGIN CARD CON BORDE ANIMADO --- */
+        .brand-box h1 {
+            font-family: 'Montserrat';
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 20px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--dorado);
+        }
+
+        /* --- LOGIN CARD --- */
         main {
             flex: 1;
             display: flex;
@@ -66,31 +98,15 @@
             padding: 40px 20px;
         }
 
-        /* Contenedor del borde animado */
-        .animated-border-box {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            padding: 3px; /* Grosor del borde */
-            background: linear-gradient(90deg, var(--guinda), var(--dorado), var(--teal), var(--guinda));
-            background-size: 300% 300%;
-            border-radius: 28px;
-            animation: border-animation 6s linear infinite;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-
-        @keyframes border-animation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .auth-card {
             background: white;
             width: 100%;
+            max-width: 400px;
             padding: 45px 35px;
-            border-radius: 25px;
+            border-radius: 20px;
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--borde);
         }
 
         .avatar-circle {
@@ -103,13 +119,41 @@
             background: #fff;
         }
 
-        h2 { font-family: 'Montserrat'; color: var(--guinda); font-weight: 900; font-size: 1.4rem; margin-bottom: 30px; text-transform: uppercase; }
+        h2 {
+            font-family: 'Montserrat';
+            color: var(--guinda);
+            font-weight: 900;
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
 
-        .form-group { text-align: left; margin-bottom: 20px; }
-        label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--guinda); margin-bottom: 8px; text-transform: uppercase; }
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
 
-        .input-icon-box { position: relative; }
-        .input-icon-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--dorado); font-size: 1rem; }
+        label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--guinda);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .input-icon-box {
+            position: relative;
+        }
+
+        .input-icon-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dorado);
+            font-size: 1rem;
+        }
 
         input {
             width: 100%;
@@ -117,17 +161,21 @@
             border: 1.5px solid var(--borde);
             border-radius: 12px;
             font-size: 0.9rem;
-            font-weight: 600;
-            background: #fdfdfd;
+            font-weight: 500;
+            background: white;
             transition: 0.3s;
         }
 
-        input:focus { border-color: var(--teal); outline: none; background: white; box-shadow: 0 0 0 4px rgba(0, 122, 124, 0.1); }
+        input:focus {
+            border-color: var(--guinda);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(105, 28, 50, 0.1);
+        }
 
         .btn-access {
             width: 100%;
             padding: 15px;
-            background: var(--teal);
+            background: var(--guinda);
             color: white;
             border: none;
             border-radius: 12px;
@@ -143,54 +191,145 @@
             gap: 10px;
         }
 
-        .btn-access:disabled { background: #d1d5db; cursor: not-allowed; }
-        .btn-access:not(:disabled):hover { background: #005f61; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(0, 122, 124, 0.2); }
+        .btn-access:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
 
-        .links-area { margin-top: 25px; font-size: 0.8rem; border-top: 1px solid #f1f5f9; padding-top: 20px; }
-        .links-area a { color: var(--teal); text-decoration: none; font-weight: 700; margin: 0 5px; }
+        .btn-access:not(:disabled):hover {
+            background: var(--guinda-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(105, 28, 50, 0.3);
+        }
 
-        .curp-link { font-size: 0.7rem; color: var(--dorado); text-decoration: none; font-weight: 700; display: block; margin-top: 5px; }
+        .links-area {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 20px;
+        }
+
+        .links-area a {
+            color: var(--guinda);
+            text-decoration: none;
+            font-weight: 700;
+            margin: 0 5px;
+        }
+
+        .links-area a:hover {
+            color: var(--dorado);
+        }
+
+        .curp-link {
+            font-size: 0.7rem;
+            color: var(--guinda);
+            text-decoration: none;
+            font-weight: 700;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .curp-link:hover {
+            color: var(--dorado);
+        }
 
         /* --- FOOTER --- */
         footer {
             background-color: var(--guinda);
-            padding: 2rem 0;
+            padding: 1.5rem 0;
             border-top: 3px solid var(--dorado);
             text-align: center;
             color: white;
         }
 
-        .footer-logos-grid {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 15px;
+        .footer-text {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
         }
 
-        .logo-wrap {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 10px 15px;
+        /* Estilos para mensajes */
+        .messages-container {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
         }
 
-        .logo-wrap img { height: 35px; width: auto; object-fit: contain; }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        .footer-text { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+        .alert-error {
+            background-color: #FEE2E2;
+            border-left: 4px solid #DC2626;
+            color: #991B1B;
+        }
 
-        .csrf-hidden { display: none; }
+        .alert-success {
+            background-color: #D1FAE5;
+            border-left: 4px solid #10B981;
+            color: #065F46;
+        }
+
+        .alert-warning {
+            background-color: #FEF3C7;
+            border-left: 4px solid #F59E0B;
+            color: #92400E;
+        }
+
+        .alert-info {
+            background-color: #DBEAFE;
+            border-left: 4px solid #3B82F6;
+            color: #1E40AF;
+        }
+
+        .alert i {
+            font-size: 1rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: auto;
+            color: inherit;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
     </style>
 </head>
+
 <body>
 
     <header>
         <div class="header-container">
             <a href="/" class="brand-box">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                    alt="Logo">
                 <h1>ESCALAFONIA</h1>
             </a>
             <nav>
@@ -201,99 +340,130 @@
     </header>
 
     <main>
-        <div class="animated-border-box">
-            <div class="auth-card">
-                <img class="avatar-circle" src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="User">
-                <h2>Inicio de sesion</h2>
-                 <div class="messages-container" id="messagesContainer">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags|default:'info' }}">
-                                <i class="fas 
-                                    {% if message.tags == 'error' %}fa-exclamation-circle
-                                    {% elif message.tags == 'success' %}fa-check-circle
-                                    {% elif message.tags == 'warning' %}fa-exclamation-triangle
-                                    {% else %}fa-info-circle
-                                    {% endif %}
-                                "></i>
-                                <span>{{ message }}</span>
-                                <button class="close-btn" onclick="this.parentElement.remove()">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    
-                    <!-- NUEVO: Para errores de formulario no relacionados con messages -->
-                    {% if form.errors %}
-                        <div class="alert alert-error">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>Por favor corrige los errores del formulario.</span>
-                            <button class="close-btn" onclick="this.parentElement.remove()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    {% endif %}
-                </div>
+        <div class="auth-card">
+            <img class="avatar-circle"
+                src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                alt="User">
+            <h2>Inicio de sesion</h2>
 
-                <form id="loginForm" method="POST" action="{% url 'sesion' %}">
-                    <div class="csrf-hidden">{% csrf_token %}</div>
-                    
-                    <div class="form-group">
-                        <label for="curp">CURP (18 CARACTERES)</label>
-                        <div class="input-icon-box">
-                            <i class="fas fa-id-card"></i>
-                            <input type="text" id="curp" name="curp" placeholder="Ingresa tu CURP oficial" maxlength="18" required autocomplete="off">
-                        </div>
-                        <a href="https://www.gob.mx/curp/" target="_blank" class="curp-link">
-                            <i class="fas fa-search"></i> ¿No conoces tu CURP? Búscalo aquí
-                        </a>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Contraseña</label>
-                        <div class="input-icon-box">
-                            <i class="fas fa-key"></i>
-                            <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="submitBtn" class="btn-access" disabled>
-                        <i class="fas fa-sign-in-alt"></i> Entrar al Sistema
+            <div class="messages-container">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}">
+                    <i class="fas 
+                            {% if message.tags == 'error' %}fa-exclamation-circle
+                            {% elif message.tags == 'success' %}fa-check-circle
+                            {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                            {% else %}fa-info-circle
+                            {% endif %}
+                        "></i>
+                    <span>{{ message }}</span>
+                    <button type="button" class="close-btn" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
                     </button>
-                </form>
-
-                <div class="links-area">
-                    <p><a href="#">¿Olvidaste tu contraseña?</a></p>
-                    <p>¿Nuevo aquí? <a href="{% url 'registro' %}">Crea tu cuenta</a></p>
                 </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <form id="loginForm" method="POST" action="{% url 'sesion' %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="curp">CURP (18 CARACTERES)</label>
+                    <div class="input-icon-box">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" id="curp" name="curp" placeholder="Ingresa tu CURP oficial"
+                            maxlength="18" required autocomplete="off">
+                    </div>
+                    <a href="https://www.gob.mx/curp/" target="_blank" class="curp-link">
+                        <i class="fas fa-search"></i> ¿No conoces tu CURP? Búscalo aquí
+                    </a>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-icon-box">
+                        <i class="fas fa-key"></i>
+                        <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-access" disabled>
+                    <i class="fas fa-sign-in-alt"></i> Entrar al Sistema
+                </button>
+            </form>
+
+            <div class="links-area">
+                <p><a href="#">¿Olvidaste tu contraseña?</a></p>
+                <p>¿Nuevo aquí? <a href="{% url 'registro' %}">Crea tu cuenta</a></p>
             </div>
         </div>
     </main>
 
     <footer>
-        <p class="footer-text">© 2026 ESCALAFONIA </p>
+        <p class="footer-text">© 2026 ESCALAFONIA</p>
     </footer>
 
     <script>
-        const curpInput = document.getElementById('curp');
-        const submitBtn = document.getElementById('submitBtn');
+        (function () {
+            const curpInput = document.getElementById('curp');
+            const submitBtn = document.getElementById('submitBtn');
+            const loginForm = document.getElementById('loginForm');
 
-        // Validación estructural CURP
-        const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]\d$/;
+            const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]\d$/;
 
-        curpInput.addEventListener('input', function(e) {
-            let val = e.target.value.toUpperCase().replace(/\s/g, '');
-            e.target.value = val;
+            function validateCURP() {
+                let val = curpInput.value.toUpperCase().replace(/\s/g, '');
+                curpInput.value = val;
 
-            if (val.length === 18 && curpRegex.test(val)) {
-                curpInput.style.borderColor = 'var(--teal)';
-                submitBtn.disabled = false;
-            } else {
-                curpInput.style.borderColor = 'var(--borde)';
-                submitBtn.disabled = true;
+                if (val.length === 18 && curpRegex.test(val)) {
+                    curpInput.style.borderColor = '#691C32';
+                    submitBtn.disabled = false;
+                    return true;
+                } else {
+                    curpInput.style.borderColor = '#E5E7EB';
+                    submitBtn.disabled = true;
+                    return false;
+                }
             }
-        });
+
+            if (curpInput) {
+                curpInput.addEventListener('input', validateCURP);
+            }
+
+            function autoCloseMessages() {
+                const messages = document.querySelectorAll('.alert');
+                messages.forEach(message => {
+                    setTimeout(() => {
+                        if (message && message.parentElement) {
+                            message.style.opacity = '0';
+                            message.style.transition = 'opacity 0.5s';
+                            setTimeout(() => {
+                                if (message && message.parentElement) {
+                                    message.remove();
+                                }
+                            }, 500);
+                        }
+                    }, 5000);
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () {
+                    autoCloseMessages();
+                    validateCURP();
+                });
+            } else {
+                autoCloseMessages();
+                validateCURP();
+            }
+
+            if (curpInput && curpInput.value) {
+                validateCURP();
+            }
+        })();
     </script>
 </body>
+
 </html>
