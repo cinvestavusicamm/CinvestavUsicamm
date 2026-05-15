@@ -6,6 +6,8 @@ from apps.users.views.docentes.cursos_promociones import cursos_promociones
 from apps.users.views.docentes.Foros import foros
 from apps.users.views.docentes.promociones_docente import promociones_docente
 from apps.users.views.docentes.panel_docente import panel_docente
+from apps.users.views.docentes.vertical import promociones_vertical
+from apps.users.views.docentes.horizontal import promociones_horizontal
 
 app_name ='Docente'
 
@@ -17,4 +19,7 @@ urlpatterns = [
     path('consultar-progreso/', consultar_progreso, name='consultar_progreso'),     #Consultar progreso del docente
     path('foros/', foros, name='foros'),            #Foros
     path('promociones-docente/', promociones_docente, name='promociones_docente'),     #Promociones conexion con fabiola y norma
+    path('promociones-vertical/', promociones_vertical, name='promociones_vertical'),
+    path('promociones-horizontal/', promociones_horizontal, name='promociones_horizontal'),
+    
 ]
