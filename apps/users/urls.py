@@ -5,6 +5,9 @@ from .views.admin_views import panel_admin
 from .views.admin_users_views import crear_admin, agregar_usuario_ajax, editar_usuario_ajax, toggle_usuario, obtener_usuario_ajax
 from .views.agent_ajax import agente_ajax
 from .views.db_schema_views import listar_tablas_bd
+from apps.users.views.docente_ajax import docente_ajax
+from apps.users.views.evaluador_ajax import evaluador_ajax
+from apps.users.views.generador_ajax import generador_ajax
 
 urlpatterns = [
     path('', dashboard, name='home'),
@@ -28,6 +31,7 @@ urlpatterns = [
     path('evaluador/', include('apps.users.role_urls.evaluador_urls')),
     path('generador/', include('apps.users.role_urls.generador_urls')),
     path('docente/', include('apps.users.role_urls.docentes_urls')),
-
-
+    path('docente/ajax/', docente_ajax, name='docente_ajax'),
+    path('evaluador/ajax/', evaluador_ajax, name='evaluador_ajax'),
+    path('generador/ajax/', generador_ajax, name='generador_ajax'),
 ]
