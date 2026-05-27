@@ -1,0 +1,157 @@
+version: "3.8"
+
+services:
+  # ─────────────────────────────────────────────────────────────────────
+  # ORCHESTRATOR - Request Orchestrator Microservice
+  # ─────────────────────────────────────────────────────────────────────
+  orchestrator:
+    container_name: escalafon_orchestrator
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      uvicorn
+      ms_orchestrator.src.infrastructure.api.main:app
+      --host 0.0.0.0
+      --port 9000
+      --log-level info
+      --reload
+    volumes:
+      - .:/app
+    ports:
+      - "9000:9000"
+    environment:
+      # Service Configuration
+      SERVICE_NAME: ms_orchestrator
+      SERVICE_VERSION: 1.0.0
+      ENVIRONMENT: development
+
+      # Server Configuration
+      ORCHESTRATOR_HOST: 0.0.0.0
+      ORCHESTRATOR_PORT: 9000
+
+      # Microservices URLs
+      VALIDATION_SERVICE_URL: http://validation:8001
+      BACKEND_API_URL: http://backend:8003
+      MICROSERVICE_DB_URL: http://database:8002
+      DJANGO_BACKEND_URL: http://django_backend:8000
+
+      # Service Communication Settings
+      SERVICE_TIMEOUT: 30
+      SERVICE_CONNECT_TIMEOUT: 10
+
+      # Retry Policy
+      RETRY_MAX_ATTEMPTS: 3
+      RETRY_BACKOFF_FACTOR: 2.0
+      RETRY_INITIAL_DELAY: 1.0
+
+      # Circuit Breaker Settings
+      CIRCUIT_BREAKER_FAILURE_THRESHOLD: 5
+      CIRCUIT_BREAKER_RECOVERY_TIMEOUT: 60
+
+      # Logging
+      LOG_LEVEL: INFO
+      LOG_FORMAT: json
+      ENABLE_REQUEST_LOGGING: "true"
+      ENABLE_RESPONSE_LOGGING: "true"
+
+      # CORS
+      CORS_ALLOW_ORIGINS: '["*"]'
+      CORS_ALLOW_CREDENTIALS: "true"
+      CORS_ALLOW_METHODS: '["*"]'
+      CORS_ALLOW_HEADERS: '["*"]'
+
+      # Security
+      ENABLE_API_KEY_VALIDATION: "false"
+
+      # Python
+      PYTHONPATH: /app
+      PYTHONUNBUFFERED: 1
+
+    depends_on:
+      - validation
+      - backend
+      - database
+      - django_backend
+
+    networks:
+      - escalafon_net
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    labels:
+      - "com.escalafon.description=Request Orchestrator Microservice"
+      - "com.escalafon.component=orchestration"
+
+  # ─────────────────────────────────────────────────────────────────────
+  # DJANGO BACKEND - Django Backend (apps/)
+  # ─────────────────────────────────────────────────────────────────────
+  django_backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ..:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://dev:dev@db:5432/dev_db
+      DEBUG: "true"
+    depends_on:
+      - db
+    networks:
+      - escalafon_net
+
+  # ─────────────────────────────────────────────────────────────────────
+  # REFERENCED SERVICES (these should be defined in main docker-compose)
+  # ─────────────────────────────────────────────────────────────────────
+
+  validation:
+    image: escalafon_validation:latest
+    container_name: escalafon_validation
+    ports:
+      - "8001:8001"
+    networks:
+      - escalafon_net
+    # Additional configuration from main docker-compose
+
+  backend:
+    image: escalafon_backend:latest
+    container_name: ia_service_core
+    ports:
+      - "8003:8003"
+    networks:
+      - escalafon_net
+    # Additional configuration from main docker-compose
+
+  microservice_db:
+    image: escalafon_database:latest
+    container_name: escalafon_database
+    ports:
+      - "8002:8002"
+    networks:
+      - escalafon_net
+    # Additional configuration from main docker-compose
+
+# ─────────────────────────────────────────────────────────────────────
+# Networks
+# ─────────────────────────────────────────────────────────────────────
+networks:
+  escalafon_net:
+    driver: bridge
+    name: escalafon_net
+
+# ─────────────────────────────────────────────────────────────────────
+# Volumes (if needed for orchestrator)
+# ─────────────────────────────────────────────────────────────────────
+volumes:
+  orchestrator_cache:
+    driver: local
+  db_data:
+    driver: local

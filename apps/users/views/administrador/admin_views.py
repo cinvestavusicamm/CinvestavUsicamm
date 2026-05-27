@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from ..models import Institucion, Usuario, Rol
+from ...models import Institucion, Usuario, Rol
 from django.views.decorators.cache import never_cache
-from apps.users.constants import ROLE_ADMIN, ROLE_DOCENTE
+from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE
 from apps.users.services.permisos import requiere_rol
 
 @never_cache

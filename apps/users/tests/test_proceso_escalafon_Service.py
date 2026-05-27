@@ -1,45 +1,39 @@
-from django.test import TestCase
-from apps.users.models import ProcesoEscalafon, Usuario
-from apps.users.services import proceso_escalafon_service
+from types import SimpleNamespace
+from unittest.mock import MagicMock, patch
+
+from django.test import SimpleTestCase
+
+from apps.users.services.proceso_escalafon_service import ProcesoEscalafonService
 
 
-class ProcesoEscalafonServiceTest(TestCase):
+class ProcesoEscalafonServiceTest(SimpleTestCase):
+    @patch("apps.users.services.proceso_escalafon_service.ProcesoEscalafon")
+    def test_obtener_procesos_usuario(self, proceso_model):
+        queryset = MagicMock()
+        proceso_model.objects.filter.return_value.order_by.return_value = queryset
 
-    def setUp(self):
-        # Crear usuario de prueba
-        self.usuario = Usuario.objects.create(
-            username="testuser",
-            password="12345"
-        )
+        procesos = ProcesoEscalafonService.obtener_procesos_usuario(10)
 
-        # Crear proceso de prueba
-        self.proceso = ProcesoEscalafon.objects.create(
-            usuario_id=self.usuario.id,
-            folio="FOLIO123",
-            tipo_proceso="tipo1",
-            ciclo_escolar="2024",
-            estado_id=1,
-            funcion="funcion",
-            tipo_sostenimiento="publico",
-            tipo_valoracion="valoracion",
-            datos_multifactores="datos",
-            estatus="pendiente"
-        )
+        proceso_model.objects.filter.assert_called_once_with(usuario_id=10)
+        self.assertEqual(procesos, queryset)
 
-    # 🔹 Test obtener procesos por usuario
-    def test_obtener_procesos_usuario(self):
-        procesos = proceso_escalafon_service.obtener_procesos_usuario(self.usuario.id)
-        self.assertEqual(procesos.count(), 1)
+    @patch("apps.users.services.proceso_escalafon_service.ProcesoEscalafon")
+    def test_obtener_proceso_por_folio(self, proceso_model):
+        proceso = SimpleNamespace(folio="FOLIO123")
+        proceso_model.objects.get.return_value = proceso
 
-    # 🔹 Test obtener por folio
-    def test_obtener_proceso_por_folio(self):
-        proceso = proceso_escalafon_service.obtener_proceso_por_folio("FOLIO123")
-        self.assertEqual(proceso.folio, "FOLIO123")
+        resultado = ProcesoEscalafonService.obtener_proceso_por_folio("FOLIO123")
 
-    # 🔹 Test crear proceso
-    def test_crear_proceso(self):
-        proceso = proceso_escalafon_service.crear_proceso(
-            usuario_id=self.usuario.id,
+        proceso_model.objects.get.assert_called_once_with(folio="FOLIO123")
+        self.assertEqual(resultado.folio, "FOLIO123")
+
+    @patch("apps.users.services.proceso_escalafon_service.ProcesoEscalafon")
+    def test_crear_proceso(self, proceso_model):
+        proceso = MagicMock()
+        proceso_model.return_value = proceso
+
+        resultado = ProcesoEscalafonService.crear_proceso(
+            usuario_id=1,
             folio="FOLIO456",
             tipo_proceso="tipo2",
             ciclo_escolar="2025",
@@ -47,24 +41,52 @@ class ProcesoEscalafonServiceTest(TestCase):
             funcion="otra",
             tipo_sostenimiento="privado",
             tipo_valoracion="otra",
-            datos_multifactores="datos2",
-            estatus="activo"
+            datos_multifactores={"puntaje": 90},
+            estatus="activo",
         )
 
-        self.assertIsNotNone(proceso)
-        self.assertEqual(proceso.folio, "FOLIO456")
+        proceso_model.assert_called_once_with(
+            usuario_id=1,
+            folio="FOLIO456",
+            tipo_proceso="tipo2",
+            ciclo_escolar="2025",
+            estado_id=2,
+            funcion="otra",
+            tipo_sostenimiento="privado",
+            tipo_valoracion="otra",
+            datos_multifactores={"puntaje": 90},
+            estatus="activo",
+        )
+        proceso.save.assert_called_once()
+        self.assertEqual(resultado, proceso)
 
-    # 🔹 Test actualizar estado
-    def test_actualizar_estado_proceso(self):
-        proceso = proceso_escalafon_service.actualizar_estado_proceso("FOLIO123", "aprobado")
-        self.assertEqual(proceso.estatus, "aprobado")
+    @patch("apps.users.services.proceso_escalafon_service.ProcesoEscalafon")
+    def test_actualizar_estado_proceso(self, proceso_model):
+        proceso = MagicMock(estatus="pendiente")
+        proceso_model.objects.get.return_value = proceso
 
-    # 🔹 Test filtrar por estado
-    def test_obtener_procesos_por_estado(self):
-        procesos = proceso_escalafon_service.obtener_procesos_por_estado(1)
-        self.assertEqual(procesos.count(), 1)
+        resultado = ProcesoEscalafonService.actualizar_estado_proceso("FOLIO123", "aprobado")
 
-    # 🔹 Test filtrar por ciclo escolar
-    def test_obtener_procesos_ciclo_escolar(self):
-        procesos = proceso_escalafon_service.obtener_procesos_ciclo_escolar("2024")
-        self.assertEqual(procesos.count(), 1)
+        proceso_model.objects.get.assert_called_once_with(folio="FOLIO123")
+        self.assertEqual(resultado.estatus, "aprobado")
+        proceso.save.assert_called_once()
+
+    @patch("apps.users.services.proceso_escalafon_service.ProcesoEscalafon")
+    def test_obtener_procesos_por_estado(self, proceso_model):
+        queryset = MagicMock()
+        proceso_model.objects.filter.return_value.order_by.return_value = queryset
+
+        procesos = ProcesoEscalafonService.obtener_procesos_por_estado(1)
+
+        proceso_model.objects.filter.assert_called_once_with(estado_id=1)
+        self.assertEqual(procesos, queryset)
+
+    @patch("apps.users.services.proceso_escalafon_service.ProcesoEscalafon")
+    def test_obtener_procesos_ciclo_escolar(self, proceso_model):
+        queryset = MagicMock()
+        proceso_model.objects.filter.return_value.order_by.return_value = queryset
+
+        procesos = ProcesoEscalafonService.obtener_procesos_ciclo_escolar("2024")
+
+        proceso_model.objects.filter.assert_called_once_with(ciclo_escolar="2024")
+        self.assertEqual(procesos, queryset)

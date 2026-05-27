@@ -223,7 +223,7 @@
                             <i class="fas fa-database"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>1,247</h3>
+	                            <h3>{{ metricas_evaluador.preguntas_banco|default:0 }}</h3>
                             <p>Total preguntas</p>
                         </div>
                     </div>
@@ -232,7 +232,7 @@
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>1,189</h3>
+	                            <h3>{{ metricas_evaluador.evaluaciones_revisadas_por_mi|default:0 }}</h3>
                             <p>Validadas</p>
                         </div>
                     </div>
@@ -241,7 +241,7 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>48</h3>
+	                            <h3>{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</h3>
                             <p>Pendientes</p>
                         </div>
                     </div>
@@ -250,7 +250,7 @@
                             <i class="fas fa-times-circle"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>10</h3>
+	                            <h3>{{ metricas_evaluador.evaluaciones_rechazadas|default:0 }}</h3>
                             <p>Rechazadas</p>
                         </div>
                     </div>
@@ -302,135 +302,46 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Fila 1 -->
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="select-row">
-                                    </td>
-                                    <td>#001</td>
-                                    <td>
-                                        <div class="pregunta-enunciado">
-                                            <strong>¿Cuál de las siguientes estrategias es más efectiva para fomentar la
-                                                lectura en primaria?</strong>
-                                            <div class="pregunta-meta">
-                                                <span class="badge badge-sm badge-bloom">Aplicar</span>
-                                                <span class="badge badge-sm badge-dificultad">Media</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge-asignatura badge-espanol">Español</span>
-                                    </td>
-                                    <td>Primaria</td>
-                                    <td>Pedagógica</td>
-                                    <td>
-                                        <span class="badge-tipo badge-opcion-multiple">Opción Múltiple</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge-estado badge-estado-validada">Validada</span>
-                                    </td>
-                                    <td>15/06/2024</td>
-                                    <td>
-                                        <div class="acciones-tabla">
-                                            <button class="btn-icon btn-sm" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon btn-sm" title="Ver detalles">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon btn-sm" title="Duplicar">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Fila 2 -->
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="select-row">
-                                    </td>
-                                    <td>#002</td>
-                                    <td>
-                                        <div class="pregunta-enunciado">
-                                            <strong>Un docente observa que varios estudiantes tienen dificultades con
-                                                fracciones. ¿Cuál sería la intervención más apropiada según el enfoque
-                                                de la NEM?</strong>
-                                            <div class="pregunta-meta">
-                                                <span class="badge badge-sm badge-bloom">Analizar</span>
-                                                <span class="badge badge-sm badge-dificultad">Alta</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge-asignatura badge-matematicas">Matemáticas</span>
-                                    </td>
-                                    <td>Secundaria</td>
-                                    <td>Didáctica</td>
-                                    <td>
-                                        <span class="badge-tipo badge-caso-practico">Caso Práctico</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge-estado badge-estado-pendiente">Pendiente</span>
-                                    </td>
-                                    <td>14/06/2024</td>
-                                    <td>
-                                        <div class="acciones-tabla">
-                                            <button class="btn-icon btn-sm" title="Validar">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                            <button class="btn-icon btn-sm" title="Ver detalles">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon btn-sm" title="Rechazar">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Fila 3 -->
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="select-row">
-                                    </td>
-                                    <td>#003</td>
-                                    <td>
-                                        <div class="pregunta-enunciado">
-                                            <strong>Verdadero o Falso: La gamificación mejora significativamente la
-                                                motivación intrínseca en estudiantes de preescolar.</strong>
-                                            <div class="pregunta-meta">
-                                                <span class="badge badge-sm badge-bloom">Recordar</span>
-                                                <span class="badge badge-sm badge-dificultad">Baja</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge-asignatura badge-pedagogia">Pedagogía</span>
-                                    </td>
-                                    <td>Preescolar</td>
-                                    <td>TIC</td>
-                                    <td>
-                                        <span class="badge-tipo badge-verdadero-falso">V/F</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge-estado badge-estado-validada">Validada</span>
-                                    </td>
-                                    <td>13/06/2024</td>
-                                    <td>
-                                        <div class="acciones-tabla">
-                                            <button class="btn-icon btn-sm" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon btn-sm" title="Ver detalles">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn-icon btn-sm" title="Duplicar">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    {% for evaluacion in evaluaciones_bd %}
+	                                <tr>
+	                                    <td>
+	                                        <input type="checkbox" class="select-row">
+	                                    </td>
+	                                    <td>#{{ evaluacion.id }}</td>
+	                                    <td>
+	                                        <div class="pregunta-enunciado">
+	                                            <strong>{{ evaluacion.titulo }}</strong>
+	                                            <div class="pregunta-meta">
+	                                                <span class="badge badge-sm badge-bloom">Curso/Evaluación</span>
+	                                                <span class="badge badge-sm badge-dificultad">Versión {{ evaluacion.version|default:1 }}</span>
+	                                            </div>
+	                                        </div>
+	                                    </td>
+	                                    <td>
+	                                        <span class="badge-asignatura badge-espanol">No modelada</span>
+	                                    </td>
+	                                    <td>No modelado</td>
+	                                    <td>No modelada</td>
+	                                    <td>
+	                                        <span class="badge-tipo badge-opcion-multiple">Curso</span>
+	                                    </td>
+	                                    <td>
+	                                        <span class="badge-estado badge-estado-pendiente">{{ evaluacion.estado }}</span>
+	                                    </td>
+	                                    <td>{% if evaluacion.fecha_creacion %}{{ evaluacion.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</td>
+	                                    <td>
+	                                        <div class="acciones-tabla">
+	                                            <button class="btn-icon btn-sm" title="Ver detalles">
+	                                                <i class="fas fa-eye"></i>
+	                                            </button>
+	                                        </div>
+	                                    </td>
+	                                </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="10">No hay banco de preguntas en los modelos actuales. Consulta `apps/users/docs/datos_faltantes_para_bd.md`.</td>
+                                    </tr>
+                                    {% endfor %}
 
                             </tbody>
                         </table>
@@ -489,6 +400,9 @@
     <script src="../../static/js/barra-lateral.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
     <script src="../../static/js/accesibilidad.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
     <script src="../../static/js/agregar-pregunta.js"></script>
 </body>

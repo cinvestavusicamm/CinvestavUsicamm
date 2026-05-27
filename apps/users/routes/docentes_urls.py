@@ -8,6 +8,7 @@ from apps.users.views.docentes.promociones_docente import promociones_docente
 from apps.users.views.docentes.panel_docente import panel_docente
 from apps.users.views.docentes.vertical import promociones_vertical
 from apps.users.views.docentes.horizontal import promociones_horizontal
+from apps.users.api.roles import datos_docente_ajax
 
 app_name ='Docente'
 
@@ -21,5 +22,6 @@ urlpatterns = [
     path('promociones-docente/', promociones_docente, name='promociones_docente'),     #Promociones conexion con fabiola y norma
     path('promociones-vertical/', promociones_vertical, name='promociones_vertical'),
     path('promociones-horizontal/', promociones_horizontal, name='promociones_horizontal'),
+    path('ajax/datos/', datos_docente_ajax, name='datos_docente_ajax'),
     
 ]

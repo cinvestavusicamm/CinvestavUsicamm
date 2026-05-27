@@ -1,15 +1,16 @@
-##Eliminar cuando estemos en produccion, es solo para mostrar la estructura de la base de datos a los administradores##
-
-
+"""
+API endpoints administrativos
+"""
 from django.db import connection
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
-from apps.users.constants import ROLE_ADMIN
+from apps.users.config.constants import ROLE_ADMIN
 from apps.users.services.permisos import requiere_rol
 
 
 def _tipo_columna(descripcion_columna):
+    """Obtiene el tipo de columna de la descripción"""
     try:
         return connection.introspection.get_field_type(
             descripcion_columna.type_code,
@@ -20,6 +21,7 @@ def _tipo_columna(descripcion_columna):
 
 
 def _restricciones_por_columna(restricciones):
+    """Procesa restricciones por columna"""
     columnas = {}
 
     for nombre_restriccion, restriccion in restricciones.items():
@@ -57,12 +59,14 @@ def _restricciones_por_columna(restricciones):
 
 
 def _contar_filas(cursor, tabla):
+    """Cuenta filas de una tabla"""
     nombre_tabla = connection.ops.quote_name(tabla)
     cursor.execute(f"SELECT COUNT(*) FROM {nombre_tabla}")
     return cursor.fetchone()[0]
 
 
 def _obtener_tablas_bd():
+    """Obtiene todas las tablas de la base de datos"""
     tablas = []
 
     with connection.cursor() as cursor:
@@ -119,6 +123,7 @@ def _obtener_tablas_bd():
 @require_GET
 @requiere_rol(ROLE_ADMIN)
 def listar_tablas_bd(request):
+    """API endpoint para listar tablas de la base de datos (solo admin)"""
     tablas = _obtener_tablas_bd()
     total_columnas = sum(len(tabla["columns"]) for tabla in tablas)
     total_filas = sum(tabla["row_count"] for tabla in tablas)

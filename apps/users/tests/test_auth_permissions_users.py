@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -6,8 +7,9 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from django.utils import timezone
 
-from apps.users.views.admin_users_views import (
+from apps.users.views.administrador.admin_users_views import (
     agregar_usuario_ajax,
     editar_usuario_ajax,
     obtener_usuario_ajax,
@@ -32,7 +34,7 @@ class AuthViewsUnitTests(TestCase):
     def test_sesion_redirects_when_user_not_found(self, usuario_model):
         request = self.factory.post(
             reverse("sesion"),
-            data={"curp": "CURP123", "password": "wrong"},
+            data={"curp": "GODE561231HDFRPR09", "password": "wrong"},
         )
         _attach_session_and_messages(request)
 
@@ -48,7 +50,7 @@ class AuthViewsUnitTests(TestCase):
     @patch("apps.users.views.auth_views.timezone.now")
     @patch("apps.users.views.auth_views.Usuario")
     def test_sesion_sets_session_and_redirects_admin(self, usuario_model, now_mock):
-        now_mock.return_value = "2026-01-01T00:00:00"
+        now_mock.return_value = timezone.make_aware(datetime(2026, 1, 1))
         fake_user = SimpleNamespace(
             activo=True,
             id_usuario=10,
@@ -61,7 +63,7 @@ class AuthViewsUnitTests(TestCase):
 
         request = self.factory.post(
             reverse("sesion"),
-            data={"curp": "CURP123", "password": "secure"},
+            data={"curp": "GODE561231HDFRPR09", "password": "secure"},
         )
         _attach_session_and_messages(request)
 
@@ -84,11 +86,11 @@ class UsersAjaxPermissionTests(TestCase):
         _attach_session_and_messages(request)
 
         response = agregar_usuario_ajax(request)
-        payload = response.json()
+        payload = json.loads(response.content)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(payload["estado"], "error")
-        self.assertIn("errores", payload)
+        self.assertEqual(response.status_code, 401)
+        self.assertFalse(payload["success"])
+        self.assertEqual(payload["error"], "No autorizado")
 
     def test_toggle_usuario_blocks_self_deactivation(self):
         request = self.factory.post(reverse("toggle_usuario", kwargs={"id": 9}))
@@ -107,8 +109,8 @@ class UsersAjaxCrudTests(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-    @patch("apps.users.views.admin_users_views.Usuario")
-    def test_obtener_usuario_ajax_returns_user_data(self, usuario_model):
+    @patch("apps.users.views.administrador.admin_users_views.UserService")
+    def test_obtener_usuario_ajax_returns_user_data(self, user_service):
         fake_user = SimpleNamespace(
             id_usuario=7,
             nombre="Luis",
@@ -119,7 +121,7 @@ class UsersAjaxCrudTests(TestCase):
             rol=SimpleNamespace(id_rol=2),
             institucion=SimpleNamespace(id_institucion=3),
         )
-        usuario_model.objects.get.return_value = fake_user
+        user_service.obtener_usuario.return_value = fake_user
 
         request = self.factory.get(reverse("obtener_usuario_ajax", kwargs={"id": 7}))
         _attach_session_and_messages(request)
@@ -129,13 +131,15 @@ class UsersAjaxCrudTests(TestCase):
         payload = json.loads(response.content)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(payload["estado"], "ok")
-        self.assertEqual(payload["datos"]["id_usuario"], 7)
-        self.assertEqual(payload["datos"]["correo"], "luis@test.com")
+        self.assertTrue(payload["success"])
+        self.assertEqual(payload["id_usuario"], 7)
+        self.assertEqual(payload["correo"], "luis@test.com")
 
-    @patch("apps.users.views.admin_users_views.Usuario")
-    def test_obtener_usuario_ajax_returns_not_found(self, usuario_model):
-        usuario_model.objects.get.side_effect = usuario_model.DoesNotExist
+    @patch("apps.users.views.administrador.admin_users_views.UserService")
+    def test_obtener_usuario_ajax_returns_not_found(self, user_service):
+        from apps.users.models import Usuario
+
+        user_service.obtener_usuario.side_effect = Usuario.DoesNotExist
 
         request = self.factory.get(reverse("obtener_usuario_ajax", kwargs={"id": 999}))
         _attach_session_and_messages(request)
@@ -144,13 +148,15 @@ class UsersAjaxCrudTests(TestCase):
         response = obtener_usuario_ajax(request, 999)
         payload = json.loads(response.content)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(payload["estado"], "error")
-        self.assertEqual(payload["mensaje"], "Usuario no encontrado")
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(payload["success"])
+        self.assertEqual(payload["error"], "Usuario no encontrado")
 
-    @patch("apps.users.views.admin_users_views.Usuario")
-    def test_editar_usuario_ajax_updates_user_data(self, usuario_model):
+    @patch("apps.users.views.administrador.admin_users_views._registrar_bitacora")
+    @patch("apps.users.views.administrador.admin_users_views.Usuario")
+    def test_editar_usuario_ajax_updates_user_data(self, usuario_model, registrar_bitacora):
         fake_user = SimpleNamespace(
+            id_usuario=5,
             nombre="Viejo",
             apellido_paterno="Dato",
             apellido_materno="Anterior",
@@ -178,9 +184,10 @@ class UsersAjaxCrudTests(TestCase):
         payload = json.loads(response.content)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(payload["estado"], "ok")
+        self.assertTrue(payload["success"])
         self.assertEqual(fake_user.nombre, "Nuevo")
         fake_user.save.assert_called_once()
+        registrar_bitacora.assert_called_once()
 
     def test_editar_usuario_ajax_requires_post(self):
         request = self.factory.get(reverse("editar_usuario_ajax", kwargs={"id": 5}))
@@ -190,6 +197,6 @@ class UsersAjaxCrudTests(TestCase):
         response = editar_usuario_ajax(request, 5)
         payload = json.loads(response.content)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(payload["estado"], "error")
-        self.assertEqual(payload["mensaje"], "Método no permitido")
+        self.assertEqual(response.status_code, 405)
+        self.assertFalse(payload["success"])
+        self.assertEqual(payload["error"], "Método no permitido")

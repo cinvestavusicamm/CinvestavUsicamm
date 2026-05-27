@@ -28,7 +28,7 @@ class OllamaAdapter(LLMService):
                 return []
 
     async def generate_response(self, prompt: str) -> str:
-        """Pide a Ollama que complete el texto (Chat)."""
+        """Pide a Ollama que complete el texto (Generate)."""
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.post(
@@ -42,6 +42,7 @@ class OllamaAdapter(LLMService):
                     timeout=60.0 # Darle tiempo para pensar
                 )
                 response.raise_for_status()
-                return response.json().get("response", "")
+                data = response.json()
+                return data.get("response", "")
             except Exception as e:
                 return f"Error generando respuesta: {str(e)}"

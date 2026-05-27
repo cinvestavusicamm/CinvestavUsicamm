@@ -105,11 +105,9 @@
                                 <label for="select-evaluacion"><i class="fas fa-file-alt"></i> Evaluación</label>
                                 <select id="select-evaluacion" class="select-filtro">
                                     <option value="">Todas las evaluaciones</option>
-                                    <option value="eval-1">Matemáticas Primaria - Nivel 1</option>
-                                    <option value="eval-2">Ciencias Naturales Secundaria</option>
-                                    <option value="eval-3">Gestión Escolar para Directores</option>
-                                    <option value="eval-4">Evaluación TIC y Pedagogía Digital</option>
-                                    <option value="eval-5">Inclusión y Diversidad en el Aula</option>
+                                    {% for evaluacion in evaluaciones_bd %}
+                                        <option value="{{ evaluacion.id }}">{{ evaluacion.titulo }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
 
@@ -203,9 +201,9 @@
                                 <i class="fas fa-shield-alt"></i>
                             </div>
                             <div class="metrica-contenido">
-                                <h3 class="metrica-valor">0.87</h3>
-                                <p class="metrica-texto">Confiabilidad (Alpha)</p>
-                                <span class="metrica-estado estado-excelente">Excelente</span>
+                                <h3 class="metrica-valor">{{ reportes_bd.total_revisiones|default:0 }}</h3>
+                                <p class="metrica-texto">Revisiones registradas</p>
+                                <span class="metrica-estado estado-excelente">BD</span>
                             </div>
                         </div>
 
@@ -214,9 +212,9 @@
                                 <i class="fas fa-balance-scale"></i>
                             </div>
                             <div class="metrica-contenido">
-                                <h3 class="metrica-valor">0.65</h3>
-                                <p class="metrica-texto">Dificultad Media</p>
-                                <span class="metrica-estado estado-optimo">Óptima</span>
+                                <h3 class="metrica-valor">{{ reportes_bd.total_cursos|default:0 }}</h3>
+                                <p class="metrica-texto">Cursos/Evaluaciones</p>
+                                <span class="metrica-estado estado-optimo">BD</span>
                             </div>
                         </div>
 
@@ -227,7 +225,7 @@
                                 <i class="fas fa-percentage"></i>
                             </div>
                             <div class="metrica-contenido">
-                                <h3 class="metrica-valor">82%</h3>
+                                <h3 class="metrica-valor">{{ reportes_bd.tasa_aprobacion|default:0 }}%</h3>
                                 <p class="metrica-texto">Tasa Aprobación</p>
                                 <span class="metrica-estado estado-bueno">Buena</span>
                             </div>
@@ -366,6 +364,9 @@
 
     <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

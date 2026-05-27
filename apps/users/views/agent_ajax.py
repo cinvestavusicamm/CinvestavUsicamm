@@ -3,7 +3,7 @@ from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
-from apps.users.utils.api_response import respuesta_ok, respuesta_error
+from apps.users.infrastructure.api_response import respuesta_ok, respuesta_error
 from apps.users.services.router_service import RouterService
 
 logger = logging.getLogger(__name__)

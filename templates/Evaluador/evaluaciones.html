@@ -136,7 +136,7 @@
                             <i class="fas fa-folder-open"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>12</h3>
+                            <h3>{{ metricas_evaluador.total_evaluaciones|default:0 }}</h3>
                             <p>Total evaluaciones</p>
                         </div>
                     </div>
@@ -145,7 +145,7 @@
                             <i class="fas fa-edit"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>3</h3>
+                            <h3>{{ metricas_evaluador.evaluaciones_borrador|default:0 }}</h3>
                             <p>En borrador</p>
                         </div>
                     </div>
@@ -154,7 +154,7 @@
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>7</h3>
+                            <h3>{{ metricas_evaluador.evaluaciones_publicadas|default:0 }}</h3>
                             <p>Publicadas</p>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                             <i class="fas fa-calendar-check"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>2</h3>
+                            <h3>{{ metricas_evaluador.evaluaciones_programadas|default:0 }}</h3>
                             <p>Programadas</p>
                         </div>
                     </div>
@@ -171,225 +171,68 @@
 
                 <!-- Grid de Evaluaciones -->
                 <div class="grid-evaluaciones">
-                    <!-- Tarjeta Evaluación 1 -->
-                    <div class="tarjeta-evaluacion">
-                        <div class="evaluacion-header">
-                            <div class="evaluacion-estado evaluacion-publicada">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Publicada</span>
+                    {% for evaluacion in evaluaciones_bd %}
+                        <div class="tarjeta-evaluacion">
+                            <div class="evaluacion-header">
+                                <div class="evaluacion-estado evaluacion-revision">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <span>{{ evaluacion.estado }}</span>
+                                </div>
+                                <div class="evaluacion-acciones">
+                                    <button class="btn-icon" title="Más opciones">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="evaluacion-acciones">
-                                <button class="btn-icon" title="Más opciones">
-                                    <i class="fas fa-ellipsis-v"></i>
+                            <div class="evaluacion-contenido">
+                                <h3 class="evaluacion-titulo">{{ evaluacion.titulo }}</h3>
+                                <p class="evaluacion-descripcion">
+                                    {{ evaluacion.descripcion|default:"Sin descripción registrada en la base de datos." }}
+                                </p>
+                                <div class="evaluacion-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-code-branch"></i>
+                                        <span>Versión {{ evaluacion.version|default:1 }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-robot"></i>
+                                        <span>{% if evaluacion.generado_con_ia %}Generado con IA{% else %}Registro manual{% endif %}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span>{{ metricas_evaluador.preguntas_banco|default:0 }} preguntas modeladas</span>
+                                    </div>
+                                </div>
+                                <div class="evaluacion-fechas">
+                                    <div class="fecha-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span><strong>Creación:</strong> {% if evaluacion.fecha_creacion %}{{ evaluacion.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</span>
+                                    </div>
+                                    <div class="fecha-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span><strong>Aprobación:</strong> {% if evaluacion.fecha_aprobacion %}{{ evaluacion.fecha_aprobacion|date:"d/m/Y" }}{% else %}Pendiente{% endif %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="evaluacion-footer">
+                                <button class="btn btn-outline btn-sm">
+                                    <i class="fas fa-eye"></i> Previsualizar
+                                </button>
+                                <button class="btn btn-primary btn-sm">
+                                    <i class="fas fa-cog"></i> Gestionar
                                 </button>
                             </div>
                         </div>
-                        <div class="evaluacion-contenido">
-                            <h3 class="evaluacion-titulo">
-                                Promoción Horizontal 2026 - Matemáticas Primaria
-                            </h3>
-                            <p class="evaluacion-descripcion">
-                                Evaluación para promoción horizontal de maestros de matemáticas en nivel primaria. Incluye casos prácticos y preguntas de opción múltiple.
-                            </p>
-                            <div class="evaluacion-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <span>Primaria</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-book"></i>
-                                    <span>Matemáticas</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-question-circle"></i>
-                                    <span>45 preguntas</span>
-                                </div>
-                            </div>
-                            <div class="evaluacion-fechas">
-                                <div class="fecha-item">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span><strong>Publicación:</strong> 15/06/2024</span>
-                                </div>
-                                <div class="fecha-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span><strong>Válida hasta:</strong> 30/09/2024</span>
-                                </div>
+                    {% empty %}
+                        <div class="tarjeta-evaluacion">
+                            <div class="evaluacion-contenido">
+                                <h3 class="evaluacion-titulo">Sin evaluaciones en la base de datos</h3>
+                                <p class="evaluacion-descripcion">
+                                    Agrega registros de cursos/evaluaciones para verlos en esta sección.
+                                </p>
                             </div>
                         </div>
-                        <div class="evaluacion-footer">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-eye"></i> Previsualizar
-                            </button>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-cog"></i> Gestionar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta Evaluación 2 -->
-                    <div class="tarjeta-evaluacion">
-                        <div class="evaluacion-header">
-                            <div class="evaluacion-estado evaluacion-borrador">
-                                <i class="fas fa-edit"></i>
-                                <span>Borrador</span>
-                            </div>
-                            <div class="evaluacion-acciones">
-                                <button class="btn-icon" title="Más opciones">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="evaluacion-contenido">
-                            <h3 class="evaluacion-titulo">
-                                Promoción Vertical - Directores Secundaria
-                            </h3>
-                            <p class="evaluacion-descripcion">
-                                Evaluación para ascenso a cargos directivos en secundaria. Enfocada en gestión escolar, liderazgo y administración educativa.
-                            </p>
-                            <div class="evaluacion-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <span>Secundaria</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>Gestión</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-question-circle"></i>
-                                    <span>60 preguntas</span>
-                                </div>
-                            </div>
-                            <div class="evaluacion-progreso">
-                                <div class="progreso-info">
-                                    <span>Progreso:</span>
-                                    <span>65%</span>
-                                </div>
-                                <div class="progreso-bar">
-                                    <div class="progreso-fill" style="width: 65%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="evaluacion-footer">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-pen"></i> Continuar
-                            </button>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-cog"></i> Configurar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta Evaluación 3 -->
-                    <div class="tarjeta-evaluacion">
-                        <div class="evaluacion-header">
-                            <div class="evaluacion-estado evaluacion-programada">
-                                <i class="fas fa-calendar-check"></i>
-                                <span>Programada</span>
-                            </div>
-                            <div class="evaluacion-acciones">
-                                <button class="btn-icon" title="Más opciones">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="evaluacion-contenido">
-                            <h3 class="evaluacion-titulo">
-                                Evaluación Diagnóstica NEM - Español
-                            </h3>
-                            <p class="evaluacion-descripcion">
-                                Diagnóstico inicial basado en Nueva Escuela Mexicana para maestros de español. Incluye evaluación de competencias comunicativas.
-                            </p>
-                            <div class="evaluacion-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <span>Media Superior</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-book"></i>
-                                    <span>Español</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-question-circle"></i>
-                                    <span>50 preguntas</span>
-                                </div>
-                            </div>
-                            <div class="evaluacion-fechas">
-                                <div class="fecha-item">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span><strong>Programada para:</strong> 01/07/2024</span>
-                                </div>
-                                <div class="fecha-item">
-                                    <i class="fas fa-user-clock"></i>
-                                    <span><strong>Duración:</strong> 120 minutos</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="evaluacion-footer">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-calendar"></i> Reprogramar
-                            </button>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-play-circle"></i> Activar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta Evaluación 4 -->
-                    <div class="tarjeta-evaluacion">
-                        <div class="evaluacion-header">
-                            <div class="evaluacion-estado evaluacion-revision">
-                                <i class="fas fa-clipboard-check"></i>
-                                <span>En revisión</span>
-                            </div>
-                            <div class="evaluacion-acciones">
-                                <button class="btn-icon" title="Más opciones">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="evaluacion-contenido">
-                            <h3 class="evaluacion-titulo">
-                                Promoción Horizontal - Ciencias Naturales
-                            </h3>
-                            <p class="evaluacion-descripcion">
-                                Evaluación para promoción horizontal en ciencias naturales. En revisión por el comité pedagógico antes de su publicación oficial.
-                            </p>
-                            <div class="evaluacion-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <span>Secundaria</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-book"></i>
-                                    <span>Ciencias</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-question-circle"></i>
-                                    <span>40 preguntas</span>
-                                </div>
-                            </div>
-                            <div class="evaluacion-revisores">
-                                <div class="revisores-info">
-                                    <i class="fas fa-user-check"></i>
-                                    <span>2/3 revisores han aprobado</span>
-                                </div>
-                                <div class="revisores-avatars">
-                                    <div class="avatar">JR</div>
-                                    <div class="avatar">MP</div>
-                                    <div class="avatar avatar-pendiente">?</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="evaluacion-footer">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-comments"></i> Comentarios
-                            </button>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-eye"></i> Revisar
-                            </button>
-                        </div>
-                    </div>
+                    {% endfor %}
 
                     <!-- Tarjeta Nueva Evaluación -->
                     <div class="tarjeta-nueva-evaluacion" id="btnNuevaEvaluacionCard">
@@ -420,60 +263,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>Evaluación Inglés Primaria</strong>
-                                        <small>Promoción Horizontal 2026</small>
-                                    </td>
-                                    <td>Horizontal</td>
-                                    <td>Hoy, 10:30 AM</td>
-                                    <td><span class="badge badge-borrador">Borrador</span></td>
-                                    <td>María Pérez</td>
-                                    <td>
-                                        <button class="btn-icon btn-sm" title="Colaborar">
-                                            <i class="fas fa-user-plus"></i>
-                                        </button>
-                                        <button class="btn-icon btn-sm" title="Ver">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Directores Preescolar</strong>
-                                        <small>Promoción Vertical</small>
-                                    </td>
-                                    <td>Vertical</td>
-                                    <td>Ayer, 15:45</td>
-                                    <td><span class="badge badge-revision">En revisión</span></td>
-                                    <td>Juan Rodríguez</td>
-                                    <td>
-                                        <button class="btn-icon btn-sm" title="Revisar">
-                                            <i class="fas fa-clipboard-check"></i>
-                                        </button>
-                                        <button class="btn-icon btn-sm" title="Ver">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>Diagnóstico NEM 2024</strong>
-                                        <small>Ciencias Secundaria</small>
-                                    </td>
-                                    <td>Diagnóstica</td>
-                                    <td>15/06/2024</td>
-                                    <td><span class="badge badge-publicada">Publicada</span></td>
-                                    <td>Ana Gómez</td>
-                                    <td>
-                                        <button class="btn-icon btn-sm" title="Estadísticas">
-                                            <i class="fas fa-chart-bar"></i>
-                                        </button>
-                                        <button class="btn-icon btn-sm" title="Ver">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                {% for evaluacion in evaluaciones_bd %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ evaluacion.titulo }}</strong>
+                                            <small>{{ evaluacion.descripcion|default:"Sin descripción" }}</small>
+                                        </td>
+                                        <td>Curso/Evaluación</td>
+                                        <td>{% if evaluacion.fecha_creacion %}{{ evaluacion.fecha_creacion|date:"d/m/Y H:i" }}{% else %}Sin fecha{% endif %}</td>
+                                        <td><span class="badge badge-revision">{{ evaluacion.estado }}</span></td>
+                                        <td>{{ evaluacion.docente|default:"Sin creador" }}</td>
+                                        <td>
+                                            <button class="btn-icon btn-sm" title="Ver">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">Sin evaluaciones registradas en la base de datos.</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -507,6 +317,9 @@
 
     <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
     <script src="../../static/js/accesibilidad.js"></script> 
     <script src="../../static/js/menu-usuario.js"></script>
