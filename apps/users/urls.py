@@ -18,20 +18,15 @@ urlpatterns = [
     path('logout/', cerrar_sesion, name='logout'),
     path('foros/', sesion, name='foros'),
 
-    path('panel-admin/', panel_admin, name='panel_admin'),
-    path('crear-admin/', crear_admin, name='crear_admin'),
-    path('agregar_usuario_ajax/', agregar_usuario_ajax, name='agregar_usuario_ajax'),
-    path('usuario/<int:id>/obtener/', obtener_usuario_ajax, name='obtener_usuario_ajax'),
-    path('usuario/<int:id>/editar/', editar_usuario_ajax, name='editar_usuario_ajax'),
-    path('toggle-usuario/<int:id>/', toggle_usuario, name='toggle_usuario'),
-    path('bd/tablas/', listar_tablas_bd, name='bd_tablas'),
-
     path('agente-ajax/', agente_ajax, name='agente_ajax'),
 
-    path('evaluador/', include('apps.users.role_urls.evaluador_urls')),
-    path('generador/', include('apps.users.role_urls.generador_urls')),
-    path('docente/', include('apps.users.role_urls.docentes_urls')),
+    path('administrador/', include('apps.users.routes.administrador_urls')),
+    path('evaluador/', include('apps.users.routes.evaluador_urls')),
+    path('generador/', include('apps.users.routes.generador_urls')),
+    path('docente/', include('apps.users.routes.docentes_urls')),
     path('docente/ajax/', docente_ajax, name='docente_ajax'),
     path('evaluador/ajax/', evaluador_ajax, name='evaluador_ajax'),
     path('generador/ajax/', generador_ajax, name='generador_ajax'),
+
+
 ]

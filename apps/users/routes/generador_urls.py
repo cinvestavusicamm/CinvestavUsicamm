@@ -1,9 +1,9 @@
 from django.urls import path
-from apps.users.views.Generador_cursos.cursos import cursos
-from apps.users.views.Generador_cursos.estadisticas_cursos import estadisticas_cursos
-from apps.users.views.Generador_cursos.generador_de_cursos import generador_de_cursos
-from apps.users.views.Generador_cursos.index_generador import index_generador
-from apps.users.views.Generador_cursos.perfil_generador import perfil_generador
+from apps.users.views.generador_cursos.cursos import cursos
+from apps.users.views.generador_cursos.estadisticas_cursos import estadisticas_cursos
+from apps.users.views.generador_cursos.generador_de_cursos import generador_de_cursos
+from apps.users.views.generador_cursos.index_generador import index_generador
+from apps.users.views.generador_cursos.perfil_generador import perfil_generador
 
 app_name = 'generador_cursos'
 
