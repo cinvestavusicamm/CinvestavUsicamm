@@ -1,5 +1,5 @@
 function cambiarEstado(id, elem) {
-    fetch(`/toggle-usuario/${id}/`, {
+    fetch(`/administrador/toggle-usuario/${id}/`, {
         method: 'POST',
         headers: { 'X-CSRFToken': getCookie('csrftoken') }
     })

@@ -13,7 +13,9 @@ class ProcesoAprobacionCursos(models.Model):
         Curso,
         on_delete=models.CASCADE,
         db_column='id_curso',
-        related_name='aprobaciones'
+        related_name='aprobaciones',
+        null=True,
+        blank=True
     )
 
     evaluador = models.ForeignKey(

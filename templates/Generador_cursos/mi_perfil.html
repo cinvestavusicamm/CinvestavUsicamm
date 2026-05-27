@@ -134,12 +134,12 @@
             <h2>Mi Expediente • <span>2026</span></h2>
             
             <div class="user-profile" id="profileTrigger">
-                <p style="font-size:0.8rem; font-weight:600;">Dr. Ricardo Mendieta</p>
-                <div class="avatar-small">RM</div>
+	                <p style="font-size:0.8rem; font-weight:600;">{{ perfil_usuario.nombre_completo|default:"Generador" }}</p>
+	                <div class="avatar-small">{{ perfil_usuario.nombre|default:"G"|slice:":1" }}{{ perfil_usuario.apellido_paterno|default:""|slice:":1" }}</div>
                 
                 <div class="dropdown" id="userDropdown">
-                    <a href="#" class="dropdown-link"><i class="fas fa-cog"></i> Configuración</a>
-                    <a href="#" class="dropdown-link"><i class="fas fa-question-circle"></i> Ayuda</a>
+                    <a href="#" onclick="alert('Función de configuración en desarrollo')" class="dropdown-link"><i class="fas fa-cog"></i> Configuración</a>
+                    <a href="#" onclick="alert('Función de ayuda en desarrollo')" class="dropdown-link"><i class="fas fa-question-circle"></i> Ayuda</a>
                     <a href="{% url 'logout' %}" class="dropdown-link" style="color:#E74C3C; border-top:1px solid #eee;"><i class="fas fa-sign-out-alt"></i> Salir</a>
                 </div>
             </div>
@@ -154,8 +154,8 @@
                     <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="previewImage(event)">
                 </div>
                 <div class="hero-text">
-                    <h1>Dr. Ricardo Mendieta R.</h1>
-                    <p>Investigador de Carrera • SEP Federal</p>
+                    <h1>{{ perfil_usuario.nombre_completo|default:"Usuario" }}</h1>
+                    <p>{{ perfil_usuario.rol|default:"Generador" }}{% if perfil_usuario.institucion %} • {{ perfil_usuario.institucion }}{% endif %}</p>
                     <span class="status-badge"><i class="fas fa-check-circle"></i> PERFIL VERIFICADO</span>
                 </div>
             </div>
@@ -163,34 +163,34 @@
             <div class="info-grid">
                 <div class="field">
                     <label>Nombre Completo (Protegido)</label>
-                    <input type="text" value="Ricardo Mendieta Rodriguez" readonly>
+                    <input type="text" value="{{ perfil_usuario.nombre_completo|default:'Sin nombre registrado' }}" readonly>
                 </div>
                 <div class="field">
                     <label>CURP (Protegido)</label>
-                    <input type="text" value="MERR850111HDFRRN01" readonly>
+                    <input type="text" value="{{ perfil_usuario.curp|default:'Sin CURP registrada' }}" readonly>
                 </div>
                 <div class="field">
                     <label>Correo de Contacto (Editable)</label>
-                    <input type="email" value="r.mendieta@sep.gob.mx">
+                    <input type="email" value="{{ perfil_usuario.correo|default:'' }}">
                 </div>
                 <div class="field">
                     <label>Teléfono (Editable)</label>
-                    <input type="tel" value="+52 55 1234 5678">
+                    <input type="tel" value="" placeholder="No disponible en modelo Usuario">
                 </div>
             </div>
 
             <div class="impact-grid">
                 <div class="impact-card">
                     <h5>Cursos Publicados</h5>
-                    <p>12</p>
+                    <p>{{ metricas_generador.validados|default:0 }}</p>
                 </div>
                 <div class="impact-card">
                     <h5>Diplomados Creados</h5>
-                    <p>04</p>
+                    <p>{{ metricas_generador.cursos_activos|default:0 }}</p>
                 </div>
                 <div class="impact-card">
                     <h5>Impacto Docente</h5>
-                    <p>8.4K</p>
+                    <p>{{ metricas_generador.cursos_activos|default:0 }}</p>
                 </div>
             </div>
 
@@ -200,15 +200,15 @@
                     <div class="doc-icon"><i class="fas fa-id-card"></i></div>
                     <div class="doc-info">
                         <h4>Cédula Profesional Federal</h4>
-                        <p>Doctorado en Pedagogía • Registro: 8492033</p>
+                        <p>No disponible en los modelos actuales</p>
                     </div>
                     <div class="verified-tag"><i class="fas fa-shield-check"></i> SEP Validado</div>
                 </div>
                 <div class="doc-card">
                     <div class="doc-icon"><i class="fas fa-award"></i></div>
                     <div class="doc-info">
-                        <h4>Certificación USICAMM 2025</h4>
-                        <p>Evaluador de Carrera Docente • Folio: 992-IA</p>
+                        <h4>Certificación USICAMM</h4>
+                        <p>No disponible en los modelos actuales</p>
                     </div>
                     <div class="verified-tag"><i class="fas fa-shield-check"></i> SEP Validado</div>
                 </div>

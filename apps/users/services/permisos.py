@@ -1,7 +1,7 @@
 from functools import wraps
 from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
-from apps.users.constants import ROLE_ADMIN, ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR
+from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR
 
 
 def requiere_rol(*roles_permitidos):

@@ -126,34 +126,34 @@
                             <div class="form-grid-2">
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-user"></i> Nombre(s)</label>
-                                    <input type="text" value="Diego Zaid" placeholder="Tu nombre" readonly>
+	                                    <input type="text" value="{{ perfil_usuario.nombre|default:'' }}" placeholder="Tu nombre" readonly>
                                     <small class="form-hint">El nombre no puede ser modificado</small>
 
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-user-tag"></i> Apellido Paterno</label>
-                                    <input type="text" value="Garcia" placeholder="Apellido paterno" readonly>
+	                                    <input type="text" value="{{ perfil_usuario.apellido_paterno|default:'' }}" placeholder="Apellido paterno" readonly>
                                     <small class="form-hint">El apellido paterno no puede ser modificado</small>
 
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-user-tag"></i> Apellido Materno</label>
-                                    <input type="text" value="Rebollo" placeholder="Apellido materno" readonly>
+	                                    <input type="text" value="{{ perfil_usuario.apellido_materno|default:'' }}" placeholder="Apellido materno" readonly>
                                     <small class="form-hint">El apellido materno no puede ser modificado</small>
 
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-regular fa-envelope"></i> Correo Electrónico</label>
-                                    <input type="email" value="dzgr@gmail.com" placeholder="correo@ejemplo.com">
+	                                    <input type="email" value="{{ perfil_usuario.correo|default:'' }}" placeholder="correo@ejemplo.com">
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-id-card"></i> CURP</label>
-                                    <input type="text" value="GARD041208HDFMMCRA" placeholder="CURP" readonly>
+	                                    <input type="text" value="{{ perfil_usuario.curp|default:'' }}" placeholder="CURP" readonly>
                                     <small class="form-hint">El CURP no puede ser modificado</small>
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-phone"></i> Teléfono</label>
-                                    <input type="tel" value="+52 55 1234 5678" placeholder="Teléfono de contacto">
+	                                    <input type="tel" value="" placeholder="No disponible en modelo Usuario">
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -471,6 +471,9 @@
 
     <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
     <script src="../../static/js/accesibilidad.js"></script>

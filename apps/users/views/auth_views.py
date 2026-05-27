@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
 from ..models import Institucion, Usuario, Rol
-from apps.users.constants import (ROLE_ADMIN,ROLE_DOCENTE,ROLE_EVALUADOR,ROLE_GENERADOR,)
+from apps.users.config.constants import (ROLE_ADMIN,ROLE_DOCENTE,ROLE_EVALUADOR,ROLE_GENERADOR,)
 from apps.users.services.login_security_service import LoginSecurityService
 import re
 import logging
@@ -61,7 +61,7 @@ def sesion(request):
         usuario.save(update_fields=['ultimo_acceso'])
         
         if rol_usuario == ROLE_ADMIN:
-            return redirect('panel_admin')
+            return redirect('administrador:panel_admin')
         elif rol_usuario == ROLE_DOCENTE:
             return redirect('Docente:panel_docente')
         elif rol_usuario == ROLE_EVALUADOR:

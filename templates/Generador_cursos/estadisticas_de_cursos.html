@@ -394,16 +394,16 @@
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h4>Alcance en Usuarios</h4>
-                    <p>18,240</p>
+                    <h4>Cursos Registrados</h4>
+                    <p>{{ estadisticas_cursos_bd.total_cursos|default:0 }}</p>
                 </div>
                 <div class="stat-card">
-                    <h4>Efectividad Académica</h4>
-                    <p>91.2%</p>
+                    <h4>Cursos Aprobados</h4>
+                    <p>{{ estadisticas_cursos_bd.total_aprobados|default:0 }}</p>
                 </div>
                 <div class="stat-card">
-                    <h4>Calidad Promedio</h4>
-                    <p>4.85</p>
+                    <h4>Pendientes</h4>
+                    <p>{{ estadisticas_cursos_bd.total_pendientes|default:0 }}</p>
                 </div>
             </div>
 
@@ -427,43 +427,32 @@
             </div>
 
             <div class="rec-grid">
+                {% for curso in catalogo_cursos_bd %}
                 <div class="rec-card">
-                    <h3>Propuesta: Introducción a la Estructura Cognitiva</h3>
-                    <p>Dirigido a usuarios con interés en Neurodidáctica pero con tiempos de finalización prolongados en
-                        evaluaciones técnicas.</p>
+                    <h3>{{ curso.titulo }}</h3>
+                    <p>{{ curso.descripcion|default:"Sin descripción registrada en la base de datos." }}</p>
                     <div class="ai-analysis-box">
-                        <strong>Detección de la IA:</strong>
-                        <span>La tasa de abandono en "Neuroeducación Avanzada" correlaciona con la falta de conceptos
-                            básicos en psicología educativa.</span>
+                        <strong>Estado en BD:</strong>
+                        <span>{{ curso.estado }} · Versión {{ curso.version|default:1 }}</span>
                     </div>
                     <div class="ai-analysis-box" style="border-left-color: var(--turquesa);">
-                        <strong>Sugerencia de Ruta:</strong>
-                        <span>Se recomienda enviar este curso base como requisito previo o sugerencia técnica para
-                            asegurar la comprensión del tema nacional.</span>
+                        <strong>Fuente:</strong>
+                        <span>{% if curso.generado_con_ia %}Curso generado con IA{% else %}Curso registrado manualmente{% endif %}</span>
                     </div>
                     <button class="btn-action-send" onclick="enviar(this)">
                         <i class="fas fa-paper-plane"></i> ENVIAR RECOMENDACIÓN TÉCNICA
                     </button>
                 </div>
-
+                {% empty %}
                 <div class="rec-card">
-                    <h3>Propuesta: Gestión de Ambientes Virtuales Básicos</h3>
-                    <p>Dirigido a docentes de Educación Media Superior que han reportado incidencias técnicas en el uso
-                        de nubes colaborativas.</p>
+                    <h3>Sin cursos para analizar</h3>
+                    <p>Agrega cursos en la base de datos para generar estadísticas visibles aquí.</p>
                     <div class="ai-analysis-box">
-                        <strong>Detección de la IA:</strong>
-                        <span>Los datos indican que el 22% de las dudas en el curso de Cultura Digital se centran en la
-                            configuración inicial de herramientas.</span>
+                        <strong>Dato faltante:</strong>
+                        <span>Las recomendaciones IA persistidas no existen todavía en los modelos.</span>
                     </div>
-                    <div class="ai-analysis-box" style="border-left-color: var(--turquesa);">
-                        <strong>Sugerencia de Ruta:</strong>
-                        <span>Integrar este nivel introductorio permitirá al docente abordar el temario USICAMM con
-                            mayor autonomía tecnológica.</span>
-                    </div>
-                    <button class="btn-action-send" onclick="enviar(this)">
-                        <i class="fas fa-paper-plane"></i> ENVIAR RECOMENDACIÓN TÉCNICA
-                    </button>
                 </div>
+                {% endfor %}
             </div>
 
         </div>
@@ -486,9 +475,13 @@
         new Chart(ctxBar, {
             type: 'bar',
             data: {
-                labels: ['NEM Básica', 'C. Digital', 'Directivos', 'Neuroed.'],
-                datasets: [{
-                    data: [8200, 6150, 4800, 7300],
+	                labels: ['Borradores', 'Pendientes', 'Aprobados'],
+	                datasets: [{
+	                    data: [
+                            {{ estadisticas_cursos_bd.total_borradores|default:0 }},
+                            {{ estadisticas_cursos_bd.total_pendientes|default:0 }},
+                            {{ estadisticas_cursos_bd.total_aprobados|default:0 }}
+                        ],
                     backgroundColor: '#007A7C',
                     borderRadius: 10,
                     barThickness: 40
@@ -509,9 +502,14 @@
         new Chart(ctxLine, {
             type: 'line',
             data: {
-                labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
-                datasets: [{
-                    data: [1200, 1900, 1700, 2400],
+	                labels: ['Cursos', 'Borradores', 'Pendientes', 'Aprobados'],
+	                datasets: [{
+	                    data: [
+                            {{ estadisticas_cursos_bd.total_cursos|default:0 }},
+                            {{ estadisticas_cursos_bd.total_borradores|default:0 }},
+                            {{ estadisticas_cursos_bd.total_pendientes|default:0 }},
+                            {{ estadisticas_cursos_bd.total_aprobados|default:0 }}
+                        ],
                     borderColor: '#007A7C',
                     borderWidth: 4,
                     pointRadius: 0,

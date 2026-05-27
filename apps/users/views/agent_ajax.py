@@ -3,7 +3,8 @@ from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
-from apps.users.utils.api_response import respuesta_ok, respuesta_error
+from apps.users.infrastructure.api_response import respuesta_ok, respuesta_error
+from apps.users.services.router_service import RouterService
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,27 @@ def agente_ajax(request):
                                     status=400
                                 )
 
+    destino = RouterService.decidir(pregunta)
+    if destino == "bd":
+        try:
+            respuesta = RouterService.responder_desde_bd(
+                pregunta,
+                usuario_id=request.session.get("usuario_id"),
+            )
+            return respuesta_ok(
+                request,
+                mensaje="Respuesta obtenida desde la base de datos",
+                datos={"answer": respuesta, "source": "bd"},
+            )
+        except Exception as e:
+            logger.exception(f"Error consultando la base de datos desde agente_ajax: {e}")
+            return respuesta_error(
+                request,
+                mensaje="No se pudo consultar la base de datos",
+                errores=str(e),
+                status=500,
+            )
+
     if usar_stream:
         return agente_streaming(pregunta)
 
@@ -55,7 +77,7 @@ def agente_ajax(request):
         return respuesta_ok(
                                 request,
                                 mensaje="Respuesta generada correctamente",
-                                datos={"answer": respuesta}
+                                datos={"answer": respuesta, "source": "agente"}
                             )
 
     except Exception as e:

@@ -191,6 +191,20 @@
                                 </tr>
                             </thead>
                             <tbody id="tablaProcesosBody">
+                                {% for proceso in calendario_procesos_bd %}
+                                    <tr>
+                                        <td>{{ proceso.folio }}</td>
+                                        <td>{{ proceso.tipo_proceso }}</td>
+                                        <td>{% if proceso.fecha_registro %}{{ proceso.fecha_registro|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</td>
+                                        <td>No disponible en modelo</td>
+                                        <td>{{ proceso.estatus }}</td>
+                                        <td>No disponible en modelo</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">Sin procesos registrados en la base de datos.</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -320,6 +334,9 @@
     <script src="../../static/js/barra-lateral.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
     <script src="../../static/js/accesibilidad.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
     <script src="../../static/js/calendario.js"></script>
 </body>

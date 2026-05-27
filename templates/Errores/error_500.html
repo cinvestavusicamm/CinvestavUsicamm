@@ -30,13 +30,34 @@
             <div class="content-side">
                 <h1 class="error-code" style="color: #B71C1C;"><i class="fas fa-server"></i> 500</h1>
                 <div class="error-title">Contratiempo Técnico en el Servidor</div>
+                
+                <!-- Mensaje de IA -->
+                <div class="ai-message-box" style="background: linear-gradient(135deg, #B71C1C 0%, #8B0000 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(183,28,28,0.3);">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <i class="fas fa-robot" style="font-size: 2rem; color: var(--dorado);"></i>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.9rem; margin-bottom: 5px; color: var(--dorado);">JAGUAR IA TE ACOMPAÑA</div>
+                            <p style="margin: 0; font-size: 0.85rem; line-height: 1.4;">{{ ai_message|default:"No te preocupes, esto no es tu culpa. Nuestro equipo técnico ya fue notificado." }}</p>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="explanation-box">
                     <div class="explanation-title"><i class="fas fa-question-circle" style="color:var(--turquesa)"></i> ¿Por qué ocurrió esto?</div>
                     <p class="explanation-text">Nuestros servidores encontraron una condición inesperada al intentar procesar tu solicitud. No es tu culpa ni de tu equipo; es un detalle de nuestro lado para el que ya estamos trabajando sin comprometer tu información.</p>
                     <div class="explanation-title"><i class="fas fa-tools" style="color:var(--dorado)"></i> ¿Cómo solucionarlo?</div>
                     <p class="explanation-text" style="margin-bottom:0;">Nuestro equipo de ingenieros ya ha sido notificado automáticamente para repararlo. Por favor, inténtalo de nuevo en unos minutos.</p>
                 </div>
-                <a href="javascript:location.reload()" class="btn-action"><i class="fas fa-redo"></i> SALIR</a>
+                
+                <!-- Botones contextuales según rol -->
+                <div class="action-buttons" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px;">
+                    <a href="javascript:location.reload()" class="btn-action" style="flex: 1; min-width: 200px; text-align: center;">
+                        <i class="fas fa-redo"></i> RECARGAR PÁGINA
+                    </a>
+                    <a href="{{ redirect_url|default:'/' }}" class="btn-action" style="flex: 1; min-width: 200px; text-align: center; background: var(--guinda);">
+                        <i class="fas fa-home"></i> IR A MI DASHBOARD
+                    </a>
+                </div>
             </div>
         </div>
     </div>
