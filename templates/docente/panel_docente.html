@@ -6,9 +6,6 @@
     <title>Tablero | Usuario Final USICAMM</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
      <link rel="stylesheet" href="../../static/css/main.css">
-    
-    
-
 </head>
 <body>
 
@@ -19,14 +16,15 @@
         </a>
         <ul class="nav-menu">
             <li class="nav-item open" id="drop-tablero">
-                <a class="nav-link active" onclick="toggleMenu()">
-                    <span><i class="fas fa-home" style="width: 20px; margin-right: 10px;"></i> Mi Tablero</span>
-                    <i class="fas fa-chevron-down" style="font-size: 0.7rem; transition: 0.3s;"></i>
-                </a>
+                <!-- Se incrementó el tamaño de la letra a font-size: 1.4rem para mejorar notablemente la visibilidad de Mi Tablero -->
+                <button class="nav-link active" onclick="toggleMenu()" style="width: 100%; background: none; border: none; color: inherit; text-align: left; font-family: inherit; font-size: 1.4rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; outline: none;">
+                    <span><i class="fas fa-home" style="width: 24px; margin-right: 10px;"></i> Mi Tablero</span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.9rem; transition: 0.3s;"></i>
+                </button>
                 <ul class="submenu">
                     <li><a href="#" class="submenu-link"><i class="fas fa-user-circle"></i> Consultar perfil propio</a></li>
                     <li><a href="#" class="submenu-link"><i class="fas fa-file-signature"></i> Promociones</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-graduation-cap"></i> Relizar evaluaciones</a></li>
+                    <li><a href="#" class="submenu-link"><i class="fas fa-graduation-cap"></i> Realizar evaluaciones</a></li>
                     <li><a href="#" class="submenu-link"><i class="fas fa-tasks"></i> Consultar progreso</a></li>
                     <li><a href="#" class="submenu-link"><i class="fas fa-comments"></i> Foros</a></li>
                     <li><a href="#" class="submenu-link exit-link"><i class="fas fa-sign-out-alt"></i> Salida Segura</a></li>
@@ -36,17 +34,31 @@
     </nav>
 
     <main class="main-container animate__animated animate__fadeIn">
-        <header class="top-bar">
+        <header class="top-bar" style="padding: 20px 30px;">
             <div class="user-welcome">
-                <h1>Maestra Elena Pérez <span class="curp-badge"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
-                <p class="security-note">Acceso RBAC restringido según LGPDPPSO | Datos encriptados</p>
+                <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Maestra Elena Pérez <span class="curp-badge" style="font-size: 0.9rem; padding: 6px 12px; vertical-align: middle;"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
+                <p class="security-note" style="font-size: 1rem; opacity: 0.9;">Acceso RBAC restringido según LGPDPPSO | Datos encriptados</p>
             </div>
-            <div class="notifications">
-                <span style="font-size: 0.8rem; font-weight: bold; color: var(--turquesa); margin-right: 15px;">Ciclo Escolar 2025-2026</span>
-                <i class="fas fa-bell fa-lg" style="color: var(--guinda); cursor: pointer; position: relative;">
-                    <span style="position: absolute; top: -5px; right: -5px; background: red; width: 8px; height: 8px; border-radius: 50%;"></span>
+            <div class="notifications" style="display: flex; align-items: center; position: relative;">
+                <span style="font-size: 1.1rem; font-weight: bold; color: var(--turquesa); margin-right: 20px;">Ciclo Escolar 2025-2026</span>
+                <i class="fas fa-bell fa-2x" style="color: var(--guinda); cursor: pointer; position: relative; margin-right: 20px;">
+                    <span style="position: absolute; top: -2px; right: -2px; background: red; width: 10px; height: 10px; border-radius: 50%;"></span>
                 </i>
-                <img src="https://ui-avatars.com/api/?name=Elena+Perez&background=BC955C&color=fff" style="border-radius: 50%; width: 40px; margin-left: 15px; border: 2px solid var(--guinda);">
+                
+                <a href="#" class="btn-exit-direct" style="color: var(--guinda); margin-right: 20px; font-size: 1.1rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </a>
+
+                <div class="user-dropdown" id="userDropdown" style="position: relative; display: inline-block;">
+                    <img src="https://ui-avatars.com/api/?name=Elena+Perez&background=BC955C&color=fff" onclick="toggleUserMenu()" style="border-radius: 50%; width: 48px; height: 48px; border: 2px solid var(--guinda); cursor: pointer; display: block;">
+                    
+                    <ul class="dropdown-menu" id="userMenu" style="display: none; position: absolute; right: 0; top: 55px; background: white; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 4px; list-style: none; padding: 5px 0; margin: 0; z-index: 1000; border: 1px solid #ddd;">
+                        <li><a href="#" style="color: #333; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem;"><i class="fas fa-question-circle" style="margin-right: 8px; width: 15px;"></i> Ayuda</a></li>
+                        <li><a href="#" style="color: #333; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem;"><i class="fas fa-cog" style="margin-right: 8px; width: 15px;"></i> Configuración</a></li>
+                        <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
+                        <li><a href="#" style="color: red; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem; font-weight: bold;"><i class="fas fa-power-off" style="margin-right: 8px; width: 15px;"></i> Cerrar Sesión</a></li>
+                    </ul>
+                </div>
             </div>
         </header>
 
@@ -114,13 +126,35 @@
         </div>
     </main>
 
-    <footer class="main-footer">
-        EcalofonIA | sivestav| © 2026 USICAMM
+    <!-- Se incrementó la tipografía a font-size: 1.2rem en el footer para emparejar la legibilidad con la barra lateral -->
+    <footer class="main-footer" style="background-color: var(--guinda); font-size: 1.2rem; padding: 15px 20px;">
+        EscalofonIA | sivestav | © 2026 USICAMM
     </footer>
 
     <script>
         function toggleMenu() {
             document.getElementById('drop-tablero').classList.toggle('open');
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.user-dropdown img')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    let openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === 'block') {
+                        openDropdown.style.display = 'none';
+                    }
+                }
+            }
         }
     </script>
 </body>

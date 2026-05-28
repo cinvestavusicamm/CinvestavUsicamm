@@ -7,18 +7,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../static/css/main.css">
+    <style>
+        /* Estructura global para asegurar el footer estable en la parte inferior */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        body {
+            display: grid;
+            grid-template-rows: auto auto 1fr auto;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
 
-    <header class="header-main">
-        <div class="brand">
-            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+    <header class="header-main" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+        <div class="brand" style="display: flex; align-items: center; gap: 12px;">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo" style="width: 45px; height: 45px;">
             <div class="brand-text">
-                <h1>ESCALAFONIA JAGUAR</h1>
+                <h1 style="font-size: 1.7rem; margin: 0; font-family: 'Montserrat', sans-serif; font-weight: 700;">ESCALAFONIA JAGUAR</h1>
             </div>
         </div>
-        <div class="header-info-right" style="color: white; font-size: 0.8rem; font-weight: 600;">
-            <i class="fas fa-lock"></i> MODO: CONSULTA DE PERFIL (RBAC)
+        
+        <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+            <div class="header-info-right" style="color: white; font-size: 0.85rem; font-weight: 600;">
+                <i class="fas fa-lock"></i> MODO: CONSULTA DE PERFIL (RBAC)
+            </div>
+
+            <a href="#" class="btn-regresar-directo" style="color: white; font-size: 0.9rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 4px;">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
+
+            <div class="user-dropdown" id="userDropdown" style="position: relative; display: inline-block;">
+                <button onclick="toggleUserMenu()" style="background: none; border: 1px solid white; color: white; padding: 8px 14px; border-radius: 4px; font-family: inherit; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; outline: none;">
+                    <i class="fas fa-user-cog"></i> Opciones <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </button>
+                
+                <ul class="dropdown-menu" id="userMenu" style="display: none; position: absolute; right: 0; top: 42px; background: white; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 4px; list-style: none; padding: 5px 0; margin: 0; z-index: 1000; border: 1px solid #ddd;">
+                    <li><a href="#" style="color: #333; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.85rem;"><i class="fas fa-question-circle" style="margin-right: 8px; width: 15px;"></i> Ayuda</a></li>
+                    <li><a href="#" style="color: #333; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.85rem;"><i class="fas fa-key" style="margin-right: 8px; width: 15px;"></i> Cambiar Contraseña</a></li>
+                    <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
+                    <li><a href="#" style="color: red; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.85rem; font-weight: bold;"><i class="fas fa-power-off" style="margin-right: 8px; width: 15px;"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
         </div>
     </header>
 
@@ -33,7 +67,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container" style="padding-bottom: 30px;">
         
         <aside>
             <div class="card" style="text-align: center;">
@@ -116,7 +150,7 @@
         </main>
     </div>
 
-    <footer class="footer-vino">
+    <footer class="footer-vino" style="width: 100%; text-align: center; box-sizing: border-box; margin-top: auto;">
         SISTEMA ALINEADO CON LGSDCMM, NEM Y LGPDPPSO | MÉXICO 2026
     </footer>
 
@@ -128,6 +162,27 @@
                     document.getElementById('imagePreview').style.backgroundImage = 'url(' + e.target.result + ')';
                 }
                 reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.user-dropdown button') && !event.target.matches('.user-dropdown button *')) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    let openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === 'block') {
+                        openDropdown.style.display = 'none';
+                    }
+                }
             }
         }
     </script>
