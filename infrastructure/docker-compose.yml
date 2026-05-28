@@ -29,22 +29,21 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: motor_ollama
+    restart: unless-stopped
     volumes:
-      - ollama_models:/root/.ollama  # Guardar los modelos descargados (Llama 3)
+      - ollama_models:/root/.ollama
     ports:
       - "11434:11434"
     networks:
       - escalafon_net
     environment:
-      - OLLAMA_KEEP_ALIVE=24h
-    # Si tienes GPU NVIDIA, descomenta esto:
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
+      OLLAMA_KEEP_ALIVE: 24h
+    entrypoint: ""
+    command: >
+        sh -c "ollama serve &
+              sleep 5 &&
+              ollama pull phi3:mini &&
+              wait"
 
   # -------------------------------------------------------------------------
   # 3. BACKEND API (Hexagonal - FastAPI)
@@ -67,10 +66,12 @@ services:
       POSTGRES_PORT: 5432
       OLLAMA_BASE_URL: http://motor_ollama:11434
       PYTHONPATH: /app
+      MICROSERVICE_SECRET: clave_estricta_por_defecto_cambiar_en_prod
     depends_on:
       db:
         condition: service_healthy
-
+      ollama:
+        condition: service_started
     networks:
       - escalafon_net
     healthcheck:
@@ -107,6 +108,7 @@ services:
       - escalafon_net
     environment:
       - DEBUG=False
+      - MICROSERVICE_SECRET=clave_estricta_por_defecto_cambiar_en_prod
 
   # -------------------------------------------------------------------------
   # 5. MS_ORCHESTRATOR - Request Orchestrator Microservice
@@ -114,11 +116,11 @@ services:
   ms_orchestrator:
     container_name: escalafon_orchestrator
     build:
-      context: ..
-      dockerfile: ms_orchestrator/Dockerfile
-    command: uvicorn ms_orchestrator.src.infrastructure.api.main:app --host 0.0.0.0 --port 9000 --reload
+      context: ../ms_orchestrator
+      dockerfile: Dockerfile
+    command: uvicorn src.infrastructure.api.main:app --host 0.0.0.0 --port 9000 --reload
     volumes:
-      - ../ms_orchestrator:/app/ms_orchestrator
+      - ../ms_orchestrator:/app
     ports:
       - "9000:9000"
     environment:
