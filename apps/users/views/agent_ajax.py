@@ -3,6 +3,7 @@ from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
+import os
 from apps.users.infrastructure.api_response import respuesta_ok, respuesta_error
 from apps.users.services.router_service import RouterService
 
@@ -10,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 FASTAPI_URL = "http://ia_service_core:8003/api/ask"
 FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
+INTERNAL_SERVICE_KEY = os.getenv("MICROSERVICE_SECRET", "clave_estricta_por_defecto_cambiar_en_prod")
 
 
 @csrf_exempt
@@ -56,10 +58,12 @@ def agente_ajax(request):
 
     try:
         payload = {"prompt": pregunta}
+        headers = {"X-Internal-Service-Key": INTERNAL_SERVICE_KEY}
 
         r = requests.post(
             FASTAPI_URL,
             json=payload,
+            headers=headers,
             timeout=180
         )
         r.raise_for_status()
@@ -86,9 +90,11 @@ def agente_streaming(pregunta):
 
     def generar_stream():
         try:
+            headers = {"X-Internal-Service-Key": INTERNAL_SERVICE_KEY}
             with requests.post(
                 FASTAPI_STREAM_URL,
                 json={"prompt": pregunta},
+                headers=headers,
                 stream=True,
                 timeout=(30, None)
             ) as r:

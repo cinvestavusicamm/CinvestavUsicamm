@@ -10,6 +10,9 @@ from .api.health import health_check
 from .api.usuarios_api import api_get_usuario, api_create_usuario, api_update_usuario, api_toggle_usuario
 from .api.cursos_api import api_listar_cursos, api_crear_curso, api_actualizar_curso
 from .api.foros_api import api_listar_foros
+from .views.docente_ajax import docente_ajax
+from .views.evaluador_ajax import evaluador_ajax
+from .views.generador_ajax import generador_ajax
 
 
 urlpatterns = [
