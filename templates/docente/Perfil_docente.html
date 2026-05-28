@@ -61,7 +61,7 @@
             Inicio > Docente > <span>Perfil Propio</span>
         </div>
         <div class="nav-buttons">
-            <a href="#" class="btn-back" style="background-color: var(--turquesa); color: white; border: none; padding: 10px 20px;">
+            <a href="{% url 'Docente:panel_docente' %}" class="btn-back" style="background-color: var(--turquesa); color: white; border: none; padding: 10px 20px;">
                 <i class="fas fa-th-large"></i> VOLVER AL TABLERO
             </a>
         </div>
@@ -73,7 +73,7 @@
             <div class="card" style="text-align: center;">
                 
                 <div style="position: relative; width: 125px; margin: 0 auto 20px;">
-                    <div id="imagePreview" class="avatar-imagen" style="width: 120px; height: 120px; background-image: url('https://ui-avatars.com/api/?name=Elena+Perez&background=691C32&color=fff'); background-size: cover; background-position: center; border: 4px solid var(--dorado); margin: 0 auto;">
+                    <div id="imagePreview" class="avatar-imagen" style="width: 120px; height: 120px; background-image: url('https://ui-avatars.com/api/?name={{ usuario.nombre|add:"+"|add:usuario.apellido_paterno }}&background=691C32&color=fff'); background-size: cover; background-position: center; border: 4px solid var(--dorado); margin: 0 auto;">
                     </div>
                     
                     <div onclick="document.getElementById('fileInput').click();" 
@@ -85,12 +85,12 @@
                     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
                 </div>
 
-                <h3 class="title-main">Elena Pérez</h3>
+                <h3 class="title-main">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</h3>
                 <p class="text-small">Docente de Educación Primaria</p>
                 
                 <div class="puntaje-box">
                     <span class="text-small">CURP</span>
-                    <strong style="display: block; font-family: monospace; color: var(--guinda);">PEEX840512MDF</strong>
+                    <strong style="display: block; font-family: monospace; color: var(--guinda);">{{ usuario.curp }}</strong>
                 </div>
 
                 <div class="alert-pill success" style="margin-top: 15px; width: 100%; justify-content: center;">
@@ -106,19 +106,19 @@
                 <div class="profile-summary">
                     <div class="stat-box">
                         <span>Número de Empleado</span>
-                        <strong>SEP-774402</strong>
+                        <strong>{{ proceso.datos_multifactores.numero_empleado }}</strong>
                     </div>
                     <div class="stat-box">
                         <span>Antigüedad Sistemática</span>
-                        <strong>12 Años, 4 Meses</strong>
+                        <strong>{{ proceso.datos_multifactores.antiguedad }}</strong>
                     </div>
                     <div class="stat-box">
                         <span>Nivel Actual</span>
-                        <strong>Nivel E (Consolidado)</strong>
+                        <strong>{{ proceso.datos_multifactores.nivel }}</strong>
                     </div>
                     <div class="stat-box">
                         <span>Centro de Trabajo</span>
-                        <strong>09DPR1234Z</strong>
+                        <strong>{{ proceso.datos_multifactores.centro_trabajo }}</strong>
                     </div>
                 </div>
             </div>
@@ -128,11 +128,11 @@
                 <div class="profile-summary">
                     <div class="stat-box">
                         <span>Incentivo Actual</span>
-                        <strong style="color: var(--exito);">35% (K1)</strong>
+                        <strong style="color: var(--exito);">{{ proceso.datos_multifactores.incentivo }}</strong>
                     </div>
                     <div class="stat-box">
                         <span>Próxima Evaluación</span>
-                        <strong>Marzo 2026</strong>
+                        <strong>{{ proceso.datos_multifactores.proxima_evaluacion }}</strong>
                     </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@
                     <div class="ia-badge-pulse"></div>
                     <h3 style="margin: 0;"><i class="fas fa-paw"></i> Resumen Jaguar IA</h3>
                 </div>
-                <p>Maestra Elena, su perfil es <strong>idóneo</strong> para la convocatoria de Promoción 2026.</p>
+                <p>{{ usuario.nombre }}, su perfil es <strong>idóneo</strong> para la convocatoria de Promoción 2026.</p>
                 <p class="text-small" style="color: white; opacity: 0.9; margin-top: 10px; line-height: 1.4;">
                     Detectamos que cuenta con el puntaje máximo en antigüedad. Para asegurar su posición, le sugerimos completar 20 horas adicionales de formación antes del cierre del dictamen.
                 </p>

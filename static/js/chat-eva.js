@@ -8,25 +8,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const mensajeInput = document.getElementById('mensaje-input-chatbot');
     const mensajesContainer = document.getElementById('mensajes-chatbot');
 
-    // Estado del chatbot
     let chatbotAbierto = false;
+    let primeraVez = true;
 
-    // Función para abrir el chatbot
     function abrirChatbot() {
         ventanaChatbot.classList.remove('ventana-oculto-chatbot');
         ventanaChatbot.classList.add('ventana-visible-chatbot');
         chatbotAbierto = true;
         mensajeInput.focus();
+        ventanaChatbot.setAttribute('aria-hidden', 'false');
+
+        if (primeraVez) {
+            setTimeout(() => {
+                agregarMensaje('¡Hola! Soy el asistente de EscalafonIA. ¿En qué puedo ayudarte?', 'bot');
+            }, 300);
+            primeraVez = false;
+        }
     }
 
-    // Función para cerrar el chatbot
     function cerrarChatbot() {
         ventanaChatbot.classList.remove('ventana-visible-chatbot');
         ventanaChatbot.classList.add('ventana-oculto-chatbot');
         chatbotAbierto = false;
+        ventanaChatbot.setAttribute('aria-hidden', 'true');
+        btnChatbot.focus();
     }
 
-    // Función para alternar el chatbot (abrir/cerrar)
     function alternarChatbot() {
         if (chatbotAbierto) {
             cerrarChatbot();
@@ -35,69 +42,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para agregar un mensaje al chat
     function agregarMensaje(texto, tipo) {
         const mensajeDiv = document.createElement('div');
         mensajeDiv.classList.add(tipo === 'usuario' ? 'mensaje-usuario' : 'mensaje-bot');
         mensajeDiv.textContent = texto;
+        mensajeDiv.setAttribute('role', tipo === 'bot' ? 'status' : 'none');
         mensajesContainer.appendChild(mensajeDiv);
         mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
     }
 
-    // Función para mostrar indicador de escritura
     function mostrarIndicadorEscritura() {
         const indicadorDiv = document.createElement('div');
         indicadorDiv.classList.add('indicador-escritura');
         indicadorDiv.id = 'indicador-escritura';
+        indicadorDiv.setAttribute('aria-live', 'polite');
         indicadorDiv.innerHTML = 'Escribiendo<span>.</span><span>.</span><span>.</span>';
         mensajesContainer.appendChild(indicadorDiv);
         mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
     }
 
-    // Función para ocultar indicador de escritura
     function ocultarIndicadorEscritura() {
         const indicador = document.getElementById('indicador-escritura');
-        if (indicador) {
-            indicador.remove();
-        }
+        if (indicador) indicador.remove();
     }
 
-    // Función para enviar mensaje
     async function enviarMensaje() {
         const mensaje = mensajeInput.value.trim();
-        
         if (mensaje === '') return;
 
-        // Agregar mensaje del usuario al chat
         agregarMensaje(mensaje, 'usuario');
-        
-        // Limpiar input
         mensajeInput.value = '';
-
-        // Mostrar indicador de escritura
         mostrarIndicadorEscritura();
 
         try {
-            // Aquí puedes conectar con tu API de chatbot
-            // Por ahora, simulamos una respuesta
             setTimeout(() => {
                 ocultarIndicadorEscritura();
-                
-                // Respuesta simulada del chatbot
-                let respuesta = obtenerRespuestaSimulada(mensaje);
+                const respuesta = obtenerRespuestaSimulada(mensaje);
                 agregarMensaje(respuesta, 'bot');
             }, 1000);
-            
         } catch (error) {
             ocultarIndicadorEscritura();
             agregarMensaje('Lo siento, hubo un error. Por favor, intenta de nuevo.', 'bot');
         }
     }
 
-    // Función para obtener respuesta simulada (puedes reemplazar con tu API)
     function obtenerRespuestaSimulada(mensaje) {
         const mensajeLower = mensaje.toLowerCase();
-        
         if (mensajeLower.includes('hola') || mensajeLower.includes('buenas')) {
             return '¡Hola! Soy el asistente de EscalafonIA. ¿En qué puedo ayudarte?';
         } else if (mensajeLower.includes('evaluaci') || mensajeLower.includes('evaluar')) {
@@ -111,69 +101,43 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (mensajeLower.includes('calendario') || mensajeLower.includes('fecha')) {
             return 'El calendario te ayuda a organizar tus evaluaciones y fechas importantes. Puedes ver todas tus actividades programadas allí.';
         } else if (mensajeLower.includes('ayuda') || mensajeLower.includes('ayudame')) {
-            return 'Claro, puedo ayudarte con: \n- Gestionar evaluaciones\n- Banco de preguntas\n- Validaciones\n- Reportes y estadísticas\n- Calendario de actividades\n¿Sobre qué tema necesitas ayuda?';
+            return 'Claro, puedo ayudarte con:\n- Gestionar evaluaciones\n- Banco de preguntas\n- Validaciones\n- Reportes y estadísticas\n- Calendario de actividades\n¿Sobre qué tema necesitas ayuda?';
         } else {
             return 'Gracias por tu mensaje. Un asesor revisará tu consulta. Mientras tanto, ¿puedo ayudarte con algo más sobre las evaluaciones?';
         }
     }
 
-    // Función para manejar tecla Enter
-    function manejarEnter(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            enviarMensaje();
-        }
-    }
-
     // Eventos
-    if (btnChatbot) {
-        btnChatbot.addEventListener('click', alternarChatbot);
-    }
-
-    if (btnCerrarChatbot) {
-        btnCerrarChatbot.addEventListener('click', cerrarChatbot);
-    }
-
-    if (btnEnviar) {
-        btnEnviar.addEventListener('click', enviarMensaje);
-    }
-
+    if (btnChatbot) btnChatbot.addEventListener('click', alternarChatbot);
+    if (btnCerrarChatbot) btnCerrarChatbot.addEventListener('click', cerrarChatbot);
+    if (btnEnviar) btnEnviar.addEventListener('click', enviarMensaje);
     if (mensajeInput) {
-        mensajeInput.addEventListener('keypress', manejarEnter);
+        mensajeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); enviarMensaje(); }
+        });
     }
 
-    // Cerrar chatbot al hacer click fuera (opcional)
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && chatbotAbierto) cerrarChatbot();
+    });
+
+    // Cerrar al click fuera
     document.addEventListener('click', function(event) {
         if (chatbotAbierto && ventanaChatbot && btnChatbot) {
-            // Si el click no es dentro del chatbot ni en el botón, cerrar
             if (!ventanaChatbot.contains(event.target) && !btnChatbot.contains(event.target)) {
                 cerrarChatbot();
             }
         }
     });
 
-    // Mensaje de bienvenida al cargar la página (solo si el chatbot está abierto)
-    function mostrarMensajeBienvenida() {
-        setTimeout(() => {
-            if (chatbotAbierto) {
-                agregarMensaje('¡Bienvenido a EscalafonIA! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?', 'bot');
-            }
-        }, 500);
+    // ARIA
+    if (ventanaChatbot) {
+        ventanaChatbot.setAttribute('role', 'dialog');
+        ventanaChatbot.setAttribute('aria-label', 'Chat de asistencia');
+        ventanaChatbot.setAttribute('aria-hidden', 'true');
     }
-
-    // Opcional: Mostrar mensaje de bienvenida la primera vez que se abre
-    let primeraVez = true;
-    const abrirChatbotOriginal = abrirChatbot;
-    abrirChatbot = function() {
-        abrirChatbotOriginal();
-        if (primeraVez) {
-            setTimeout(() => {
-                agregarMensaje('¡Hola! Soy el asistente de EscalafonIA. ¿En qué puedo ayudarte?', 'bot');
-            }, 300);
-            primeraVez = false;
-        }
-    };
-    
-    // Reemplazar la función original
-    window.abrirChatbot = abrirChatbot;
+    if (btnChatbot) {
+        btnChatbot.setAttribute('aria-label', 'Abrir chat de asistencia');
+    }
 });

@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
-
-# Contrato para la Base de Datos (Tu antiguo db_manager debe cumplir esto)
+from typing import List, Optional, AsyncGenerator
 class VectorRepository(ABC):
     @abstractmethod
     async def save_document(self, content: str, vector: List[float], metadata: dict):
@@ -23,4 +21,9 @@ class LLMService(ABC):
     @abstractmethod
     async def generate_response(self, prompt: str) -> str:
         """Genera texto respuesta."""
+        pass
+
+    @abstractmethod
+    async def generate_streaming_response(self, prompt: str) -> AsyncGenerator [str, None]:
+        """Nuevo metodo para streaming"""
         pass

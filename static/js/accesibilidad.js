@@ -30,14 +30,57 @@ class AccessibilityManager {
     }
     
     init() {
+        this.createSkipLink();
         this.createPanel();
         this.loadSettings();
         this.applyAllSettings();
         this.setupEventListeners();
         this.syncWithConfigPage();
+        this.setupMouseTracking();
         
         // Escuchar cambios de página para mantener el modo oscuro
         this.observePageChanges();
+        
+        // Navegación por teclado en modales
+        this.setupModalKeyboardNav();
+    }
+    
+    createSkipLink() {
+        if (document.getElementById('skip-to-main')) return;
+        const skip = document.createElement('a');
+        skip.id = 'skip-to-main';
+        skip.href = '#principal';
+        skip.className = 'skip-link';
+        skip.textContent = 'Saltar al contenido principal';
+        document.body.insertBefore(skip, document.body.firstChild);
+        
+        // Asignar id al contenido principal (prioriza .principal sobre .contenido)
+        document.addEventListener('DOMContentLoaded', () => {
+            const main = document.querySelector('.principal') || document.querySelector('main') || document.querySelector('.contenido');
+            if (main && !main.id) main.id = 'principal';
+        });
+    }
+    
+    setupMouseTracking() {
+        this._mouseX = window.innerWidth / 2;
+        this._mouseY = window.innerHeight / 2;
+        
+        document.addEventListener('mousemove', (e) => {
+            this._mouseX = e.clientX;
+            this._mouseY = e.clientY;
+            this.updateReadingTools();
+        });
+    }
+    
+    updateReadingTools() {
+        if (this.state.readingMask) {
+            let mask = document.getElementById('acc-reading-mask');
+            if (mask) mask.style.top = this._mouseY + 'px';
+        }
+        if (this.state.readingGuide) {
+            let guide = document.getElementById('acc-reading-guide');
+            if (guide) guide.style.top = this._mouseY + 'px';
+        }
     }
     
     createPanel() {
@@ -89,6 +132,13 @@ class AccessibilityManager {
                             <span><i class="fa-solid fa-palette icon-accesibilidad"></i> Invertir Colores</span>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="acc-invertColors">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="accesibilidad-opcion">
+                            <span><i class="fa-solid fa-moon icon-accesibilidad"></i> Tema Oscuro</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="acc-darkTheme">
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
@@ -162,7 +212,7 @@ class AccessibilityManager {
                             </div>
                         </div>
                         <div class="accesibilidad-opcion">
-                            <span><i class="fa-solid fa-text-height icon-accesibilidad"></i> Tamaño del Texto</span>
+                            <span><i class="fa-solid fa-text-height icon-accesibilidad"></i> Redimensionamiento</span>
                             <div class="range-control">
                                 <button class="btn-range" data-action="decrease" data-target="fontSize">
                                     <i class="fa-solid fa-minus"></i>
@@ -171,20 +221,6 @@ class AccessibilityManager {
                                 <button class="btn-range" data-action="increase" data-target="fontSize">
                                     <i class="fa-solid fa-plus"></i>
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Cursor -->
-                    <div class="accesibilidad-seccion">
-                        <h4><i class="fa-solid fa-mouse-pointer icon-accesibilidad"></i> Tamaño del Cursor</h4>
-                        <div class="accesibilidad-opcion cursor-selector">
-                            <span><i class="fa-solid fa-arrow-pointer"></i> Tamaño</span>
-                            <div class="cursor-size-selector">
-                                <button class="cursor-opt" data-size="small" title="Cursor pequeño">◉</button>
-                                <button class="cursor-opt" data-size="medium" title="Cursor mediano">◉</button>
-                                <button class="cursor-opt" data-size="large" title="Cursor grande">◉</button>
-                                <button class="cursor-opt" data-size="xlarge" title="Cursor extra grande">◉</button>
                             </div>
                         </div>
                     </div>
@@ -200,6 +236,22 @@ class AccessibilityManager {
         }
         
         this.panel = document.querySelector('.accesibilidad-panel');
+
+        // Trap focus dentro del panel
+        this.panel.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab') return;
+            const focusable = this.panel.querySelectorAll('input, button, [tabindex]:not([tabindex="-1"])');
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        });
         
         const closeBtn = this.panel.querySelector('.btn-cerrar-panel');
         if (closeBtn) {
@@ -225,6 +277,8 @@ class AccessibilityManager {
     openPanel() {
         this.panel.classList.add('active');
         this.isOpen = true;
+        const firstFocusable = this.panel.querySelector('input, button, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable) setTimeout(() => firstFocusable.focus(), 100);
     }
     
     closePanel() {
@@ -241,7 +295,8 @@ class AccessibilityManager {
             { id: 'acc-readingGuide', prop: 'readingGuide' },
             { id: 'acc-highlightLinks', prop: 'highlightLinks' },
             { id: 'acc-dyslexicFont', prop: 'dyslexicFont' },
-            { id: 'acc-screenReader', prop: 'screenReader' }
+            { id: 'acc-screenReader', prop: 'screenReader' },
+            { id: 'acc-darkTheme', prop: 'darkTheme' }
         ];
         
         toggles.forEach(({ id, prop }) => {
@@ -250,12 +305,20 @@ class AccessibilityManager {
                 element.addEventListener('change', (e) => {
                     // Exclusión mutua entre invertColors y darkTheme
                     if (id === 'acc-invertColors' && e.target.checked) {
-                        const darkThemeToggle = document.getElementById('darkTheme');
-                        if (darkThemeToggle && darkThemeToggle.checked) {
-                            darkThemeToggle.checked = false;
-                            this.state.darkTheme = false;
-                            this.applySetting('darkTheme');
-                        }
+                        this.state.darkTheme = false;
+                        this.applySetting('darkTheme');
+                        const darkPanelToggle = document.getElementById('acc-darkTheme');
+                        if (darkPanelToggle) darkPanelToggle.checked = false;
+                        const darkConfigToggle = document.getElementById('darkTheme');
+                        if (darkConfigToggle) darkConfigToggle.checked = false;
+                    }
+                    if (id === 'acc-darkTheme' && e.target.checked) {
+                        this.state.invertColors = false;
+                        this.applySetting('invertColors');
+                        const invPanelToggle = document.getElementById('acc-invertColors');
+                        if (invPanelToggle) invPanelToggle.checked = false;
+                        const invConfigToggle = document.getElementById('invertColors');
+                        if (invConfigToggle) invConfigToggle.checked = false;
                     }
                     
                     this.state[prop] = e.target.checked;
@@ -269,7 +332,7 @@ class AccessibilityManager {
         const ranges = [
             { target: 'lineSpacing', min: 1, max: 2.5, step: 0.1, unit: '' },
             { target: 'letterSpacing', min: 0, max: 5, step: 0.5, unit: 'px' },
-            { target: 'fontSize', min: 12, max: 28, step: 1, unit: 'px' }
+            { target: 'fontSize', min: 12, max: 32, step: 1, unit: 'px' }
         ];
         
         ranges.forEach(({ target, min, max, step, unit }) => {
@@ -306,17 +369,6 @@ class AccessibilityManager {
             }
         });
         
-        const cursorOpts = this.panel.querySelectorAll('.cursor-opt');
-        cursorOpts.forEach(opt => {
-            opt.addEventListener('click', () => {
-                const size = opt.getAttribute('data-size');
-                this.setCursorSize(size);
-                cursorOpts.forEach(o => o.classList.remove('active'));
-                opt.classList.add('active');
-                this.dispatchChangeEvent('cursorSize', size);
-            });
-        });
-        
         const resetBtn = document.getElementById('resetAccessibility');
         if (resetBtn) {
             resetBtn.addEventListener('click', () => this.resetAll());
@@ -341,9 +393,31 @@ class AccessibilityManager {
                 break;
             case 'readingMask':
                 body.classList.toggle('reading-mask', this.state.readingMask);
+                if (this.state.readingMask) {
+                    if (!document.getElementById('acc-reading-mask')) {
+                        const el = document.createElement('div');
+                        el.id = 'acc-reading-mask';
+                        el.style.cssText = `position:fixed;left:0;right:0;height:60px;background:rgba(105,28,50,0.18);border-top:2px solid #691C32;border-bottom:2px solid #691C32;pointer-events:none;z-index:9999;transform:translateY(-50%);top:${this._mouseY||window.innerHeight/2}px;transition:top 0.05s linear;`;
+                        document.body.appendChild(el);
+                    }
+                } else {
+                    const el = document.getElementById('acc-reading-mask');
+                    if (el) el.remove();
+                }
                 break;
             case 'readingGuide':
                 body.classList.toggle('reading-guide', this.state.readingGuide);
+                if (this.state.readingGuide) {
+                    if (!document.getElementById('acc-reading-guide')) {
+                        const el = document.createElement('div');
+                        el.id = 'acc-reading-guide';
+                        el.style.cssText = `position:fixed;left:0;right:0;height:2px;background:#691C32;opacity:0.6;pointer-events:none;z-index:9998;top:${this._mouseY||window.innerHeight/2}px;transition:top 0.05s linear;`;
+                        document.body.appendChild(el);
+                    }
+                } else {
+                    const el = document.getElementById('acc-reading-guide');
+                    if (el) el.remove();
+                }
                 break;
             case 'highlightLinks':
                 body.classList.toggle('highlight-links', this.state.highlightLinks);
@@ -365,7 +439,6 @@ class AccessibilityManager {
                 body.style.letterSpacing = this.state.letterSpacing + 'px';
                 break;
             case 'fontSize':
-                body.style.fontSize = this.state.fontSize + 'px';
                 this.applyFontSizeToAll();
                 break;
         }
@@ -374,30 +447,8 @@ class AccessibilityManager {
     applyFontSizeToAll() {
         const fontSize = this.state.fontSize;
         const scaleFactor = fontSize / 16;
-        
-        const elementsToScale = [
-            'body', '.titulo', '.subtitulo', '.seccion-titulo', 
-            '.tarjeta-numero', '.tarjeta-texto', '.pregunta-enunciado',
-            '.evaluacion-titulo', '.evaluacion-descripcion', '.mensaje-bot',
-            '.mensaje-usuario', '.form-group label', '.form-group input',
-            '.btn', '.barra-lateral-link', '.tabla-preguntas td',
-            '.tabla-preguntas th', '.perfil-nombre-completo', '.perfil-campo span',
-            '.estadistica-valor', '.metrica-valor', '.config-card-header h3'
-        ];
-        
-        elementsToScale.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                if (!el.getAttribute('data-original-font-size')) {
-                    const computed = window.getComputedStyle(el).fontSize;
-                    el.setAttribute('data-original-font-size', computed);
-                }
-                const originalSize = parseFloat(el.getAttribute('data-original-font-size'));
-                if (!isNaN(originalSize)) {
-                    el.style.fontSize = (originalSize * scaleFactor) + 'px';
-                }
-            });
-        });
+        document.documentElement.style.setProperty("--acc-font-scale", scaleFactor);
+        document.body.style.zoom = scaleFactor;
     }
     
     applyAllSettings() {
@@ -412,6 +463,7 @@ class AccessibilityManager {
             grayscale: 'acc-grayscale',
             highContrast: 'acc-highContrast',
             invertColors: 'acc-invertColors',
+            darkTheme: 'acc-darkTheme',
             readingMask: 'acc-readingMask',
             readingGuide: 'acc-readingGuide',
             highlightLinks: 'acc-highlightLinks',
@@ -433,16 +485,6 @@ class AccessibilityManager {
         if (lineSpacingSpan) lineSpacingSpan.textContent = this.state.lineSpacing;
         if (letterSpacingSpan) letterSpacingSpan.textContent = this.state.letterSpacing + 'px';
         if (fontSizeSpan) fontSizeSpan.textContent = this.state.fontSize + 'px';
-        
-        const cursorSize = localStorage.getItem('cursorSize') || 'small';
-        const cursorOpts = this.panel.querySelectorAll('.cursor-opt');
-        cursorOpts.forEach(opt => {
-            if (opt.getAttribute('data-size') === cursorSize) {
-                opt.classList.add('active');
-            } else {
-                opt.classList.remove('active');
-            }
-        });
     }
     
     setCursorSize(size) {
@@ -466,50 +508,64 @@ class AccessibilityManager {
     
     enableScreenReader() {
         if (this.screenReaderActive) return;
-        
         this.screenReaderActive = true;
-        
-        // Leer el contenido de la página
-        setTimeout(() => {
-            this.readPageContent();
-        }, 500);
+        setTimeout(() => { this.readPageContent(); }, 500);
     }
     
     readPageContent() {
         if (!this.screenReaderActive) return;
         
-        // Obtener el contenido principal
-        const mainContent = document.querySelector('.principal') || document.querySelector('main') || document.body;
+        // Orden: barra superior → accesibilidad → chatbot → barra lateral → contenido principal → footer
+        const orden = [
+            { selector: '.barra-superior', label: 'Barra de navegación superior' },
+            { selector: '.btn-accesibilidad', label: 'Botón de accesibilidad' },
+            { selector: '.btn-chatbot',    label: 'Botón de chatbot' },
+            { selector: '.barra-lateral',  label: 'Menú lateral de navegación' },
+            { selector: '.contenido',       label: 'Contenido principal' },
+            { selector: '.contenedor-footer, footer', label: null }
+        ];
         
-        // Extraer texto relevante
-        const textToRead = this.extractReadableText(mainContent);
+        let fullText = '';
+        const vistas = new Set();
         
-        if (textToRead && textToRead.trim()) {
-            this.speak(textToRead, true);
+        orden.forEach(({ selector, label }) => {
+            const el = document.querySelector(selector);
+            if (el && !vistas.has(el)) {
+                vistas.add(el);
+                const text = this.extractReadableText(el);
+                if (text.trim()) {
+                    fullText += (label ? label + '. ' : '') + text + '. ';
+                }
+            }
+        });
+        
+        if (fullText.trim()) {
+            this.speak(fullText.trim(), true);
         }
     }
     
     extractReadableText(element) {
         if (!element) return '';
-        
         const clone = element.cloneNode(true);
         
         const excludeSelectors = [
-            'nav', '.barra-lateral', '.menu-dropdown', '.accesibilidad-panel',
-            '.btn-accesibilidad', '.btn-chatbot', '#ventana-chatbot',
+            '.accesibilidad-panel',
+            '#ventana-chatbot',
             'script', 'style', 'noscript', 'iframe', 'svg',
-            'button', '.btn', '.toggle-switch', '.range-control'
+            '.toggle-switch', '.range-control'
         ];
         
-        excludeSelectors.forEach(selector => {
-            const elements = clone.querySelectorAll(selector);
-            elements.forEach(el => el.remove());
+        excludeSelectors.forEach(sel => {
+            clone.querySelectorAll(sel).forEach(el => el.remove());
+        });
+        
+        // Incluir aria-label cuando no hay texto visible
+        clone.querySelectorAll('[aria-label]').forEach(el => {
+            if (!el.textContent.trim()) el.textContent = el.getAttribute('aria-label');
         });
         
         let text = clone.innerText || clone.textContent || '';
-        text = text.replace(/\s+/g, ' ').replace(/\n+/g, ' ').trim();
-        
-        return text;
+        return text.replace(/\s+/g, ' ').replace(/\n+/g, ' ').trim();
     }
     
     disableScreenReader() {
@@ -585,6 +641,9 @@ class AccessibilityManager {
     }
     
     resetAll() {
+        // Preservar darkTheme — restablecer solo afecta opciones de accesibilidad
+        const currentDarkTheme = this.state.darkTheme;
+        
         this.state = {
             grayscale: false,
             highContrast: false,
@@ -593,7 +652,7 @@ class AccessibilityManager {
             readingGuide: false,
             highlightLinks: false,
             dyslexicFont: false,
-            darkTheme: false,
+            darkTheme: currentDarkTheme,  // se conserva
             lineSpacing: 1.5,
             letterSpacing: 0,
             fontSize: 16,
@@ -601,21 +660,23 @@ class AccessibilityManager {
         };
         
         const body = document.body;
+        // NO tocar dark-theme al restablecer
         body.classList.remove(
-            'grayscale', 'high-contrast', 'invert-colors', 'dark-theme',
+            'grayscale', 'high-contrast', 'invert-colors',
             'reading-mask', 'reading-guide', 'highlight-links', 'dyslexic-font'
         );
         
         body.style.lineHeight = '';
         body.style.letterSpacing = '';
+        body.style.zoom = '';
         body.style.fontSize = '';
-        body.style.cursor = '';
+        document.documentElement.style.removeProperty('--acc-font-scale');
         
-        const elementsWithOriginalSize = document.querySelectorAll('[data-original-font-size]');
-        elementsWithOriginalSize.forEach(el => {
-            el.style.fontSize = '';
-            el.removeAttribute('data-original-font-size');
-        });
+        // Remover elementos de herramientas de lectura
+        const mask = document.getElementById('acc-reading-mask');
+        if (mask) mask.remove();
+        const guide = document.getElementById('acc-reading-guide');
+        if (guide) guide.remove();
         
         if (this.screenReaderActive) {
             this.disableScreenReader();
@@ -623,7 +684,6 @@ class AccessibilityManager {
         
         this.updatePanelValues();
         this.saveSettings();
-        localStorage.removeItem('cursorSize');
         this.dispatchChangeEvent('reset', true);
     }
     
@@ -641,11 +701,6 @@ class AccessibilityManager {
                 console.error('Error loading accessibility settings:', e);
             }
         }
-        
-        const cursorSize = localStorage.getItem('cursorSize');
-        if (cursorSize) {
-            this.setCursorSize(cursorSize);
-        }
     }
     
     dispatchChangeEvent(key, value) {
@@ -655,6 +710,38 @@ class AccessibilityManager {
         window.dispatchEvent(event);
     }
     
+    setupModalKeyboardNav() {
+        // Cerrar modales con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            const modalSelectors = '.modal.active, .modal-overlay.active, .modal-creacion-evaluacion.active, .modal-agregar-pregunta.active';
+            document.querySelectorAll(modalSelectors).forEach(modal => {
+                modal.classList.remove('active');
+            });
+        });
+
+        // Focus trap en modales
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab') return;
+            const activeModal = document.querySelector('.modal.active, .modal-overlay.active, .modal-creacion-evaluacion.active, .modal-agregar-pregunta.active');
+            if (!activeModal) return;
+
+            const focusable = activeModal.querySelectorAll('input:not([type="hidden"]), button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])');
+            if (focusable.length === 0) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        });
+    }
+
     observePageChanges() {
         // Observar cambios de URL para navegación SPA
         let lastUrl = location.href;

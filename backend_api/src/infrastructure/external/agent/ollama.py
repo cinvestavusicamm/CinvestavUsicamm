@@ -1,6 +1,7 @@
 import httpx
 import logging
-from typing import List, Optional
+import json
+from typing import List, Optional, AsyncGenerator
 from application.ports.agent.output import LLMService
 from infrastructure.config.settings import settings
 
@@ -40,7 +41,7 @@ class OllamaAdapter(LLMService):
         """Genera texto con Ollama usando /v1/completions."""
         try:
             logger.info(f"Generando respuesta con modelo: {self.model}")
-            logger.info(f"Prompt: {prompt[:100]}...")  # primeros 100 chars
+            logger.info(f"Prompt: {prompt[:100]}...")
 
             response = await self.client.post(
                 f"{self.base_url}/v1/completions",
@@ -49,7 +50,7 @@ class OllamaAdapter(LLMService):
                     "prompt": prompt,
                     "temperature": 0.5,
                     "max_tokens": 150,
-                    "num_ctx":1024
+                    "num_ctx": 1024
                 },
                 timeout=120.0
             )
@@ -68,3 +69,53 @@ class OllamaAdapter(LLMService):
             logger.error(f"Error generando respuesta: {e}")
             return f"Error generando respuesta: {str(e)}"
 
+    async def generate_streaming_response(self, prompt: str) -> AsyncGenerator[str, None]:
+        """Genera respuesta en streaming usando Ollama"""
+        try:
+            logger.info(f"Generando streaming con modelo: {self.model}")
+            
+            async with self.client.stream(
+                "POST",
+                f"{self.base_url}/v1/chat/completions",
+                json={
+                    "model": self.model,
+                    "messages": [
+                        {"role": "system", "content": "Responde de forma clara y concisa."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "stream": True,
+                    "options": {
+                        "temperature": 0.2,
+                        "num_predict": 500,
+                        "num_ctx": 1024
+                    }
+                },
+                timeout=120.0
+            ) as response:
+                
+                buffer = ""
+                async for chunk in response.aiter_bytes():
+                    buffer += chunk.decode('utf-8')
+                    
+                    while '\n' in buffer:
+                        line, buffer = buffer.split('\n', 1)
+                        if line.startswith('data: '):
+                            data = line[6:].strip()
+                            if data == '[DONE]':
+                                break
+                            
+                            try:
+                                if data:
+                                    chunk_data = json.loads(data)
+                                    if "choices" in chunk_data and chunk_data["choices"]:
+                                        delta = chunk_data["choices"][0].get("delta", {})
+                                        content = delta.get("content", "")
+                                        if content:
+                                            yield content
+                            except json.JSONDecodeError:
+                                continue
+                                
+        except Exception as e:
+            logger.error(f"Error en streaming: {e}")
+            yield f"Error: {str(e)}"  # CORREGIDO: usar yield en lugar de return
+            # No necesitas return explícito aquí, el generator termina después del yield

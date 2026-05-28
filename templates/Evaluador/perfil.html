@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icono" type="image/x-icono"
+    <link rel="icon" type="image/x-icon"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="../../static/css/evaluador.css">
     <link rel="stylesheet" href="../../static/css/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>EscalafonIA</title>
@@ -15,12 +16,19 @@
 
 <body>
     <header class="barra-superior">
-        <div class="boton">
-            <button id="btn-menu" class="btn-menu" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
-        </div>
+        
         <div class="marca">
-            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIa</span></a></h1>
+            <div class="boton">
+            <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
         </div>
 
         <div class="user-profile">
@@ -35,12 +43,9 @@
             </div>
         </div>
     </header>
+
     <div class="contenedor-principal">
         <nav class="barra-lateral">
-            <div class="jaguar-brand">
-                <a href="{% url 'evaluador:dashboard' %}"><img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
-                    alt="Logo EscalafonIa"></a>
-            </div>
             <ul class="menu-principal">
                 <li>
                     <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
@@ -83,9 +88,9 @@
             </ul>
         </nav>
 
-        <div class="principal">
+        <div class="principal" id="principal">
             <div class="contenido">
-                <h1 class="titulo">Mi Perfil</h1>
+                <h1 class="titulo"><i class="fa-solid fa-user"></i> Mi Perfil</h1>
 
                 <div class="perfil-contenedor">
                     <!-- Columna izquierda - Foto y datos principales -->
@@ -200,6 +205,9 @@
                     </div>
                 </div>
             </div>
+            <footer class="contenedor-footer">
+               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+            </footer>
         </div>
     </div>
 

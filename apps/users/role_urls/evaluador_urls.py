@@ -6,6 +6,8 @@ from apps.users.views.evaluador.evaluaciones import evaluaciones
 from apps.users.views.evaluador.validaciones import validaciones
 from apps.users.views.evaluador.calendario import calendario
 from apps.users.views.evaluador.reportes import reportes
+from apps.users.views.evaluador.perfil import perfil
+from apps.users.views.evaluador.configuracion import configuracion
 
 app_name = 'evaluador'
 
@@ -17,4 +19,6 @@ urlpatterns = [
     path('validaciones/', validaciones, name='validaciones'),
     path('calendario/', calendario, name='calendario'),
     path('reportes/', reportes, name='reportes'),
+    path('perfil/', perfil, name='perfil'),
+    path('configuracion/', configuracion, name='configuracion'),
 ]

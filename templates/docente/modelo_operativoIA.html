@@ -34,8 +34,8 @@
             </div>
         </div>
         <div style="text-align: right;">
-            <div style="font-weight: 700; font-size: 0.9rem;">Maestra Elena Pérez</div>
-            <div style="font-size: 0.65rem; color: var(--dorado);">Folio USICAMM: 08-2026-X4</div>
+            <div style="font-weight: 700; font-size: 0.9rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</div>
+            <div style="font-size: 0.65rem; color: var(--dorado);">Folio USICAMM: {{ proceso.folio }}</div>
         </div>
     </header>
 
@@ -43,7 +43,7 @@
         <div class="breadcrumb">
             Inicio > Sistema > <span>Modelo Operativo</span>
         </div>
-        <a href="#" class="btn-back"><i class="fas fa-arrow-left"></i> REGRESAR AL MENÚ</a>
+        <a href="{% url 'panel_docente' %}" class="btn-back"><i class="fas fa-arrow-left"></i> REGRESAR AL MENÚ</a>
     </nav>
 
     <div class="container">

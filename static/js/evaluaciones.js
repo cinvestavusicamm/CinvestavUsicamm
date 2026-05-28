@@ -409,13 +409,13 @@ function actualizarEstadisticasEvaluaciones() {
 function inicializarModales() {
     // Crear modal de creación
     const modalCreacionHTML = `
-        <div id="modalCreacionEvaluacion" class="modal-creacion-evaluacion" style="display: none;">
-            <div class="modal-contenido-creacion">
-                <div class="modal-header-creacion">
+        <div id="modalCreacionEvaluacion" class="modal-overlay">
+            <div class="modal-eventos modal-eventos--lg">
+                <div class="modal-header">
                     <h2><i class="fas fa-plus-circle"></i> Crear Nueva Evaluación</h2>
-                    <button class="btn-cerrar-modal-creacion" id="cerrarModalCreacion"><i class="fas fa-times"></i></button>
+                    <button class="btn-cerrar-modal" id="cerrarModalCreacion"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="modal-body-creacion">
+                <div class="modal-body">
                     <div id="formCreacionEvaluacion">
                         <div class="form-grid">
                             <div class="grupo-formulario">
@@ -528,13 +528,13 @@ function inicializarModales() {
     
     // Modal de edición
     const modalEdicionHTML = `
-        <div id="modalEdicionEvaluacion" class="modal-creacion-evaluacion" style="display: none;">
-            <div class="modal-contenido-creacion">
-                <div class="modal-header-creacion">
+        <div id="modalEdicionEvaluacion" class="modal-overlay">
+            <div class="modal-eventos modal-eventos--lg">
+                <div class="modal-header">
                     <h2><i class="fas fa-edit"></i> Editar Evaluación</h2>
-                    <button class="btn-cerrar-modal-creacion" id="cerrarModalEdicion"><i class="fas fa-times"></i></button>
+                    <button class="btn-cerrar-modal" id="cerrarModalEdicion"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="modal-body-creacion">
+                <div class="modal-body">
                     <div id="formEdicionEvaluacion">
                         <div class="form-grid">
                             <div class="grupo-formulario">
@@ -663,7 +663,7 @@ function abrirModalCreacion() {
     const modal = document.getElementById('modalCreacionEvaluacion');
     if (!modal) return;
     
-    modal.style.display = 'flex';
+    modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
     // Resetear formulario
@@ -682,7 +682,7 @@ function abrirModalCreacion() {
 function cerrarModalCreacion() {
     const modal = document.getElementById('modalCreacionEvaluacion');
     if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('active');
         document.body.style.overflow = '';
     }
 }
@@ -710,7 +710,7 @@ function abrirModalEdicion(id) {
     
     const modal = document.getElementById('modalEdicionEvaluacion');
     if (modal) {
-        modal.style.display = 'flex';
+        modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 }
@@ -718,7 +718,7 @@ function abrirModalEdicion(id) {
 function cerrarModalEdicion() {
     const modal = document.getElementById('modalEdicionEvaluacion');
     if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('active');
         document.body.style.overflow = '';
     }
     evaluacionEditando = null;

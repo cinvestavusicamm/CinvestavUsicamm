@@ -1,6 +1,7 @@
 {% load static%}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -431,6 +432,128 @@
             background: white;
             padding: 2px;
         }
+
+        /* Estilos para el chat - agrega esto a tu archivo CSS */
+        .msg {
+            margin: 10px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+            animation: aparecer 0.3s ease-out;
+        }
+
+        .msg-user {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-bot {
+            background-color: #f1f1f1;
+            color: #333;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .bot-text {
+            display: inline;
+            white-space: pre-wrap;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            margin-left: 2px;
+            font-weight: bold;
+            color: #666;
+            animation: parpadeo 0.8s infinite;
+        }
+
+        /* Estilos para paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--guinda);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .pagination a:hover {
+            background: var(--turquesa);
+            color: white;
+            border-color: var(--turquesa);
+        }
+
+        .pagination .current {
+            background: var(--guinda);
+            color: white;
+            border-color: var(--guinda);
+        }
+
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .page-info {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        @keyframes parpadeo {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #chat-box {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -445,7 +568,7 @@
         </div>
         <nav class="nav-menu">
             <a href="#" class="nav-link active"><i class="fas fa-users-cog"></i> Gestión de Usuarios</a>
-            <a href="#" class="nav-link"><i class="fas fa-robot"></i> Asistente IA</a>
+            <!-- <a href="#" class="nav-link"><i class="fas fa-robot"></i> Asistente IA</a> -->
             <a href="{% url 'logout' %}" class="nav-link"
                 style="margin-top: auto; color: #ff9f9f; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; padding-bottom: 35px;">
                 <i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN
@@ -492,54 +615,92 @@
                     <section class="crud-card">
                         <div class="card-header">
                             <h4><i class="fas fa-user-shield"></i> Administradores</h4>
-                            <button class="btn btn-add" onclick="abrirFormulario()"><i
-                                    class="fas fa-plus"></i> AGREGAR POR CURP</button>
+                            <button class="btn btn-add" onclick="abrirFormulario()"><i class="fas fa-plus"></i> AGREGAR
+                                POR CURP</button>
                         </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>CURP (ID)</th>
-                                    <th>Nombre</th>
-                                    <th>Correo / Institución</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lista-admins">
-                                {% for u in admins %}
-                                <tr>
-                                    <td><strong>{{ u.curp }}</strong></td>
-                                    <td>{{ u.nombre }} {{ u.apellido_paterno }}</td>
-                                    <td>
-                                        {{ u.correo }}<br>
-                                        <small>{{ u.institucion.nombre }}</small   >
-                                    </td>
-                                    <td>
-                                        {% if u.activo %}
-                                        <i class="fas fa-toggle-on status-toggle"
-                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
-                                        {% else %}
-                                        <i class="fas fa-toggle-off status-toggle"
-                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
-                                        {% endif %}
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>CURP (ID)</th>
+                                        <th>Nombre</th>
+                                        <th>Correo / Institución</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-admins">
+                                    {% for u in admins %}
+                                    <tr>
+                                        <td><strong>{{ u.curp }}</strong></td>
+                                        <td>{{ u.nombre }} {{ u.apellido_paterno }}</td>
+                                        <td>
+                                            {{ u.correo }}<br>
+                                            <small>{{ u.institucion.nombre }}</small>
+                                        </td>
+                                        <td>
+                                            {% if u.activo %}
+                                            <i class="fas fa-toggle-on status-toggle"
+                                                onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
+                                            {% else %}
+                                            <i class="fas fa-toggle-off status-toggle"
+                                                onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-action" onclick="eliminarUsuario({{ u.id_usuario }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5">No hay administradores</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
 
-                                    </td>
-                                    <td>
-                                        <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action" onclick="eliminarUsuario({{ u.id_usuario }})">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="5">No hay administradores</td>
-                                </tr>
+                        <!-- Paginación para Administradores -->
+                        {% if admins.paginator.num_pages > 1 %}
+                        <div class="pagination">
+                            {% if admins.has_previous %}
+                            <a href="?page_admins=1&page_docentes={{ docentes.number }}">&laquo; Primera</a>
+                            <a
+                                href="?page_admins={{ admins.previous_page_number }}&page_docentes={{ docentes.number }}">Anterior</a>
+                            {% else %}
+                            <span class="disabled">&laquo; Primera</span>
+                            <span class="disabled">Anterior</span>
+                            {% endif %}
+
+                            {% for num in admins.paginator.page_range %}
+                            {% if admins.number == num %}
+                            <span class="current">{{ num }}</span>
+                            {% elif num > admins.number|add:'-3' and num < admins.number|add:'3' %} <a
+                                href="?page_admins={{ num }}&page_docentes={{ docentes.number }}">{{ num }}</a>
+                                {% endif %}
                                 {% endfor %}
-                            </tbody>
-                        </table>
+
+                                {% if admins.has_next %}
+                                <a
+                                    href="?page_admins={{ admins.next_page_number }}&page_docentes={{ docentes.number }}">Siguiente</a>
+                                <a
+                                    href="?page_admins={{ admins.paginator.num_pages }}&page_docentes={{ docentes.number }}">Última
+                                    &raquo;</a>
+                                {% else %}
+                                <span class="disabled">Siguiente</span>
+                                <span class="disabled">Última &raquo;</span>
+                                {% endif %}
+                        </div>
+                        <div class="page-info">
+                            Mostrando {{ admins.start_index }} - {{ admins.end_index }} de {{ admins.paginator.count }}
+                            administradores
+                        </div>
+                        {% endif %}
                     </section>
 
                     <section class="crud-card" style="border-top: 5px solid var(--turquesa);">
@@ -548,54 +709,91 @@
                             <button class="btn btn-add" style="background: var(--turquesa);"
                                 onclick="abrirFormulario()">AGREGAR POR CURP</button>
                         </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>CURP (ID)</th>
-                                    <th>Nombre</th>
-                                    <th>Correo / Institución</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lista-docentes">
-                                {% for u in docentes %}
-                                <tr>
-                                    <td><strong>{{ u.curp }}</strong></td>
-                                    <td>{{ u.nombre }} {{ u.apellido_paterno }}</td>
-                                    <td>
-                                        {{ u.correo }}<br>
-                                        <small>{{ u.institucion.nombre }}</small>
-                                    </td>
-                                    <td>
-                                        {% if u.activo %}
-                                        <i class="fas fa-toggle-on status-toggle"
-                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
-                                        {% else %}
-                                        <i class="fas fa-toggle-off status-toggle"
-                                            onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
-                                        {% endif %}
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>CURP (ID)</th>
+                                        <th>Nombre</th>
+                                        <th>Correo / Institución</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-docentes">
+                                    {% for u in docentes %}
+                                    <tr>
+                                        <td><strong>{{ u.curp }}</strong></td>
+                                        <td>{{ u.nombre }} {{ u.apellido_paterno }}</td>
+                                        <td>
+                                            {{ u.correo }}<br>
+                                            <small>{{ u.institucion.nombre }}</small>
+                                        </td>
+                                        <td>
+                                            {% if u.activo %}
+                                            <i class="fas fa-toggle-on status-toggle"
+                                                onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
+                                            {% else %}
+                                            <i class="fas fa-toggle-off status-toggle"
+                                                onclick="cambiarEstado({{ u.id_usuario }}, this)"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-action" onclick="eliminarUsuario({{ u.id_usuario }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5">No hay docentes</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
 
-                                    </td>
-                                    <td>
-                                        <button class="btn-action" onclick="editarUsuario({{ u.id_usuario }})">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn-action" onclick="eliminarUsuario({{ u.id_usuario }})">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="5">No hay docentes</td>
-                                </tr>
+                        <!-- Paginación para Docentes -->
+                        {% if docentes.paginator.num_pages > 1 %}
+                        <div class="pagination">
+                            {% if docentes.has_previous %}
+                            <a href="?page_admins={{ admins.number }}&page_docentes=1">&laquo; Primera</a>
+                            <a
+                                href="?page_admins={{ admins.number }}&page_docentes={{ docentes.previous_page_number }}">Anterior</a>
+                            {% else %}
+                            <span class="disabled">&laquo; Primera</span>
+                            <span class="disabled">Anterior</span>
+                            {% endif %}
+
+                            {% for num in docentes.paginator.page_range %}
+                            {% if docentes.number == num %}
+                            <span class="current">{{ num }}</span>
+                            {% elif num > docentes.number|add:'-3' and num < docentes.number|add:'3' %} <a
+                                href="?page_admins={{ admins.number }}&page_docentes={{ num }}">{{ num }}</a>
+                                {% endif %}
                                 {% endfor %}
-                            </tbody>
-                        </table>
+
+                                {% if docentes.has_next %}
+                                <a
+                                    href="?page_admins={{ admins.number }}&page_docentes={{ docentes.next_page_number }}">Siguiente</a>
+                                <a
+                                    href="?page_admins={{ admins.number }}&page_docentes={{ docentes.paginator.num_pages }}">Última
+                                    &raquo;</a>
+                                {% else %}
+                                <span class="disabled">Siguiente</span>
+                                <span class="disabled">Última &raquo;</span>
+                                {% endif %}
+                        </div>
+                        <div class="page-info">
+                            Mostrando {{ docentes.start_index }} - {{ docentes.end_index }} de {{
+                            docentes.paginator.count }} docentes
+                        </div>
+                        {% endif %}
                     </section>
                 </div>
-
                 <div class="ai-col">
                     <div class="ia-widget">
                         <div class="ia-header">
@@ -634,129 +832,133 @@
     </div>
 
     <div id="modalUsuario" class="modal">
-        <div class="modal-content">
-            <h3>Registrar Usuario</h3>
- 
+    <div class="modal-content">
+        <h3>Registrar Usuario</h3>
+        <form id="formUsuario">
+            {% csrf_token %}
+            
+            <div class="form-full">
+                <label>Rol *</label>
+                <select name="rol" id="id_rol" required>
+                    <option value="">Seleccione un rol</option>
+                    {% for r in roles %}
+                    <option value="{{ r.id_rol }}">{{ r.nombre_rol }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            <form id="formUsuario">
-                {% csrf_token %}
-                <div class="form-full">
-                    <label>Rol</label>
-                    <select name="rol" required>
-                        <option value="">Seleccione un rol</option>
-                        {% for r in roles %}
-                        <option value="{{ r.id_rol }}">{{ r.nombre_rol }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <div class="form-full">
+                <label>CURP *</label>
+                <input type="text" name="curp" id="id_curp" maxlength="18" required>
+                <small style="color: #666;">18 caracteres (letras y números)</small>
+            </div>
 
-                <div class="form-full">
-                    <label>CURP</label>
-                    <input type="text" name="curp" maxlength="18" required>
-                </div>
+            <div>
+                <label>Nombre *</label>
+                <input type="text" name="nombre" id="id_nombre" required>
+            </div>
 
-                <div>
-                    <label>Nombre</label>
-                    <input type="text" name="nombre" required>
-                </div>
+            <div>
+                <label>Apellido Paterno *</label>
+                <input type="text" name="apellido_paterno" id="id_apellido_paterno" required>
+            </div>
 
-                <div>
-                    <label>Apellido Paterno</label>
-                    <input type="text" name="apellido_paterno" required>
-                </div>
+            <div>
+                <label>Apellido Materno</label>
+                <input type="text" name="apellido_materno" id="id_apellido_materno">
+            </div>
 
-                <div>
-                    <label>Apellido Materno</label>
-                    <input type="text" name="apellido_materno" required>
-                </div>
+            <div>
+                <label>Institución *</label>
+                <select name="institucion" id="id_institucion" required>
+                    <option value="">Seleccione una institución</option>
+                    {% for i in instituciones %}
+                    <option value="{{ i.id_institucion }}">{{ i.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-                <div>
-                    <label>Institución</label>
-                    <select name="institucion" required>
-                        <option value="">Seleccione una institución</option>
-                        {% for i in instituciones %}
-                        <option value="{{ i.id_institucion }}">{{ i.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <div class="form-full">
+                <label>Correo electrónico *</label>
+                <input type="email" name="correo" id="id_correo" required>
+            </div>
 
-                <div class="form-full">
-                    <label>Correo electrónico</label>
-                    <input type="email" name="correo" required>
-                </div>
+            <div class="form-full">
+                <label>Contraseña *</label>
+                <input type="password" name="contrasena" id="id_contrasena" required>
+                <small style="color: #666;">Mínimo 6 caracteres</small>
+            </div>
 
-                <div class="form-full">
-                    <label>Contraseña</label>
-                    <input type="password" name="contrasena" required>
-                </div>
-
-                <div class="modal-actions">
-                    <button type="submit" class="btn-save">Guardar</button>
-                    <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-save">Guardar</button>
+                <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+            </div>
+        </form>
     </div>
+</div>
 
     <div id="modalEditarUsuario" class="modal">
-        <div class="modal-content">
-            <h3>Editar Usuario</h3>
-            <form id="formEditarUsuario">
-                {% csrf_token %}
-                <input type="hidden" id="edit_id" name="id_usuario">
-
-                <div>
-                    <label>Nombre</label>
-                    <input type="text" name="nombre" required>
-                </div>
-                <div>
-                    <label>Apellido Paterno</label>
-                    <input type="text" name="apellido_paterno" required>
-                </div>
-                <div>
-                    <label>Apellido Materno</label>
-                    <input type="text" name="apellido_materno" required>
-                </div>
-                <div>
-                    <label>CURP</label>
-                    <input type="text" name="curp" required>
-                </div>
-
-                <div class="form-full">
-                    <label>Correo electrónico</label>
-                    <input type="email" name="correo" required>
-                </div>
-
-                <div class="form-full">
-                    <label>Rol</label>
-                    <select name="rol" required>
-                        {% for r in roles %}
-                        <option value="{{ r.nombre_rol }}">{{ r.nombre_rol }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-full">
-                    <label>Institución</label>
-                    <select name="institucion" required>
-                        {% for i in instituciones %}
-                        <option value="{{ i.id_institucion }}">{{ i.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-full">
-                    <label>Nueva Contraseña (opcional)</label>
-                    <input type="password" name="contrasena">
-                </div>
-
-                <div class="modal-actions">
-                    <button type="submit" class="btn-save">Guardar cambios</button>
-                    <button type="button" class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
-                </div>
-            </form>
-        </div>
+    <div class="modal-content">
+        <h3>Editar Usuario</h3>
+        <form id="formEditarUsuario">
+            {% csrf_token %}
+            <input type="hidden" id="edit_id" name="id_usuario">
+            
+            <div>
+                <label>Nombre *</label>
+                <input type="text" name="nombre" required>
+            </div>
+            
+            <div>
+                <label>Apellido Paterno *</label>
+                <input type="text" name="apellido_paterno" required>
+            </div>
+            
+            <div>
+                <label>Apellido Materno</label>
+                <input type="text" name="apellido_materno">
+            </div>
+            
+            <div>
+                <label>CURP *</label>
+                <input type="text" name="curp" required>
+            </div>
+            
+            <div class="form-full">
+                <label>Correo electrónico *</label>
+                <input type="email" name="correo" required>
+            </div>
+            
+            <div class="form-full">
+                <label>Rol *</label>
+                <select name="rol" required>
+                    {% for r in roles %}
+                    <option value="{{ r.id_rol }}">{{ r.nombre_rol }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-full">
+                <label>Institución *</label>
+                <select name="institucion" required>
+                    {% for i in instituciones %}
+                    <option value="{{ i.id_institucion }}">{{ i.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-full">
+                <label>Nueva Contraseña (opcional)</label>
+                <input type="password" name="contrasena" placeholder="Dejar en blanco para no cambiar">
+            </div>
+            
+            <div class="modal-actions">
+                <button type="submit" class="btn-save">Guardar cambios</button>
+                <button type="button" class="btn-cancel" onclick="cerrarModalEditar()">Cancelar</button>
+            </div>
+        </form>
     </div>
+</div>
     <script>
         const agregarUsuarioURL = "{% url 'agregar_usuario_ajax' %}";
         const agenteAjaxURL = "{% url 'agente_ajax' %}";
@@ -766,6 +968,7 @@
     <script src="{% static 'js/editarusuario-admin.js' %}?v=3"></script>
     <script src="{% static 'js/toggle-admin.js' %}?v=3"></script>
     <script src="{% static 'js/chatbot-admin.js' %}"></script>
+    <script src="{% static 'js/recargar_tablas_admin.js' %}"></script>
 
 </body>
 

@@ -19,14 +19,14 @@
             </div>
         </div>
         <div style="text-align: right;">
-            <div style="font-weight: 700; font-size: 0.9rem;">Maestra Elena Pérez</div>
-            <div style="font-size: 0.65rem; color: var(--dorado);">Folio USICAMM: 08-2026-X4</div>
+            <div style="font-weight: 700; font-size: 0.9rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</div>
+            <div style="font-size: 0.65rem; color: var(--dorado);">Folio USICAMM: {{ proceso.folio }}</div>
         </div>
     </header>
 
     <nav class="nav-actions-top">
-        <a href="#" class="btn-nav btn-back"><i class="fas fa-home"></i> VOLVER</a>
-        <a href="#" class="btn-nav btn-exit"><i class="fas fa-power-off"></i> SALIR</a>
+        <a href="{% url 'Docente:panel_docente' %}" class="btn-nav btn-back"><i class="fas fa-home"></i> VOLVER</a>
+        <a href="{% url 'logout' %}" class="btn-nav btn-exit"><i class="fas fa-power-off"></i> SALIR</a>
     </nav>
 
     <div style="max-width: 1400px; margin: 0 auto; padding: 20px 5%;">
@@ -41,11 +41,11 @@
                 <p style="font-size:0.8rem; color:#666; margin: 10px 0;">Incentivos por niveles para personal con funciones docentes.</p>
                 
                 <div class="puntaje-box">
-                    <div class="puntaje-item"><span>Formación Profesional:</span> <span class="puntaje-valor">15 / 15 pts</span></div>
-                    <div class="puntaje-item"><span>Antigüedad (12 años):</span> <span class="puntaje-valor">22 / 35 pts</span></div>
-                    <div class="puntaje-item"><span>Desarrollo Profesional:</span> <span class="puntaje-valor">20 / 20 pts</span></div>
+                    <div class="puntaje-item"><span>Formación Profesional:</span> <span class="puntaje-valor">{{ proceso.datos_multifactores.formacion_profesional.actual }} / {{ proceso.datos_multifactores.formacion_profesional.max }} pts</span></div>
+                    <div class="puntaje-item"><span>Antigüedad ({{ proceso.datos_multifactores.antiguedad_anios }} años):</span> <span class="puntaje-valor">{{ proceso.datos_multifactores.antiguedad.actual }} / {{ proceso.datos_multifactores.antiguedad.max }} pts</span></div>
+                    <div class="puntaje-item"><span>Desarrollo Profesional:</span> <span class="puntaje-valor">{{ proceso.datos_multifactores.desarrollo_profesional.actual }} / {{ proceso.datos_multifactores.desarrollo_profesional.max }} pts</span></div>
                     <div class="puntaje-item" style="margin-top: 8px; border-top: 1px dashed #ccc; padding-top: 8px;">
-                        <span>Apreciación (Examen):</span> <span class="puntaje-pendiente">Pendiente / 30 pts</span>
+                        <span>Apreciación (Examen):</span> <span class="puntaje-pendiente">{{ proceso.datos_multifactores.apreciacion.actual|default:"Pendiente" }} / {{ proceso.datos_multifactores.apreciacion.max }} pts</span>
                     </div>
                 </div>
 
@@ -61,12 +61,12 @@
             <div class="card ia-card">
                 <h3 style="margin-top:0; font-family:'Montserrat';"><i class="fas fa-paw"></i> Jaguar IA Predictiva</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6; margin: 15px 0;">
-                    Maestra Elena, su puntaje acumulado actual es de <strong>57 puntos</strong>.
+                    {{ usuario.nombre }}, su puntaje acumulado actual es de <strong>{{ proceso.datos_multifactores.total_puntos }} puntos</strong>.
                     <br><br>
-                    Necesita obtener al menos <strong>24 puntos</strong> en la Apreciación para asegurar el incentivo O1.
+                    Necesita obtener al menos <strong>{{ proceso.datos_multifactores.necesario_apreciacion }} puntos</strong> en la Apreciación para asegurar el incentivo {{ proceso.datos_multifactores.incentivo_objetivo }}.
                 </p>
                 <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
-                    <i class="fas fa-lightbulb" style="color:var(--dorado)"></i> <strong>Tip:</strong> Refuerce <em>"Gestión Escolar"</em>.
+                    <i class="fas fa-lightbulb" style="color:var(--dorado)"></i> <strong>Tip:</strong> Refuerce <em>"{{ proceso.datos_multifactores.tip }}"</em>.
                 </div>
             </div>
 

@@ -19,8 +19,8 @@
             </div>
         </div>
         <div style="text-align: right;">
-            <div style="font-weight: 700; font-size: 0.9rem;">Maestra Elena Pérez</div>
-            <div style="font-size: 0.65rem; color: var(--dorado);">FOLIO: USICAMM-2026-ELENA</div>
+            <div style="font-weight: 700; font-size: 0.9rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</div>
+            <div style="font-size: 0.65rem; color: var(--dorado);">FOLIO: {{ usuario.folio }}</div>
         </div>
     </header>
 
@@ -29,7 +29,7 @@
             Inicio > Docente > <span>Portafolio Digital</span>
         </div>
         <div class="nav-buttons">
-            <a href="#" class="btn-back"><i class="fas fa-chevron-left"></i> REGRESAR</a>
+            <a href="{% url 'Docente:panel_docente' %}" class="btn-back"><i class="fas fa-chevron-left"></i> REGRESAR</a>
         </div>
     </nav>
 
@@ -50,10 +50,8 @@
                         <span><strong>Hoja de Servicios</strong><br><small>12 años reconocidos</small></span>
                         <span class="score-value" style="color: var(--exito);">VALIDADO</span>
                     </li>
-                    <li class="score-item">
-                        <span><strong>Cursos Formación Continua</strong><br><small>Acumulado: 120 / 200 hrs</small></span>
-                        <span class="score-value" style="color: var(--alerta);">120 HRS</span>
-                    </li>
+                        <span><strong>Cursos Formación Continua</strong><br><small>Acumulado: {{ horas_formacion }} / 200 hrs</small></span>
+                        <span class="score-value" style="color: var(--alerta);">{{ horas_formacion }} HRS</span>
                     <li class="score-item">
                         <span style="color: var(--alerta);"><strong>Título de Posgrado (Maestría)</strong><br><small>Sin evidencia cargada</small></span>
                         <span class="score-value pendiente">FALTANTE</span>
@@ -76,14 +74,14 @@
                 </div>
                 
                 <p style="font-size: 0.9rem;">
-                    <strong>¡Hola Elena!</strong><br><br>
+                    <strong>¡Hola {{ usuario.nombre }}!</strong><br><br>
                     He analizado tu portafolio y detecté que el rubro de <strong>Posgrado</strong> está vacío. <br><br>
                     <i class="fas fa-exclamation-circle" style="color: var(--alerta);"></i> Estás dejando de percibir <strong>15 puntos</strong> directos.
                 </p>
 
-                <div class="score-total">
+                    <div class="score-total">
                     <span style="font-size: 0.7rem; font-weight: 700; color: #999;">PUNTAJE ACTUAL</span>
-                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--guinda);">72 / 100</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--guinda);">{{ puntaje_actual }} / 100</div>
                 </div>
 
                 <button class="btn-back" style="width: 100%; margin-top: 15px; background: var(--guinda); color: white; border: none;">

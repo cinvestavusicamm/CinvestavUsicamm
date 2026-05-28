@@ -16,18 +16,17 @@
         </a>
         <ul class="nav-menu">
             <li class="nav-item open" id="drop-tablero">
-                <!-- Se incrementó el tamaño de la letra a font-size: 1.4rem para mejorar notablemente la visibilidad de Mi Tablero -->
                 <button class="nav-link active" onclick="toggleMenu()" style="width: 100%; background: none; border: none; color: inherit; text-align: left; font-family: inherit; font-size: 1.4rem; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; outline: none;">
                     <span><i class="fas fa-home" style="width: 24px; margin-right: 10px;"></i> Mi Tablero</span>
                     <i class="fas fa-chevron-down" style="font-size: 0.9rem; transition: 0.3s;"></i>
                 </button>
                 <ul class="submenu">
-                    <li><a href="#" class="submenu-link"><i class="fas fa-user-circle"></i> Consultar perfil propio</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-file-signature"></i> Promociones</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-graduation-cap"></i> Realizar evaluaciones</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-tasks"></i> Consultar progreso</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-comments"></i> Foros</a></li>
-                    <li><a href="#" class="submenu-link exit-link"><i class="fas fa-sign-out-alt"></i> Salida Segura</a></li>
+                    <li><a href="{% url 'Docente:perfil' %}" class="submenu-link"><i class="fas fa-user-circle"></i> Consultar perfil propio</a></li>
+                    <li><a href="{% url 'Docente:cursos_promociones' %}" class="submenu-link"><i class="fas fa-file-signature"></i> Promociones</a></li>
+                    <li><a href="{% url 'Docente:cursos_promociones' %}" class="submenu-link"><i class="fas fa-graduation-cap"></i> Realizar evaluaciones</a></li>
+                    <li><a href="{% url 'Docente:consultar_progreso' %}" class="submenu-link"><i class="fas fa-tasks"></i> Consultar progreso</a></li>
+                    <li><a href="{% url 'Docente:foros' %}" class="submenu-link"><i class="fas fa-comments"></i> Foros</a></li>
+                    <li><a href="{% url 'logout' %}" class="submenu-link exit-link"><i class="fas fa-sign-out-alt"></i> Salida Segura</a></li>
                 </ul>
             </li>
         </ul>
@@ -36,7 +35,7 @@
     <main class="main-container animate__animated animate__fadeIn">
         <header class="top-bar" style="padding: 20px 30px;">
             <div class="user-welcome">
-                <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Maestra Elena Pérez <span class="curp-badge" style="font-size: 0.9rem; padding: 6px 12px; vertical-align: middle;"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
+                <h1 style="font-size: 2.2rem; margin-bottom: 8px;">{{ usuario.nombre }} {{ usuario.apellido_paterno }} <span class="curp-badge" style="font-size: 0.9rem; padding: 6px 12px; vertical-align: middle;"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
                 <p class="security-note" style="font-size: 1rem; opacity: 0.9;">Acceso RBAC restringido según LGPDPPSO | Datos encriptados</p>
             </div>
             <div class="notifications" style="display: flex; align-items: center; position: relative;">
@@ -45,18 +44,18 @@
                     <span style="position: absolute; top: -2px; right: -2px; background: red; width: 10px; height: 10px; border-radius: 50%;"></span>
                 </i>
                 
-                <a href="#" class="btn-exit-direct" style="color: var(--guinda); margin-right: 20px; font-size: 1.1rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 6px;">
+                <a href="{% url 'logout' %}" class="btn-exit-direct" style="color: var(--guinda); margin-right: 20px; font-size: 1.1rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 6px;">
                     <i class="fas fa-sign-out-alt"></i> Salir
                 </a>
 
                 <div class="user-dropdown" id="userDropdown" style="position: relative; display: inline-block;">
-                    <img src="https://ui-avatars.com/api/?name=Elena+Perez&background=BC955C&color=fff" onclick="toggleUserMenu()" style="border-radius: 50%; width: 48px; height: 48px; border: 2px solid var(--guinda); cursor: pointer; display: block;">
+                    <img src="https://ui-avatars.com/api/?name={{ usuario.nombre|urlencode }}+{{ usuario.apellido_paterno|urlencode }}&background=BC955C&color=fff" onclick="toggleUserMenu()" style="border-radius: 50%; width: 48px; height: 48px; border: 2px solid var(--guinda); cursor: pointer; display: block;">
                     
-                    <ul class="dropdown-menu" id="userMenu" style="display: none; position: absolute; right: 0; top: 55px; background: white; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 4px; list-style: none; padding: 5px 0; margin: 0; z-index: 1000; border: 1px solid #ddd;">
-                        <li><a href="#" style="color: #333; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem;"><i class="fas fa-question-circle" style="margin-right: 8px; width: 15px;"></i> Ayuda</a></li>
-                        <li><a href="#" style="color: #333; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem;"><i class="fas fa-cog" style="margin-right: 8px; width: 15px;"></i> Configuración</a></li>
+                    <ul class="dropdown-menu" id="userMenu" style="display: none; position: absolute; right: 0; top: 55px; background: white; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 4px; list-style: none; padding: 12px 20px; margin: 0; z-index: 1000; border: 1px solid #ddd;">
+                        <li><a href="#" style="color: #333; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.95rem;"><i class="fas fa-question-circle" style="margin-right: 8px; width: 15px;"></i> Ayuda</a></li>
+                        <li><a href="#" style="color: #333; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.95rem;"><i class="fas fa-cog" style="margin-right: 8px; width: 15px;"></i> Configuración</a></li>
                         <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
-                        <li><a href="#" style="color: red; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.95rem; font-weight: bold;"><i class="fas fa-power-off" style="margin-right: 8px; width: 15px;"></i> Cerrar Sesión</a></li>
+                        <li><a href="{% url 'logout' %}" style="color: red; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.95rem; font-weight: bold;"><i class="fas fa-power-off" style="margin-right: 8px; width: 15px;"></i> Cerrar Sesión</a></li>
                     </ul>
                 </div>
             </div>
@@ -67,10 +66,10 @@
                 <div class="card">
                     <div class="card-title">Resumen de Historial (Solo Lectura)</div>
                     <div class="profile-summary">
-                        <div class="stat-box"><span>Antigüedad</span><strong>12 Años</strong></div>
+                        <div class="stat-box"><span>Cursos activos</span><strong>{{ total_cursos }}</strong></div>
                         <div class="stat-box"><span>Nivel</span><strong>Carrera Mag. E</strong></div>
-                        <div class="stat-box"><span>Incentivo</span><strong>35% (K1)</strong></div>
-                        <div class="stat-box"><span>Entidad</span><strong>CDMX</strong></div>
+                        <div class="stat-box"><span>Institución</span><strong>{{ usuario.institucion.nombre|default:"-" }}</strong></div>
+                        <div class="stat-box"><span>CURP</span><strong>{{ usuario.curp }}</strong></div>
                     </div>
                 </div>
 
@@ -94,11 +93,15 @@
 
                 <div class="card">
                     <div class="card-title">Progreso de Rutas (Completar)</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size: 0.85rem; font-weight: 600;">Eje: Inclusión en el Aula</span>
-                        <span style="font-size: 0.75rem; color: var(--turquesa);">85% completado</span>
+                    {% for curso in cursos %}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+                        <span style="font-size: 0.85rem; font-weight: 600;">{{ curso.nombre }}</span>
+                        <span style="font-size: 0.75rem; color: var(--turquesa);">{{ curso.ciclo_escolar }}</span>
                     </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 85%;"></div></div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                    {% empty %}
+                    <p style="font-size: 0.85rem; color: #666;">Aún no tienes cursos activos registrados.</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -108,7 +111,7 @@
                     <span class="ai-tag"><i class="fas fa-microchip"></i> JAGUAR IA</span>
                     <h3 style="margin: 1rem 0 0.5rem; font-family: 'Montserrat'; font-size: 1rem;">Sugerencia de Formación</h3>
                     <p style="font-size: 0.75rem; line-height: 1.5; opacity: 0.95;">
-                        Elena, tras analizar tu perfil, te sugerimos completar el curso <em>"Estrategias de Equidad"</em> para mejorar tu puntaje.
+                        {{ usuario.nombre }}, revisa tus cursos activos para mantener actualizado tu avance.
                     </p>
                     <button class="btn-sm" style="background: white; color: var(--turquesa); margin-top: 1rem; width: 100%;">Inscribirme Ahora</button>
                 </div>
@@ -117,7 +120,7 @@
                     <div class="card-title" style="font-size: 0.9rem;">Estatus de Promoción (Consulta)</div>
                     <div style="text-align: center; padding: 10px;">
                         <i class="fas fa-user-clock fa-3x" style="color: var(--dorado); margin-bottom: 1rem;"></i>
-                        <p style="font-size: 0.75rem; color: #666;">Folio: #MX-2026-99</p>
+                        <p style="font-size: 0.75rem; color: #666;">CURP: {{ usuario.curp }}</p>
                         <p style="font-size: 0.8rem; font-weight: 600;">Validación de Portafolio en Proceso</p>
                         <div class="progress-bar" style="height: 5px;"><div class="progress-fill" style="width: 60%; background: var(--turquesa);"></div></div>
                     </div>
@@ -126,7 +129,6 @@
         </div>
     </main>
 
-    <!-- Se incrementó la tipografía a font-size: 1.2rem en el footer para emparejar la legibilidad con la barra lateral -->
     <footer class="main-footer" style="background-color: var(--guinda); font-size: 1.2rem; padding: 15px 20px;">
         EscalofonIA | sivestav | © 2026 USICAMM
     </footer>
