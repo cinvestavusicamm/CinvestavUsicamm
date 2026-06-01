@@ -21,13 +21,13 @@ class OllamaAdapter(LLMService):
         try:
             logger.info(f"Obteniendo embedding con modelo: {self.embed_model}")
             response = await self.client.post(
-                f"{self.base_url}/v1/embeddings",
-                json={"model": self.embed_model, "input": text},
+                f"{self.base_url}/api/embeddings",
+                json={"model": self.embed_model, "prompt": text},
                 timeout=30.0
             )
             if response.status_code == 200:
                 data = response.json()
-                embedding = data.get("data", [{}])[0].get("embedding", [])
+                embedding = data.get("embedding", [])
                 logger.info(f"Embedding obtenido. Dimensión: {len(embedding)}")
                 return embedding
             else:
@@ -38,19 +38,22 @@ class OllamaAdapter(LLMService):
             return None
 
     async def generate_response(self, prompt: str) -> str:
-        """Genera texto con Ollama usando /v1/completions."""
+        """Genera texto con Ollama usando /api/generate."""
         try:
             logger.info(f"Generando respuesta con modelo: {self.model}")
             logger.info(f"Prompt: {prompt[:100]}...")
 
             response = await self.client.post(
-                f"{self.base_url}/v1/completions",
+                f"{self.base_url}/api/generate",
                 json={
                     "model": self.model,
                     "prompt": prompt,
-                    "temperature": 0.5,
-                    "max_tokens": 150,
-                    "num_ctx": 1024
+                    "stream": False,
+                    "options": {
+                        "temperature": 0.5,
+                        "num_predict": 150,
+                        "num_ctx": 1024
+                    }
                 },
                 timeout=120.0
             )
@@ -60,7 +63,7 @@ class OllamaAdapter(LLMService):
                 return f"Error: Ollama respondió con código {response.status_code}"
 
             data = response.json()
-            return data["choices"][0]["text"]
+            return data.get("response", "")
 
         except httpx.ConnectError as e:
             logger.error(f"No se pudo conectar a Ollama en {self.base_url}: {e}")
@@ -76,13 +79,10 @@ class OllamaAdapter(LLMService):
             
             async with self.client.stream(
                 "POST",
-                f"{self.base_url}/v1/chat/completions",
+                f"{self.base_url}/api/generate",
                 json={
                     "model": self.model,
-                    "messages": [
-                        {"role": "system", "content": "Responde de forma clara y concisa."},
-                        {"role": "user", "content": prompt}
-                    ],
+                    "prompt": f"Responde de forma clara y concisa. {prompt}",
                     "stream": True,
                     "options": {
                         "temperature": 0.2,
@@ -99,23 +99,17 @@ class OllamaAdapter(LLMService):
                     
                     while '\n' in buffer:
                         line, buffer = buffer.split('\n', 1)
-                        if line.startswith('data: '):
-                            data = line[6:].strip()
-                            if data == '[DONE]':
+                        try:
+                            chunk_data = json.loads(line)
+                            if "response" in chunk_data:
+                                content = chunk_data["response"]
+                                if content:
+                                    yield content
+                            if chunk_data.get("done", False):
                                 break
-                            
-                            try:
-                                if data:
-                                    chunk_data = json.loads(data)
-                                    if "choices" in chunk_data and chunk_data["choices"]:
-                                        delta = chunk_data["choices"][0].get("delta", {})
-                                        content = delta.get("content", "")
-                                        if content:
-                                            yield content
-                            except json.JSONDecodeError:
-                                continue
+                        except json.JSONDecodeError:
+                            continue
                                 
         except Exception as e:
             logger.error(f"Error en streaming: {e}")
-            yield f"Error: {str(e)}"  # CORREGIDO: usar yield en lugar de return
-            # No necesitas return explícito aquí, el generator termina después del yield
+            yield f"Error: {str(e)}"

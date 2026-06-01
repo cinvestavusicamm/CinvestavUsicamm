@@ -24,27 +24,10 @@
 </head>
 <body>
 
-    <!-- Clase .barra-lateral añadida para guiar correctamente al Lector de Pantalla -->
-    <nav class="sidebar barra-lateral">
-        <a href="#" class="sidebar-brand" style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; text-decoration: none;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <!-- Tu logo original de Jaguar intacto -->
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo EscalafonIA">
-                
-                <!-- Contenedor exclusivo para los nuevos logos institucionales sin líneas blancas -->
-                <div class="institucionales-logos" style="display: flex; align-items: center; gap: 8px;">
-                    <!-- Logo USICAMM -->
-                    <img src="../../static/imagenes/USICAMMm.png" 
-                         alt="Logo USICAMM" 
-                         style="height: 38px; width: auto; object-fit: contain;">
-
-                    <!-- Logo Cinvestav -->
-                    <img src="../../static/imagenes/cinvestavv.png" 
-                         alt="Logo Cinvestav" 
-                         style="height: 38px; width: auto; object-fit: contain;">
-                </div>
-            </div>
-            <span>ESCALAFON IA <small style="font-size: 0.5rem; display: block;">ROL: Docente</small></span>
+    <nav class="sidebar">
+        <a href="{% url 'Docente:panel_docente' %}" class="sidebar-brand">
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+            <span>ESCALOFON IA <small style="font-size: 0.5rem; display: block;">ROL: Docente</small></span>
         </a>
         
         <ul class="nav-menu" style="list-style: none !important; padding-left: 0 !important; margin: 0;">
@@ -53,14 +36,14 @@
                     <span><i class="fas fa-home" style="width: 24px; margin-right: 10px;"></i> Mi Tablero</span>
                     <i class="fas fa-chevron-down" style="font-size: 0.9rem; transition: 0.3s;"></i>
                 </button>
-                
-                <ul class="submenu" style="list-style: none !important; padding-left: 0 !important; margin: 0;">
-                    <li><a href="#" class="submenu-link"><i class="fas fa-user-circle"></i> Consultar perfil propio</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-file-signature"></i> Promociones</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-graduation-cap"></i> Realizar evaluaciones</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-tasks"></i> Consultar progreso</a></li>
-                    <li><a href="#" class="submenu-link"><i class="fas fa-comments"></i> Foros</a></li>
-                    <li><a href="#" class="submenu-link exit-link"><i class="fas fa-sign-out-alt"></i> Salida Segura</a></li>
+                <ul class="submenu">
+                    <li><a href="{% url 'Docente:perfil' %}" class="submenu-link"><i class="fas fa-user-circle"></i> Consultar perfil propio</a></li>
+                    <li><a href="{% url 'Docente:cursos_promociones' %}" class="submenu-link"><i class="fas fa-file-signature"></i> Promociones</a></li>
+                    <li><a href="{% url 'Docente:promociones_vertical' %}" class="submenu-link"><i class="fas fa-graduation-cap"></i> Realizar evaluaciones vertical</a></li>
+                    <li><a href="{% url 'Docente:promociones_horizontal' %}" class="submenu-link"><i class="fas fa-graduation-cap"></i> Realizar evaluaciones horizontal</a></li>
+                    <li><a href="{% url 'Docente:consultar_progreso' %}" class="submenu-link"><i class="fas fa-tasks"></i> Consultar progreso</a></li>
+                    <li><a href="{% url 'Docente:foros' %}" class="submenu-link"><i class="fas fa-comments"></i> Foros</a></li>
+                    <li><a href="{% url 'logout' %}" class="submenu-link exit-link"><i class="fas fa-sign-out-alt"></i> Salida Segura</a></li>
                 </ul>
             </li>
         </ul>

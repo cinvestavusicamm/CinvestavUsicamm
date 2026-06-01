@@ -423,7 +423,7 @@
 
         <div style="margin-top: auto; border-top: 1px solid #eee; padding-top: 15px;">
             <a href="#" class="nav-item"><i class="fas fa-question-circle"></i> AYUDA</a>
-            <a href="login.html" class="nav-item" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> SALIR</a>
+            <a href="{% url 'logout' %}" class="nav-item" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> SALIR</a>
         </div>
     </aside>
 
@@ -462,7 +462,7 @@
         <div style="padding:20px; font-weight:900; color:var(--guinda); border-bottom:1px solid #eee;">ASISTENTE JAGUAR
         </div>
         <div class="chat-box" id="chat-box">
-            <div class="bubble ia">Hola, Mtro. Mendieta. Estoy lista para generar la trayectoria siguiendo el orden
+	            <div class="bubble ia">Hola, {{ perfil_usuario.nombre|default:"generador" }}. Estoy lista para generar la trayectoria siguiendo el orden
                 pedagógico exacto. <br><br><b>¿Cuál es el tema hoy?</b></div>
         </div>
         <div class="input-area">
@@ -473,6 +473,7 @@
 
     <script>
         let cursoActual = "";
+        let cursoGenerado = null;
 
         function procesarIA() {
             const input = document.getElementById('user-input');
@@ -487,6 +488,7 @@
             setTimeout(() => {
                 document.getElementById('loader').style.display = "none";
                 generarTrayectoriaCompleta(cursoActual);
+                cursoGenerado = capturarContenidoCurso();
                 agregarMensaje('ia', `<b>${cursoActual}</b> generado con éxito siguiendo el orden pedagógico solicitado.`);
                 setTimeout(() => {
                     agregarMensaje('ia', `<b>¿Quieres editar algo?</b> He habilitado la edición del certificado y la gestión de reactivos.`);
@@ -654,6 +656,11 @@
         }
 
         function subirAAprobacion() {
+            if (!cursoGenerado) {
+                Swal.fire('Error', 'Primero debes generar un curso.', 'error');
+                return;
+            }
+
             Swal.fire({
                 title: '¿Subir a USICAMM?',
                 text: "El curso se enviará para evaluación nacional.",
@@ -662,8 +669,110 @@
                 confirmButtonColor: '#691C32',
                 confirmButtonText: 'SÍ, ENVIAR'
             }).then((res) => {
-                if (res.isConfirmed) Swal.fire('¡Éxito!', 'Trayectoria enviada correctamente.', 'success');
+                if (res.isConfirmed) {
+                    guardarCurso();
+                }
             });
+        }
+
+        function capturarContenidoCurso() {
+            const feed = document.getElementById('feed-central');
+            const bloques = feed.querySelectorAll('.block');
+            const modulos = [];
+
+            bloques.forEach((bloque, index) => {
+                const label = bloque.querySelector('.block-label')?.textContent || '';
+                const titulo = bloque.querySelector('.h1-input')?.innerText || '';
+                const descripcion = bloque.querySelector('.p-input')?.innerText || '';
+                
+                let preguntas = [];
+                const quizItems = bloque.querySelectorAll('.quiz-item');
+                quizItems.forEach(item => {
+                    const pregunta = item.querySelector('strong')?.innerText || '';
+                    const opciones = Array.from(item.querySelectorAll('.option-editable')).map(opt => ({
+                        texto: opt.innerText,
+                        esCorrecta: opt.classList.contains('correct')
+                    }));
+                    if (pregunta) preguntas.push({ pregunta, opciones });
+                });
+
+                let relaciones = [];
+                const matchRows = bloque.querySelectorAll('.match-row');
+                matchRows.forEach(row => {
+                    const conceptos = row.querySelectorAll('.match-item, .match-target');
+                    if (conceptos.length >= 2) {
+                        relaciones.push({
+                            concepto: conceptos[0]?.innerText || '',
+                            definicion: conceptos[1]?.innerText || ''
+                        });
+                    }
+                });
+
+                modulos.push({
+                    numero: index + 1,
+                    label,
+                    titulo,
+                    descripcion,
+                    preguntas,
+                    relaciones
+                });
+            });
+
+            return {
+                titulo: cursoActual,
+                descripcion: cursoActual,
+                modulos,
+                fechaGeneracion: new Date().toISOString()
+            };
+        }
+
+        function guardarCurso() {
+            const datos = {
+                titulo: cursoActual,
+                descripcion: `Curso generado automáticamente por Jaguar IA: ${cursoActual}`,
+                contenido: cursoGenerado
+            };
+
+            fetch('{% url "generador_cursos:crear_curso_api" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(datos)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire(
+                        '¡Éxito!',
+                        `Trayectoria "${data.titulo}" enviada correctamente. ID: ${data.curso_id}`,
+                        'success'
+                    );
+                    agregarMensaje('ia', `✓ Curso guardado exitosamente con ID: ${data.curso_id}`);
+                } else {
+                    Swal.fire('Error', data.error || 'Error al guardar el curso', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error', 'Error al conectar con el servidor', 'error');
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
     </script>
 </body>

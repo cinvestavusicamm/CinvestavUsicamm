@@ -1,30 +1,25 @@
 from django.http import JsonResponse
 
 
-def respuesta_ok(request, mensaje="Operacion exitosa", datos=None, status=200):
-    payload = {
-        "estado": "ok",
+def respuesta_ok(data=None, mensaje="Operación exitosa", status=200):
+    """
+    Retorna una respuesta JSON exitosa
+    """
+    response_data = {
+        "success": True,
         "mensaje": mensaje,
-        "datos": datos,
-        "errores": None,
+        "data": data
     }
-    return JsonResponse(payload, status=status)
+    return JsonResponse(response_data, status=status)
 
 
-def respuesta_error(request, mensaje="Ocurrio un error", errores=None, status=400):
-    resolved_message = mensaje
-    resolved_errors = errores
-
-    if errores is None and not isinstance(mensaje, str):
-        resolved_message = "Solicitud invalida"
-        resolved_errors = mensaje
-    elif errores is None:
-        resolved_errors = {"detalle": [mensaje]}
-
-    payload = {
-        "estado": "error",
-        "mensaje": resolved_message,
-        "datos": None,
-        "errores": resolved_errors,
+def respuesta_error(mensaje="Error en la operación", errors=None, status=400):
+    """
+    Retorna una respuesta JSON de error
+    """
+    response_data = {
+        "success": False,
+        "mensaje": mensaje,
+        "errors": errors
     }
-    return JsonResponse(payload, status=status)
+    return JsonResponse(response_data, status=status)

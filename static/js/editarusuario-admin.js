@@ -11,7 +11,7 @@ function editarUsuario(id) {
     
     const modal = document.getElementById('modalEditarUsuario');
     
-    fetch(`/usuario/${id}/obtener/`, {
+    fetch(`/administrador/usuario/${id}/obtener/`, {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
@@ -73,7 +73,7 @@ function enviarEdicionUsuario(id) {
     
     console.log('Enviando edición para usuario ID:', id);
     
-    fetch(`/usuario/${id}/editar/`, {
+    fetch(`/administrador/usuario/${id}/editar/`, {
         method: 'POST',
         headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,

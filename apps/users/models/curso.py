@@ -19,6 +19,8 @@ class Curso(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_aprobacion = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
+    contenido_json = models.JSONField(null=True, blank=True, default=dict)
+    
     class Meta:
         db_table = 'cursos'
         managed = False 

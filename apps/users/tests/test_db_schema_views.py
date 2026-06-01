@@ -1,7 +1,7 @@
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from apps.users.constants import ROLE_ADMIN, ROLE_DOCENTE
+from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE
 
 
 class DbSchemaViewsTests(TestCase):

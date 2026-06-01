@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let chatbotAbierto = false;
     let primeraVez = true;
 
+    function getCsrfToken() {
+        const csrfCookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+        return csrfCookie ? csrfCookie.split('=')[1] : '';
+    }
+
     function abrirChatbot() {
         ventanaChatbot.classList.remove('ventana-oculto-chatbot');
         ventanaChatbot.classList.add('ventana-visible-chatbot');
@@ -75,37 +80,68 @@ document.addEventListener('DOMContentLoaded', function() {
         mostrarIndicadorEscritura();
 
         try {
-            setTimeout(() => {
-                ocultarIndicadorEscritura();
-                const respuesta = obtenerRespuestaSimulada(mensaje);
-                agregarMensaje(respuesta, 'bot');
-            }, 1000);
+            const response = await fetch(agenteAjaxURL, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    pregunta: mensaje,
+                    stream: 'true'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let textoCompleto = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+                        
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.token) {
+                                if (textoCompleto === '') {
+                                    ocultarIndicadorEscritura();
+                                }
+                                textoCompleto += parsed.token;
+                                // Actualizar el último mensaje del bot
+                                const mensajesBot = mensajesContainer.querySelectorAll('.mensaje-bot');
+                                const ultimoMensaje = mensajesBot[mensajesBot.length - 1];
+                                if (ultimoMensaje) {
+                                    ultimoMensaje.textContent = textoCompleto;
+                                } else {
+                                    agregarMensaje(textoCompleto, 'bot');
+                                }
+                                mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
+                            }
+                        } catch (e) {
+                            console.error('Error parseando JSON:', e);
+                        }
+                    }
+                }
+            }
         } catch (error) {
+            console.error('Error:', error);
             ocultarIndicadorEscritura();
             agregarMensaje('Lo siento, hubo un error. Por favor, intenta de nuevo.', 'bot');
         }
     }
 
-    function obtenerRespuestaSimulada(mensaje) {
-        const mensajeLower = mensaje.toLowerCase();
-        if (mensajeLower.includes('hola') || mensajeLower.includes('buenas')) {
-            return '¡Hola! Soy el asistente de EscalafonIA. ¿En qué puedo ayudarte?';
-        } else if (mensajeLower.includes('evaluaci') || mensajeLower.includes('evaluar')) {
-            return 'Puedes gestionar tus evaluaciones desde la sección "Evaluaciones" en el menú lateral. ¿Necesitas ayuda con alguna evaluación en específico?';
-        } else if (mensajeLower.includes('pregunta') || mensajeLower.includes('banco')) {
-            return 'El banco de preguntas te permite gestionar todas las preguntas para tus evaluaciones. Puedes agregar, editar o eliminar preguntas según necesites.';
-        } else if (mensajeLower.includes('validar') || mensajeLower.includes('validacion')) {
-            return 'Las validaciones te permiten revisar y aprobar las evaluaciones realizadas. Revisa la sección "Validaciones" para ver los pendientes.';
-        } else if (mensajeLower.includes('reporte') || mensajeLower.includes('estadistica')) {
-            return 'Puedes generar reportes detallados desde la sección "Reportes". Allí encontrarás gráficos y análisis de las evaluaciones.';
-        } else if (mensajeLower.includes('calendario') || mensajeLower.includes('fecha')) {
-            return 'El calendario te ayuda a organizar tus evaluaciones y fechas importantes. Puedes ver todas tus actividades programadas allí.';
-        } else if (mensajeLower.includes('ayuda') || mensajeLower.includes('ayudame')) {
-            return 'Claro, puedo ayudarte con:\n- Gestionar evaluaciones\n- Banco de preguntas\n- Validaciones\n- Reportes y estadísticas\n- Calendario de actividades\n¿Sobre qué tema necesitas ayuda?';
-        } else {
-            return 'Gracias por tu mensaje. Un asesor revisará tu consulta. Mientras tanto, ¿puedo ayudarte con algo más sobre las evaluaciones?';
-        }
-    }
 
     // Eventos
     if (btnChatbot) btnChatbot.addEventListener('click', alternarChatbot);

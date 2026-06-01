@@ -112,7 +112,7 @@
                     <div class="herramientas-derecha">
 
                         <div class="contador-revision">
-                            <span id="contadorPendientes">48</span> preguntas pendientes
+                            <span id="contadorPendientes">{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</span> preguntas pendientes
                         </div>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>48</h3>
+                            <h3>{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</h3>
                             <p>Pendientes de revisión</p>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>15</h3>
+                            <h3>{{ metricas_evaluador.evaluaciones_aprobadas|default:0 }}</h3>
                             <p>Aprobadas hoy</p>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                             <i class="fas fa-times-circle"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>3</h3>
+                            <h3>{{ metricas_evaluador.evaluaciones_rechazadas|default:0 }}</h3>
                             <p>Rechazadas hoy</p>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
                             <i class="fas fa-database"></i>
                         </div>
                         <div class="estadistica-contenido">
-                            <h3>1,189</h3>
+                            <h3>{{ metricas_evaluador.evaluaciones_revisadas_por_mi|default:0 }}</h3>
                             <p>Total validadas</p>
                         </div>
                     </div>
@@ -168,7 +168,7 @@
                                     <i class="fas fa-chevron-left"></i> Anterior
                                 </button>
                                 <div class="contador-revision">
-                                    Pregunta <span id="numeroActual">1</span> de <span id="totalPendientes">48</span>
+                                    Pregunta <span id="numeroActual">1</span> de <span id="totalPendientes">{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</span>
                                 </div>
                                 <button class="btn btn-outline btn-sm" id="btnSiguiente">
                                     Siguiente <i class="fas fa-chevron-right"></i>
@@ -179,74 +179,63 @@
                         <!-- Información de la pregunta -->
                         <div class="pregunta-info">
                             <div class="pregunta-metadata">
-                                <div class="metadata-item">
-                                    <span class="metadata-label">ID</span>
-                                    <span class="metadata-value">#PV-2024-001</span>
-                                </div>
-                                <div class="metadata-item">
-                                    <span class="metadata-label">Origen</span>
-                                    <span class="badge badge-origen-ia">
-                                        <i class="fas fa-robot"></i> Generada por IA
-                                    </span>
-                                </div>
-                                <div class="metadata-item">
-                                    <span class="metadata-label">Asignatura</span>
-                                    <span class="metadata-value">Matemáticas</span>
-                                </div>
-                                <div class="metadata-item">
-                                    <span class="metadata-label">Nivel</span>
-                                    <span class="metadata-value">Primaria</span>
-                                </div>
-                                <div class="metadata-item">
-                                    <span class="metadata-label">Dimensión</span>
-                                    <span class="metadata-value">Pedagógica</span>
-                                </div>
-                                <div class="metadata-item">
-                                    <span class="metadata-label">Bloom</span>
-                                    <span class="badge badge-nivel">Aplicar</span>
-                                </div>
+                                    {% for validacion in validaciones_bd %}
+                                    {% if forloop.first %}
+	                                <div class="metadata-item">
+	                                    <span class="metadata-label">ID</span>
+	                                    <span class="metadata-value">#{{ validacion.id }}</span>
+	                                </div>
+	                                <div class="metadata-item">
+	                                    <span class="metadata-label">Origen</span>
+	                                    <span class="badge badge-origen-ia">
+	                                        <i class="fas fa-robot"></i> {% if validacion.generado_con_ia %}Generada por IA{% else %}Registro manual{% endif %}
+	                                    </span>
+	                                </div>
+	                                <div class="metadata-item">
+	                                    <span class="metadata-label">Curso</span>
+	                                    <span class="metadata-value">{{ validacion.titulo }}</span>
+	                                </div>
+	                                <div class="metadata-item">
+	                                    <span class="metadata-label">Estado</span>
+	                                    <span class="metadata-value">{{ validacion.estado }}</span>
+	                                </div>
+	                                <div class="metadata-item">
+	                                    <span class="metadata-label">Versión</span>
+	                                    <span class="metadata-value">{{ validacion.version|default:1 }}</span>
+	                                </div>
+	                                <div class="metadata-item">
+	                                    <span class="metadata-label">Fecha</span>
+	                                    <span class="badge badge-nivel">{% if validacion.fecha_creacion %}{{ validacion.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</span>
+	                                </div>
+                                    {% endif %}
+                                    {% empty %}
+                                    <div class="metadata-item">
+                                        <span class="metadata-label">Estado</span>
+                                        <span class="metadata-value">Sin registros pendientes en BD</span>
+                                    </div>
+                                    {% endfor %}
                             </div>
                         </div>
 
                         <!-- Contenido de la pregunta -->
                         <div class="pregunta-contenido">
-                            <div class="pregunta-enunciado">
-                                Un docente observa que varios estudiantes tienen dificultades para comprender el
-                                concepto de fracciones equivalentes. Según el enfoque de la Nueva Escuela Mexicana,
-                                ¿cuál de las siguientes estrategias sería más efectiva para abordar esta situación?
-                            </div>
+	                            <div class="pregunta-enunciado">
+                                    {% for validacion in validaciones_bd %}
+                                        {% if forloop.first %}
+                                            {{ validacion.descripcion|default:"Este registro no tiene descripción en la base de datos." }}
+                                        {% endif %}
+                                    {% empty %}
+                                        No hay preguntas modeladas ni cursos pendientes de validación en la base de datos.
+                                    {% endfor %}
+	                            </div>
 
                             <div class="pregunta-opciones">
-                                <div class="opcion correcta">
-                                    <div class="opcion-indice">A</div>
-                                    <div class="opcion-texto">
-                                        Diseñar una actividad donde los estudiantes utilicen materiales concretos (como
-                                        círculos fraccionarios) para explorar diferentes representaciones de fracciones
-                                        equivalentes a través de la manipulación directa.
-                                    </div>
-                                </div>
-                                <div class="opcion">
-                                    <div class="opcion-indice">B</div>
-                                    <div class="opcion-texto">
-                                        Asignar ejercicios adicionales del libro de texto para que los estudiantes
-                                        practiquen la simplificación de fracciones hasta dominar el procedimiento
-                                        mecánico.
-                                    </div>
-                                </div>
-                                <div class="opcion">
-                                    <div class="opcion-indice">C</div>
-                                    <div class="opcion-texto">
-                                        Explicar nuevamente el concepto en el pizarrón, mostrando más ejemplos resueltos
-                                        para que los estudiantes copien y memoricen.
-                                    </div>
-                                </div>
-                                <div class="opcion">
-                                    <div class="opcion-indice">D</div>
-                                    <div class="opcion-texto">
-                                        Recomendar a los estudiantes que busquen videos tutoriales en internet como
-                                        tarea extraescolar.
-                                    </div>
-                                </div>
+	                                <div class="opcion correcta">
+	                                    <div class="opcion-indice">BD</div>
+	                                    <div class="opcion-texto">
+	                                        Las opciones de pregunta no existen todavía en los modelos. Consulta `apps/users/docs/datos_faltantes_para_bd.md`.
+	                                    </div>
+	                                </div>
                             </div>
 
                             <!-- Justificación de la IA -->
@@ -256,13 +245,7 @@
                                     <h4>Justificación generada por IA</h4>
                                 </div>
                                 <div class="justificacion-texto">
-                                    La opción A es la más alineada con la Nueva Escuela Mexicana porque: 1) Promueve el
-                                    aprendizaje activo y experiencial mediante materiales concretos; 2) Fomenta la
-                                    construcción del conocimiento a través de la manipulación y exploración; 3) Se
-                                    enfoca en la comprensión conceptual más que en la memorización mecánica; 4) Permite
-                                    la socialización del aprendizaje cuando los estudiantes trabajan en equipos; 5)
-                                    Desarrolla competencias matemáticas a través de la resolución de problemas
-                                    contextualizados.
+	                                    No hay modelo para justificaciones de reactivos. Las validaciones disponibles se muestran desde `Curso` y `ProcesoAprobacionCursos`.
                                 </div>
                             </div>
                         </div>
@@ -347,6 +330,9 @@
 
     <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
     <script src="../../static/js/accesibilidad.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
@@ -357,7 +343,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Variables de estado
             let preguntaActual = 1;
-            const totalPreguntas = 48;
+            const totalPreguntas = Number('{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}');
             const pendientes = document.querySelectorAll('.pendiente-item');
 
             // Actualizar contadores
