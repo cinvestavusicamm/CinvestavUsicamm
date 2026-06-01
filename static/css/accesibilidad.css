@@ -969,3 +969,89 @@ body.dark-theme .accesibilidad-seccion:nth-of-type(4) h4 i { color: #58d68d; }
 body.dark-theme .accesibilidad-seccion:nth-of-type(4) .cursor-opt { color: #bdc3c7; }
 body.dark-theme .btn-reset i { color: #95a5a6; }
 body.dark-theme .btn-reset:hover i { color: white; }
+/* ======================== */
+/* MODO OSCURO CORREGIDO – DASHBOARD + ESTADÍSTICAS */
+/* ======================== */
+/* ======================== */
+/* MODO OSCURO SUAVE – GRIS CRISTALINO */
+/* ======================== */
+
+/* Fondo del área de trabajo (gris oscuro elegante) */
+body.dark-theme .main-container,
+body.dark-theme .workspace,
+body.dark-theme .canvas {
+    background: #24242b; /* gris azulado oscuro */
+}
+
+/* Tarjetas y cajas (gris un poco más claro, efecto cristalino) */
+body.dark-theme .stat-card,
+body.dark-theme .stat-box,
+body.dark-theme .chart-box,
+body.dark-theme .rec-card,
+body.dark-theme .card,
+body.dark-theme .course-card,
+body.dark-theme .ai-recommendation {
+    background: #2a2a35; /* gris cristalino */
+    border-color: #3a3a45;
+    color: #ea7a96;
+}
+
+/* Títulos en dorado institucional */
+body.dark-theme .stat-card h4,
+body.dark-theme .card-title,
+body.dark-theme .rec-card h3,
+body.dark-theme .course-info h4,
+body.dark-theme .rec-section-title {
+    color: #976d25 !important;
+}
+
+/* Texto secundario en blanco roto */
+body.dark-theme .stat-card span,
+body.dark-theme .course-info .meta,
+body.dark-theme .meta span,
+body.dark-theme .rec-card p,
+body.dark-theme .ai-analysis-box strong,
+body.dark-theme .ai-analysis-box span,
+body.dark-theme .user-welcome p {
+    color: #c58620 !important;
+}
+
+/* Números grandes en dorado */
+body.dark-theme .stat-card p,
+body.dark-theme .stat-card strong,
+body.dark-theme .stat-box strong {
+    color: #a07d36 !important;
+}
+
+/* Caja de motivación (turquesa oscuro suave) */
+body.dark-theme .ai-recommendation {
+    background: #e2ebeb !important;
+}
+body.dark-theme .ai-recommendation h3,
+body.dark-theme .ai-recommendation p {
+    color: #896d6d !important;
+}
+body.dark-theme .ai-recommendation .btn-primary-custom {
+    background: #bc955c;
+    color: #ded9d9;
+    font-weight: bold;
+}
+
+/* Botones de acción */
+body.dark-theme .btn-action-send {
+    background: #007A7C;
+    color: white;
+}
+body.dark-theme .btn-action-send:hover {
+    background: #009a9c;
+}
+
+/* Ajuste para canvas (gráficos) */
+body.dark-theme canvas {
+    filter: brightness(0.95);
+}
+
+/* Footer (se mantiene vino, pero aclaramos texto) */
+body.dark-theme .main-footer {
+    color: #78661f;
+}

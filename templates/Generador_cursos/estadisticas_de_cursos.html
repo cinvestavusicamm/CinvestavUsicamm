@@ -1,484 +1,484 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadisticas de los cursos| EscalafonIA</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap"
-        rel="stylesheet">
+    <title>Estadísticas de los cursos | EscalafonIA</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        :root {
-            --guinda: #691C32;
-            --guinda-trans: rgba(105, 28, 50, 0.95);
-            --negro: #1A1A1A;
-            --turquesa: #007A7C;
-            --turquesa-soft: rgba(0, 122, 124, 0.08);
-            --dorado: #BC955C;
-            --bg-body: #F8FAFC;
-            --blanco: #FFFFFF;
-            --borde: #E5E7EB;
-            --texto-negro: #1F2937;
-            --texto-gris: #64748B;
+        /* Eliminar absolutamente todos los espacios en blanco nativos */
+        html, body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            width: 100%; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--bg-gris, #F4F4F4);
         }
 
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            color: var(--texto-negro);
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar-creador {
+        /* =========================================
+           1. SIDEBAR Y HAMBURGUESA DENTRO DEL MENÚ
+           ========================================= */
+        .sidebar {
             width: 260px;
-            background: var(--blanco);
-            padding: 2rem 1.2rem;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--borde);
-            z-index: 1000;
-        }
-
-        .sidebar-creador .brand {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .sidebar-creador .brand img {
-            width: 60px;
-            border-radius: 50%;
-            border: 2px solid var(--guinda);
-            background: var(--blanco);
-            padding: 3px;
-        }
-
-        .sidebar-creador .brand h2 {
-            font-family: 'Montserrat';
-            font-size: 1.1rem;
-            color: var(--guinda);
-            margin-top: 10px;
-            font-weight: 900;
-        }
-
-        .btn-sidebar-back {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            background: transparent;
-            color: var(--texto-gris);
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
-            border: 1px solid transparent;
-            margin-bottom: 20px;
-            transition: 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-sidebar-back:hover {
-            color: var(--guinda);
-            background: #f1f5f9;
-        }
-
-        .nav-global {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            color: var(--texto-gris);
-            text-decoration: none;
-            border-radius: 10px;
-            transition: 0.3s;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .nav-item:hover {
-            background: var(--bg-body);
-            color: var(--guinda);
-        }
-
-        .nav-item.active {
-            background: var(--guinda);
+            background-color: var(--guinda, #691C32);
             color: white;
-            box-shadow: 0 4px 12px rgba(105, 28, 50, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        /* --- WORKSPACE --- */
-        .workspace {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .top-bar {
-            background: var(--guinda-trans);
-            backdrop-filter: blur(20px);
-            padding: 0.8rem 2.5rem;
+        .sidebar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--dorado);
-            z-index: 900;
-            color: white;
-        }
-
-        .top-bar h2 {
-            font-family: 'Montserrat';
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .avatar-circle {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            border: 1px solid var(--dorado);
-            font-size: 0.9rem;
-        }
-
-        .canvas {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem 2.5rem;
-            scroll-behavior: smooth;
-        }
-
-        /* ESTADÍSTICAS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 18px;
-            border: 1px solid var(--borde);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            transition: 0.3s;
-        }
-
-        .stat-card h4 {
-            font-size: 0.7rem;
-            color: var(--texto-gris);
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-card p {
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--negro);
-            font-family: 'Montserrat';
-        }
-
-        /* GRÁFICAS MODERNAS */
-        .charts-row {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 25px;
-            margin-bottom: 2rem;
-        }
-
-        .chart-box {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            border: 1px solid var(--borde);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-        }
-
-        .chart-box h4 {
-            font-family: Montserrat;
-            font-weight: 800;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
-            color: var(--negro);
-            font-size: 0.9rem;
         }
 
-        /* RECOMENDACIONES GENERADAS POR IA */
-        .rec-section-title {
-            font-family: Montserrat;
-            font-weight: 900;
-            font-size: 1.1rem;
-            margin: 30px 0 20px 0;
-            color: var(--negro);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .menu-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dorado, #D4C19C);
         }
 
-        .rec-section-title span {
-            color: var(--turquesa);
-            font-size: 0.8rem;
-            font-weight: 700;
-            background: var(--turquesa-soft);
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-
-        .rec-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 3rem;
-        }
-
-        .rec-card {
-            background: white;
-            border-radius: 22px;
-            padding: 25px;
-            border: 1px solid var(--borde);
-            transition: 0.3s;
-            position: relative;
-            border-bottom: 4px solid var(--dorado);
-        }
-
-        .rec-card:hover {
-            border-color: var(--turquesa);
-            transform: translateY(-3px);
-        }
-
-        .rec-card h3 {
-            font-family: Montserrat;
-            font-size: 0.95rem;
-            color: var(--guinda);
-            margin-bottom: 12px;
-            font-weight: 800;
-        }
-
-        .rec-card p {
-            font-size: 0.85rem;
-            color: var(--texto-gris);
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .ai-analysis-box {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #edf2f7;
-        }
-
-        .ai-analysis-box strong {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--texto-gris);
-            display: block;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-
-        .ai-analysis-box span {
-            font-size: 0.8rem;
-            color: var(--texto-negro);
-            font-weight: 600;
-            display: block;
-            line-height: 1.4;
-        }
-
-        .btn-action-send {
-            width: 100%;
-            background: var(--negro);
-            color: white;
+        .btn-menu-toggle {
+            background: transparent;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .btn-menu-toggle:hover {
+            color: var(--dorado, #D4C19C);
+            transform: scale(1.1);
+        }
+
+        .nav-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important; 
+            gap: 15px !important; 
+            padding: 15px 20px !important;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-link i {
+            width: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .sidebar.mini { width: 70px; }
+        .sidebar.mini .menu-title, .sidebar.mini .menu-texto { display: none; }
+        .sidebar.mini .sidebar-header { justify-content: center; padding: 15px 0; }
+        .sidebar.mini .nav-link { padding: 15px 0 !important; justify-content: center !important; }
+        .sidebar.mini .nav-link i { margin: 0; }
+        .sidebar.mini .brand-text { display: none; }
+
+        /* =========================================
+           2. CONTENEDOR PRINCIPAL AL RAS
+           ========================================= */
+        .main-container {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            padding: 0 !important; 
+        }
+        .main-container.expandido {
+            margin-left: 70px;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+            flex-grow: 1; 
+        }
+
+        /* =========================================
+           3. HEADER Y FOOTER (Borde a Borde)
+           ========================================= */
+        .top-bar-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--dorado, #D4C19C);
+            width: 100%;
+            margin: 0 !important; 
+        }
+
+        .top-bar-vino h1 {
+            color: white !important;
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            text-align: center;
+            padding: 20px;
+            border-top: 4px solid var(--dorado, #D4C19C);
+            margin-top: auto;
+            width: 100%;
             font-weight: 800;
             font-size: 0.75rem;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            letter-spacing: 1px;
         }
 
-        .btn-action-send:hover {
-            background: var(--turquesa);
+        /* =========================================
+           4. DROPDOWN DE USUARIO
+           ========================================= */
+        .user-dropdown { position: relative; display: inline-block; }
+        .btn-user {
+            background-color: transparent; border: 1px solid var(--dorado, #D4C19C);
+            color: white; padding: 8px 18px; border-radius: 25px; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.95rem;
         }
+        .btn-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .btn-user:hover { background-color: rgba(255,255,255,0.1); }
+        .user-dropdown-content {
+            display: none; position: absolute; right: 0; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000;
+        }
+        .user-dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 0.85rem; }
+        .user-dropdown-content a:hover { background-color: #f4f4f4; color: var(--guinda, #691C32); }
+        .user-dropdown:hover .user-dropdown-content { display: block; }
 
-        footer {
-            height: 45px;
-            background: var(--guinda);
-            color: white;
-            padding: 1.2rem;
-            text-align: center;
-            font-size: 0.7rem;
-            border-top: 2px solid var(--dorado);
-            font-weight: 800;
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar .menu-title, .sidebar .menu-texto, .sidebar .brand-text { display: none; }
+            .sidebar .sidebar-header { justify-content: center; padding: 15px 0; }
+            .sidebar .nav-link { padding: 15px 0 !important; justify-content: center !important; }
+            .sidebar .nav-link i { margin: 0; }
+            .main-container { margin-left: 70px; }
+            .top-bar-vino h1 { font-size: 1.3rem; }
         }
     </style>
 </head>
-
 <body>
 
-    <aside class="sidebar-creador">
-        <div class="brand">
-            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
-                alt="Logo">
-            <h2>ESCALAFONIA</h2>
+    <button class="btn-accesibilidad" id="btnAccesibilidad" title="Abrir panel de accesibilidad" style="z-index: 9999;">
+        <i class="fas fa-universal-access"></i>
+    </button>
+    <div class="accesibilidad-panel" id="panelAccesibilidad" style="z-index: 10000;">
+        <div class="accesibilidad-panel-header">
+            <i class="fas fa-universal-access"></i>
+            <h3>Accesibilidad</h3>
+            <button class="btn-cerrar-panel" id="btnCerrarPanel" title="Cerrar panel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="accesibilidad-panel-body">
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-eye"></i> Ajustes Visuales</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-chart-bar"></i> Escala de grises</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-grayscale">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-adjust"></i> Alto contraste</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-high-contrast">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-exchange-alt"></i> Invertir colores</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-invert-colors">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-moon"></i> Modo oscuro</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-dark-theme">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-book-reader"></i> Herramientas de Lectura</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-volume-up"></i> Lector de pantalla</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-screen-reader">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-mask"></i> Máscara de lectura</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-reading-mask">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-ruler-combined"></i> Guía de lectura</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-reading-guide">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-link"></i> Resaltar enlaces</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-highlight-links">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-font"></i> Tipografía</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-book"></i> Fuente para dislexia</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-dyslexic-font">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-text-height"></i> Espaciado vertical</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLineHeight"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="lineHeightValue">1.6</span>
+                        <button class="btn-range" id="increaseLineHeight"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-text-width"></i> Espaciado horizontal</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLetterSpacing"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="letterSpacingValue">0</span>
+                        <button class="btn-range" id="increaseLetterSpacing"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-asterisk"></i> Tamaño del texto</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseFontSize"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="fontSizeValue">100%</span>
+                        <button class="btn-range" id="increaseFontSize"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-mouse-pointer"></i> Tamaño del cursor</h4>
+                <div class="accesibilidad-opcion cursor-selector">
+                    <span>Cursor</span>
+                    <div class="cursor-size-selector">
+                        <button class="cursor-opt" data-size="small" title="Pequeño"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt active" data-size="medium" title="Mediano"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="large" title="Grande"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="xlarge" title="Muy grande"><i class="fas fa-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accesibilidad-footer">
+                <button class="btn-reset" id="resetAccesibilidad">
+                    <i class="fas fa-undo-alt"></i> Restablecer configuración
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="miSidebar">
+        <div class="sidebar-header">
+            <span class="menu-title">Menú</span>
+            <button class="btn-menu-toggle" onclick="toggleMenu()" aria-label="Abrir/Cerrar Menú">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
 
-        <a href="index.html" class="btn-sidebar-back">
-            <i class="fas fa-arrow-left"></i> Regresar</a>
-
-        <nav class="nav-global">
-            <a href="javascript:history.back()" class="nav-item back-btn">
-                <i class="fas fa-chevron-left"></i> Regresar
-            </a>
-            <a href="{% url 'generador_cursos:index_generador' %}" class="nav-item active">
-                <i class="fas fa-th-large"></i> Dashboard
-            </a>
-            <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-item">
-                <i class="fas fa-magic"></i> Creación de cursos
-            </a>
-            <a href="{% url 'generador_cursos:cursos' %}" class="nav-item">
-                <i class="fas fa-folder"></i> Mis cursos
-            </a>
-            <a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-item">
-                <i class="fas fa-chart-line"></i> Estadísticas
-            </a>
-            <a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-item">
-                <i class="fas fa-user-circle"></i> Mi perfil
-            </a>
-        </nav>
+        <ul class="nav-menu" style="list-style: none; padding: 0; margin: 0;">
+            <li class="nav-item">
+                <a href="javascript:history.back()" class="nav-link">
+                    <i class="fas fa-chevron-left"></i> <span class="menu-texto">Regresar</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:index_generador' %}" class="nav-link">
+                    <i class="fas fa-th-large"></i> <span class="menu-texto">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-link">
+                    <i class="fas fa-magic"></i> <span class="menu-texto">Creación de cursos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:cursos' %}" class="nav-link">
+                    <i class="fas fa-folder"></i> <span class="menu-texto">Mis cursos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-link active">
+                    <i class="fas fa-chart-line"></i> <span class="menu-texto">Estadísticas</span>
+                </a>
+            </li>
+            <li class="nav-item" style="margin-top: 20px;">
+                <a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-link">
+                    <i class="fas fa-user-circle"></i> <span class="menu-texto">Mi perfil</span>
+                </a>
+            </li>
+        </ul>
     </aside>
 
-    <main class="workspace">
-        <header class="top-bar">
-            <h2>Estadisticas de cursos</h2>
-            <div class="avatar-circle">RM</div>
+    <main class="main-container" id="contenidoPrincipal">
+        
+        <header class="top-bar-vino">
+            <div>
+                <h1>EscalafonIA</h1>
+            </div>
+            
+            <div class="user-dropdown">
+                <button class="btn-user">
+                    <img src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Fabiola+Q&background=D4C19C&color=691C32'" alt="Avatar">
+                    Bienvenida Fabiola <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </button>
+                <div class="user-dropdown-content">
+                    <a href="#"><i class="fas fa-circle-question" style="margin-right: 8px;"></i> Ayuda y Soporte</a>
+                    <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fas fa-user-gear" style="margin-right: 8px;"></i> Ajustes de Perfil</a>
+                    <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir del Sistema</a>
+                </div>
+            </div>
         </header>
 
-        <div class="canvas">
+        <div class="content-wrapper">
+            
+            <div style="margin-bottom: 25px;">
+                <h2 style="font-family: 'Montserrat', sans-serif; color: var(--guinda, #691C32); border-bottom: 2px solid var(--dorado, #D4C19C); padding-bottom: 10px; display: inline-block;">
+                    <i class="fas fa-chart-pie"></i> Análisis de Cursos
+                </h2>
+            </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h4>Alcance en Usuarios</h4>
-                    <p>18,240</p>
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 2rem;">
+                <div class="stat-card" style="background: white; padding: 25px; border-radius: 18px; border: 1px solid #E5E7EB; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                    <h4 style="margin: 0 0 5px; font-size: 0.7rem; color: #64748B; text-transform: uppercase; font-weight: 800;">Alcance en Usuarios</h4>
+                    <p style="margin: 0; font-size: 2.2rem; font-weight: 900; color: #691C32; font-family: 'Montserrat';">18,240</p>
                 </div>
-                <div class="stat-card">
-                    <h4>Efectividad Académica</h4>
-                    <p>91.2%</p>
+                <div class="stat-card" style="background: white; padding: 25px; border-radius: 18px; border: 1px solid #E5E7EB; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                    <h4 style="margin: 0 0 5px; font-size: 0.7rem; color: #64748B; text-transform: uppercase; font-weight: 800;">Efectividad Académica</h4>
+                    <p style="margin: 0; font-size: 2.2rem; font-weight: 900; color: #007A7C; font-family: 'Montserrat';">91.2%</p>
                 </div>
-                <div class="stat-card">
-                    <h4>Calidad Promedio</h4>
-                    <p>4.85</p>
+                <div class="stat-card" style="background: white; padding: 25px; border-radius: 18px; border: 1px solid #E5E7EB; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                    <h4 style="margin: 0 0 5px; font-size: 0.7rem; color: #64748B; text-transform: uppercase; font-weight: 800;">Calidad Promedio</h4>
+                    <p style="margin: 0; font-size: 2.2rem; font-weight: 900; color: #BC955C; font-family: 'Montserrat';">4.85 <i class="fas fa-star" style="font-size: 1.2rem;"></i></p>
                 </div>
             </div>
 
-            <div class="charts-row">
-                <div class="chart-box">
-                    <h4>Interés por Categoría Educativa</h4>
-                    <div style="height: 250px;">
-                        <canvas id="modernBarChart"></canvas>
-                    </div>
+            <div class="charts-row" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 25px; margin-bottom: 2rem;">
+                <div class="chart-box" style="background: white; border-radius: 20px; padding: 25px; border: 1px solid #E5E7EB; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                    <h4 style="font-family: 'Montserrat'; font-weight: 800; margin: 0 0 20px; color: #1A1A1A;">Interés por Categoría Educativa</h4>
+                    <div style="height: 250px;"><canvas id="modernBarChart"></canvas></div>
                 </div>
-                <div class="chart-box">
-                    <h4>Tendencia de Acreditación Semanal</h4>
-                    <div style="height: 250px;">
-                        <canvas id="modernLineChart"></canvas>
-                    </div>
+                <div class="chart-box" style="background: white; border-radius: 20px; padding: 25px; border: 1px solid #E5E7EB; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                    <h4 style="font-family: 'Montserrat'; font-weight: 800; margin: 0 0 20px; color: #1A1A1A;">Tendencia Semanal</h4>
+                    <div style="height: 250px;"><canvas id="modernLineChart"></canvas></div>
                 </div>
             </div>
 
-            <div class="rec-section-title">
-                <i class="fas fa-robot"></i> RECOMENDACIONES BASADAS EN ESTADÍSTICA <span>IA GENERADA</span>
+            <div class="rec-section-title" style="display: flex; align-items: center; gap: 10px; margin: 30px 0 20px;">
+                <i class="fas fa-robot" style="color: #691C32; font-size: 1.5rem;"></i> 
+                <span style="font-family: 'Montserrat'; font-weight: 900; font-size: 1.1rem; color: #1A1A1A;">RECOMENDACIONES BASADAS EN ESTADÍSTICA</span>
+                <span style="color: #691C32; font-size: 0.8rem; font-weight: 700; background: rgba(105,28,50,0.1); padding: 4px 10px; border-radius: 20px;">IA GENERADA</span>
             </div>
 
-            <div class="rec-grid">
-                <div class="rec-card">
-                    <h3>Propuesta: Introducción a la Estructura Cognitiva</h3>
-                    <p>Dirigido a usuarios con interés en Neurodidáctica pero con tiempos de finalización prolongados en
-                        evaluaciones técnicas.</p>
-                    <div class="ai-analysis-box">
-                        <strong>Detección de la IA:</strong>
-                        <span>La tasa de abandono en "Neuroeducación Avanzada" correlaciona con la falta de conceptos
-                            básicos en psicología educativa.</span>
+            <div class="rec-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 2rem;">
+                <div class="rec-card" style="background: white; border-radius: 22px; padding: 25px; border: 1px solid #E5E7EB; border-bottom: 4px solid #BC955C; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                    <h3 style="font-family: 'Montserrat'; font-size: 0.95rem; color: #691C32; margin: 0 0 12px; font-weight: 800;">Propuesta: Estructura Cognitiva</h3>
+                    <p style="font-size: 0.85rem; color: #64748B; line-height: 1.5; margin: 0 0 15px;">Dirigido a usuarios con interés en Neurodidáctica pero con tiempos de finalización prolongados.</p>
+                    <div class="ai-analysis-box" style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #edf2f7;">
+                        <strong style="font-size: 0.7rem; text-transform: uppercase; color: #64748B; display: block; margin-bottom: 6px;">Detección de la IA:</strong>
+                        <span style="font-size: 0.8rem; color: #1F2937; font-weight: 600; line-height: 1.4;">La tasa de abandono correlaciona con la falta de conceptos básicos en psicología educativa.</span>
                     </div>
-                    <div class="ai-analysis-box" style="border-left-color: var(--turquesa);">
-                        <strong>Sugerencia de Ruta:</strong>
-                        <span>Se recomienda enviar este curso base como requisito previo o sugerencia técnica para
-                            asegurar la comprensión del tema nacional.</span>
+                    <div class="ai-analysis-box" style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #edf2f7; border-left: 4px solid #007A7C;">
+                        <strong style="font-size: 0.7rem; text-transform: uppercase; color: #64748B; display: block; margin-bottom: 6px;">Sugerencia de Ruta:</strong>
+                        <span style="font-size: 0.8rem; color: #1F2937; font-weight: 600; line-height: 1.4;">Se recomienda enviar este curso base como requisito previo para asegurar comprensión.</span>
                     </div>
-                    <button class="btn-action-send" onclick="enviar(this)">
-                        <i class="fas fa-paper-plane"></i> ENVIAR RECOMENDACIÓN TÉCNICA
+                    <button class="btn-action-send" style="width: 100%; background: #1A1A1A; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;" onclick="enviar(this)">
+                        <i class="fas fa-paper-plane"></i> ENVIAR RECOMENDACIÓN
                     </button>
                 </div>
 
-                <div class="rec-card">
-                    <h3>Propuesta: Gestión de Ambientes Virtuales Básicos</h3>
-                    <p>Dirigido a docentes de Educación Media Superior que han reportado incidencias técnicas en el uso
-                        de nubes colaborativas.</p>
-                    <div class="ai-analysis-box">
-                        <strong>Detección de la IA:</strong>
-                        <span>Los datos indican que el 22% de las dudas en el curso de Cultura Digital se centran en la
-                            configuración inicial de herramientas.</span>
+                <div class="rec-card" style="background: white; border-radius: 22px; padding: 25px; border: 1px solid #E5E7EB; border-bottom: 4px solid #BC955C; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                    <h3 style="font-family: 'Montserrat'; font-size: 0.95rem; color: #691C32; margin: 0 0 12px; font-weight: 800;">Propuesta: Ambientes Virtuales Básicos</h3>
+                    <p style="font-size: 0.85rem; color: #64748B; line-height: 1.5; margin: 0 0 15px;">Dirigido a docentes de EMS que han reportado incidencias en el uso de nubes colaborativas.</p>
+                    <div class="ai-analysis-box" style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #edf2f7;">
+                        <strong style="font-size: 0.7rem; text-transform: uppercase; color: #64748B; display: block; margin-bottom: 6px;">Detección de la IA:</strong>
+                        <span style="font-size: 0.8rem; color: #1F2937; font-weight: 600; line-height: 1.4;">El 22% de las dudas en el curso de Cultura Digital se centran en la configuración inicial.</span>
                     </div>
-                    <div class="ai-analysis-box" style="border-left-color: var(--turquesa);">
-                        <strong>Sugerencia de Ruta:</strong>
-                        <span>Integrar este nivel introductorio permitirá al docente abordar el temario USICAMM con
-                            mayor autonomía tecnológica.</span>
+                    <div class="ai-analysis-box" style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #edf2f7; border-left: 4px solid #007A7C;">
+                        <strong style="font-size: 0.7rem; text-transform: uppercase; color: #64748B; display: block; margin-bottom: 6px;">Sugerencia de Ruta:</strong>
+                        <span style="font-size: 0.8rem; color: #1F2937; font-weight: 600; line-height: 1.4;">Integrar este nivel introductorio permitirá al docente abordar el temario con mayor autonomía.</span>
                     </div>
-                    <button class="btn-action-send" onclick="enviar(this)">
-                        <i class="fas fa-paper-plane"></i> ENVIAR RECOMENDACIÓN TÉCNICA
+                    <button class="btn-action-send" style="width: 100%; background: #1A1A1A; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;" onclick="enviar(this)">
+                        <i class="fas fa-paper-plane"></i> ENVIAR RECOMENDACIÓN
                     </button>
                 </div>
             </div>
-
         </div>
 
-        <footer>ESCALAFONIA 2026</footer>
+        <footer class="footer-vino">
+            <p style="margin: 0; font-weight: bold;">&copy; 2026 EscalafonIA - Estudio de Autoría</p>
+            <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: var(--dorado, #D4C19C);">Plataforma Institucional para la Mejora Continua</p>
+        </footer>
     </main>
 
     <script>
+        // Lógica del Menú Hamburguesa en el Sidebar
+        function toggleMenu() {
+            document.getElementById('miSidebar').classList.toggle('mini');
+            document.getElementById('contenidoPrincipal').classList.toggle('expandido');
+        }
+
+        // Animación de los botones de IA
         function enviar(btn) {
             btn.innerHTML = '<i class="fas fa-check"></i> RECOMENDACIÓN ENVIADA';
             btn.style.background = '#007A7C';
             btn.style.cursor = 'default';
         }
 
-        // Configuración Global de Gráficos (Moderno y Monocromático Turquesa)
+        // Lógica de las Gráficas (Chart.js)
         Chart.defaults.font.family = "'Inter', sans-serif";
         Chart.defaults.color = '#94A3B8';
 
@@ -489,9 +489,9 @@
                 labels: ['NEM Básica', 'C. Digital', 'Directivos', 'Neuroed.'],
                 datasets: [{
                     data: [8200, 6150, 4800, 7300],
-                    backgroundColor: '#007A7C',
-                    borderRadius: 10,
-                    barThickness: 40
+                    backgroundColor: '#691C32', // Guinda Institucional
+                    borderRadius: 8,
+                    barThickness: 35
                 }]
             },
             options: {
@@ -512,14 +512,15 @@
                 labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
                 datasets: [{
                     data: [1200, 1900, 1700, 2400],
-                    borderColor: '#007A7C',
+                    borderColor: '#BC955C', // Dorado Institucional
                     borderWidth: 4,
-                    pointRadius: 0,
+                    pointBackgroundColor: '#691C32',
+                    pointRadius: 5,
                     fill: true,
                     backgroundColor: (context) => {
                         const ctx = context.chart.ctx;
                         const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-                        gradient.addColorStop(0, 'rgba(0, 122, 124, 0.15)');
+                        gradient.addColorStop(0, 'rgba(188, 149, 92, 0.2)');
                         gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
                         return gradient;
                     },
@@ -536,7 +537,62 @@
                 }
             }
         });
+
+        // Lógica del panel de accesibilidad completa
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAcc = document.getElementById('btnAccesibilidad');
+            const panel = document.getElementById('panelAccesibilidad');
+            const btnCerrar = document.getElementById('btnCerrarPanel');
+            const body = document.body;
+
+            btnAcc.addEventListener('click', () => panel.classList.toggle('active'));
+            btnCerrar.addEventListener('click', () => panel.classList.remove('active'));
+
+            document.getElementById('acc-grayscale').addEventListener('change', (e) => body.classList.toggle('grayscale', e.target.checked));
+            document.getElementById('acc-high-contrast').addEventListener('change', (e) => body.classList.toggle('high-contrast', e.target.checked));
+            document.getElementById('acc-invert-colors').addEventListener('change', (e) => body.classList.toggle('invert-colors', e.target.checked));
+            document.getElementById('acc-dark-theme').addEventListener('change', (e) => body.classList.toggle('dark-theme', e.target.checked));
+            document.getElementById('acc-reading-mask').addEventListener('change', (e) => body.classList.toggle('reading-mask', e.target.checked));
+            document.getElementById('acc-reading-guide').addEventListener('change', (e) => body.classList.toggle('reading-guide', e.target.checked));
+            document.getElementById('acc-highlight-links').addEventListener('change', (e) => body.classList.toggle('highlight-links', e.target.checked));
+            document.getElementById('acc-dyslexic-font').addEventListener('change', (e) => body.classList.toggle('dyslexic-font', e.target.checked));
+
+            const root = document.documentElement;
+            let lineHeight = 1.6, letterSpacing = 0, fontSize = 100;
+            
+            document.getElementById('decreaseLineHeight')?.addEventListener('click', () => { lineHeight = Math.max(1.2, lineHeight - 0.1); updateLineHeight(); });
+            document.getElementById('increaseLineHeight')?.addEventListener('click', () => { lineHeight = Math.min(2.5, lineHeight + 0.1); updateLineHeight(); });
+            function updateLineHeight() { root.style.lineHeight = lineHeight; document.getElementById('lineHeightValue').textContent = lineHeight.toFixed(1); }
+
+            document.getElementById('decreaseLetterSpacing')?.addEventListener('click', () => { letterSpacing = Math.max(-2, letterSpacing - 0.5); updateLetterSpacing(); });
+            document.getElementById('increaseLetterSpacing')?.addEventListener('click', () => { letterSpacing = Math.min(5, letterSpacing + 0.5); updateLetterSpacing(); });
+            function updateLetterSpacing() { root.style.letterSpacing = letterSpacing + 'px'; document.getElementById('letterSpacingValue').textContent = letterSpacing + 'px'; }
+
+            document.getElementById('decreaseFontSize')?.addEventListener('click', () => { fontSize = Math.max(60, fontSize - 10); updateFontSize(); });
+            document.getElementById('increaseFontSize')?.addEventListener('click', () => { fontSize = Math.min(200, fontSize + 10); updateFontSize(); });
+            function updateFontSize() { root.style.fontSize = fontSize + '%'; document.getElementById('fontSizeValue').textContent = fontSize + '%'; }
+
+            const cursorOpts = document.querySelectorAll('.cursor-opt');
+            cursorOpts.forEach(btn => btn.addEventListener('click', function() {
+                cursorOpts.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                body.style.cursor = this.dataset.size === 'small' ? 'default' : '';
+            }));
+
+            document.getElementById('resetAccesibilidad').addEventListener('click', () => {
+                body.className = '';
+                lineHeight = 1.6; letterSpacing = 0; fontSize = 100;
+                root.style.lineHeight = ''; root.style.letterSpacing = ''; root.style.fontSize = '';
+                document.getElementById('lineHeightValue').textContent = '1.6';
+                document.getElementById('letterSpacingValue').textContent = '0';
+                document.getElementById('fontSizeValue').textContent = '100%';
+                document.querySelectorAll('.accesibilidad-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
+                cursorOpts.forEach(b => b.classList.remove('active'));
+                document.querySelector('.cursor-opt[data-size="medium"]')?.classList.add('active');
+                body.style.cursor = '';
+                panel.classList.remove('active');
+            });
+        });
     </script>
 </body>
-
 </html>

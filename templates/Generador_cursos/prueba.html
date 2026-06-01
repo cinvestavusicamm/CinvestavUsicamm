@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Documentos SEP | EscalafonIA</title>
+    
+    <!-- Fuentes e Íconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Rutas a tus CSS -->
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- OVERRIDES Y AJUSTES ESTRUCTURALES DEL PANEL PRINCIPAL -->
+    <style>
+        /* Eliminar absolutamente todos los espacios en blanco nativos */
+        html, body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            width: 100%; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--bg-gris, #F4F4F4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* =========================================
+           1. SIDEBAR Y HAMBURGUESA DENTRO DEL MENÚ
+           ========================================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--guinda, #691C32);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dorado, #D4C19C);
+        }
+
+        .btn-menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .btn-menu-toggle:hover {
+            color: var(--dorado, #D4C19C);
+            transform: scale(1.1);
+        }
+
+        .nav-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important; 
+            gap: 15px !important; 
+            padding: 15px 20px !important;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-link i {
+            width: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .sidebar.mini { width: 70px; }
+        .sidebar.mini .menu-title, .sidebar.mini .menu-texto { display: none; }
+        .sidebar.mini .sidebar-header { justify-content: center; padding: 15px 0; }
+        .sidebar.mini .nav-link { padding: 15px 0 !important; justify-content: center !important; }
+        .sidebar.mini .nav-link i { margin: 0; }
+        .sidebar.mini .brand-text { display: none; }
+
+        /* =========================================
+           2. CONTENEDOR PRINCIPAL AL RAS
+           ========================================= */
+        .main-container {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            padding: 0 !important; 
+        }
+        .main-container.expandido {
+            margin-left: 70px;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+            flex-grow: 1; 
+        }
+
+        /* =========================================
+           3. HEADER Y FOOTER (Borde a Borde)
+           ========================================= */
+        .top-bar-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--dorado, #D4C19C);
+            width: 100%;
+            margin: 0 !important; 
+        }
+
+        .top-bar-vino h1 {
+            color: white !important;
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            text-align: center;
+            padding: 20px;
+            border-top: 4px solid var(--dorado, #D4C19C);
+            margin-top: auto;
+            width: 100%;
+            font-weight: 800;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        /* =========================================
+           4. DROPDOWN DE USUARIO
+           ========================================= */
+        .user-dropdown { position: relative; display: inline-block; }
+        .btn-user {
+            background-color: transparent; border: 1px solid var(--dorado, #D4C19C);
+            color: white; padding: 8px 18px; border-radius: 25px; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.95rem;
+        }
+        .btn-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .btn-user:hover { background-color: rgba(255,255,255,0.1); }
+        .user-dropdown-content {
+            display: none; position: absolute; right: 0; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000;
+        }
+        .user-dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 0.85rem; }
+        .user-dropdown-content a:hover { background-color: #f4f4f4; color: var(--guinda, #691C32); }
+        .user-dropdown:hover .user-dropdown-content { display: block; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar .menu-title, .sidebar .menu-texto, .sidebar .brand-text { display: none; }
+            .sidebar .sidebar-header { justify-content: center; padding: 15px 0; }
+            .sidebar .nav-link { padding: 15px 0 !important; justify-content: center !important; }
+            .sidebar .nav-link i { margin: 0; }
+            .main-container { margin-left: 70px; }
+            .top-bar-vino h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Panel de Accesibilidad (flotante) -->
+    <button class="btn-accesibilidad" id="btnAccesibilidad" title="Abrir panel de accesibilidad" style="z-index: 9999;">
+        <i class="fas fa-universal-access"></i>
+    </button>
+    <div class="accesibilidad-panel" id="panelAccesibilidad" style="z-index: 10000;">
+        <div class="accesibilidad-panel-header">
+            <i class="fas fa-universal-access"></i>
+            <h3>Accesibilidad</h3>
+            <button class="btn-cerrar-panel" id="btnCerrarPanel" title="Cerrar panel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="accesibilidad-panel-body">
+            <!-- Ajustes visuales -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-eye"></i> Ajustes Visuales</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-chart-bar"></i> Escala de grises</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-grayscale">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-adjust"></i> Alto contraste</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-high-contrast">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-exchange-alt"></i> Invertir colores</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-invert-colors">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-moon"></i> Modo oscuro</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-dark-theme">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Herramientas de lectura -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-book-reader"></i> Herramientas de Lectura</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-volume-up"></i> Lector de pantalla</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-screen-reader">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-mask"></i> Máscara de lectura</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-reading-mask">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-ruler-combined"></i> Guía de lectura</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-reading-guide">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-link"></i> Resaltar enlaces</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-highlight-links">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tipografía -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-font"></i> Tipografía</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-book"></i> Fuente para dislexia</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-dyslexic-font">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-text-height"></i> Espaciado vertical</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLineHeight"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="lineHeightValue">1.6</span>
+                        <button class="btn-range" id="increaseLineHeight"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-text-width"></i> Espaciado horizontal</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLetterSpacing"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="letterSpacingValue">0</span>
+                        <button class="btn-range" id="increaseLetterSpacing"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-asterisk"></i> Tamaño del texto</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseFontSize"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="fontSizeValue">100%</span>
+                        <button class="btn-range" id="increaseFontSize"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tamaño del cursor -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-mouse-pointer"></i> Tamaño del cursor</h4>
+                <div class="accesibilidad-opcion cursor-selector">
+                    <span>Cursor</span>
+                    <div class="cursor-size-selector">
+                        <button class="cursor-opt" data-size="small" title="Pequeño"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt active" data-size="medium" title="Mediano"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="large" title="Grande"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="xlarge" title="Muy grande"><i class="fas fa-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reiniciar -->
+            <div class="accesibilidad-footer">
+                <button class="btn-reset" id="resetAccesibilidad">
+                    <i class="fas fa-undo-alt"></i> Restablecer configuración
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra lateral (Sidebar adaptado con tu ruteo Django y logo limpio) -->
+    <aside class="sidebar" id="miSidebar">
+        <!-- Hamburguesa y Título del Menú -->
+        <div class="sidebar-header">
+            <span class="menu-title">Menú</span>
+            <button class="btn-menu-toggle" onclick="toggleMenu()" aria-label="Abrir/Cerrar Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <ul class="nav-menu" style="list-style: none; padding: 0; margin: 0;">
+            <li class="nav-item">
+                <a href="javascript:history.back()" class="nav-link">
+                    <i class="fas fa-chevron-left"></i> <span class="menu-texto">Regresar</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:index_generador' %}" class="nav-link">
+                    <i class="fas fa-th-large"></i> <span class="menu-texto">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-link">
+                    <i class="fas fa-magic"></i> <span class="menu-texto">Creación de cursos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:cursos' %}" class="nav-link">
+                    <i class="fas fa-folder"></i> <span class="menu-texto">Mis cursos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-link">
+                    <i class="fas fa-chart-line"></i> <span class="menu-texto">Estadísticas</span>
+                </a>
+            </li>
+            <li class="nav-item" style="margin-top: 20px;">
+                <a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-link active">
+                    <i class="fas fa-user-circle"></i> <span class="menu-texto">Mi perfil</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-container" id="contenidoPrincipal">
+        
+        <!-- BARRA SUPERIOR VINO AL RAS -->
+        <header class="top-bar-vino">
+            <div>
+                <h1>EscalafonIA</h1>
+            </div>
+            
+            <!-- BOTÓN DE USUARIO Y DESPLEGABLE -->
+            <div class="user-dropdown">
+                <button class="btn-user">
+                    <img id="header-avatar" src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Fabiola+Q&background=D4C19C&color=691C32'" alt="Avatar">
+                    Bienvenida Fabiola <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </button>
+                <div class="user-dropdown-content">
+                    <a href="#"><i class="fas fa-circle-question" style="margin-right: 8px;"></i> Ayuda y Soporte</a>
+                    <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fas fa-user-gear" style="margin-right: 8px;"></i> Ajustes de Perfil</a>
+                    <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir del Sistema</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Área de contenido -->
+        <div class="content-wrapper">
+            <!-- Perfil Hero -->
+            <div class="profile-hero" style="display:flex; align-items:center; gap:35px; margin-bottom:3rem; padding:2rem; background:#fff; border-radius:25px; border:1px solid #E2E8F0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                <div class="photo-uploader" style="position:relative; width:140px; height:140px;">
+                    <img id="avatar-img" src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Fabiola+Q&background=D4C19C&color=691C32'" class="profile-img" style="width:100%; height:100%; border-radius:25px; object-fit:cover; border:4px solid #691C32;">
+                    <label for="photo-input" class="edit-photo-btn" style="position:absolute; bottom:-10px; right:-10px; background:#1A1A1A; color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white;"><i class="fas fa-camera"></i></label>
+                    <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="previewImage(event)">
+                </div>
+                <div class="hero-text">
+                    <h1 style="font-family:'Montserrat'; font-size:1.8rem; color:#1E293B; font-weight:900;">Fabiola Quintana Gante</h1>
+                    <p style="color:#691C32; font-weight:700; font-size:1rem; text-transform:uppercase;">Investigadora • SEP Federal</p>
+                    <span class="status-badge" style="display:inline-flex; align-items:center; gap:6px; background:#138871; color:white; padding:5px 15px; border-radius:50px; font-size:0.65rem; font-weight:800; margin-top:10px;"><i class="fas fa-check-circle"></i> PERFIL VERIFICADO</span>
+                </div>
+            </div>
+
+            <!-- Información editable -->
+            <div class="info-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:25px; margin-bottom:3rem;">
+                <div class="field">
+                    <label style="font-size:0.7rem; font-weight:800; color:#64748B; text-transform:uppercase;">Nombre Completo (Protegido)</label>
+                    <input type="text" value="Fabiola Quintana Gante" readonly style="width: 100%; padding:12px 15px; border-radius:12px; border:1.5px solid #E2E8F0; font-size:0.9rem; font-weight:600; color:#1E293B; background:#fcfcfc;">
+                </div>
+                <div class="field">
+                    <label style="font-size:0.7rem; font-weight:800; color:#64748B; text-transform:uppercase;">CURP (Protegido)</label>
+                    <input type="text" value="QUGF041011MDFXXX01" readonly style="width: 100%; padding:12px 15px; border-radius:12px; border:1.5px solid #E2E8F0; font-size:0.9rem; font-weight:600; color:#1E293B; background:#fcfcfc;">
+                </div>
+                <div class="field">
+                    <label style="font-size:0.7rem; font-weight:800; color:#64748B; text-transform:uppercase;">Correo de Contacto (Editable)</label>
+                    <input type="email" value="fabiola.quintana@sep.gob.mx" style="width: 100%; padding:12px 15px; border-radius:12px; border:1.5px solid #E2E8F0; font-size:0.9rem; font-weight:600; color:#1E293B; background:#fff;">
+                </div>
+                <div class="field">
+                    <label style="font-size:0.7rem; font-weight:800; color:#64748B; text-transform:uppercase;">Teléfono (Editable)</label>
+                    <input type="tel" value="+52 55 1234 5678" style="width: 100%; padding:12px 15px; border-radius:12px; border:1.5px solid #E2E8F0; font-size:0.9rem; font-weight:600; color:#1E293B; background:#fff;">
+                </div>
+            </div>
+
+            <!-- Impacto -->
+            <div class="impact-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:3rem;">
+                <div class="impact-card" style="background:#691C32; color:white; padding:25px; border-radius:20px; text-align:center;">
+                    <h5 style="font-size:0.7rem; opacity:0.8; margin-bottom:5px; font-weight:700; text-transform:uppercase;">Cursos Publicados</h5>
+                    <p style="font-size:2rem; font-family:'Montserrat'; font-weight:900; color:#BC955C;">12</p>
+                </div>
+                <div class="impact-card" style="background:#691C32; color:white; padding:25px; border-radius:20px; text-align:center;">
+                    <h5 style="font-size:0.7rem; opacity:0.8; margin-bottom:5px; font-weight:700; text-transform:uppercase;">Cursos realizados</h5>
+                    <p style="font-size:2rem; font-family:'Montserrat'; font-weight:900; color:#BC955C;">24</p>
+                </div>
+                <div class="impact-card" style="background:#691C32; color:white; padding:25px; border-radius:20px; text-align:center;">
+                    <h5 style="font-size:0.7rem; opacity:0.8; margin-bottom:5px; font-weight:700; text-transform:uppercase;">Impacto Docente</h5>
+                    <p style="font-size:2rem; font-family:'Montserrat'; font-weight:900; color:#BC955C;">8.4K</p>
+                </div>
+            </div>
+
+            <!-- Sección de documentos oficiales -->
+            <div class="secure-section" style="margin-bottom:3rem;">
+                <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-left:5px solid #691C32; padding-left:15px;">
+                    <h3 style="font-family:'Montserrat'; font-size:1.1rem; font-weight:900; color:#1E293B; margin: 0;"><i class="fas fa-shield-alt" style="margin-right:8px; color:#691C32;"></i> Cédulas, Títulos y Certificados</h3>
+                    <button class="btn-add" id="openModalBtn" style="background:#691C32; color:white; border:none; padding:10px 20px; border-radius:50px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:8px;"><i class="fas fa-plus"></i> Agregar documento</button>
+                </div>
+
+                <div id="documentsList">
+                    <!-- Documento verificado -->
+                    <div class="doc-card verified" data-id="1" data-status="verified" style="background:#fff; border:1px solid #E2E8F0; border-radius:15px; padding:18px; margin-bottom:12px; display:flex; align-items:center; gap:20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+                        <div class="doc-icon" style="width:50px; height:50px; background:#fdf2f4; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#691C32; font-size:1.2rem;"><i class="fas fa-id-card"></i></div>
+                        <div class="doc-info" style="flex:1;">
+                            <h4 style="font-size:0.9rem; font-weight:800; color:#1E293B; margin: 0 0 3px;">Cédula Profesional Federal</h4>
+                            <p style="font-size:0.8rem; color:#64748B; margin: 0 0 3px;">Ingeniería en Sistemas • Registro: 8492033</p>
+                            <div class="doc-meta" style="display:flex; gap:15px; margin-top:5px;">
+                                <span class="verified-tag" style="color:#138871; font-size:0.7rem; font-weight:900; text-transform:uppercase; display:flex; align-items:center; gap:4px;"><i class="fas fa-check-circle"></i> Validado por SEP</span>
+                                <span style="color:#64748B; font-size:0.75rem;"><i class="far fa-calendar-alt"></i> 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-save-profile" style="background:#691C32; color:white; border:none; padding:16px 45px; border-radius:12px; font-weight:900; font-size:0.85rem; cursor:pointer; float:right;" onclick="alert('Datos de contacto actualizados.')">GUARDAR CAMBIOS</button>
+            <div style="clear: both;"></div>
+        </div>
+
+        <!-- Footer VINO -->
+        <footer class="footer-vino">
+            <p style="margin: 0; font-weight: bold;">&copy; 2026 EscalafonIA - Validación SEP</p>
+            <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: var(--dorado, #D4C19C);">Plataforma Institucional para la Mejora Continua</p>
+        </footer>
+    </main>
+
+    <!-- Modal para agregar documento -->
+    <div class="modal-overlay" id="documentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(3px); justify-content:center; align-items:center; z-index:2000;">
+        <div class="modal-content" style="background:white; border-radius:20px; padding:30px; width:90%; max-width:600px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+            <h4 style="font-family:'Montserrat'; font-size:1.2rem; margin-top:0; margin-bottom:20px; color:#691C32; border-bottom: 2px solid #BC955C; padding-bottom: 10px;">Agregar nuevo documento</h4>
+            
+            <div class="field" style="margin-bottom: 15px;">
+                <label style="font-size:0.75rem; font-weight:800; color:#64748B; text-transform:uppercase; display: block; margin-bottom: 5px;">Tipo de documento</label>
+                <select id="docTypeSelect" onchange="handleDocTypeChange()" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                    <option value="cedula">Cédula profesional / Título universitario</option>
+                    <option value="curso">Curso / Certificado / Diplomado</option>
+                </select>
+            </div>
+
+            <div id="sepLinksContainer" class="sep-links" style="background:#f8fafc; border-radius:15px; padding:15px; margin:15px 0; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <div id="fieldsCedula" style="display:block;">
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Número de cédula / Registro</label>
+                    <input type="text" id="cedulaNumber" placeholder="Ej: 8492033" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Descripción (título, especialidad)</label>
+                    <input type="text" id="cedulaDesc" placeholder="Ej: Ingeniería en Sistemas" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Institución que lo expide</label>
+                    <input type="text" id="cedulaInstitution" placeholder="Ej: Tecnológico Nacional de México" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Año de obtención</label>
+                    <input type="text" id="cedulaYear" placeholder="2026" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+            </div>
+
+            <div id="fieldsCurso" style="display:none;">
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Nombre del curso / certificado</label>
+                    <input type="text" id="cursoName" placeholder="Ej: Diplomado en Innovación Educativa" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Institución / Proveedor</label>
+                    <input type="text" id="cursoInstitution" placeholder="Ej: SEP - CREFAL" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Duración (horas o semanas)</label>
+                    <input type="text" id="cursoDuration" placeholder="Ej: 120 horas" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Fecha de inicio - fin</label>
+                    <input type="text" id="cursoDate" placeholder="Ej: 2025-2026" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+                <div class="field" style="margin-bottom: 15px;">
+                    <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Folio / Clave (si aplica)</label>
+                    <input type="text" id="cursoFolio" placeholder="Opcional" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                </div>
+            </div>
+
+            <!-- MODIFICACIÓN SOLICITADA: Aceptar cualquier documento, no solo PDF -->
+            <div class="field" style="margin-bottom: 15px;">
+                <label style="font-size:0.75rem; font-weight:800; color:#64748B; display: block; margin-bottom: 5px;">Archivo comprobatorio <span style="color:#BC955C;">*Cualquier formato</span></label>
+                <input type="file" id="docFile" style="width:100%; padding:12px; border-radius:12px; border:1px solid #E2E8F0; font-family: 'Inter', sans-serif;">
+                <small style="display: block; margin-top: 5px; color: #94A3B8; font-size: 0.7rem;">Puedes subir PDF, imágenes (JPG, PNG), Word, etc.</small>
+            </div>
+
+            <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:10px; margin-top:30px;">
+                <button class="cancel" onclick="closeModal()" style="padding:10px 20px; border-radius:12px; border:none; font-weight:700; cursor:pointer; background:#e2e8f0; color:#1E293B;">Cancelar</button>
+                <button class="save" onclick="saveDocument()" style="padding:10px 20px; border-radius:12px; border:none; font-weight:700; cursor:pointer; background:#691C32; color:white;">Guardar (Pendiente)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts unificados -->
+    <script>
+        // Lógica del Menú Hamburguesa en el Sidebar
+        function toggleMenu() {
+            document.getElementById('miSidebar').classList.toggle('mini');
+            document.getElementById('contenidoPrincipal').classList.toggle('expandido');
+        }
+
+        // Previsualizar foto de perfil
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                document.getElementById('avatar-img').src = reader.result;
+                document.getElementById('header-avatar').src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Lógica del Modal de Documentos
+        const modal = document.getElementById('documentModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+
+        function openModal() {
+            modal.style.display = 'flex';
+            document.getElementById('docTypeSelect').value = 'cedula';
+            handleDocTypeChange();
+            
+            // Limpiar campos
+            document.getElementById('cedulaNumber').value = '';
+            document.getElementById('cedulaDesc').value = '';
+            document.getElementById('cedulaInstitution').value = '';
+            document.getElementById('cedulaYear').value = '';
+            document.getElementById('cursoName').value = '';
+            document.getElementById('cursoInstitution').value = '';
+            document.getElementById('cursoDuration').value = '';
+            document.getElementById('cursoDate').value = '';
+            document.getElementById('cursoFolio').value = '';
+            document.getElementById('docFile').value = '';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        openModalBtn.addEventListener('click', openModal);
+
+        function handleDocTypeChange() {
+            const type = document.getElementById('docTypeSelect').value;
+            const sepLinks = document.getElementById('sepLinksContainer');
+            const fieldsCedula = document.getElementById('fieldsCedula');
+            const fieldsCurso = document.getElementById('fieldsCurso');
+
+            if (type === 'cedula') {
+                fieldsCedula.style.display = 'block';
+                fieldsCurso.style.display = 'none';
+                sepLinks.innerHTML = `
+                    <span style="font-size:0.8rem; font-weight:600;">Consultar en:</span>
+                    <a href="https://cedulaprofesional.sep.gob.mx/cedula/" target="_blank" style="background:white; border:1px solid #691C32; color:#691C32; padding:8px 15px; border-radius:30px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-id-card"></i> Cédula Profesional SEP</a>
+                    <a href="https://renoes.sep.gob.mx/" target="_blank" style="background:white; border:1px solid #691C32; color:#691C32; padding:8px 15px; border-radius:30px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-university"></i> RENOES</a>
+                    <a href="https://www.sirvoes.sep.gob.mx/sirvoes/" target="_blank" style="background:white; border:1px solid #691C32; color:#691C32; padding:8px 15px; border-radius:30px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-globe"></i> SIRVOES</a>
+                `;
+            } else {
+                fieldsCedula.style.display = 'none';
+                fieldsCurso.style.display = 'block';
+                sepLinks.innerHTML = `
+                    <span style="font-size:0.8rem; font-weight:600;">Verificar en:</span>
+                    <a href="https://www.gob.mx/sep/acciones-y-programas/registro-nacional-de-profesionistas" target="_blank" style="background:white; border:1px solid #691C32; color:#691C32; padding:8px 15px; border-radius:30px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-search"></i> RNP</a>
+                    <a href="https://sirvoes.sep.gob.mx/sirvoes/" target="_blank" style="background:white; border:1px solid #691C32; color:#691C32; padding:8px 15px; border-radius:30px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-certificate"></i> SIRVOES</a>
+                `;
+            }
+        }
+
+        function saveDocument() {
+            const type = document.getElementById('docTypeSelect').value;
+            let title = '';
+            let description = '';
+            let year = '';
+            let institution = '';
+
+            if (type === 'cedula') {
+                const number = document.getElementById('cedulaNumber').value.trim();
+                const desc = document.getElementById('cedulaDesc').value.trim();
+                institution = document.getElementById('cedulaInstitution').value.trim();
+                year = document.getElementById('cedulaYear').value.trim();
+                if (!number || !desc) {
+                    alert('El número de cédula y la descripción son obligatorios.');
+                    return;
+                }
+                title = 'Cédula / Título';
+                description = `${desc} • Registro: ${number}`;
+            } else {
+                const name = document.getElementById('cursoName').value.trim();
+                const inst = document.getElementById('cursoInstitution').value.trim();
+                const duration = document.getElementById('cursoDuration').value.trim();
+                const date = document.getElementById('cursoDate').value.trim();
+                const folio = document.getElementById('cursoFolio').value.trim();
+                if (!name || !inst) {
+                    alert('El nombre del curso y la institución son obligatorios.');
+                    return;
+                }
+                title = 'Curso / Certificado';
+                description = `${name} • ${inst} ${duration ? ' • ' + duration : ''}`;
+                institution = inst;
+                year = date.split('-')[0] || '';
+            }
+
+            const fileInput = document.getElementById('docFile');
+            let fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'Sin archivo adjunto';
+
+            const newId = Date.now();
+            let iconClass = type === 'cedula' ? 'fa-id-card' : 'fa-certificate';
+
+            const newCard = document.createElement('div');
+            newCard.className = 'doc-card pending';
+            newCard.setAttribute('data-id', newId);
+            newCard.setAttribute('data-status', 'pending');
+            newCard.style.cssText = 'background:#fff; border:1px solid #E2E8F0; border-radius:15px; padding:18px; margin-bottom:12px; display:flex; align-items:center; gap:20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); animation: popIn 0.3s ease-out;';
+            newCard.innerHTML = `
+                <div class="doc-icon" style="width:50px; height:50px; background:#fdf2f4; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#691C32; font-size:1.2rem;"><i class="fas ${iconClass}"></i></div>
+                <div class="doc-info" style="flex:1;">
+                    <h4 style="font-size:0.9rem; font-weight:800; color:#1E293B; margin: 0 0 3px;">${title}</h4>
+                    <p style="font-size:0.8rem; color:#64748B; margin: 0 0 3px;">${description}</p>
+                    <small style="color: #007A7C; font-weight: 600;"><i class="fas fa-file-alt"></i> ${fileName}</small>
+                    <div class="doc-meta" style="display:flex; gap:15px; margin-top:5px;">
+                        <span class="pending-tag" style="color:#F59E0B; font-size:0.7rem; font-weight:900; text-transform:uppercase; display:flex; align-items:center; gap:4px;"><i class="fas fa-clock"></i> Pendiente de validación</span>
+                        <span style="color:#64748B; font-size:0.75rem;"><i class="far fa-calendar-alt"></i> ${year || '—'}</span>
+                    </div>
+                </div>
+                <div class="doc-actions">
+                    <button class="delete-doc" title="Eliminar" onclick="deleteDocument(${newId})" style="background:none; border:none; color:#EF4444; cursor:pointer; font-size:1rem; padding: 10px;"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
+
+            document.getElementById('documentsList').appendChild(newCard);
+            closeModal();
+            
+            // SweetAlert (si está disponible) o alert normal
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Documento Guardado',
+                    text: 'El documento ha sido agregado exitosamente y se encuentra en estado pendiente de revisión.',
+                    confirmButtonColor: '#691C32'
+                });
+            } else {
+                alert('Documento agregado. Queda pendiente de validación por un administrador.');
+            }
+        }
+
+        window.deleteDocument = function(id) {
+            const doc = document.querySelector(`.doc-card[data-id="${id}"]`);
+            if (doc) {
+                const status = doc.getAttribute('data-status');
+                if (status === 'pending') {
+                    if (confirm('¿Estás seguro de eliminar este documento de tu expediente?')) {
+                        doc.style.opacity = '0';
+                        setTimeout(() => doc.remove(), 300);
+                    }
+                } else {
+                    alert('Los documentos que ya han sido validados por la SEP no pueden ser eliminados por el usuario.');
+                }
+            }
+        };
+
+        // Lógica del panel de accesibilidad (Completa y funcional)
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAcc = document.getElementById('btnAccesibilidad');
+            const panel = document.getElementById('panelAccesibilidad');
+            const btnCerrar = document.getElementById('btnCerrarPanel');
+            const body = document.body;
+
+            btnAcc.addEventListener('click', () => panel.classList.toggle('active'));
+            btnCerrar.addEventListener('click', () => panel.classList.remove('active'));
+
+            document.getElementById('acc-grayscale').addEventListener('change', (e) => body.classList.toggle('grayscale', e.target.checked));
+            document.getElementById('acc-high-contrast').addEventListener('change', (e) => body.classList.toggle('high-contrast', e.target.checked));
+            document.getElementById('acc-invert-colors').addEventListener('change', (e) => body.classList.toggle('invert-colors', e.target.checked));
+            document.getElementById('acc-dark-theme').addEventListener('change', (e) => body.classList.toggle('dark-theme', e.target.checked));
+            document.getElementById('acc-reading-mask').addEventListener('change', (e) => body.classList.toggle('reading-mask', e.target.checked));
+            document.getElementById('acc-reading-guide').addEventListener('change', (e) => body.classList.toggle('reading-guide', e.target.checked));
+            document.getElementById('acc-highlight-links').addEventListener('change', (e) => body.classList.toggle('highlight-links', e.target.checked));
+            document.getElementById('acc-dyslexic-font').addEventListener('change', (e) => body.classList.toggle('dyslexic-font', e.target.checked));
+
+            const root = document.documentElement;
+            let lineHeight = 1.6, letterSpacing = 0, fontSize = 100;
+            
+            document.getElementById('decreaseLineHeight')?.addEventListener('click', () => { lineHeight = Math.max(1.2, lineHeight - 0.1); updateLineHeight(); });
+            document.getElementById('increaseLineHeight')?.addEventListener('click', () => { lineHeight = Math.min(2.5, lineHeight + 0.1); updateLineHeight(); });
+            function updateLineHeight() { root.style.lineHeight = lineHeight; document.getElementById('lineHeightValue').textContent = lineHeight.toFixed(1); }
+
+            document.getElementById('decreaseLetterSpacing')?.addEventListener('click', () => { letterSpacing = Math.max(-2, letterSpacing - 0.5); updateLetterSpacing(); });
+            document.getElementById('increaseLetterSpacing')?.addEventListener('click', () => { letterSpacing = Math.min(5, letterSpacing + 0.5); updateLetterSpacing(); });
+            function updateLetterSpacing() { root.style.letterSpacing = letterSpacing + 'px'; document.getElementById('letterSpacingValue').textContent = letterSpacing + 'px'; }
+
+            document.getElementById('decreaseFontSize')?.addEventListener('click', () => { fontSize = Math.max(60, fontSize - 10); updateFontSize(); });
+            document.getElementById('increaseFontSize')?.addEventListener('click', () => { fontSize = Math.min(200, fontSize + 10); updateFontSize(); });
+            function updateFontSize() { root.style.fontSize = fontSize + '%'; document.getElementById('fontSizeValue').textContent = fontSize + '%'; }
+
+            const cursorOpts = document.querySelectorAll('.cursor-opt');
+            cursorOpts.forEach(btn => btn.addEventListener('click', function() {
+                cursorOpts.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                body.style.cursor = this.dataset.size === 'small' ? 'default' : '';
+            }));
+
+            document.getElementById('resetAccesibilidad').addEventListener('click', () => {
+                body.className = '';
+                lineHeight = 1.6; letterSpacing = 0; fontSize = 100;
+                root.style.lineHeight = ''; root.style.letterSpacing = ''; root.style.fontSize = '';
+                document.getElementById('lineHeightValue').textContent = '1.6';
+                document.getElementById('letterSpacingValue').textContent = '0';
+                document.getElementById('fontSizeValue').textContent = '100%';
+                document.querySelectorAll('.accesibilidad-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
+                cursorOpts.forEach(b => b.classList.remove('active'));
+                document.querySelector('.cursor-opt[data-size="medium"]')?.classList.add('active');
+                body.style.cursor = '';
+                panel.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
