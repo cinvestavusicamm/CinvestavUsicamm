@@ -5,125 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foros Colaborativos | EscalafonIA Jaguar</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../static/css/main.css">
+    
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
 
+    <style>
+        /* Opción A Mejorada: Quita los bordes, recuadros y formas de los logos nuevos sin alterar tu logo de Jaguar */
+        .institucionales-logos img {
+            border-radius: 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
 </head>
 <body>
 
-    <header class="header-main">
-        <div class="brand">
-            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+    <header class="header-main barra-superior">
+        <div class="brand" style="display: flex; align-items: center; gap: 15px;">
+            
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" 
+                 alt="Logo Jaguar" 
+                 style="height: 52px; width: auto; object-fit: contain;">
+
+            <div class="institucionales-logos" style="display: flex; align-items: center; gap: 12px;">
+                <img src="../../static/imagenes/USICAMMm.png" 
+                     alt="Logo USICAMM" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+
+                <img src="../../static/imagenes/cinvestavv.png" 
+                     alt="Logo Cinvestav" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+            </div>
+
             <div class="brand-text">
                 <h1>EscalafonIA Jaguar</h1>
                 <span>Comunidades de Práctica Docente</span>
             </div>
         </div>
         <div style="text-align: right;">
-            <div style="font-weight: 700; font-size: 0.9rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</div>
-            <div style="font-size: 0.65rem; color: var(--dorado);">Sesión encriptada (LGPDPPSO)</div>
+            <div style="font-weight: 700; font-size: 0.95rem;">Laura Martínez García</div>
+            <div style="font-size: 0.7rem; color: var(--dorado);">Sesión encriptada (LGPDPPSO)</div>
         </div>
     </header>
 
     <nav class="nav-actions-top">
-        <a href="{% url 'Docente:panel_docente' %}" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR</a>
-        <a href="{% url 'logout' %}" class="btn-nav btn-exit"><i class="fas fa-sign-out-alt"></i> SALIDA SEGURA</a>
+        <a href="#" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR</a>
+        <a href="#" class="btn-nav btn-exit"><i class="fas fa-sign-out-alt"></i> SALIDA SEGURA</a>
     </nav>
 
     <div class="container">
+        
         <aside class="forum-categories">
-            <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Cursos</h4>
-            {% for curso in cursos %}
-            <div class="category-item {% if forloop.first %}active{% endif %}"><i class="fas fa-book"></i> {{ curso.nombre }}</div>
-            {% empty %}
-            <div class="category-item active"><i class="fas fa-info-circle"></i> Sin cursos activos</div>
-            {% endfor %}
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+            <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Mis Cursos Activos</h4>
+            <div class="category-item active"><i class="fas fa-book"></i> Matemáticas 3° Grado</div>
+            <div class="category-item"><i class="fas fa-book"></i> Lectura y Escritura</div>
+            <div class="category-item"><i class="fas fa-book"></i> Ciencias Naturales</div>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <div class="category-item" style="color: var(--dorado);"><i class="fas fa-star"></i> Mis Discusiones</div>
         </aside>
 
-        <main class="forum-feed">
-            <div class="post-card" style="padding: 15px;">
-                <textarea placeholder="Comparta una experiencia o duda pedagógica..." style="width: 100%; border: 1px solid #eee; border-radius: 10px; padding: 15px; font-family: inherit; resize: none;"></textarea>
-                <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-                    <button style="background: var(--guinda); color: white; border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">Publicar</button>
+        <main class="forum-feed principal">
+            
+            <div class="contenido">
+                <div class="post-card">
+                    <textarea id="nuevoPost" placeholder="¿Qué experiencia o duda pedagógica quieres compartir hoy?" 
+                              style="width: 100%; border: 1px solid #eee; border-radius: 12px; padding: 15px; font-family: inherit; resize: none; min-height: 110px;"
+                              aria-label="Cuerpo de la nueva publicación del foro"></textarea>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 10px; gap: 10px;">
+                        <button class="btn-back" onclick="limpiarPost()">Cancelar</button>
+                        <button onclick="publicarPost()" style="background: var(--guinda); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">Publicar</button>
+                    </div>
                 </div>
-            </div>
 
-            {% for item in foro_items %}
-                {% for foro in item.foros %}
-            <div class="post-card">
-                <div class="post-header">
-                    <div class="user-meta">
-                        <img src="https://ui-avatars.com/api/?name={{ item.curso.nombre|urlencode }}&background=007A7C&color=fff" alt="Avatar">
-                        <div>
-                            <div class="name">{{ foro.titulo }}</div>
-                            <div class="role">{{ item.curso.nombre }}</div>
-                        </div>
-                    </div>
-                    <span style="font-size: 0.7rem; color: #bbb;">{{ foro.fecha_creacion|date:"d/m/Y" }}</span>
-                </div>
-                <div class="post-content">
-                    <h3>{{ foro.titulo }}</h3>
-                    <p>{{ foro.descripcion }}</p>
-                </div>
-                <div class="post-actions">
-                    <span><i class="far fa-comment"></i> Foro activo</span>
-                    <span><i class="far fa-folder"></i> {{ item.curso.ciclo_escolar }}</span>
-                    <span style="color: var(--turquesa); font-weight: bold;"><i class="fas fa-robot"></i> Resumen IA disponible</span>
-                </div>
-            </div>
-                {% empty %}
-                    {% if forloop.first %}
+                <div id="postsContainer">
                     <div class="post-card">
+                        <div class="post-header">
+                            <div class="user-meta">
+                                <img src="https://ui-avatars.com/api/?name=Carlos+Rivera&background=691C32&color=fff" alt="Avatar de Carlos Rivera">
+                                <div>
+                                    <div class="name">Carlos Rivera López</div>
+                                    <div class="role">Lectura y Escritura • Hace 3 horas</div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="post-content">
-                            <h3>Sin foros activos</h3>
-                            <p>No hay foros registrados para tus cursos activos.</p>
+                            <h3>Dificultades con la comprensión lectora en 3° grado</h3>
+                            <p>¿Alguien tiene estrategias efectivas para alumnos con rezago lector?</p>
+                        </div>
+                        <div class="post-actions">
+                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta, 27 me gustas actuales"><i class="far fa-heart"></i> <span class="like-count">27</span></span>
+                            <span><i class="far fa-comment"></i> 14 comentarios</span>
                         </div>
                     </div>
-                    {% endif %}
-                {% endfor %}
-            {% empty %}
-            <div class="post-card">
-                <div class="post-content">
-                    <h3>Sin cursos activos</h3>
-                    <p>Aún no tienes cursos activos para mostrar foros.</p>
+
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="user-meta">
+                                <img src="https://ui-avatars.com/api/?name=Maria+Lopez&background=007A7C&color=fff" alt="Avatar de María López">
+                                <div>
+                                    <div class="name">María López Hernández</div>
+                                    <div class="role">Matemáticas • Hace 1 día</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <h3>Estrategias para enseñar fracciones con materiales concretos</h3>
+                            <p>Comparto esta actividad con "pizza fraccionaria" que me ha funcionado muy bien.</p>
+                        </div>
+                        <div class="post-actions">
+                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta, 42 me gustas actuales"><i class="far fa-heart"></i> <span class="like-count">42</span></span>
+                            <span><i class="far fa-comment"></i> 31 comentarios</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% endfor %}
         </main>
 
         <aside class="forum-sidebar">
             <div class="ia-sidebar-card">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Mascota Jaguar">
                 <h4 style="margin-top: 0; font-family: 'Montserrat';"><i class="fas fa-paw"></i> Guía Jaguar IA</h4>
-                <p style="font-size: 0.75rem; line-height: 1.5;">
-                    {{ usuario.nombre }}, aquí verás discusiones relacionadas con tus cursos activos.
-                    <br><br>
-                    He analizado los comentarios y aquí hay un recurso oficial de la SEP que podría interesarles:
+                <p style="font-size: 0.8rem; line-height: 1.5;">
+                    Laura, aquí puedes intercambiar experiencias con otros docentes.<br><br>
+                    Mantén un tono respetuoso y constructivo.
                 </p>
-                <a href="#" style="color: var(--dorado); font-size: 0.75rem; font-weight: bold; text-decoration: none;">[Documento: Orientaciones NEM 2026]</a>
             </div>
 
-            <div class="card" style="margin-top: 20px; background: white; padding: 15px; border-radius: 15px; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <h4 style="color: var(--guinda); margin-top: 0;">Usuarios Activos</h4>
-                <div style="display: flex; gap: 5px; margin-top: 10px;">
-                    <img src="https://ui-avatars.com/api/?name=A1" style="width: 25px; border-radius: 50%;">
-                    <img src="https://ui-avatars.com/api/?name=B2" style="width: 25px; border-radius: 50%;">
-                    <img src="https://ui-avatars.com/api/?name=C3" style="width: 25px; border-radius: 50%;">
-                    <span style="color: #999; line-height: 25px;">+142 maestros</span>
+            <div class="card" style="margin-top: 20px;">
+                <h4 style="color: var(--guinda); margin-top: 0;">Usuarios Activos Ahora</h4>
+                <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                    <img src="https://ui-avatars.com/api/?name=AR" style="width: 32px; height: 32px; border-radius: 50%;" alt="Usuario AR conectado">
+                    <img src="https://ui-avatars.com/api/?name=MC" style="width: 32px; height: 32px; border-radius: 50%;" alt="Usuario MC conectado">
+                    <img src="https://ui-avatars.com/api/?name=JP" style="width: 32px; height: 32px; border-radius: 50%;" alt="Usuario JP conectado">
+                    <span style="color: #666; line-height: 32px; font-size: 0.85rem;">+87 conectados</span>
                 </div>
             </div>
         </aside>
     </div>
 
-    <footer class="footer-vino">
+    <footer class="footer-vino contenedor-footer">
         <div style="font-size: 0.75rem; opacity: 0.8; max-width: 800px; margin: 0 auto; line-height: 1.4;">
-            Este espacio colaborativo está alineado con el fomento a la participación voluntaria (Art. 41 LGSDCMM). Las opiniones aquí expresadas son responsabilidad de los autores y deben regirse por los principios de respeto y ética magisterial.
+            Este espacio colaborativo está alineado con el fomento a la participación voluntaria.
         </div>
-        <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 15px;">
+        <div style="font-size: 0.65rem; opacity: 0.5; margin-top: 15px;">
             PLATAFORMA ESCALAFONIA JAGUAR | © 2026 USICAMM MÉXICO
         </div>
     </footer>
 
+    <script>
+        // Publicar nuevo post
+        function publicarPost() {
+            const textarea = document.getElementById('nuevoPost');
+            const container = document.getElementById('postsContainer');
+            
+            if (textarea.value.trim() === "") {
+                alert("Por favor escribe algo antes de publicar.");
+                return;
+            }
+
+            const nuevoPostHTML = `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="user-meta">
+                            <img src="https://ui-avatars.com/api/?name=Laura+Martinez&background=691C32&color=fff" alt="Avatar">
+                            <div>
+                                <div class="name">Laura Martínez García</div>
+                                <div class="role">Ahora</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>${textarea.value.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <div class="post-actions">
+                        <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta, 0 me gustas actuales"><i class="far fa-heart"></i> <span class="like-count">0</span></span>
+                        <span><i class="far fa-comment"></i> 0 comentarios</span>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('afterbegin', nuevoPostHTML);
+            textarea.value = "";
+
+            const msg = document.createElement('div');
+            msg.style.cssText = 'background:#d4edda; color:#155724; padding:10px; border-radius:8px; text-align:center; margin:10px 0;';
+            msg.textContent = '¡Publicación realizada con éxito!';
+            container.insertBefore(msg, container.firstChild);
+            setTimeout(() => msg.remove(), 2500);
+        }
+
+        function limpiarPost() {
+            document.getElementById('nuevoPost').value = "";
+        }
+
+        // Dar Like
+        function darLike(elemento) {
+            const count = elemento.querySelector('.like-count');
+            let likes = parseInt(count.textContent);
+            likes++;
+            count.textContent = likes;
+            elemento.style.color = 'var(--guinda)';
+            elemento.setAttribute('aria-label', `Dar me gusta, ${likes} me gustas actuales`);
+            setTimeout(() => elemento.style.color = '', 800);
+        }
+    </script>
+    
+    <script src="../../static/js/accesibilidad.js"></script>
 </body>
 </html>
