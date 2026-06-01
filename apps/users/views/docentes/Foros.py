@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from apps.users.services.permisos import requiere_rol
-from apps.users.constants import ROLE_DOCENTE
+from apps.users.config.constants import ROLE_DOCENTE
 from apps.users.models import Usuario
 from apps.users.services.foro_service import ForoService
 from apps.users.services.curso_service import CursoService
@@ -23,4 +23,4 @@ def foros(request):
         'cursos': cursos,
         'foro_items': foro_items,
     }
-    return render(request, 'Foros.html', context)
+    return render(request, 'docente/Foros.html', context)

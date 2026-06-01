@@ -4,4 +4,4 @@ from django.views.decorators.csrf import csrf_exempt
 
 def dashboard(request):
     
-    return render(request, 'index_docente.html')
+    return render(request, 'index.html')

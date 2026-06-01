@@ -8,6 +8,7 @@
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="../../static/css/evaluador.css">
     <link rel="stylesheet" href="../../static/css/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>EscalafonIA</title>
@@ -87,7 +88,7 @@
             </ul>
         </nav>
 
-        <div class="principal">
+        <div class="principal" id="principal">
             <div class="contenido">
                 <h1 class="titulo"><i class="fa-solid fa-user"></i> Mi Perfil</h1>
 
@@ -98,8 +99,8 @@
                             <div class="avatar-imagen">
                                 <i class="fa-solid fa-user-graduate"></i>
                             </div>
-                            <h2 class="perfil-nombre-completo">Diego Zaid Garcia Rebollo</h2>
-                            <span class="perfil-rol">Evaluador</span>
+                            <h2 class="perfil-nombre-completo">{{ perfil_usuario.nombre_completo|default:"Usuario" }}</h2>
+                            <span class="perfil-rol">{{ perfil_usuario.rol|default:"Evaluador" }}</span>
                         </div>
 
                         <div class="perfil-card">
@@ -110,8 +111,8 @@
                             <div class="perfil-card-contenido">
                                 <div class="perfil-campo">
                                     <label>CURP:</label>
-                                    <span class="curp-destacado">GARD041208HDFMMCRA</span>
-                                    <button class="btn-copiar" onclick="copiarAlPortapapeles('{{ usuario.curp }}')" title="Copiar CURP">
+                                    <span class="curp-destacado">{{ perfil_usuario.curp|default:"Sin CURP registrada" }}</span>
+                                    <button class="btn-copiar" onclick="copiarAlPortapapeles('{{ perfil_usuario.curp }}')" title="Copiar CURP">
                                         <i class="fa-regular fa-copy"></i>
                                     </button>
                                 </div>
@@ -126,7 +127,7 @@
                             <div class="perfil-card-contenido">
                                 <div class="perfil-campo">
                                     <label>Fecha de Registro:</label>
-                                    <span>23/12/2025</span>
+                                    <span>{% if perfil_usuario.fecha_registro %}{{ perfil_usuario.fecha_registro|date:"d/m/Y" }}{% else %}Sin fecha registrada{% endif %}</span>
                                 </div>
                             </div>
                         </div>
@@ -142,21 +143,21 @@
                             <div class="perfil-card-contenido perfil-grid-2">
                                 <div class="perfil-campo">
                                     <label>Nombre(s):</label>
-                                    <span>Diego Zaid</span>
+                                    <span>{{ perfil_usuario.nombre|default:"Sin nombre" }}</span>
                                 </div>
                                 <div class="perfil-campo">
                                     <label>Apellido Paterno:</label>
-                                    <span>Garcia</span>
+                                    <span>{{ perfil_usuario.apellido_paterno|default:"Sin apellido" }}</span>
                                 </div>
                                 <div class="perfil-campo">
                                     <label>Apellido Materno:</label>
-                                    <span>Rebollo</span>
+                                    <span>{{ perfil_usuario.apellido_materno|default:"Sin apellido materno" }}</span>
                                 </div>
                                 <div class="perfil-campo">
                                     <label>Correo Electrónico:</label>
                                     <span class="correo-info">
                                         <i class="fa-regular fa-envelope"></i>
-                                        dzgr@gmail.com
+                                        {{ perfil_usuario.correo|default:"Sin correo registrado" }}
                                     </span>
                                 </div>
                             </div>
@@ -170,16 +171,16 @@
                             <div class="perfil-card-contenido">
                                 <div class="perfil-campo">
                                     <label>Institución:</label>
-                                    <span class="institucion-nombre">Cinvestav</span>
+                                    <span class="institucion-nombre">{{ perfil_usuario.institucion|default:"Sin institución registrada" }}</span>
                                 </div>
                                 <div class="perfil-grid-2">
                                     <div class="perfil-campo">
                                         <label>Clave de Institución:</label>
-                                        <span class="clave-institucion">09DSU005U</span>
+                                        <span class="clave-institucion">No disponible en modelo Institucion</span>
                                     </div>
                                     <div class="perfil-campo">
                                         <label>Dirección:</label>
-                                        <span>Av Telecomunicaciones</span>
+                                        <span>No disponible en modelo Institucion</span>
                                     </div>
                                 </div>
                             </div>
@@ -232,6 +233,9 @@
 
     <!-- Scripts -->
     <script src="../../static/js/barra-lateral.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
     <script src="../../static/js/accesibilidad.js"></script> 

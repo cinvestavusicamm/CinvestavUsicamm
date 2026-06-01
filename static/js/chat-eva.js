@@ -8,25 +8,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const mensajeInput = document.getElementById('mensaje-input-chatbot');
     const mensajesContainer = document.getElementById('mensajes-chatbot');
 
-    // Estado del chatbot
     let chatbotAbierto = false;
+    let primeraVez = true;
 
-    // Función para abrir el chatbot
+    function getCsrfToken() {
+        const csrfCookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+        return csrfCookie ? csrfCookie.split('=')[1] : '';
+    }
+
     function abrirChatbot() {
         ventanaChatbot.classList.remove('ventana-oculto-chatbot');
         ventanaChatbot.classList.add('ventana-visible-chatbot');
         chatbotAbierto = true;
         mensajeInput.focus();
+        ventanaChatbot.setAttribute('aria-hidden', 'false');
+
+        if (primeraVez) {
+            setTimeout(() => {
+                agregarMensaje('¡Hola! Soy el asistente de EscalafonIA. ¿En qué puedo ayudarte?', 'bot');
+            }, 300);
+            primeraVez = false;
+        }
     }
 
-    // Función para cerrar el chatbot
     function cerrarChatbot() {
         ventanaChatbot.classList.remove('ventana-visible-chatbot');
         ventanaChatbot.classList.add('ventana-oculto-chatbot');
         chatbotAbierto = false;
+        ventanaChatbot.setAttribute('aria-hidden', 'true');
+        btnChatbot.focus();
     }
 
-    // Función para alternar el chatbot (abrir/cerrar)
     function alternarChatbot() {
         if (chatbotAbierto) {
             cerrarChatbot();
@@ -35,145 +47,133 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Función para agregar un mensaje al chat
     function agregarMensaje(texto, tipo) {
         const mensajeDiv = document.createElement('div');
         mensajeDiv.classList.add(tipo === 'usuario' ? 'mensaje-usuario' : 'mensaje-bot');
         mensajeDiv.textContent = texto;
+        mensajeDiv.setAttribute('role', tipo === 'bot' ? 'status' : 'none');
         mensajesContainer.appendChild(mensajeDiv);
         mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
     }
 
-    // Función para mostrar indicador de escritura
     function mostrarIndicadorEscritura() {
         const indicadorDiv = document.createElement('div');
         indicadorDiv.classList.add('indicador-escritura');
         indicadorDiv.id = 'indicador-escritura';
+        indicadorDiv.setAttribute('aria-live', 'polite');
         indicadorDiv.innerHTML = 'Escribiendo<span>.</span><span>.</span><span>.</span>';
         mensajesContainer.appendChild(indicadorDiv);
         mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
     }
 
-    // Función para ocultar indicador de escritura
     function ocultarIndicadorEscritura() {
         const indicador = document.getElementById('indicador-escritura');
-        if (indicador) {
-            indicador.remove();
-        }
+        if (indicador) indicador.remove();
     }
 
-    // Función para enviar mensaje
     async function enviarMensaje() {
         const mensaje = mensajeInput.value.trim();
-        
         if (mensaje === '') return;
 
-        // Agregar mensaje del usuario al chat
         agregarMensaje(mensaje, 'usuario');
-        
-        // Limpiar input
         mensajeInput.value = '';
-
-        // Mostrar indicador de escritura
         mostrarIndicadorEscritura();
 
         try {
-            // Aquí puedes conectar con tu API de chatbot
-            // Por ahora, simulamos una respuesta
-            setTimeout(() => {
-                ocultarIndicadorEscritura();
-                
-                // Respuesta simulada del chatbot
-                let respuesta = obtenerRespuestaSimulada(mensaje);
-                agregarMensaje(respuesta, 'bot');
-            }, 1000);
-            
+            const response = await fetch(agenteAjaxURL, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    pregunta: mensaje,
+                    stream: 'true'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let textoCompleto = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+                        
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.token) {
+                                if (textoCompleto === '') {
+                                    ocultarIndicadorEscritura();
+                                }
+                                textoCompleto += parsed.token;
+                                // Actualizar el último mensaje del bot
+                                const mensajesBot = mensajesContainer.querySelectorAll('.mensaje-bot');
+                                const ultimoMensaje = mensajesBot[mensajesBot.length - 1];
+                                if (ultimoMensaje) {
+                                    ultimoMensaje.textContent = textoCompleto;
+                                } else {
+                                    agregarMensaje(textoCompleto, 'bot');
+                                }
+                                mensajesContainer.scrollTop = mensajesContainer.scrollHeight;
+                            }
+                        } catch (e) {
+                            console.error('Error parseando JSON:', e);
+                        }
+                    }
+                }
+            }
         } catch (error) {
+            console.error('Error:', error);
             ocultarIndicadorEscritura();
             agregarMensaje('Lo siento, hubo un error. Por favor, intenta de nuevo.', 'bot');
         }
     }
 
-    // Función para obtener respuesta simulada (puedes reemplazar con tu API)
-    function obtenerRespuestaSimulada(mensaje) {
-        const mensajeLower = mensaje.toLowerCase();
-        
-        if (mensajeLower.includes('hola') || mensajeLower.includes('buenas')) {
-            return '¡Hola! Soy el asistente de EscalafonIA. ¿En qué puedo ayudarte?';
-        } else if (mensajeLower.includes('evaluaci') || mensajeLower.includes('evaluar')) {
-            return 'Puedes gestionar tus evaluaciones desde la sección "Evaluaciones" en el menú lateral. ¿Necesitas ayuda con alguna evaluación en específico?';
-        } else if (mensajeLower.includes('pregunta') || mensajeLower.includes('banco')) {
-            return 'El banco de preguntas te permite gestionar todas las preguntas para tus evaluaciones. Puedes agregar, editar o eliminar preguntas según necesites.';
-        } else if (mensajeLower.includes('validar') || mensajeLower.includes('validacion')) {
-            return 'Las validaciones te permiten revisar y aprobar las evaluaciones realizadas. Revisa la sección "Validaciones" para ver los pendientes.';
-        } else if (mensajeLower.includes('reporte') || mensajeLower.includes('estadistica')) {
-            return 'Puedes generar reportes detallados desde la sección "Reportes". Allí encontrarás gráficos y análisis de las evaluaciones.';
-        } else if (mensajeLower.includes('calendario') || mensajeLower.includes('fecha')) {
-            return 'El calendario te ayuda a organizar tus evaluaciones y fechas importantes. Puedes ver todas tus actividades programadas allí.';
-        } else if (mensajeLower.includes('ayuda') || mensajeLower.includes('ayudame')) {
-            return 'Claro, puedo ayudarte con: \n- Gestionar evaluaciones\n- Banco de preguntas\n- Validaciones\n- Reportes y estadísticas\n- Calendario de actividades\n¿Sobre qué tema necesitas ayuda?';
-        } else {
-            return 'Gracias por tu mensaje. Un asesor revisará tu consulta. Mientras tanto, ¿puedo ayudarte con algo más sobre las evaluaciones?';
-        }
-    }
-
-    // Función para manejar tecla Enter
-    function manejarEnter(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            enviarMensaje();
-        }
-    }
 
     // Eventos
-    if (btnChatbot) {
-        btnChatbot.addEventListener('click', alternarChatbot);
-    }
-
-    if (btnCerrarChatbot) {
-        btnCerrarChatbot.addEventListener('click', cerrarChatbot);
-    }
-
-    if (btnEnviar) {
-        btnEnviar.addEventListener('click', enviarMensaje);
-    }
-
+    if (btnChatbot) btnChatbot.addEventListener('click', alternarChatbot);
+    if (btnCerrarChatbot) btnCerrarChatbot.addEventListener('click', cerrarChatbot);
+    if (btnEnviar) btnEnviar.addEventListener('click', enviarMensaje);
     if (mensajeInput) {
-        mensajeInput.addEventListener('keypress', manejarEnter);
+        mensajeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); enviarMensaje(); }
+        });
     }
 
-    // Cerrar chatbot al hacer click fuera (opcional)
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && chatbotAbierto) cerrarChatbot();
+    });
+
+    // Cerrar al click fuera
     document.addEventListener('click', function(event) {
         if (chatbotAbierto && ventanaChatbot && btnChatbot) {
-            // Si el click no es dentro del chatbot ni en el botón, cerrar
             if (!ventanaChatbot.contains(event.target) && !btnChatbot.contains(event.target)) {
                 cerrarChatbot();
             }
         }
     });
 
-    // Mensaje de bienvenida al cargar la página (solo si el chatbot está abierto)
-    function mostrarMensajeBienvenida() {
-        setTimeout(() => {
-            if (chatbotAbierto) {
-                agregarMensaje('¡Bienvenido a EscalafonIA! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?', 'bot');
-            }
-        }, 500);
+    // ARIA
+    if (ventanaChatbot) {
+        ventanaChatbot.setAttribute('role', 'dialog');
+        ventanaChatbot.setAttribute('aria-label', 'Chat de asistencia');
+        ventanaChatbot.setAttribute('aria-hidden', 'true');
     }
-
-    // Opcional: Mostrar mensaje de bienvenida la primera vez que se abre
-    let primeraVez = true;
-    const abrirChatbotOriginal = abrirChatbot;
-    abrirChatbot = function() {
-        abrirChatbotOriginal();
-        if (primeraVez) {
-            setTimeout(() => {
-                agregarMensaje('¡Hola! Soy el asistente de EscalafonIA. ¿En qué puedo ayudarte?', 'bot');
-            }, 300);
-            primeraVez = false;
-        }
-    };
-    
-    // Reemplazar la función original
-    window.abrirChatbot = abrirChatbot;
+    if (btnChatbot) {
+        btnChatbot.setAttribute('aria-label', 'Abrir chat de asistencia');
+    }
 });

@@ -619,8 +619,8 @@ function agregarPreguntasATabla(preguntas) {
 
 function inicializarModal() {
     const modalHTML = `
-        <div id="modalAgregarPregunta" class="modal-agregar-pregunta">
-            <div class="modal-contenido">
+        <div id="modalAgregarPregunta" class="modal-overlay">
+            <div class="modal-eventos modal-eventos--xl">
                 <div class="modal-header">
                     <h2><i class="fas fa-plus-circle"></i> Agregar Nueva Pregunta</h2>
                     <button class="btn-cerrar-modal" id="cerrarModalBtn">

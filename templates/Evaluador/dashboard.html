@@ -9,6 +9,7 @@
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="../../static/css/evaluador.css">
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
     <link rel="stylesheet" href="../../static/css/chat-eva.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>EscalafonIA</title>
@@ -88,7 +89,7 @@
             </ul>
         </nav>
 
-        <div class="principal">
+        <div class="principal" id="principal">
             <div class="contenido">
                 <div class="encabezado-pagina">
                     <h1 class="titulo">
@@ -105,7 +106,7 @@
                                 <i class="fas fa-clipboard-list"></i>
                             </div>
                             <div class="tarjeta-contenido">
-                                <h3 class="tarjeta-numero">3</h3>
+                                <h3 class="tarjeta-numero">{{ metricas_evaluador.evaluaciones_pendientes|default:0 }}</h3>
                                 <p class="tarjeta-texto">Evaluaciones pendientes </p>
                             </div>
                         </div>
@@ -125,7 +126,7 @@
                                 <i class="fas fa-clock"></i>
                             </div>
                             <div class="tarjeta-contenido">
-                                <h3 class="tarjeta-numero">48</h3>
+                                <h3 class="tarjeta-numero">{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</h3>
                                 <p class="tarjeta-texto">Preguntas pendientes de validar</p>
                             </div>
                         </div>
@@ -135,7 +136,7 @@
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
                             <div class="tarjeta-contenido">
-                                <h3 class="tarjeta-numero">15</h3>
+                                <h3 class="tarjeta-numero">{{ metricas_evaluador.evaluaciones_programadas|default:0 }}</h3>
                                 <p class="tarjeta-texto">Evaluaciones programadas</p>
                             </div>
                         </div>
@@ -145,7 +146,7 @@
                                 <i class="fas fa-box-archive"></i>
                             </div>
                             <div class="tarjeta-contenido">
-                                <h3 class="tarjeta-numero">12</h3>
+                                <h3 class="tarjeta-numero">{{ metricas_evaluador.preguntas_banco|default:0 }}</h3>
                                 <p class="tarjeta-texto">Preguntas en banco</p>
                             </div>
                         </div>
@@ -160,25 +161,25 @@
                         <i class="fas fa-bolt"></i> Acciones Rápidas
                     </h2>
                     <div class="contenedor-acciones">
-                        <a href="generador_ia.html" class="accion-rapida">
+                        <a href="{% url 'evaluador:banco_preguntas' %}" class="accion-rapida">
                             <i class="fas fa-robot"></i>
                             <span>Generar con IA</span>
                             <small>Crear preguntas automáticamente</small>
                         </a>
-                        <a href="banco_preguntas.html?nueva=true" class="accion-rapida">
+                        <a href="{% url 'evaluador:reportes' %}" class="accion-rapida">
                             <i class="fas fa-plus-circle"></i>
                             <span>Ver Reportes</span>
                             <small></small>
                         </a>
-                        <a href="evaluaciones.html?nueva=true" class="accion-rapida">
+                        <a href="{% url 'evaluador:evaluaciones' %}" class="accion-rapida">
                             <i class="fas fa-file-medical"></i>
                             <span>Nueva Evaluación</span>
                             <small>Crear evaluación completa</small>
                         </a>
-                        <a href="validaciones.html" class="accion-rapida">
+                        <a href="{% url 'evaluador:validaciones' %}" class="accion-rapida">
                             <i class="fas fa-clipboard-check"></i>
                             <span>Revisar Pendientes</span>
-                            <small>48 preguntas pendientes</small>
+                            <small>{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }} preguntas pendientes</small>
                         </a>
                     </div>
                 </section>
@@ -192,42 +193,29 @@
                         <!--<a href="#" class="ver-todo">Ver todo</a>-->
                     </div>
                     <div class="lista-actividad">
-                        <div class="actividad-item">
-                            <div class="actividad-icono actividad-ia">
-                                <i class="fas fa-robot"></i>
+                        {% for evaluacion in evaluaciones_bd %}
+                            <div class="actividad-item">
+                                <div class="actividad-icono actividad-evaluacion">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="actividad-contenido">
+                                    <p><strong>{{ evaluacion.titulo }}</strong></p>
+                                    <span class="actividad-fecha">
+                                        {{ evaluacion.estado }}{% if evaluacion.fecha_creacion %} · {{ evaluacion.fecha_creacion|date:"d/m/Y" }}{% endif %}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="actividad-contenido">
-                                <p><strong>Evaluación Matemáticas</strong></p>
-                                <span class="actividad-fecha">Hace 2 horas</span>
+                        {% empty %}
+                            <div class="actividad-item">
+                                <div class="actividad-icono actividad-revision">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="actividad-contenido">
+                                    <p><strong>Sin evaluaciones registradas en la base de datos</strong></p>
+                                    <span class="actividad-fecha">Agrega cursos/evaluaciones para ver actividad aquí</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="actividad-item">
-                            <div class="actividad-icono actividad-validacion">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="actividad-contenido">
-                                <p><strong>Evaluación Ciencias Naturales</strong></p>
-                                <span class="actividad-fecha">Hace 1 día</span>
-                            </div>
-                        </div>
-                        <div class="actividad-item">
-                            <div class="actividad-icono actividad-evaluacion">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <div class="actividad-contenido">
-                                <p><strong>Evaluación TIC y Pedagogía Digital</strong></p>
-                                <span class="actividad-fecha">Hace 3 días</span>
-                            </div>
-                        </div>
-                        <div class="actividad-item">
-                            <div class="actividad-icono actividad-revision">
-                                <i class="fas fa-user-check"></i>
-                            </div>
-                            <div class="actividad-contenido">
-                                <p><strong>Evaluación Gestión Escolar</strong></p>
-                                <span class="actividad-fecha">Hace 1 semana</span>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </section>
 
@@ -262,6 +250,9 @@
     <script src="../../static/js/barra-lateral.js"></script>
     <script src="../../static/js/menu-usuario.js"></script>
     <script src="../../static/js/accesibilidad.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
     <script src="../../static/js/chat-eva.js"></script>
 
 </body>

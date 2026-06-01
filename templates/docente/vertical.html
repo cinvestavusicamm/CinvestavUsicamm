@@ -7,12 +7,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../static/css/main.css">
+    
+    <!-- CONEXIÓN AL CSS DE ACCESIBILIDAD -->
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+
+    <style>
+        /* Quita los bordes, recuadros y formas circulares de los logos nuevos sin tocar el de Jaguar */
+        .institucionales-logos img {
+            border-radius: 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
 </head>
 <body>
 
-    <header class="header-main">
-        <div class="brand">
+    <!-- Clase .barra-superior añadida para el orden de lectura del Screen Reader -->
+    <header class="header-main barra-superior">
+        <div class="brand" style="display: flex; align-items: center; gap: 15px;">
+            
+            <!-- Tu logo original de Jaguar intacto -->
             <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+            
+            <!-- Contenedor exclusivo para los nuevos logos institucionales sin líneas blancas -->
+            <div class="institucionales-logos" style="display: flex; align-items: center; gap: 12px;">
+                <!-- Logo USICAMM -->
+                <img src="../../static/imagenes/USICAMMm.png" 
+                     alt="Logo USICAMM" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+
+                <!-- Logo Cinvestav -->
+                <img src="../../static/imagenes/cinvestavv.png" 
+                     alt="Logo Cinvestav" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+            </div>
+
             <div class="brand-text">
                 <h1>EscalafonIA Jaguar</h1>
                 <span>Carrera Magisterial 2026</span>
@@ -26,82 +57,86 @@
 
     <nav class="nav-actions-top">
         <div class="breadcrumb">Inicio > Convocatorias > <span>Estatus Vertical</span></div>
-        <a href="#" class="btn-back" style="background-color: var(--turquesa); color: white; border: none;"><i class="fas fa-arrow-left"></i> REGRESAR AL MENÚ</a>
+        <a href="{% url 'Docente:panel_docente' %}" class="btn-back" style="background-color: var(--turquesa); color: white; border: none;"><i class="fas fa-arrow-left"></i> REGRESAR AL MENÚ</a>
     </nav>
 
     <div class="container">
-        <main>
-            <div class="ia-banner-small">
-                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
-                <p><strong>¡Hola, Maestra Elena!</strong> Revisé tus datos y cuentas con los 4 años de experiencia requeridos. Te sugiero priorizar el curso de habilidades para asegurar tus puntos. ¡Mucho éxito!</p>
-            </div>
+        <!-- Clase .principal -->
+        <main class="principal">
+            <!-- Clase .contenido -->
+            <div class="contenido">
+                <div class="ia-banner-small">
+                    <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar Mascota">
+                    <p><strong>¡Hola, Maestra Elena!</strong> Revisé tus datos y cuentas con los 4 años de experiencia requeridos. Te sugiero priorizar el curso de habilidades para asegurar tus puntos. ¡Mucho éxito!</p>
+                </div>
 
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-route"></i> Mi Ruta de Ascenso</h2>
-                <div class="timeline-vertical">
-                    <div class="step completado">
-                        <div class="step-marker"><i class="fas fa-check"></i></div>
-                        <div class="step-content">
-                            <h3>1. Generación de Citas</h3>
-                            <span class="step-date">Finalizado: 18 Ene | Sede: Virtual</span>
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-route"></i> Mi Ruta de Ascenso</h2>
+                    <div class="timeline-vertical">
+                        <div class="step completado">
+                            <div class="step-marker"><i class="fas fa-check"></i></div>
+                            <div class="step-content">
+                                <h3>1. Generación de Citas</h3>
+                                <span class="step-date">Finalizado: 18 Ene | Sede: Virtual</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="step completado">
-                        <div class="step-marker"><i class="fas fa-check"></i></div>
-                        <div class="step-content">
-                            <h3>2. Registro Documental</h3>
-                            <span class="step-date">Finalizado: 06 Feb | Mesa de validación: 04</span>
+                        <div class="step completado">
+                            <div class="step-marker"><i class="fas fa-check"></i></div>
+                            <div class="step-content">
+                                <h3>2. Registro Documental</h3>
+                                <span class="step-date">Finalizado: 06 Feb | Mesa de validación: 04</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="step actual">
-                        <div class="step-marker">3</div>
-                        <div class="step-content">
-                            <h3>3. Curso de Habilidades</h3>
-                            <p class="text-small">Tienes hasta el 15 de mayo para completar los módulos.</p>
-                            <button style="background:var(--turquesa); color:white; border:none; padding:8px 15px; border-radius:6px; font-size:0.75rem; cursor:pointer; font-weight: bold; margin-top: 10px;">
-                                <i class="fas fa-external-link-alt"></i> CONTINUAR EN VENUS
-                            </button>
+                        <div class="step actual">
+                            <div class="step-marker">3</div>
+                            <div class="step-content">
+                                <h3>3. Curso de Habilidades</h3>
+                                <p class="text-small">Tienes hasta el 15 de mayo para completar los módulos.</p>
+                                <button style="background:var(--turquesa); color:white; border:none; padding:8px 15px; border-radius:6px; font-size:0.75rem; cursor:pointer; font-weight: bold; margin-top: 10px;">
+                                    <i class="fas fa-external-link-alt"></i> CONTINUAR EN VENUS
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-marker">4</div>
-                        <div class="step-content">
-                            <h3>4. Apreciación de Conocimientos</h3>
-                            <span class="step-date">Fecha estimada: Junio 2026</span>
+                        <div class="step">
+                            <div class="step-marker">4</div>
+                            <div class="step-content">
+                                <h3>4. Apreciación de Conocimientos</h3>
+                                <span class="step-date">Fecha estimada: Junio 2026</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card">
-                <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Próximas Fechas Importantes</h3>
-                <div class="data-table-container">
-                    <table class="custom-table" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Evento</th>
-                                <th>Periodo</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Curso de Habilidades Directivas</td>
-                                <td>20 Abr - 15 May</td>
-                                <td><span class="table-status status-info">En curso</span></td>
-                            </tr>
-                            <tr>
-                                <td>Consulta de folios para examen</td>
-                                <td>25 May</td>
-                                <td><span class="table-status status-pending">Próximo</span></td>
-                            </tr>
-                            <tr>
-                                <td>Aplicación de Examen</td>
-                                <td>08 Jun</td>
-                                <td><span class="table-status status-pending">Programado</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card">
+                    <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Próximas Fechas Importantes</h3>
+                    <div class="data-table-container">
+                        <table class="custom-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Periodo</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Curso de Habilidades Directivas</td>
+                                    <td>20 Abr - 15 May</td>
+                                    <td><span class="table-status status-info">En curso</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Consulta de folios para examen</td>
+                                    <td>25 May</td>
+                                    <td><span class="table-status status-pending">Próximo</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Aplicación de Examen</td>
+                                    <td>08 Jun</td>
+                                    <td><span class="table-status status-pending">Programado</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
@@ -151,30 +186,36 @@
         </aside>
     </div>
 
-    <footer class="footer-vino">
+    <!-- Clase .contenedor-footer -->
+    <footer class="footer-vino contenedor-footer">
         SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026
     </footer>
 
-    <div class="chat-widget">
+    <!-- ID #ventana-chatbot -->
+    <div class="chat-widget" id="ventana-chatbot">
         <div class="chat-window" id="chatWindow">
             <div class="chat-header">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" style="width:25px; height:25px; border-radius:50%; background:white;">
+                    <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" style="width:25px; height:25px; border-radius:50%; background:white; padding:2px;" alt="Mascota Jaguar">
                     <span>Jaguar IA</span>
                 </div>
-                <button onclick="toggleChatWindow()" style="background:transparent; border:none; color:white; cursor:pointer;"><i class="fas fa-times"></i></button>
+                <button onclick="toggleChatWindow()" style="background:transparent; border:none; color:white; cursor:pointer;" aria-label="Cerrar chat"><i class="fas fa-times"></i></button>
             </div>
             <div class="chat-body" id="chatBody">Maestra Elena, ¿tienes dudas sobre cómo cargar tu constancia de antigüedad?</div>
             <div class="chat-input-area" style="padding: 10px; display: flex; gap: 5px;">
                 <input type="text" placeholder="Escribe..." style="flex:1; border:1px solid #ddd; padding:8px; border-radius:4px; font-size: 0.8rem;">
-                <button style="background:var(--guinda); color:white; border:none; padding:5px 12px; border-radius:4px;"><i class="fas fa-paper-plane"></i></button>
+                <button style="background:var(--guinda); color:white; border:none; padding:5px 12px; border-radius:4px;" aria-label="Enviar mensaje"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
-        <div class="chat-toggle-btn" onclick="toggleChatWindow()"><i class="fas fa-paw"></i></div>
+        <div class="chat-toggle-btn" onclick="toggleChatWindow()" aria-label="Abrir chat de asistencia"><i class="fas fa-paw"></i></div>
     </div>
 
+    <!-- SCRIPTS -->
     <script>
         function toggleChatWindow() { document.getElementById('chatWindow').classList.toggle('open'); }
     </script>
+    
+    <!-- CONEXIÓN AL SCRIPT DE ACCESIBILIDAD AUTOMÁTICA -->
+    <script src="../../static/js/accesibilidad.js"></script>
 </body>
 </html>

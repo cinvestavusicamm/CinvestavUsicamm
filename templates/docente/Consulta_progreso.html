@@ -7,20 +7,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    
+    <style>
+        /* Opción A Mejorada: Quita los bordes, recuadros y sombras de los logos nuevos sin alterar tu logo de Jaguar */
+        .institucionales-logos img {
+            border-radius: 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
 </head>
 <body>
 
-    <header class="header-main">
-        <div class="brand">
-            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+    <header class="header-main barra-superior">
+        <div class="brand" style="display: flex; align-items: center; gap: 15px;">
+            
+            <!-- Tu logo original de Jaguar intacto -->
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" 
+                 alt="Logo"
+                 style="height: 52px; width: auto; object-fit: contain;">
+            
+            <!-- Contenedor exclusivo para los nuevos logos institucionales sin líneas blancas ni recuadros -->
+            <div class="institucionales-logos" style="display: flex; align-items: center; gap: 12px;">
+                <!-- Logo USICAMM -->
+                <img src="../../static/imagenes/USICAMMm.png" 
+                     alt="Logo USICAMM" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+
+                <!-- Logo Cinvestav -->
+                <img src="../../static/imagenes/cinvestavv.png" 
+                     alt="Logo Cinvestav" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+            </div>
+
             <div class="brand-text">
                 <h1>EscalafonIA Jaguar</h1>
                 <span>Portafolio Digital 2026</span>
             </div>
         </div>
-        <div style="text-align: right;">
-            <div style="font-weight: 700; font-size: 0.9rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }}</div>
-            <div style="font-size: 0.65rem; color: var(--dorado);">FOLIO: {{ usuario.folio }}</div>
+        
+        <div class="user-dropdown" style="display: flex; align-items: center; gap: 15px; position: relative;">
+            <div style="text-align: right;">
+                <div style="font-weight: 700; font-size: 0.95rem;">Laura Martínez García</div>
+                <div style="font-size: 0.7rem; color: var(--dorado);">FOLIO: PD-478291-2026</div>
+            </div>
+            
+            <button onclick="toggleUserMenu()" 
+                 style="width: 48px; height: 48px; background: var(--guinda); color: white; 
+                        border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+                        font-weight: 800; font-size: 1.1rem; cursor: pointer; border: 3px solid var(--dorado); outline: none;"
+                 aria-label="Opciones de usuario">
+                LM
+            </button>
+            
+            <ul id="userMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 58px; background: white; min-width: 220px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); border-radius: 8px; list-style: none; padding: 8px 0; z-index: 1000; border: 1px solid #eee;">
+                <li><a href="#" style="padding: 12px 20px; display: block; color: #333; text-decoration: none;"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                <li><a href="#" style="padding: 12px 20px; display: block; color: #333; text-decoration: none;"><i class="fas fa-cog"></i> Configuración</a></li>
+                <li><a href="#" style="padding: 12px 20px; display: block; color: #333; text-decoration: none;"><i class="fas fa-question-circle"></i> Ayuda</a></li>
+                <hr style="margin: 8px 0; border: 0; border-top: 1px solid #eee;">
+                <li><a href="#" style="padding: 12px 20px; display: block; color: #e74c3c; font-weight: bold; text-decoration: none;"><i class="fas fa-power-off"></i> Cerrar Sesión</a></li>
+            </ul>
         </div>
     </header>
 
@@ -34,69 +83,105 @@
     </nav>
 
     <div class="container">
-        
-        <div>
-            <div class="card">
-                <h2 class="card-title">
-                    <i class="fas fa-folder-open"></i> Evidencias de Trayectoria
-                </h2>
-                
-                <ul class="score-list">
-                    <li class="score-item">
-                        <span><strong>Título Profesional y Cédula</strong><br><small>Verificado digitalmente</small></span>
-                        <span class="score-value" style="color: var(--exito);">VALIDADO</span>
-                    </li>
-                    <li class="score-item">
-                        <span><strong>Hoja de Servicios</strong><br><small>12 años reconocidos</small></span>
-                        <span class="score-value" style="color: var(--exito);">VALIDADO</span>
-                    </li>
-                        <span><strong>Cursos Formación Continua</strong><br><small>Acumulado: {{ horas_formacion }} / 200 hrs</small></span>
-                        <span class="score-value" style="color: var(--alerta);">{{ horas_formacion }} HRS</span>
-                    <li class="score-item">
-                        <span style="color: var(--alerta);"><strong>Título de Posgrado (Maestría)</strong><br><small>Sin evidencia cargada</small></span>
-                        <span class="score-value pendiente">FALTANTE</span>
-                    </li>
-                </ul>
-            </div>
+        <main class="principal">
+            <div class="contenido">
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-folder-open"></i> Evidencias de Trayectoria
+                    </h2>
+                    
+                    <div class="progress-path">
+                        <div class="progress-step completado"><span>1</span><small>Título</small></div>
+                        <div class="progress-step completado"><span>2</span><small>Hoja Servicios</small></div>
+                        <div class="progress-step active"><span>3</span><small>Formación</small></div>
+                        <div class="progress-step"><span>4</span><small>Posgrado</small></div>
+                    </div>
 
-            <div class="card" style="border: 2px dashed #ccc; background: #fafafa; text-align: center; padding: 40px;">
-                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #aaa; margin-bottom: 15px;"></i>
-                <p style="font-size: 0.85rem; font-weight: 600; color: #777;">Arrastra aquí nuevos archivos o haz clic para explorar</p>
-                <small style="color: #999;">Formatos aceptados: PDF, JPG (Máx 5MB)</small>
+                    <ul class="score-list">
+                        <li class="score-item">
+                            <span><strong>Título Profesional y Cédula</strong><br><small>Verificado digitalmente</small></span>
+                            <span class="score-value" style="color: var(--exito);">VALIDADO</span>
+                        </li>
+                        <li class="score-item">
+                            <span><strong>Hoja de Servicios</strong><br><small>12 años reconocidos</small></span>
+                            <span class="score-value" style="color: var(--exito);">VALIDADO</span>
+                        </li>
+                        <li class="score-item">
+                            <span><strong>Cursos Formación Continua</strong><br><small>Acumulado: 145 / 200 hrs</small></span>
+                            <span class="score-value" style="color: var(--alerta);">145 HRS</span>
+                        </li>
+                        <li class="score-item">
+                            <span style="color: var(--alerta);"><strong>Título de Posgrado (Maestría)</strong><br><small>Sin evidencia cargada</small></span>
+                            <span class="score-value pendiente">FALTANTE</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="uploadArea" class="card upload-area" style="border: 2px dashed #ccc; background: #fafafa; text-align: center; padding: 50px 20px; cursor: pointer;">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #aaa; margin-bottom: 15px;"></i>
+                    <p style="font-size: 0.95rem; font-weight: 600; color: #555; margin-bottom: 8px;">
+                        Arrastra aquí nuevos archivos o haz clic para explorar
+                    </p>
+                    <small style="color: #999;">Formatos aceptados: PDF, JPG, PNG (Máx 5MB)</small>
+                    <input type="file" id="fileInput" style="display: none;" accept=".pdf,.jpg,.jpeg,.png">
+                </div>
             </div>
-        </div>
+        </main>
 
         <aside>
             <div class="card" style="background-color: #f0f7f6; border-left: 5px solid var(--turquesa);">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                    <i class="fas fa-paw" style="color: var(--turquesa); font-size: 1.5rem;"></i>
+                    <i class="fas fa-paw" style="color: var(--turquesa); font-size: 1.6rem;"></i>
                     <h4 style="margin: 0; color: var(--turquesa);">JAGUAR IA</h4>
                 </div>
                 
-                <p style="font-size: 0.9rem;">
-                    <strong>¡Hola Elena!</strong><br><br>
-                    He analizado tu portafolio y detecté que el rubro de <strong>Posgrado</strong> está vacío. <br><br>
+                <p style="font-size: 0.9rem; line-height: 1.5;">
+                    <strong>¡Hola Laura!</strong><br><br>
+                    He analizado tu portafolio y detecté que el rubro de <strong>Posgrado</strong> está vacío.<br><br>
                     <i class="fas fa-exclamation-circle" style="color: var(--alerta);"></i> Estás dejando de percibir <strong>15 puntos</strong> directos.
                 </p>
 
-                    <div class="score-total">
-                    <span style="font-size: 0.7rem; font-weight: 700; color: #999;">PUNTAJE ACTUAL</span>
-                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--guinda);">{{ puntaje_actual }} / 100</div>
+                <div class="score-total" style="margin: 20px 0;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #999;">PUNTAJE ACTUAL</span>
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--guinda);">78 / 100</div>
                 </div>
 
-                <button class="btn-back" style="width: 100%; margin-top: 15px; background: var(--guinda); color: white; border: none;">
+                <button class="btn-back" style="width: 100%; margin-top: 10px; background: var(--guinda); color: white; border: none; padding: 12px;">
                     CARGAR DOCUMENTO
                 </button>
             </div>
         </aside>
-
-        
-
     </div>
 
-    <footer class="footer-vino">
+    <footer class="footer-vino contenedor-footer">
         SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026
     </footer>
 
+    <script>
+        // Subir documentos
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                alert('Archivo seleccionado: ' + e.target.files[0].name);
+            }
+        });
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-dropdown')) {
+                document.getElementById('userMenu').style.display = 'none';
+            }
+        });
+    </script>
+    
+    <script src="../../static/js/accesibilidad.js"></script>
 </body>
 </html>

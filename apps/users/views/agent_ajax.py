@@ -3,49 +3,67 @@ from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
-from utils.api_response import respuesta_ok, respuesta_error
+import os
+from apps.users.infrastructure.api_response import respuesta_ok, respuesta_error
+from apps.users.services.router_service import RouterService
 
 logger = logging.getLogger(__name__)
 
 FASTAPI_URL = "http://ia_service_core:8003/api/ask"
 FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
+INTERNAL_SERVICE_KEY = os.getenv("MICROSERVICE_SECRET", "clave_estricta_por_defecto_cambiar_en_prod")
 
 
 @csrf_exempt
 def agente_ajax(request):
     if not request.session.get('usuario_id'):
         return respuesta_error(
-                                    request,
-                                    mensaje="No autorizado",
-                                    status=401
-                                )
+            request,
+            mensaje="No autorizado",
+            status=401
+        )
 
     if request.method != "POST":
         return respuesta_error(
-                                    request,
-                                    mensaje="Método no permitido",
-                                    status=405
-                                )
+            request,
+            mensaje="Método no permitido",
+            status=405
+        )
 
     pregunta = request.POST.get('pregunta', '').strip()
-    usar_stream = request.POST.get('stream') == 'true'
 
     if not pregunta:
         return respuesta_error(
-                                    request,
-                                    mensaje="La pregunta no puede estar vacía",
-                                    status=400
-                                )
+            request,
+            mensaje="La pregunta no puede estar vacía",
+            status=400
+        )
+
+    # 🔥 DECISIÓN DEL ROUTER (PRIMERO)
+    tipo = RouterService.decidir(pregunta)
+
+    # 👉 SI ES BD, NO VA A IA
+    if tipo == "bd":
+        return respuesta_ok(
+            request,
+            mensaje="Consulta resuelta desde base de datos",
+            datos={"answer": "Consulta detectada como BD"}
+        )
+
+    # 👇 SOLO SI ES AGENTE
+    usar_stream = request.POST.get('stream') == 'true'
 
     if usar_stream:
         return agente_streaming(pregunta)
 
     try:
         payload = {"prompt": pregunta}
+        headers = {"X-Internal-Service-Key": INTERNAL_SERVICE_KEY}
 
         r = requests.post(
             FASTAPI_URL,
             json=payload,
+            headers=headers,
             timeout=180
         )
         r.raise_for_status()
@@ -53,28 +71,30 @@ def agente_ajax(request):
 
         respuesta = data.get("response", "No se pudo generar una respuesta")
         return respuesta_ok(
-                                request,
-                                mensaje="Respuesta generada correctamente",
-                                datos={"answer": respuesta}
-                            )
+            request,
+            mensaje="Respuesta generada correctamente",
+            datos={"answer": respuesta}
+        )
 
     except Exception as e:
         logger.exception(f"Error inesperado en agente_ajax: {e}")
         return respuesta_error(
-                                request,
-                                mensaje="Ocurrió un error inesperado",
-                                errores=str(e),
-                                status=500
-                            )
+            request,
+            mensaje="Ocurrió un error inesperado",
+            errores=str(e),
+            status=500
+        )
 
 
 def agente_streaming(pregunta):
 
     def generar_stream():
         try:
+            headers = {"X-Internal-Service-Key": INTERNAL_SERVICE_KEY}
             with requests.post(
                 FASTAPI_STREAM_URL,
                 json={"prompt": pregunta},
+                headers=headers,
                 stream=True,
                 timeout=(30, None)
             ) as r:

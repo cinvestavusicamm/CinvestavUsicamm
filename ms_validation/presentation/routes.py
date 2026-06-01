@@ -19,14 +19,14 @@ import logging
 
 from fastapi import APIRouter, HTTPException
 
-from ms_validation.application.validate_process import ValidateProcessUseCase
-from ms_validation.domain.exceptions import LLMOutputParseError, VRAMBusyError
-from ms_validation.domain.schemas import (
+from ms_validation.src.application.validate_process import ValidateProcessUseCase
+from ms_validation.src.domain.exceptions import LLMOutputParseError, VRAMBusyError
+from ms_validation.src.domain.schemas import (
     ProcessInput,
     ValidationResponse,
 )
-from ms_validation.infrastructure.config import settings
-from ms_validation.infrastructure.dependencies import (
+from ms_validation.src.infrastructure.config import settings
+from ms_validation.src.infrastructure.dependencies import (
     get_validate_use_case,
     phi_semaphore,
 )

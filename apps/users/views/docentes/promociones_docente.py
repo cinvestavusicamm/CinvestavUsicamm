@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from apps.users.services.permisos import requiere_rol
-from apps.users.constants import ROLE_DOCENTE
+from apps.users.config.constants import ROLE_DOCENTE
 from apps.users.models import Usuario
 from apps.users.services.proceso_escalafon_service import ProcesoEscalafonService
 
@@ -15,4 +15,4 @@ def promociones_docente(request):
         'usuario': usuario,
         'proceso': proceso
     }
-    return render(request, 'Rutas_promociones.html', context)
+    return render(request, 'docente/Rutas_promociones.html', context)
