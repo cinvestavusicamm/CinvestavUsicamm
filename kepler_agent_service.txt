@@ -1,0 +1,36 @@
+kepler_agent_service/
+│
+├── src/
+│   ├── agent/
+│   │   ├── __init__.py
+│   │   ├── agent.py            # Lógica de negocio del agente (Cerebro)
+│   │   ├── orchestrator.py     # Gestor de flujo y manejo de errores (Cuerpo)
+│   │
+│   ├── llm/
+│   │   ├── __init__.py
+│   │   ├── llm_handler.py      # Cliente HTTP para Ollama/Groq (Infraestructura)
+│   │
+│   ├── prompts/
+│   │   ├── __init__.py
+│   │   ├── prompt_templates.py # Gestión de plantillas de texto
+│   │
+│   ├── database/
+│   │   ├── __init__.py
+│   │   ├── db_manager.py       # Capa de acceso a datos (Futuro SQL)
+│   │
+│   ├── config/
+│   │   ├── __init__.py
+│   │   ├── settings.py         # Configuración centralizada
+│   │
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── logger.py           # Configuración de logs
+│   │   ├── validators.py       # Validaciones de entrada
+│   │
+│   └── main.py                 # Entrypoint FastAPI
+│
+├── chroma_db/                  # (Mantenido)
+├── documents/                  # (Mantenido)
+├── requirements.txt
+├── Dockerfile
+└── README.md

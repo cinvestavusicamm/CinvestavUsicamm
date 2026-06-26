@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatus del Proceso | EscalafonIA Jaguar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/main.css">
+    
+    <!-- CONEXIÓN AL CSS DE ACCESIBILIDAD (AÑADIDO) -->
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+
+    <style>
+        /* Opción A Mejorada: Quita los bordes, recuadros y formas de los logos nuevos sin alterar tu logo de Jaguar */
+        .institucionales-logos img {
+            border-radius: 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Se añade la clase de control 'barra-superior' sin alterar tus estilos -->
+    <header class="header-main barra-superior">
+        <div class="brand" style="display: flex; align-items: center; gap: 15px;">
+            
+            <!-- Tu logo original de Jaguar intacto -->
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" 
+                 alt="Logo Jaguar" 
+                 style="height: 52px; width: auto; object-fit: contain;">
+
+            <!-- Contenedor exclusivo para los nuevos logos institucionales sin líneas blancas ni recuadros -->
+            <div class="institucionales-logos" style="display: flex; align-items: center; gap: 12px;">
+                <!-- Logo USICAMM -->
+                <img src="../../static/imagenes/USICAMMm.png" 
+                     alt="Logo USICAMM" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+
+                <!-- Logo Cinvestav -->
+                <img src="../../static/imagenes/cinvestavv.png" 
+                     alt="Logo Cinvestav" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+            </div>
+
+            <div class="brand-text">
+                <h1>EscalafonIA Jaguar</h1>
+                <span>Procesos de Carrera Magisterial 2026</span>
+            </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="text-align: right;">
+                <div style="font-weight: 700; font-size: 0.95rem;">Laura Martínez García</div>
+                <div style="font-size: 0.7rem; color: var(--dorado);">Folio USICAMM: PD-478291-2026</div>
+            </div>
+            
+            <!-- Foto del docente con menú desplegable -->
+            <img src="https://ui-avatars.com/api/?name=Laura+Martinez&background=691C32&color=fff" 
+                 alt="Foto de Laura Martínez" 
+                 class="user-photo" 
+                 onclick="toggleUserMenu()">
+            
+            <!-- Menú desplegable -->
+            <div class="user-dropdown" id="userDropdown" style="position: relative;">
+                <ul id="userMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 58px; background: white; min-width: 220px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); border-radius: 8px; list-style: none; padding: 8px 0; z-index: 1000; border: 1px solid #eee;">
+                    <li><a href="#" style="padding: 12px 20px; display: block; color: #333; text-decoration: none;"><i class="fas fa-cog"></i> Configuración</a></li>
+                    <li><a href="#" style="padding: 12px 20px; display: block; color: #333; text-decoration: none;"><i class="fas fa-question-circle"></i> Ayuda</a></li>
+                    <hr style="margin: 8px 0;">
+                    <li><a href="#" style="padding: 12px 20px; display: block; color: #e74c3c; font-weight: bold; text-decoration: none;"><i class="fas fa-power-off"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-actions-top">
+        <div class="breadcrumb">
+            Inicio > Convocatorias > <span>Estatus Promoción Horizontal</span>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'Docente:panel_docente' %}" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR AL MENÚ</a>
+        </div>
+    </nav>
+
+    <!-- Se añade la clase 'principal' y el contenedor interno 'contenido' requeridos por el script -->
+    <div class="container principal">
+        <div class="contenido" style="width: 100%; display: inherit; gap: inherit; grid-template-columns: inherit;">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-route"></i> Ruta del Proceso</h2>
+                <p style="font-size: 0.9rem; color: #666;">Seguimiento detallado de su participación en el proceso de Promoción Horizontal 2026.</p>
+
+                <div class="timeline-vertical">
+                    <div class="step completado">
+                        <div class="step-marker"><i class="fas fa-check"></i></div>
+                        <div class="step-content">
+                            <h3 class="step-title">1. Convocatoria y Acuerdos</h3>
+                            <p class="step-desc">Publicación del acuerdo y convocatoria en la página de USICAMM. Generación de usuario en Plataforma VENUS.</p>
+                            <span class="step-date">Finalizado: 15 Ene 2026</span>
+                        </div>
+                    </div>
+
+                    <div class="step completado">
+                        <div class="step-marker"><i class="fas fa-check"></i></div>
+                        <div class="step-content">
+                            <h3 class="step-title">2. Registro y Verificación</h3>
+                            <p class="step-desc">Generación de cita y entrega documental para validación de los elementos multifactoriales.</p>
+                            <span class="step-date">Finalizado: 28 Feb 2026</span>
+                        </div>
+                    </div>
+
+                    <div class="step actual">
+                        <div class="step-marker"></div>
+                        <div class="step-content">
+                            <h3 class="step-title">3. Apreciación de Conocimientos</h3>
+                            <p class="step-desc">Aplicación del instrumento de apreciación de conocimientos y aptitudes (CENEVAL). Revise su sede y horario.</p>
+                            <div style="margin-top: 10px;">
+                                <span class="step-date" style="background: rgba(245, 127, 23, 0.1); color: var(--alerta);">Próximo evento: 18 May 2026</span>
+                                <button style="margin-left: 10px; background: var(--alerta); border: none; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: bold;">VER DETALLES SEDE</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-marker"></div>
+                        <div class="step-content">
+                            <h3 class="step-title" style="color:#999;">4. Consulta de Resultados</h3>
+                            <p class="step-desc">Publicación de resultados por participante y periodo para recurso de reconsideración.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-marker"></div>
+                        <div class="step-content">
+                            <h3 class="step-title" style="color:#999;">5. Asignación de Incentivos</h3>
+                            <p class="step-desc">Publicación del listado nominal ordenado de resultados y evento público de asignación.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card" style="margin-bottom: 20px;">
+                    <h2 class="card-title" style="font-size: 1.1rem;"><i class="fas fa-chart-pie"></i> Mis Multifactoriales</h2>
+                    <ul class="score-list">
+                        <li class="score-item">
+                            <span class="score-label">Formación Profesional</span>
+                            <span class="score-value">15 / 15</span>
+                        </li>
+                        <li class="score-item">
+                            <span class="score-label">Antigüedad</span>
+                            <span class="score-value">22 / 35</span>
+                        </li>
+                        <li class="score-item">
+                            <span class="score-label">Desarrollo Profesional</span>
+                            <span class="score-value">20 / 20</span>
+                        </li>
+                        <li class="score-item">
+                            <span class="score-label">Apreciación (Examen)</span>
+                            <span class="score-value pendiente">Pendiente / 30</span>
+                        </li>
+                    </ul>
+                    <div class="score-total">
+                        <div style="font-size: 0.8rem; color: #666; font-weight: 600;">Puntaje Parcial Acumulado</div>
+                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--guinda);">57 <span style="font-size: 1rem; color: #999;">/ 70</span></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title" style="font-size: 1.1rem;"><i class="fas fa-folder-open"></i> Expediente Digital</h2>
+                    
+                    <a href="#" class="doc-btn">
+                        <div>
+                            <i class="fas fa-file-pdf" style="color:#D32F2F; margin-right: 8px;"></i> Ficha de Registro Oficial
+                        </div>
+                        <i class="fas fa-download"></i>
+                    </a>
+
+                    <a href="#" class="doc-btn">
+                        <div>
+                            <i class="fas fa-file-pdf" style="color:#D32F2F; margin-right: 8px;"></i> Constancia de Validación
+                        </div>
+                        <i class="fas fa-download"></i>
+                    </a>
+
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button style="background: transparent; border: 2px solid var(--turquesa); color: var(--turquesa); padding: 10px 15px; border-radius: 8px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.3s; width: 100%;">
+                            <i class="fas fa-headset"></i> MESA DE AYUDA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Se añade la clase de control 'contenedor-footer' sin tocar tus estilos -->
+    <footer class="footer-vino contenedor-footer">
+        <div class="legal">
+            Sistema alineado con la <strong>Ley General del Sistema para la Carrera de las Maestras y los Maestros</strong>. La transparencia de este proceso es garantizada por la auditoría interna de la SEP y protegida por la LGPDPPSO.
+        </div>
+        <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 15px;">
+            ESCALAFONIA JAGUAR V1.0 | USICAMM MÉXICO 2026
+        </div>
+    </footer>
+
+    <script>
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-dropdown') && !e.target.classList.contains('user-photo')) {
+                const menu = document.getElementById('userMenu');
+                if (menu) menu.style.display = 'none';
+            }
+        });
+    </script>
+    
+    <!-- ENLACE AL SCRIPT DE ACCESIBILIDAD AUTOMÁTICA (AÑADIDO) -->
+    <script src="../../static/js/accesibilidad.js"></script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Perfil Propio | EscalafonIA Jaguar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/main.css">
+    
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    
+    <style>
+        /* Estructura global para asegurar el footer estable en la parte inferior */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        body {
+            display: grid;
+            grid-template-rows: auto auto 1fr auto;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Quitar viñetas del menú */
+        .dropdown-menu {
+            list-style: none;
+        }
+
+        /* Opción A: Limpia los recuadros, bordes y formas circulares de los logos nuevos sin alterar el de Jaguar */
+        .institucionales-logos img {
+            border-radius: 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Clase .barra-superior añadida para el orden de lectura semántica del Screen Reader -->
+    <header class="header-main barra-superior" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+        <div class="brand" style="display: flex; align-items: center; gap: 15px;">
+            
+            <!-- Tu logo original de Jaguar intacto -->
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" 
+                 alt="Logo Jaguar" 
+                 style="height: 52px; width: auto; object-fit: contain;">
+
+            <!-- Contenedor exclusivo para los nuevos logos institucionales sin líneas blancas -->
+            <div class="institucionales-logos" style="display: flex; align-items: center; gap: 12px;">
+                <!-- Logo USICAMM -->
+                <img src="../../static/imagenes/USICAMMm.png" 
+                     alt="Logo USICAMM" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+
+                <!-- Logo Cinvestav -->
+                <img src="../../static/imagenes/cinvestavv.png" 
+                     alt="Logo Cinvestav" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+            </div>
+
+            <div class="brand-text">
+                <h1 style="font-size: 1.7rem; margin: 0; font-family: 'Montserrat', sans-serif; font-weight: 700;">ESCALAFONIA JAGUAR</h1>
+            </div>
+        </div>
+        
+        <div class="header-right" style="display: flex; align-items: center; gap: 20px;">
+            <div class="header-info-right" style="color: white; font-size: 0.85rem; font-weight: 600;">
+                <i class="fas fa-lock"></i> MODO: CONSULTA DE PERFIL (RBAC)
+            </div>
+
+            <a href="#" class="btn-regresar-directo" style="color: white; font-size: 0.9rem; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 4px;">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </a>
+
+            <div class="user-dropdown" id="userDropdown" style="position: relative; display: inline-block;">
+                <button onclick="toggleUserMenu()" style="background: none; border: 1px solid white; color: white; padding: 8px 14px; border-radius: 4px; font-family: inherit; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; outline: none;">
+                    <i class="fas fa-user-cog"></i> Opciones <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </button>
+                
+                <ul class="dropdown-menu" id="userMenu" style="display: none; position: absolute; right: 0; top: 42px; background: white; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 4px; list-style: none; padding: 5px 0; margin: 0; z-index: 1000; border: 1px solid #ddd;">
+                    <li><a href="#" style="color: #333; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.85rem;"><i class="fas fa-question-circle" style="margin-right: 8px; width: 15px;"></i> Ayuda</a></li>
+                    <li><a href="#" style="color: #333; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.85rem;"><i class="fas fa-key" style="margin-right: 8px; width: 15px;"></i> Cambiar Contraseña</a></li>
+                    <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
+                    <li><a href="#" style="color: red; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.85rem; font-weight: bold;"><i class="fas fa-power-off" style="margin-right: 8px; width: 15px;"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-actions-top">
+        <div class="breadcrumb">
+            Inicio > Docente > <span>Perfil Propio</span>
+        </div>
+        <div class="nav-buttons">
+            <a href="#" class="btn-back" style="background-color: var(--turquesa); color: white; border: none; padding: 10px 20px;">
+                <i class="fas fa-th-large"></i> VOLVER AL TABLERO
+            </a>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-bottom: 30px;">
+        
+        <aside>
+            <div class="card" style="text-align: center;">
+                <div style="position: relative; width: 125px; margin: 0 auto 20px;">
+                    <div id="imagePreview" class="avatar-imagen" style="width: 120px; height: 120px; background-image: url('https://ui-avatars.com/api/?name={{ usuario.nombre }}+{{ usuario.apellido_paterno }}&background=691C32&color=fff'); background-size: cover; background-position: center; border: 4px solid var(--dorado); margin: 0 auto;">
+                    </div>
+                    
+                    <div onclick="document.getElementById('fileInput').click();" 
+                         style="position: absolute; bottom: 5px; right: 5px; background: var(--turquesa); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);"
+                         title="Subir foto desde galería">
+                        <i class="fas fa-camera" style="font-size: 0.9rem;"></i>
+                    </div>
+                    
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                </div>
+
+                <h3 class="title-main">{{ usuario.nombre }} {{ usuario.apellido_paterno }} {{ usuario.apellido_materno }}</h3>
+                <p class="text-small">{{ usuario.rol.nombre|default:"Docente" }}</p>
+                
+                <div class="puntaje-box">
+                    <span class="text-small">CURP</span>
+                    <strong style="display: block; font-family: monospace; color: var(--guinda);">{{ usuario.curp|default:"N/A" }}</strong>
+                </div>
+
+                <div class="alert-pill success" style="margin-top: 15px; width: 100%; justify-content: center;">
+                    <i class="fas fa-check-circle"></i> VERIFICACIÓN SEP ACTIVA
+                </div>
+                <p style="font-size: 0.6rem; color: #999; margin-top: 10px;">Sincronización: 26/04/2026</p>
+            </div>
+        </aside>
+
+        <main class="principal">
+            <div class="contenido">
+                <div class="card">
+                    <h4 class="card-title">Información Laboral (Solo Lectura)</h4>
+                    <div class="profile-summary">
+                        <div class="stat-box">
+                            <span>Número de Empleado</span>
+                            <strong>{{ usuario.numero_empleado|default:"N/A" }}</strong>
+                        </div>
+                        <div class="stat-box">
+                            <span>Antigüedad Sistemática</span>
+                            <strong>{{ usuario.antiguedad|default:"N/A" }}</strong>
+                        </div>
+                        <div class="stat-box">
+                            <span>Nivel Actual</span>
+                            <strong>{{ usuario.nivel|default:"N/A" }}</strong>
+                        </div>
+                        <div class="stat-box">
+                            <span>Centro de Trabajo</span>
+                            <strong>{{ usuario.institucion.nombre|default:"N/A" }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4 class="card-title">Estatus de Promoción Horizontal</h4>
+                    {% if proceso %}
+                    <div class="profile-summary">
+                        <div class="stat-box">
+                            <span>Incentivo Actual</span>
+                            <strong style="color: var(--exito);">{{ proceso.incentivo_actual|default:"N/A" }}</strong>
+                        </div>
+                        <div class="stat-box">
+                            <span>Próxima Evaluación</span>
+                            <strong>{{ proceso.proxima_evaluacion|date:"d F Y"|default:"N/A" }}</strong>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p style="font-size: 0.85rem; color: #666;">No hay proceso de promoción activo.</p>
+                    {% endif %}
+                </div>
+
+                <div class="card ia-card">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <div class="ia-badge-pulse"></div>
+                        <h3 style="margin: 0;"><i class="fas fa-paw"></i> Resumen Jaguar IA</h3>
+                    </div>
+                    <p>{{ usuario.nombre }}, su perfil es <strong>idóneo</strong> para la convocatoria de Promoción 2026.</p>
+                    <p class="text-small" style="color: white; opacity: 0.9; margin-top: 10px; line-height: 1.4;">
+                        Detectamos que cuenta con el puntaje máximo en antigüedad. Para asegurar su posición, le sugerimos completar 20 horas adicionales de formación antes del cierre del dictamen.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-vino contenedor-footer" style="width: 100%; text-align: center; box-sizing: border-box; margin-top: auto;">
+        SISTEMA ALINEADO CON LGSDCMM, NEM Y LGPDPPSO | MÉXICO 2026
+    </footer>
+
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').style.backgroundImage = 'url(' + e.target.result + ')';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
+
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.user-dropdown')) {
+                const menu = document.getElementById('userMenu');
+                if (menu) menu.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script src="../../static/js/accesibilidad.js"></script>
+</body>
+</html>

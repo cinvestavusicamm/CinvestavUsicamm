@@ -1,0 +1,211 @@
+<div id="agent-container">
+
+    <div id="agent-avatar">
+        <dotlottie-wc  
+            src="https://lottie.host/d4ded447-01ae-44c2-90e0-065bf8d88bd3/h6au3WMoSi.lottie"
+            style="width: 80px; height: 80px;"
+            autoplay
+            loop>
+        </dotlottie-wc>
+    </div>
+
+    <div id="agent-bubble">
+        <div id="agent-header">
+            <span>Asistente Jaguar 🐆</span>
+            <button id="close-chat">✖</button>
+        </div>
+
+        <div id="chat-messages"></div>
+
+        <div id="chat-input-container">
+            <input id="chat-input" placeholder="Escribe tu duda..." />
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* CONTENEDOR */
+#agent-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+/* CHAT */
+#agent-bubble {
+    position: fixed;
+    bottom: 110px;
+    right: 20px;
+    width: 320px;
+    height: 420px;
+    background: white;
+    border-radius: 15px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* HEADER */
+#agent-header {
+    background: #691C32;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* MENSAJES */
+#chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* INPUT */
+#chat-input-container {
+    border-top: 1px solid #ddd;
+    padding: 10px;
+}
+
+#chat-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 20px;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const input = document.getElementById("chat-input");
+    const avatar = document.getElementById("agent-avatar");
+    const bubble = document.getElementById("agent-bubble");
+    const closeBtn = document.getElementById("close-chat");
+
+    // 🔥 Detectar página automáticamente
+    const page = document.body.dataset.page;
+
+    // 🔥 Contexto dinámico
+    let context = "";
+
+    if (page === "index_docente") {
+    context = "El docente está en su página principal donde puede ver herramientas, cursos y su información.";
+}
+    else if (page === "guia") {
+        context = "El usuario está en la guía donde se explican los pasos para usar la plataforma.";
+    } 
+    else if (page === "registro") {
+        context = "El usuario está en la sección de registro donde debe ingresar sus datos.";
+    } 
+    else {
+        context = "El usuario navega dentro de la plataforma EscalafonIA.";
+    }
+
+    // 🔹 Abrir chat
+    avatar.addEventListener("click", () => {
+        bubble.style.display = "flex";
+    });
+
+    // 🔹 Cerrar chat
+    closeBtn.addEventListener("click", () => {
+        bubble.style.display = "none";
+    });
+
+    // 🔹 Typing
+    function showTyping() {
+        const chat = document.getElementById("chat-messages");
+
+        const typingDiv = document.createElement("div");
+        typingDiv.classList.add("typing");
+        typingDiv.id = "typing-indicator";
+        typingDiv.innerHTML = `<span></span><span></span><span></span>`;
+
+        chat.appendChild(typingDiv);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function removeTyping() {
+        const typing = document.getElementById("typing-indicator");
+        if (typing) typing.remove();
+    }
+
+    function appendMessage(msg, type) {
+        const chat = document.getElementById("chat-messages");
+
+        const div = document.createElement("div");
+        div.classList.add("msg", type);
+        div.textContent = msg;
+
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    // 🔥 MENSAJE AUTOMÁTICO SEGÚN PÁGINA
+    async function sendAutoMessage() {
+        try {
+            const chat = document.getElementById("chat-messages");
+
+            chat.innerHTML = "";
+            showTyping();
+
+            const res = await fetch("http://localhost:8003/api/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    prompt: "Explica brevemente esta página en máximo 2 líneas.",
+                    context: context
+                })
+            });
+
+            const data = await res.json();
+
+            removeTyping();
+            appendMessage(data.response || "Sin respuesta", "bot");
+
+        } catch (error) {
+            removeTyping();
+            appendMessage("Error al conectar", "bot");
+        }
+    }
+
+    // 🔥 Se ejecuta al cargar
+    setTimeout(sendAutoMessage, 800);
+
+    // 🔹 Enviar mensaje usuario
+    input.addEventListener("keypress", async function(e) {
+        if (e.key === "Enter") {
+
+            const message = this.value.trim();
+            if (!message) return;
+
+            this.value = "";
+
+            appendMessage(message, "user");
+            showTyping();
+
+            try {
+                const res = await fetch("http://localhost:8003/api/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        prompt: message,
+                        context: context
+                    })
+                });
+
+                const data = await res.json();
+
+                removeTyping();
+                appendMessage(data.response || "Sin respuesta", "bot");
+
+            } catch (error) {
+                removeTyping();
+                appendMessage("Error al conectar", "bot");
+            }
+        }
+    });
+
+});
+</script>
