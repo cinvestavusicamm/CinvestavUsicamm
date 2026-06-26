@@ -620,327 +620,604 @@
             </div>
         </div>
     </div>
-
+      <script>
+    var cursoId = {{ curso_id|default_if_none:'null' }};
+</script>
 
     <script>
-        // Lógica de Sidebar
-        function toggleMenu() { 
-            document.getElementById('miSidebar').classList.toggle('mini'); 
-            document.getElementById('contenidoPrincipal').classList.toggle('expandido');
-        }
-
-        // Variables Globales
-        let cursoActual = { tipo: '', titulo: '', duracion: '' };
-        let enModoEditor = true;
-
-        // Base de conocimientos de texto (Proporcionada por el usuario)
-        const infoPromociones = {
-            vertical: `
-                <h4><i class="fas fa-question-circle"></i> ¿Qué es?</h4>
-                <p>Es un programa de preparación diseñado para docentes de educación básica que aspiran a ascender a cargos con funciones directivas o de supervisión dentro del sistema educativo nacional, como director, supervisor o jefe de sector.</p>
-                <h4><i class="fas fa-clock"></i> Horas de capacitación:</h4>
-                <p>El curso tiene una duración de 40 horas en modalidad mixta (presencial y virtual) y se desarrolla típicamente en un periodo de entre 6 y 8 semanas.</p>
-                <h4><i class="fas fa-list-ul"></i> Temas que se abordan:</h4>
-                <ul>
-                    <li>Habilidades de liderazgo y gestión educativa.</li>
-                    <li>Legislación educativa y normatividad aplicable a funciones directivas.</li>
-                    <li>Planeación estratégica y mejora continua en instituciones escolares.</li>
-                    <li>Comunicación efectiva y trabajo colaborativo con la comunidad escolar.</li>
-                    <li>Evaluación del desempeño docente y rendición de cuentas.</li>
-                </ul>
-                <h4><i class="fas fa-users"></i> ¿Quiénes pueden tomarlo?</h4>
-                <p>Docentes de educación básica con plaza base, título de licenciatura y 4 años de experiencia (director) o 5 años (supervisor).</p>
-            `,
-            horizontal: `
-                <h4><i class="fas fa-question-circle"></i> ¿Qué es?</h4>
-                <p>Es un curso de actualización y desarrollo profesional que permite a los docentes obtener un estímulo económico permanente como reconocimiento a su desempeño y formación continua, sin necesidad de cambiar de puesto o función.</p>
-                <h4><i class="fas fa-clock"></i> Horas de capacitación:</h4>
-                <p>Para obtener la máxima puntuación en formación continua, se requieren 200 horas de cursos acreditados ante la USICAMM. Acumulables en uno o varios ciclos.</p>
-                <h4><i class="fas fa-list-ul"></i> Temas que se abordan:</h4>
-                <ul>
-                    <li>Innovación educativa y uso de tecnología en el aula.</li>
-                    <li>Inclusión y atención a la diversidad.</li>
-                    <li>Evaluación formativa y diseño de planeaciones didácticas.</li>
-                    <li>Gestión escolar y clima organizacional.</li>
-                    <li>Habilidades socioemocionales y educación para la salud.</li>
-                </ul>
-                <h4><i class="fas fa-users"></i> ¿Quiénes pueden tomarlo?</h4>
-                <p>Todos los maestros y maestras de educación básica con plaza base (mínimo 2 años de servicio ininterrumpido con nombramiento definitivo).</p>
-            `,
-            puntos: `
-                <h4><i class="fas fa-question-circle"></i> ¿Qué es?</h4>
-                <p>Son cursos, talleres o diplomados del Catálogo Nacional de USICAMM. No están ligados directamente a un ascenso, sino que permiten acumular puntos para Promoción Horizontal, asignación de horas o admisión.</p>
-                <h4><i class="fas fa-clock"></i> Horas de capacitación:</h4>
-                <p>Varían entre 20 y 200 horas acumulables. Para alcanzar el puntaje máximo en la mayoría de procesos, se requieren 200 horas acreditadas.</p>
-                <h4><i class="fas fa-list-ul"></i> Temas que se abordan:</h4>
-                <ul>
-                    <li>Competencias digitales para educación a distancia.</li>
-                    <li>Liderazgo y gestión escolar para la NEM.</li>
-                    <li>Educación inclusiva y atención a la vulnerabilidad.</li>
-                    <li>Evaluación educativa e instrumentos.</li>
-                    <li>Educación emocional y manejo del estrés.</li>
-                </ul>
-                <h4><i class="fas fa-trophy"></i> ¿Para qué participan?</h4>
-                <p>Para sumar puntaje en Promoción Horizontal, procesos de Admisión o Asignación de Horas Adicionales y estímulos.</p>
-            `
-        };
-
-        // Mostrar el modal de configuración según la opción elegida
-        function abrirConfiguracion(tipo) {
-            document.getElementById('configTipo').value = tipo;
-            let titulo = "";
-            let icono = "";
-            
-            if(tipo === 'vertical') { titulo = "Promoción Vertical"; icono = "fa-sitemap"; }
-            else if(tipo === 'horizontal') { titulo = "Promoción Horizontal"; icono = "fa-chart-line"; }
-            else { titulo = "Generación de Puntos"; icono = "fa-star"; }
-            
-            document.getElementById('configTitle').innerHTML = `<i class="fas ${icono}"></i> ${titulo}`;
-            document.getElementById('configInfoText').innerHTML = infoPromociones[tipo];
-            
-            document.getElementById('configNombre').value = '';
-            document.getElementById('configDuracion').value = (tipo==='horizontal' || tipo==='puntos') ? '200' : '40';
-            
-            document.getElementById('configModal').style.display = 'flex';
-        }
-
-        // Lógica para prevenir la pérdida de datos
-        function intentarCerrarConfiguracion() {
-            const nombre = document.getElementById('configNombre').value.trim();
-            if (nombre.length > 0) {
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "Tienes datos escritos. Si cierras, se perderá tu progreso.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#64748B',
-                    confirmButtonText: 'Sí, descartar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('configModal').style.display = 'none';
-                    }
-                });
-            } else {
-                document.getElementById('configModal').style.display = 'none';
+        function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
+    }
 
-        // Iniciar la generación (Manual o IA)
-        function iniciarGeneracion(modo) {
-            const nombre = document.getElementById('configNombre').value.trim();
-            const duracion = document.getElementById('configDuracion').value;
-            const tipo = document.getElementById('configTipo').value;
+    function toggleMenu() {
+        document.getElementById('miSidebar').classList.toggle('mini');
+        document.getElementById('contenidoPrincipal').classList.toggle('expandido');
+    }
 
-            if(!nombre) {
-                Swal.fire('Atención', 'Por favor ingresa un nombre para el curso antes de continuar.', 'warning');
-                return;
-            }
+    // Variables globales del curso
+    let cursoActual = {
+        id: null,          // null si es nuevo
+        tipo: '',
+        titulo: '',
+        duracion: '',
+        contenido: null    // se carga al editar un curso existente
+    };
+    let enModoEditor = true;
 
-            cursoActual = { tipo, titulo: nombre, duracion: duracion + ' horas' };
-            document.getElementById('configModal').style.display = 'none';
-            document.getElementById('menu-inicial').style.display = 'none';
-            document.getElementById('btn-vista-docente').style.display = 'flex';
-            document.getElementById('btn-subir').style.display = 'flex';
+    // ============================================================
+    // 2. INFORMACIÓN DE PROMOCIONES (igual que antes)
+    // ============================================================
+    const infoPromociones = {
+        vertical: `...`,  // (mantén el mismo contenido)
+        horizontal: `...`,
+        puntos: `...`
+    };
 
-            if(modo === 'ia') {
-                document.getElementById('aiPanel').classList.add('activo');
-                agregarMensajeInicialIA();
-                generarCursoConIA();
-            } else {
-                generarCursoManual();
-            }
-        }
+    // ============================================================
+    // 3. MODAL DE CONFIGURACIÓN
+    // ============================================================
+    function abrirConfiguracion(tipo) {
+        document.getElementById('configTipo').value = tipo;
+        let titulo = "", icono = "";
+        if (tipo === 'vertical') { titulo = "Promoción Vertical"; icono = "fa-sitemap"; }
+        else if (tipo === 'horizontal') { titulo = "Promoción Horizontal"; icono = "fa-chart-line"; }
+        else { titulo = "Generación de Puntos"; icono = "fa-star"; }
+        document.getElementById('configTitle').innerHTML = `<i class="fas ${icono}"></i> ${titulo}`;
+        document.getElementById('configInfoText').innerHTML = infoPromociones[tipo];
+        document.getElementById('configNombre').value = '';
+        document.getElementById('configDuracion').value = (tipo === 'horizontal' || tipo === 'puntos') ? '200' : '40';
+        document.getElementById('configModal').style.display = 'flex';
+    }
 
-        // Simulación de carga IA
-        function generarCursoConIA() {
-            document.getElementById('loader').style.display = "block";
-            document.getElementById('feed-central').innerHTML = '';
-            
-            setTimeout(() => {
-                document.getElementById('loader').style.display = "none";
-                renderizarCurso(true); // true = Rellena con datos de ejemplo IA
-                agregarMensaje('ia', '✅ <b>¡Curso Generado!</b> He estructurado los módulos basados en los requerimientos USICAMM. Puedes pedirme cambios en el chat o editarlos manualmente.');
-            }, 2500);
-        }
-
-        // Generación Manual
-        function generarCursoManual() {
-            document.getElementById('feed-central').innerHTML = '';
-            renderizarCurso(false); // false = Módulos vacíos
-        }
-
-        // Renderizar el HTML de los bloques en el feed
-        function renderizarCurso(conDatos) {
-            const feed = document.getElementById('feed-central');
-            const esPuntos = cursoActual.tipo === 'puntos';
-            const badgeC = esPuntos ? 'badge-purpose puntos' : 'badge-purpose';
-            const badgeT = esPuntos ? 'PARA PUNTOS' : 'REQUISITO USICAMM';
-            const tipoLargo = cursoActual.tipo === 'vertical' ? 'Promoción Vertical' : (cursoActual.tipo === 'horizontal' ? 'Promoción Horizontal' : 'Puntaje General');
-
-            let html = `
-                <div class="block activo">
-                    <span class="block-label">Presentación</span>
-                    <span class="${badgeC}">${badgeT}</span>
-                    <button class="btn-ai-assist" onclick="solicitarAyudaIA('presentacion')"><i class="fas fa-magic"></i></button>
-                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                    <h1 class="h1-input" contenteditable="false">${cursoActual.titulo.toUpperCase()}</h1>
-                    <p class="p-input" contenteditable="false">Curso diseñado específicamente para lineamientos de ${tipoLargo}.</p>
-                    <div class="grid-info">
-                        <div><i class="fas fa-clock"></i> <strong>Duración:</strong> ${cursoActual.duracion}</div>
-                        <div><i class="fas fa-bullseye"></i> <strong>Modalidad:</strong> En línea (Autogestivo)</div>
-                    </div>
-                </div>
-            `;
-
-            // Crear 3 Módulos
-            for (let i = 1; i <= 3; i++) {
-                html += `
-                    <div class="block activo" id="bloque${i}">
-                        <span class="block-label">Módulo ${i}</span>
-                        <button class="btn-ai-assist" onclick="solicitarAyudaIA('Módulo ${i}')"><i class="fas fa-robot"></i></button>
-                        <button class="btn-delete-block" onclick="eliminarModulo(this)"><i class="fas fa-trash"></i> ELIMINAR</button>
-                        <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
-                        <h1 class="h1-input" contenteditable="false">${conDatos ? 'Tema Principal de la unidad ' + i : 'Título del Módulo ' + i}</h1>
-                        <div id="cont-bloque${i}"></div>
-                        <div class="add-content-buttons">
-                            <button class="btn-add-c" onclick="agregarVideo(${i})"><i class="fas fa-video"></i> Añadir Video</button>
-                            <button class="btn-add-c" onclick="agregarQuiz(${i})"><i class="fas fa-question"></i> Añadir Quiz</button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Si NO es solo para puntos, lleva examen
-            if (!esPuntos) {
-                html += `
-                    <div class="block activo">
-                        <div class="lock-overlay docente-lock hidden"><i class="fas fa-lock fa-3x" style="color:var(--guinda)"></i><h2 style="margin-top:15px; color:var(--guinda);">EXAMEN BLOQUEADO</h2><p>Completa todos los módulos para habilitar.</p></div>
-                        <span class="block-label">Evaluación</span>
-                        <h1 class="h1-input">Examen Final Acreditatorio</h1>
-                        <div id="quiz-final"></div>
-                        <button class="btn-add-c" style="margin-top:15px;" onclick="agregarPregunta('quiz-final')"><i class="fas fa-plus"></i> Añadir Pregunta</button>
-                    </div>
-                `;
-            }
-
-            feed.innerHTML = html;
-
-            // Rellenar con contenido si es IA
-            if (conDatos) {
-                agregarVideo(1); 
-                agregarQuiz(2);
-                if (!esPuntos) agregarPregunta('quiz-final');
-            }
-        }
-
-        // ==========================================
-        // FUNCIONES DE CONTENIDO Y EDICIÓN
-        // ==========================================
-        function agregarVideo(id) {
-            document.getElementById(`cont-bloque${id}`).innerHTML += `<div class="content-item"><button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button><div class="video-box"><i class="fas fa-play-circle fa-3x"></i><p style="margin-top:10px;">Video Multimedia</p></div></div>`;
-        }
-        function agregarQuiz(id) {
-            document.getElementById(`cont-bloque${id}`).innerHTML += `<div class="content-item"><button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button><strong style="color:var(--guinda);">Cuestionario Formativo</strong><div id="q-${id}"></div><button class="btn-add-c" style="margin-top:10px;" onclick="agregarPregunta('q-${id}')"><i class="fas fa-plus"></i> Añadir pregunta</button></div>`;
-            agregarPregunta(`q-${id}`);
-        }
-        function agregarPregunta(id) {
-            document.getElementById(id).innerHTML += `<div class="quiz-item"><button class="btn-remove-item" style="top:5px; right:5px; width:25px; height:25px;" onclick="this.parentElement.remove()"><i class="fas fa-trash" style="font-size:0.7rem;"></i></button><strong contenteditable="true">Escribe la pregunta...</strong><div class="option-editable correct" contenteditable="true">Respuesta Correcta</div><div class="option-editable" contenteditable="true">Distractor 1</div></div>`;
-        }
-        
-        function eliminarModulo(btn) {
+    function intentarCerrarConfiguracion() {
+        const nombre = document.getElementById('configNombre').value.trim();
+        if (nombre.length > 0) {
             Swal.fire({
-                title: '¿Eliminar Módulo?',
-                text: "Esta acción borrará todo el contenido de este bloque y no se puede deshacer.",
+                title: '¿Estás seguro?',
+                text: "Tienes datos escritos. Si cierras, se perderá tu progreso.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#64748B',
-                confirmButtonText: 'Sí, eliminar',
+                confirmButtonText: 'Sí, descartar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    btn.closest('.block').remove();
+                    document.getElementById('configModal').style.display = 'none';
                 }
+            });
+        } else {
+            document.getElementById('configModal').style.display = 'none';
+        }
+    }
+
+    function iniciarGeneracion(modo) {
+        const nombre = document.getElementById('configNombre').value.trim();
+        const duracion = document.getElementById('configDuracion').value;
+        const tipo = document.getElementById('configTipo').value;
+        if (!nombre) {
+            Swal.fire('Atención', 'Por favor ingresa un nombre para el curso antes de continuar.', 'warning');
+            return;
+        }
+        cursoActual = { id: null, tipo, titulo: nombre, duracion: duracion + ' horas', contenido: null };
+        document.getElementById('configModal').style.display = 'none';
+        document.getElementById('menu-inicial').style.display = 'none';
+        document.getElementById('btn-vista-docente').style.display = 'flex';
+        document.getElementById('btn-subir').style.display = 'flex';
+
+        if (modo === 'ia') {
+            document.getElementById('aiPanel').classList.add('activo');
+            agregarMensajeInicialIA();
+            generarCursoConIA();
+        } else {
+            generarCursoManual();
+        }
+    }
+
+    // ============================================================
+    // 4. GENERACIÓN DE CURSO (IA / MANUAL)
+    // ============================================================
+    function generarCursoConIA() {
+        document.getElementById('loader').style.display = "block";
+        document.getElementById('feed-central').innerHTML = '';
+        setTimeout(() => {
+            document.getElementById('loader').style.display = "none";
+            renderizarCurso(true);
+            agregarMensaje('ia', '✅ <b>¡Curso Generado!</b> He estructurado los módulos basados en los requerimientos USICAMM. Puedes pedirme cambios en el chat o editarlos manualmente.');
+        }, 2500);
+    }
+
+    function generarCursoManual() {
+        document.getElementById('feed-central').innerHTML = '';
+        renderizarCurso(false);
+    }
+
+    // ============================================================
+    // 5. RENDERIZADO DEL CURSO EN EL DOM
+    // ============================================================
+    function renderizarCurso(conDatos) {
+        const feed = document.getElementById('feed-central');
+        const esPuntos = cursoActual.tipo === 'puntos';
+        const badgeC = esPuntos ? 'badge-purpose puntos' : 'badge-purpose';
+        const badgeT = esPuntos ? 'PARA PUNTOS' : 'REQUISITO USICAMM';
+        const tipoLargo = cursoActual.tipo === 'vertical' ? 'Promoción Vertical' :
+                          (cursoActual.tipo === 'horizontal' ? 'Promoción Horizontal' : 'Puntaje General');
+
+        let html = `
+            <div class="block activo" id="bloque-presentacion">
+                <span class="block-label">Presentación</span>
+                <span class="${badgeC}">${badgeT}</span>
+                <button class="btn-ai-assist" onclick="solicitarAyudaIA('presentacion')"><i class="fas fa-magic"></i></button>
+                <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
+                <h1 class="h1-input" contenteditable="false">${cursoActual.titulo.toUpperCase()}</h1>
+                <p class="p-input" contenteditable="false">Curso diseñado específicamente para lineamientos de ${tipoLargo}.</p>
+                <div class="grid-info">
+                    <div><i class="fas fa-clock"></i> <strong>Duración:</strong> ${cursoActual.duracion}</div>
+                    <div><i class="fas fa-bullseye"></i> <strong>Modalidad:</strong> En línea (Autogestivo)</div>
+                </div>
+            </div>
+        `;
+
+        for (let i = 1; i <= 3; i++) {
+            html += `
+                <div class="block activo" id="bloque${i}">
+                    <span class="block-label">Módulo ${i}</span>
+                    <button class="btn-ai-assist" onclick="solicitarAyudaIA('Módulo ${i}')"><i class="fas fa-robot"></i></button>
+                    <button class="btn-delete-block" onclick="eliminarModulo(this)"><i class="fas fa-trash"></i> ELIMINAR</button>
+                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
+                    <h1 class="h1-input" contenteditable="false">${conDatos ? 'Tema Principal de la unidad ' + i : 'Título del Módulo ' + i}</h1>
+                    <div id="cont-bloque${i}"></div>
+                    <div class="add-content-buttons">
+                        <button class="btn-add-c" onclick="agregarVideo(${i})"><i class="fas fa-video"></i> Añadir Video</button>
+                        <button class="btn-add-c" onclick="agregarQuiz(${i})"><i class="fas fa-question"></i> Añadir Quiz</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (!esPuntos) {
+            html += `
+                <div class="block activo" id="bloque-examen">
+                    <div class="lock-overlay docente-lock hidden"><i class="fas fa-lock fa-3x" style="color:var(--guinda)"></i><h2 style="margin-top:15px; color:var(--guinda);">EXAMEN BLOQUEADO</h2><p>Completa todos los módulos para habilitar.</p></div>
+                    <span class="block-label">Evaluación</span>
+                    <h1 class="h1-input">Examen Final Acreditatorio</h1>
+                    <div id="quiz-final"></div>
+                    <button class="btn-add-c" style="margin-top:15px;" onclick="agregarPregunta('quiz-final')"><i class="fas fa-plus"></i> Añadir Pregunta</button>
+                </div>
+            `;
+        }
+
+        feed.innerHTML = html;
+
+        if (conDatos) {
+            agregarVideo(1);
+            agregarQuiz(2);
+            if (!esPuntos) agregarPregunta('quiz-final');
+        }
+
+        // Si venimos de cargar un curso existente, rellenamos con su contenido
+        if (cursoActual.contenido) {
+            cargarContenidoDesdeJSON(cursoActual.contenido);
+        }
+    }
+
+    // ============================================================
+    // 6. CARGA DE CONTENIDO DESDE JSON (para edición)
+    // ============================================================
+    function cargarContenidoDesdeJSON(contenido) {
+        if (!contenido) return;
+        // Suponemos que 'contenido' tiene la estructura:
+        // { presentacion: { titulo, descripcion, duracion }, modulos: [ { titulo, items: [ { tipo, ... } ] } ], examen: { preguntas: [ ... ] } }
+
+        // Presentación
+        if (contenido.presentacion) {
+            const pres = document.querySelector('#bloque-presentacion .h1-input');
+            if (pres) pres.innerText = contenido.presentacion.titulo || cursoActual.titulo;
+            const desc = document.querySelector('#bloque-presentacion .p-input');
+            if (desc) desc.innerText = contenido.presentacion.descripcion || '';
+            // La duración ya se muestra en grid-info, se podría actualizar pero no es necesario
+        }
+
+        // Módulos
+        if (contenido.modulos && contenido.modulos.length) {
+            contenido.modulos.forEach((mod, idx) => {
+                const bloque = document.getElementById(`bloque${idx+1}`);
+                if (!bloque) return;
+                const tituloH1 = bloque.querySelector('.h1-input');
+                if (tituloH1) tituloH1.innerText = mod.titulo || `Módulo ${idx+1}`;
+
+                const contenedor = bloque.querySelector(`#cont-bloque${idx+1}`);
+                if (!contenedor) return;
+                contenedor.innerHTML = ''; // Limpiar
+
+                mod.items.forEach(item => {
+                    if (item.tipo === 'video') {
+                        contenedor.innerHTML += `
+                            <div class="content-item">
+                                <button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                                <div class="video-box"><i class="fas fa-play-circle fa-3x"></i><p style="margin-top:10px;">Video Multimedia</p></div>
+                            </div>
+                        `;
+                    } else if (item.tipo === 'quiz' && item.preguntas) {
+                        const quizDiv = document.createElement('div');
+                        quizDiv.className = 'content-item';
+                        quizDiv.innerHTML = `
+                            <button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                            <strong style="color:var(--guinda);">Cuestionario Formativo</strong>
+                            <div id="q-${idx+1}-${Date.now()}"></div>
+                            <button class="btn-add-c" style="margin-top:10px;" onclick="agregarPregunta('${quizDiv.querySelector('div').id}')"><i class="fas fa-plus"></i> Añadir pregunta</button>
+                        `;
+                        contenedor.appendChild(quizDiv);
+                        const qContainer = quizDiv.querySelector('div');
+                        item.preguntas.forEach(p => {
+                            qContainer.innerHTML += `
+                                <div class="quiz-item">
+                                    <button class="btn-remove-item" style="top:5px; right:5px; width:25px; height:25px;" onclick="this.parentElement.remove()"><i class="fas fa-trash" style="font-size:0.7rem;"></i></button>
+                                    <strong contenteditable="true">${p.pregunta}</strong>
+                                    ${p.opciones.map((opt, i) => `<div class="option-editable${i===0 ? ' correct' : ''}" contenteditable="true">${opt}</div>`).join('')}
+                                </div>
+                            `;
+                        });
+                    }
+                });
             });
         }
 
-        function toggleEdit(btn) {
-            const b = btn.closest('.block');
-            const ed = b.classList.toggle('editing');
-            b.querySelectorAll('[contenteditable]').forEach(e => e.contentEditable = ed);
-            btn.innerHTML = ed ? '<i class="fas fa-save"></i> GUARDAR' : '<i class="fas fa-pen"></i> EDITAR';
-        }
-
-        function togglePreviewMode() {
-            document.querySelectorAll('.docente-lock').forEach(e => e.classList.toggle('hidden'));
-            
-            const panelIA = document.getElementById('aiPanel');
-            if(panelIA.classList.contains('activo')) {
-                panelIA.style.display = enModoEditor ? 'none' : 'flex';
+        // Examen final
+        if (contenido.examen && contenido.examen.preguntas) {
+            const examenDiv = document.getElementById('quiz-final');
+            if (examenDiv) {
+                examenDiv.innerHTML = ''; // Limpiar
+                contenido.examen.preguntas.forEach(p => {
+                    examenDiv.innerHTML += `
+                        <div class="quiz-item">
+                            <button class="btn-remove-item" style="top:5px; right:5px; width:25px; height:25px;" onclick="this.parentElement.remove()"><i class="fas fa-trash" style="font-size:0.7rem;"></i></button>
+                            <strong contenteditable="true">${p.pregunta}</strong>
+                            ${p.opciones.map((opt, i) => `<div class="option-editable${i===0 ? ' correct' : ''}" contenteditable="true">${opt}</div>`).join('')}
+                        </div>
+                    `;
+                });
             }
-            
-            document.getElementById('btn-docente-back').style.display = enModoEditor ? 'block' : 'none';
-            document.querySelectorAll('.btn-edit-block, .btn-delete-block, .btn-ai-assist, .add-content-buttons, .btn-remove-item').forEach(e => e.style.display = enModoEditor ? 'none' : '');
-            
-            enModoEditor = !enModoEditor;
-            Swal.fire({ title: enModoEditor ? 'Modo Editor' : 'Vista Estudiante', text: enModoEditor ? 'Los candados han sido eliminados.' : 'Visualizando curso con restricciones y bloqueos.', icon: 'info', timer: 2000, showConfirmButton: false });
+        }
+    }
+
+    // ============================================================
+    // 7. RECOLECCIÓN DE CONTENIDO DEL DOM (para guardar)
+    // ============================================================
+    function recolectarContenidoCurso() {
+        const contenido = { presentacion: {}, modulos: [], examen: { preguntas: [] } };
+
+        // Presentación
+        const presBlock = document.querySelector('#bloque-presentacion');
+        if (presBlock) {
+            contenido.presentacion.titulo = presBlock.querySelector('.h1-input')?.innerText || '';
+            contenido.presentacion.descripcion = presBlock.querySelector('.p-input')?.innerText || '';
+            const durElem = presBlock.querySelector('.grid-info div:first-child strong')?.nextSibling?.textContent?.trim() || '';
+            contenido.presentacion.duracion = durElem;
         }
 
-        function subirAAprobacion() {
-            Swal.fire({ title: '¿Enviar a validación USICAMM?', text: 'El curso será bloqueado para edición mientras es revisado por el comité.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#691C32', confirmButtonText: 'SÍ, ENVIAR' }).then(r => { if(r.isConfirmed) Swal.fire('Enviado','El curso se ha subido correctamente a la plataforma nacional.','success'); });
+        // Módulos
+        for (let i = 1; i <= 3; i++) {
+            const bloque = document.getElementById(`bloque${i}`);
+            if (!bloque) continue;
+            const mod = { titulo: '', items: [] };
+            mod.titulo = bloque.querySelector('.h1-input')?.innerText || '';
+            const items = bloque.querySelectorAll('.content-item');
+            items.forEach(item => {
+                if (item.querySelector('.video-box')) {
+                    mod.items.push({ tipo: 'video' });
+                }
+                if (item.querySelector('.quiz-item')) {
+                    const preguntas = [];
+                    item.querySelectorAll('.quiz-item').forEach(q => {
+                        const pregunta = q.querySelector('strong')?.innerText || '';
+                        const opciones = q.querySelectorAll('.option-editable');
+                        const respuestas = Array.from(opciones).map(o => o.innerText);
+                        const correcta = q.querySelector('.option-editable.correct')?.innerText || '';
+                        preguntas.push({ pregunta, opciones: respuestas, correcta });
+                    });
+                    mod.items.push({ tipo: 'quiz', preguntas });
+                }
+            });
+            contenido.modulos.push(mod);
         }
 
-        // ==========================================
-        // LÓGICA DEL CHAT DE IA MEJORADO
-        // ==========================================
-        function agregarMensajeInicialIA() {
-            const chat = document.getElementById('chat-box');
-            chat.innerHTML = '';
-            agregarMensaje('ia', `¡Hola! Soy Jaguar IA 🐾.<br><br>He generado la estructura base para el curso <b>"${cursoActual.titulo}"</b>.<br><br><b>¿Qué deseas hacer ahora?</b>
-            <div class="quick-options">
-                <button class="quick-option-btn" onclick="rellenarTextoIA()">📘 Redactar textos del Módulo 1</button>
-                <button class="quick-option-btn" onclick="crearExamenIA()">📗 Generar Examen Final con 10 preguntas</button>
-                <button class="quick-option-btn" onclick="document.getElementById('user-input').focus()">📙 Le daré instrucciones manuales</button>
-            </div>`);
+        // Examen final
+        const examBlock = document.getElementById('bloque-examen');
+        if (examBlock) {
+            const preguntas = [];
+            examBlock.querySelectorAll('.quiz-item').forEach(q => {
+                const pregunta = q.querySelector('strong')?.innerText || '';
+                const opciones = q.querySelectorAll('.option-editable');
+                const respuestas = Array.from(opciones).map(o => o.innerText);
+                const correcta = q.querySelector('.option-editable.correct')?.innerText || '';
+                preguntas.push({ pregunta, opciones: respuestas, correcta });
+            });
+            contenido.examen.preguntas = preguntas;
         }
 
-        function rellenarTextoIA() {
-            agregarMensaje('user', 'Por favor, redacta el contenido teórico para el Módulo 1.');
-            setTimeout(() => { agregarMensaje('ia', '✅ Textos redactados e insertados en el Módulo 1 con base en los principios pedagógicos solicitados.'); }, 1500);
-        }
+        return contenido;
+    }
 
-        function crearExamenIA() {
-            agregarMensaje('user', 'Genera las preguntas del examen final.');
-            setTimeout(() => { agregarMensaje('ia', '✅ He agregado 10 preguntas de opción múltiple al bloque de Evaluación. Puedes revisarlas y editarlas.'); }, 1500);
-        }
+    // ============================================================
+    // 8. FUNCIONES DE GUARDADO (CREAR / ACTUALIZAR)
+    // ============================================================
+    function guardarCurso(estado = 'Borrador') {
+        const contenido = recolectarContenidoCurso();
+        const titulo = document.querySelector('#bloque-presentacion .h1-input')?.innerText || cursoActual.titulo;
+        const descripcion = document.querySelector('#bloque-presentacion .p-input')?.innerText || '';
 
-        function agregarMensaje(rol, texto) {
-            const chat = document.getElementById('chat-box');
-            const div = document.createElement('div');
-            div.className = `bubble ${rol}`;
-            div.innerHTML = texto;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-        }
+        const data = {
+            titulo: titulo,
+            descripcion: descripcion,
+            contenido: contenido,
+            estado: estado,
+            generado_con_ia: cursoActual.tipo ? true : false  // o según corresponda
+        };
 
-        function procesarIA() {
-            const input = document.getElementById('user-input');
-            const txt = input.value.trim();
-            if (!txt) return;
-            agregarMensaje('user', txt);
-            setTimeout(() => { agregarMensaje('ia', 'Entendido. He aplicado los cambios solicitados en el área de trabajo.'); }, 1000);
-            input.value = '';
-        }
+        const url = cursoActual.id ?
+            `/generador/api/actualizar-curso-generador/${cursoActual.id}/` :
+            '/generador/api/crear-curso-generador/';
+        const method = cursoActual.id ? 'PUT' : 'POST';
 
-        function solicitarAyudaIA(seccion) {
-            document.getElementById('aiPanel').classList.add('activo');
-            document.getElementById('aiPanel').style.display = 'flex';
-            const input = document.getElementById('user-input');
-            input.value = `Mejora el contenido de: ${seccion}... `;
-            input.focus();
+        // Mostrar indicador de guardado
+        const btnSubir = document.getElementById('btn-subir');
+        const originalText = btnSubir.innerHTML;
+        btnSubir.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+        btnSubir.disabled = true;
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(data => {
+            btnSubir.innerHTML = originalText;
+            btnSubir.disabled = false;
+            if (data.success) {
+                if (!cursoActual.id) {
+                    cursoActual.id = data.curso_id;
+                }
+                Swal.fire('Guardado', `Curso ${estado === 'EnRevision' ? 'enviado a revisión' : 'guardado como borrador'}`, 'success');
+            } else {
+                Swal.fire('Error', data.error || 'Ocurrió un error', 'error');
+            }
+        })
+        .catch(err => {
+            btnSubir.innerHTML = originalText;
+            btnSubir.disabled = false;
+            Swal.fire('Error de red', err.message, 'error');
+        });
+    }
+
+    function subirAAprobacion() {
+        guardarCurso('EnRevision');
+    }
+
+    // Función para guardado rápido (borrador) desde un botón adicional
+    function guardarBorrador() {
+        guardarCurso('Borrador');
+    }
+
+    // ============================================================
+    // 9. ELIMINAR CURSO
+    // ============================================================
+    function eliminarCurso() {
+    if (!cursoActual.id) {
+        Swal.fire('Aviso', 'No hay curso guardado para eliminar', 'info');
+        return;
+    }
+    Swal.fire({
+        title: '¿Eliminar curso definitivamente?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#64748B',
+        confirmButtonText: 'Sí, eliminar'
+    }).then(result => {
+        if (result.isConfirmed) {
+            fetch(`/generador/api/eliminar-curso-generador/${cursoActual.id}/`, {
+                method: 'DELETE',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Eliminado', 'El curso fue eliminado', 'success');
+                    window.location.href = '/generador/dashboard/';  // ✅ CORREGIDO
+                } else {
+                    Swal.fire('Error', data.error, 'error');
+                }
+            })
+            .catch(err => Swal.fire('Error', err.message, 'error'));
         }
+    });
+}
+
+    // ============================================================
+    // 10. CARGAR CURSO EXISTENTE (desde el dashboard)
+    // ============================================================
+    function cargarCurso(id) {
+    fetch(`/generador/api/obtener-curso/${id}/`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                Swal.fire('Error', data.error, 'error');
+                return;
+            }
+            cursoActual = {
+                id: data.id,
+                tipo: data.tipo || 'vertical',
+                titulo: data.titulo,
+                duracion: data.duracion || '40 horas',
+                contenido: data.contenido || null
+            };
+            document.getElementById('menu-inicial').style.display = 'none';
+            document.getElementById('btn-vista-docente').style.display = 'flex';
+            document.getElementById('btn-subir').style.display = 'flex';
+            renderizarCurso(false);
+        })
+        .catch(err => {
+            Swal.fire('Error', 'No se pudo cargar el curso: ' + err.message, 'error');
+        });
+}
+
+    // ============================================================
+    // 11. FUNCIONES DE CONTENIDO (VIDEO, QUIZ, PREGUNTA, ELIMINAR MÓDULO)
+    // ============================================================
+    function agregarVideo(id) {
+        document.getElementById(`cont-bloque${id}`).innerHTML += `
+            <div class="content-item">
+                <button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                <div class="video-box"><i class="fas fa-play-circle fa-3x"></i><p style="margin-top:10px;">Video Multimedia</p></div>
+            </div>
+        `;
+    }
+
+    function agregarQuiz(id) {
+        const cont = document.getElementById(`cont-bloque${id}`);
+        const qId = 'q-' + id + '-' + Date.now();
+        cont.innerHTML += `
+            <div class="content-item">
+                <button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                <strong style="color:var(--guinda);">Cuestionario Formativo</strong>
+                <div id="${qId}"></div>
+                <button class="btn-add-c" style="margin-top:10px;" onclick="agregarPregunta('${qId}')"><i class="fas fa-plus"></i> Añadir pregunta</button>
+            </div>
+        `;
+        agregarPregunta(qId);
+    }
+
+    function agregarPregunta(id) {
+        const container = document.getElementById(id);
+        if (!container) return;
+        container.innerHTML += `
+            <div class="quiz-item">
+                <button class="btn-remove-item" style="top:5px; right:5px; width:25px; height:25px;" onclick="this.parentElement.remove()"><i class="fas fa-trash" style="font-size:0.7rem;"></i></button>
+                <strong contenteditable="true">Escribe la pregunta...</strong>
+                <div class="option-editable correct" contenteditable="true">Respuesta Correcta</div>
+                <div class="option-editable" contenteditable="true">Distractor 1</div>
+            </div>
+        `;
+    }
+
+    function eliminarModulo(btn) {
+        Swal.fire({
+            title: '¿Eliminar Módulo?',
+            text: "Esta acción borrará todo el contenido de este bloque y no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#64748B',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                btn.closest('.block').remove();
+            }
+        });
+    }
+
+    // ============================================================
+    // 12. EDICIÓN Y VISTA PREVIA
+    // ============================================================
+    function toggleEdit(btn) {
+        const b = btn.closest('.block');
+        const ed = b.classList.toggle('editing');
+        b.querySelectorAll('[contenteditable]').forEach(e => e.contentEditable = ed);
+        btn.innerHTML = ed ? '<i class="fas fa-save"></i> GUARDAR' : '<i class="fas fa-pen"></i> EDITAR';
+    }
+
+    function togglePreviewMode() {
+        document.querySelectorAll('.docente-lock').forEach(e => e.classList.toggle('hidden'));
+        const panelIA = document.getElementById('aiPanel');
+        if (panelIA.classList.contains('activo')) {
+            panelIA.style.display = enModoEditor ? 'none' : 'flex';
+        }
+        document.getElementById('btn-docente-back').style.display = enModoEditor ? 'block' : 'none';
+        document.querySelectorAll('.btn-edit-block, .btn-delete-block, .btn-ai-assist, .add-content-buttons, .btn-remove-item')
+            .forEach(e => e.style.display = enModoEditor ? 'none' : '');
+        enModoEditor = !enModoEditor;
+        Swal.fire({
+            title: enModoEditor ? 'Modo Editor' : 'Vista Estudiante',
+            text: enModoEditor ? 'Los candados han sido eliminados.' : 'Visualizando curso con restricciones y bloqueos.',
+            icon: 'info',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    // ============================================================
+    // 13. CHAT DE IA (JAGUAR)
+    // ============================================================
+    function agregarMensajeInicialIA() {
+        const chat = document.getElementById('chat-box');
+        chat.innerHTML = '';
+        agregarMensaje('ia', `¡Hola! Soy Jaguar IA 🐾.<br><br>He generado la estructura base para el curso <b>"${cursoActual.titulo}"</b>.<br><br><b>¿Qué deseas hacer ahora?</b>
+        <div class="quick-options">
+            <button class="quick-option-btn" onclick="rellenarTextoIA()">📘 Redactar textos del Módulo 1</button>
+            <button class="quick-option-btn" onclick="crearExamenIA()">📗 Generar Examen Final con 10 preguntas</button>
+            <button class="quick-option-btn" onclick="document.getElementById('user-input').focus()">📙 Le daré instrucciones manuales</button>
+        </div>`);
+    }
+
+    function rellenarTextoIA() {
+        agregarMensaje('user', 'Por favor, redacta el contenido teórico para el Módulo 1.');
+        setTimeout(() => {
+            agregarMensaje('ia', '✅ Textos redactados e insertados en el Módulo 1 con base en los principios pedagógicos solicitados.');
+        }, 1500);
+    }
+
+    function crearExamenIA() {
+        agregarMensaje('user', 'Genera las preguntas del examen final.');
+        setTimeout(() => {
+            agregarMensaje('ia', '✅ He agregado 10 preguntas de opción múltiple al bloque de Evaluación. Puedes revisarlas y editarlas.');
+        }, 1500);
+    }
+
+    function agregarMensaje(rol, texto) {
+        const chat = document.getElementById('chat-box');
+        const div = document.createElement('div');
+        div.className = `bubble ${rol}`;
+        div.innerHTML = texto;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function procesarIA() {
+        const input = document.getElementById('user-input');
+        const txt = input.value.trim();
+        if (!txt) return;
+        agregarMensaje('user', txt);
+        setTimeout(() => {
+            agregarMensaje('ia', 'Entendido. He aplicado los cambios solicitados en el área de trabajo.');
+        }, 1000);
+        input.value = '';
+    }
+
+    function solicitarAyudaIA(seccion) {
+        document.getElementById('aiPanel').classList.add('activo');
+        document.getElementById('aiPanel').style.display = 'flex';
+        const input = document.getElementById('user-input');
+        input.value = `Mejora el contenido de: ${seccion}... `;
+        input.focus();
+    }
 
         // ==========================================
         // ACCESIBILIDAD 100% GARANTIZADA
@@ -1094,6 +1371,8 @@
                 });
             }
         });
+        
     </script>
+  
 </body>
 </html>

@@ -243,11 +243,11 @@
         </div>
         
         <ul class="nav-menu" style="list-style: none; padding: 0; margin: 0;">
-            <li class="nav-item"><a href="#" class="nav-link active"><i class="fa-solid fa-house"></i> <span class="menu-texto">Inicio</span></a></li>
-            <li class="nav-item"><a href="generador_de_cursos.html" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span class="menu-texto">Generador de Cursos</span></a></li>
-            <li class="nav-item"><a href="mis_cursos.html" class="nav-link"><i class="fa-solid fa-book"></i> <span class="menu-texto">Mis Cursos</span></a></li>
-            <li class="nav-item"><a href="estadisticas_d.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> <span class="menu-texto">Estadísticas</span></a></li>
-            <li class="nav-item" style="margin-top: 20px;"><a href="mi_perfil.html" class="nav-link"><i class="fa-solid fa-user"></i> <span class="menu-texto">Mi Perfil</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:index_generador' %}" class="nav-link active"><i class="fa-solid fa-house"></i> <span class="menu-texto">Inicio</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span class="menu-texto">Generador de Cursos</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:cursos' %}" class="nav-link"><i class="fa-solid fa-book"></i> <span class="menu-texto">Mis Cursos</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-link"><i class="fa-solid fa-chart-line"></i> <span class="menu-texto">Estadísticas</span></a></li>
+            <li class="nav-item" style="margin-top: 20px;"><a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-link"><i class="fa-solid fa-user"></i> <span class="menu-texto">Mi Perfil</span></a></li>
         </ul>
     </aside>
 
@@ -260,12 +260,12 @@
             
             <div class="user-dropdown">
                 <button class="btn-user">
-                    <img src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Fabiola+Q&background=D4C19C&color=691C32'" alt="Avatar">
-                    Bienvenida Fabiola <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    <img src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name={{ usuario.nombre|default:"Usuario" }}+{{ usuario.apellido_paterno|default:"" }}&background=D4C19C&color=691C32'" alt="Avatar">
+                    Bienvenida {{ usuario.nombre|default:"Usuario" }} <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </button>
                 <div class="user-dropdown-content">
                     <a href="#"><i class="fa-solid fa-circle-question" style="margin-right: 8px;"></i> Ayuda y Soporte</a>
-                    <a href="mi_perfil.html"><i class="fa-solid fa-user-gear" style="margin-right: 8px;"></i> Ajustes de Perfil</a>
+                    <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fa-solid fa-user-gear" style="margin-right: 8px;"></i> Ajustes de Perfil</a>
                     <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Salir del Sistema</a>
                 </div>
             </div>
@@ -305,23 +305,31 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for curso in cursos|slice:":5" %}
                                     <tr>
-                                        <td>Curso NEM (Nueva Escuela Mexicana)</td>
-                                        <td><button class="table-status status-pending" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El Curso NEM requiere correcciones en su estructura didáctica. Por favor atiende las observaciones en el panel de evaluación.', 'fa-triangle-exclamation', 'var(--alerta)')">En observación</button></td>
+                                        <td>{{ curso.titulo }}</td>
+                                        <td>
+                                            {% if curso.estado == 'Aprobado' %}
+                                            <button class="table-status status-valid" style="border: none; cursor: pointer;" onclick="mostrarAlerta('¡Felicidades! Este curso ha sido evaluado y aceptado exitosamente. Ya es válido para generar puntaje.', 'fa-circle-check', 'var(--exito)')">Aceptado</button>
+                                            {% elif curso.estado == 'En Revisión' %}
+                                            <button class="table-status status-info" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso se encuentra actualmente en proceso de revisión por el comité académico. Te notificaremos pronto.', 'fa-clock', 'var(--turquesa)')">En revisión</button>
+                                            {% elif curso.estado == 'Observaciones' %}
+                                            <button class="table-status status-pending" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso requiere correcciones en su estructura didáctica. Por favor atiende las observaciones en el panel de evaluación.', 'fa-triangle-exclamation', 'var(--alerta)')">En observación</button>
+                                            {% else %}
+                                            <button class="table-status status-info" style="border: none; cursor: pointer;">{{ curso.estado }}</button>
+                                            {% endif %}
+                                        </td>
                                     </tr>
+                                    {% empty %}
                                     <tr>
-                                        <td>Estrategias Didácticas Avanzadas</td>
-                                        <td><button class="table-status status-valid" style="border: none; cursor: pointer;" onclick="mostrarAlerta('¡Felicidades! Este curso ha sido evaluado y aceptado exitosamente. Ya es válido para generar puntaje.', 'fa-circle-check', 'var(--exito)')">Aceptado</button></td>
+                                        <td colspan="2" style="text-align: center; color: #999;">No hay cursos generados aún</td>
                                     </tr>
-                                    <tr>
-                                        <td>Evaluación Formativa Digital</td>
-                                        <td><button class="table-status status-info" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso se encuentra actualmente en proceso de revisión por el comité académico. Te notificaremos pronto.', 'fa-clock', 'var(--turquesa)')">En revisión</button></td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                         <br>
-                        <a href="generador_de_cursos.html" class="btn-primary-custom" style="display:inline-block; text-align:center; width:auto; padding: 12px 25px; text-decoration:none;">
+                        <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="btn-primary-custom" style="display:inline-block; text-align:center; width:auto; padding: 12px 25px; text-decoration:none;">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Ir a Generador de Cursos
                         </a>
                     </div>
@@ -339,18 +347,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% if proceso and proceso.fecha_inicio %}
                                     <tr>
                                         <td>Generar Puntos</td>
-                                        <td><strong>12 Ene 2027</strong></td>
+                                        <td><strong>{{ proceso.fecha_inicio|date:"d M Y" }}</strong></td>
                                     </tr>
+                                    {% endif %}
+                                    {% if proceso and proceso.fecha_fin %}
                                     <tr>
                                         <td>Promoción Vertical</td>
-                                        <td><strong>12 Marzo 2027</strong></td>
+                                        <td><strong>{{ proceso.fecha_fin|date:"d M Y" }}</strong></td>
                                     </tr>
+                                    {% endif %}
+                                    {% if proceso and proceso.fecha_evaluacion %}
                                     <tr>
                                         <td>Promoción Horizontal</td>
-                                        <td><strong>17 Mar 2027</strong></td>
+                                        <td><strong>{{ proceso.fecha_evaluacion|date:"d M Y"|default:"17 Mar 2027" }}</strong></td>
                                     </tr>
+                                    {% endif %}
+                                    {% if not proceso %}
+                                    <tr>
+                                        <td colspan="2" style="text-align: center; color: #999;">No hay eventos programados</td>
+                                    </tr>
+                                    {% endif %}
                                 </tbody>
                             </table>
                         </div>

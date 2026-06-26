@@ -108,7 +108,7 @@
         <aside>
             <div class="card" style="text-align: center;">
                 <div style="position: relative; width: 125px; margin: 0 auto 20px;">
-                    <div id="imagePreview" class="avatar-imagen" style="width: 120px; height: 120px; background-image: url('https://ui-avatars.com/api/?name=Laura+Martinez&background=691C32&color=fff'); background-size: cover; background-position: center; border: 4px solid var(--dorado); margin: 0 auto;">
+                    <div id="imagePreview" class="avatar-imagen" style="width: 120px; height: 120px; background-image: url('https://ui-avatars.com/api/?name={{ usuario.nombre }}+{{ usuario.apellido_paterno }}&background=691C32&color=fff'); background-size: cover; background-position: center; border: 4px solid var(--dorado); margin: 0 auto;">
                     </div>
                     
                     <div onclick="document.getElementById('fileInput').click();" 
@@ -120,12 +120,12 @@
                     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
                 </div>
 
-                <h3 class="title-main">Laura Martínez García</h3>
-                <p class="text-small">Docente de Educación Primaria</p>
+                <h3 class="title-main">{{ usuario.nombre }} {{ usuario.apellido_paterno }} {{ usuario.apellido_materno }}</h3>
+                <p class="text-small">{{ usuario.rol.nombre|default:"Docente" }}</p>
                 
                 <div class="puntaje-box">
                     <span class="text-small">CURP</span>
-                    <strong style="display: block; font-family: monospace; color: var(--guinda);">MAGL850312MDFRRR09</strong>
+                    <strong style="display: block; font-family: monospace; color: var(--guinda);">{{ usuario.curp|default:"N/A" }}</strong>
                 </div>
 
                 <div class="alert-pill success" style="margin-top: 15px; width: 100%; justify-content: center;">
@@ -142,35 +142,39 @@
                     <div class="profile-summary">
                         <div class="stat-box">
                             <span>Número de Empleado</span>
-                            <strong>478291</strong>
+                            <strong>{{ usuario.numero_empleado|default:"N/A" }}</strong>
                         </div>
                         <div class="stat-box">
                             <span>Antigüedad Sistemática</span>
-                            <strong>12 años 7 meses</strong>
+                            <strong>{{ usuario.antiguedad|default:"N/A" }}</strong>
                         </div>
                         <div class="stat-box">
                             <span>Nivel Actual</span>
-                            <strong>Nivel III</strong>
+                            <strong>{{ usuario.nivel|default:"N/A" }}</strong>
                         </div>
                         <div class="stat-box">
                             <span>Centro de Trabajo</span>
-                            <strong>Escuela Primaria "Benito Juárez" - CTE 15</strong>
+                            <strong>{{ usuario.institucion.nombre|default:"N/A" }}</strong>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
                     <h4 class="card-title">Estatus de Promoción Horizontal</h4>
+                    {% if proceso %}
                     <div class="profile-summary">
                         <div class="stat-box">
                             <span>Incentivo Actual</span>
-                            <strong style="color: var(--exito);">Nivel 4 - $8,450</strong>
+                            <strong style="color: var(--exito);">{{ proceso.incentivo_actual|default:"N/A" }}</strong>
                         </div>
                         <div class="stat-box">
                             <span>Próxima Evaluación</span>
-                            <strong>15 de Noviembre 2026</strong>
+                            <strong>{{ proceso.proxima_evaluacion|date:"d F Y"|default:"N/A" }}</strong>
                         </div>
                     </div>
+                    {% else %}
+                    <p style="font-size: 0.85rem; color: #666;">No hay proceso de promoción activo.</p>
+                    {% endif %}
                 </div>
 
                 <div class="card ia-card">
@@ -178,7 +182,7 @@
                         <div class="ia-badge-pulse"></div>
                         <h3 style="margin: 0;"><i class="fas fa-paw"></i> Resumen Jaguar IA</h3>
                     </div>
-                    <p>Laura, su perfil es <strong>idóneo</strong> para la convocatoria de Promoción 2026.</p>
+                    <p>{{ usuario.nombre }}, su perfil es <strong>idóneo</strong> para la convocatoria de Promoción 2026.</p>
                     <p class="text-small" style="color: white; opacity: 0.9; margin-top: 10px; line-height: 1.4;">
                         Detectamos que cuenta con el puntaje máximo en antigüedad. Para asegurar su posición, le sugerimos completar 20 horas adicionales de formación antes del cierre del dictamen.
                     </p>

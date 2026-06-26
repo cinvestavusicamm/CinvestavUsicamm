@@ -166,15 +166,12 @@ class ProcesoAprobacionRepository(BaseRepository):
     """Repositorio para ProcesoAprobacionCursos"""
     model = ProcesoAprobacionCursos
     
-    @classmethod
-    def get_by_evaluador(cls, evaluador_id, limit=None):
-        """Obtiene aprobaciones de un evaluador"""
-        queryset = cls.model.objects.select_related("curso", "evaluador").filter(
-            evaluador_id=evaluador_id
-        ).order_by("-fecha_revision")
+    @staticmethod
+    def get_by_evaluador(evaluador_id, limit=None):
+        qs = ProcesoAprobacionCursos.objects.filter(evaluador_id=evaluador_id)  # ✅ CORRECTO
         if limit:
-            queryset = queryset[:limit]
-        return queryset
+            qs = qs[:limit]
+        return qs
     
     @classmethod
     def get_by_curso(cls, curso_id):

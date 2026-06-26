@@ -11,7 +11,7 @@ from apps.users.serializers import (
     UsuarioSerializer, CursoSerializer, ProcesoEscalafonSerializer,
     ProcesoAprobacionSerializer, BitacoraEventoSerializer
 )
-
+from apps.users.models import proceso_aprobacion_cursos
 
 class DashboardContextBuilder:
     """Constructor base de contexto para dashboards"""
@@ -54,13 +54,17 @@ class EvaluadorContextBuilder(DashboardContextBuilder):
         # Obtener datos usando repositories
         cursos = CursoRepository.get_recientes(DashboardContextBuilder.LIMITE_RECIENTES)
         cursos_pendientes = CursoRepository.get_pendientes_revision(DashboardContextBuilder.LIMITE_RECIENTES)
-        aprobaciones_usuario = ProcesoAprobacionRepository.get_by_evaluador(
-            usuario_id, DashboardContextBuilder.LIMITE_RECIENTES
-        ) if usuario_id else []
+        if usuario_id:
+            aprobaciones_usuario = ProcesoAprobacionCursos.objects.filter(
+                evaluador_id=usuario_id
+            )[:DashboardContextBuilder.LIMITE_RECIENTES]
+        else:
+            aprobaciones_usuario = []
+
         procesos_recientes = ProcesoEscalafonRepository.get_recientes(DashboardContextBuilder.LIMITE_RECIENTES)
         
         # Calcular métricas
-        all_aprobaciones = ProcesoAprobacionRepository.get_all()
+        all_aprobaciones = ProcesoAprobacionCursos.objects.all()
         all_cursos = CursoRepository.get_all()
         
         context.update({

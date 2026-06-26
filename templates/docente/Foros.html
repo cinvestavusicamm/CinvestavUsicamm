@@ -46,7 +46,7 @@
             </div>
         </div>
         <div style="text-align: right;">
-            <div style="font-weight: 700; font-size: 0.95rem;">Laura Martínez García</div>
+            <div style="font-weight: 700; font-size: 0.95rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }} {{ usuario.apellido_materno }}</div>
             <div style="font-size: 0.7rem; color: var(--dorado);">Sesión encriptada (LGPDPPSO)</div>
         </div>
     </header>
@@ -60,9 +60,11 @@
         
         <aside class="forum-categories">
             <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Mis Cursos Activos</h4>
-            <div class="category-item active"><i class="fas fa-book"></i> Matemáticas 3° Grado</div>
-            <div class="category-item"><i class="fas fa-book"></i> Lectura y Escritura</div>
-            <div class="category-item"><i class="fas fa-book"></i> Ciencias Naturales</div>
+            {% for curso in cursos %}
+            <div class="category-item {% if forloop.first %}active{% endif %}"><i class="fas fa-book"></i> {{ curso.titulo }}</div>
+            {% empty %}
+            <div class="category-item" style="color: #999;">No hay cursos activos</div>
+            {% endfor %}
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             <div class="category-item" style="color: var(--dorado);"><i class="fas fa-star"></i> Mis Discusiones</div>
         </aside>
@@ -81,23 +83,38 @@
                 </div>
 
                 <div id="postsContainer">
+                    {% for foro_item in foro_items %}
+                        {% for foro in foro_item.foros %}
+                            {% for post in foro.posts|slice:":5" %}
                     <div class="post-card">
                         <div class="post-header">
                             <div class="user-meta">
-                                <img src="https://ui-avatars.com/api/?name=Carlos+Rivera&background=691C32&color=fff" alt="Avatar de Carlos Rivera">
+                                <img src="https://ui-avatars.com/api/?name={{ post.autor.nombre }}+{{ post.autor.apellido_paterno }}&background=691C32&color=fff" alt="Avatar de {{ post.autor.nombre }}">
                                 <div>
-                                    <div class="name">Carlos Rivera López</div>
-                                    <div class="role">Lectura y Escritura • Hace 3 horas</div>
+                                    <div class="name">{{ post.autor.nombre }} {{ post.autor.apellido_paterno }}</div>
+                                    <div class="role">{{ foro_item.curso.titulo }} • Hace {{ post.fecha_creacion|timesince }}</div>
                                 </div>
                             </div>
                         </div>
                         <div class="post-content">
-                            <h3>Dificultades con la comprensión lectora en 3° grado</h3>
-                            <p>¿Alguien tiene estrategias efectivas para alumnos con rezago lector?</p>
+                            <h3>{{ post.titulo|default:"Sin título" }}</h3>
+                            <p>{{ post.contenido|truncatewords:30 }}</p>
                         </div>
                         <div class="post-actions">
-                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta, 27 me gustas actuales"><i class="far fa-heart"></i> <span class="like-count">27</span></span>
-                            <span><i class="far fa-comment"></i> 14 comentarios</span>
+                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta"><i class="far fa-heart"></i> <span class="like-count">{{ post.likes|default:0 }}</span></span>
+                            <span><i class="far fa-comment"></i> {{ post.comentarios_count|default:0 }} comentarios</span>
+                            {% if post.autor.id_usuario == usuario.id_usuario %}
+                            <span onclick="eliminarPost({{ post.id_post }})" style="cursor:pointer; color: red; margin-left: auto;"><i class="fas fa-trash"></i> Eliminar</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% empty %}
+                    <div class="post-card" style="text-align: center; padding: 40px;">
+                        <p style="color: #999;">No hay publicaciones en los foros aún.</p>
+                    </div>
+                    {% endfor %}
                         </div>
                     </div>
 

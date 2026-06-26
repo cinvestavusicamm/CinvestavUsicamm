@@ -68,3 +68,7 @@ class ForoService:
     @staticmethod
     def obtener_total_posts_foro(foro_id):
         return PostForo.objects.filter(foro_id=foro_id).count()
+
+    @staticmethod
+    def obtener_post_por_id(post_id):
+        return PostForo.objects.get(id_post=post_id)

@@ -101,3 +101,15 @@ def actualizar_curso_api(request, curso_id):
         return JsonResponse({'error': 'Curso no encontrado'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+    
+@require_http_methods(["DELETE"])
+@requiere_rol(ROLE_GENERADOR)
+def eliminar_curso_api(request, curso_id):
+    try:
+        curso = CursoService.obtener_curso_por_id(curso_id)
+        if curso.docente_id != request.user.id:
+            return JsonResponse({'error': 'No autorizado'}, status=403)
+        curso.delete()  # o cambiar estado a 'Eliminado'
+        return JsonResponse({'success': True, 'mensaje': 'Curso eliminado'})
+    except Curso.DoesNotExist:
+        return JsonResponse({'error': 'No encontrado'}, status=404)

@@ -55,7 +55,7 @@
         <!-- Clase .barra-superior añadida para delimitar la cabecera en la síntesis de voz -->
         <header class="top-bar barra-superior" style="padding: 20px 30px;">
             <div class="user-welcome">
-                <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Laura Martínez García <span class="curp-badge" style="font-size: 0.9rem; padding: 6px 12px; vertical-align: middle;"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
+                <h1 style="font-size: 2.2rem; margin-bottom: 8px;">{{ usuario.nombre }} {{ usuario.apellido_paterno }} {{ usuario.apellido_materno }} <span class="curp-badge" style="font-size: 0.9rem; padding: 6px 12px; vertical-align: middle;"><i class="fas fa-fingerprint"></i> IDENTIDAD VERIFICADA</span></h1>
                 <p class="security-note" style="font-size: 1rem; opacity: 0.9;">Acceso RBAC restringido según LGPDPPSO | Datos encriptados</p>
             </div>
             <div class="notifications" style="display: flex; align-items: center; position: relative;">
@@ -69,7 +69,7 @@
                 </a>
 
                 <div class="user-dropdown" id="userDropdown" style="position: relative; display: inline-block;">
-                    <img src="https://ui-avatars.com/api/?name=Laura+Martinez&background=BC955C&color=fff" onclick="toggleUserMenu()" style="border-radius: 50%; width: 48px; height: 48px; border: 2px solid var(--guinda); cursor: pointer; display: block;" alt="Avatar de usuario">
+                    <img src="https://ui-avatars.com/api/?name={{ usuario.nombre }}+{{ usuario.apellido_paterno }}&background=BC955C&color=fff" onclick="toggleUserMenu()" style="border-radius: 50%; width: 48px; height: 48px; border: 2px solid var(--guinda); cursor: pointer; display: block;" alt="Avatar de usuario">
                     
                     <ul class="dropdown-menu" id="userMenu" style="display: none; position: absolute; right: 0; top: 55px; background: white; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.15); border-radius: 4px; list-style: none !important; padding: 12px 20px; margin: 0; z-index: 1000; border: 1px solid #ddd;">
                         <li><a href="#" style="color: #333; padding: 10px 15px; text-decoration: none; display: block; font-size: 0.95rem;"><i class="fas fa-question-circle" style="margin-right: 8px; width: 15px;"></i> Ayuda</a></li>
@@ -87,10 +87,10 @@
                 <div class="card">
                     <div class="card-title">Resumen de Historial (Solo Lectura)</div>
                     <div class="profile-summary">
-                        <div class="stat-box"><span>Cursos activos</span><strong>8</strong></div>
-                        <div class="stat-box"><span>Nivel</span><strong>Carrera Mag. E</strong></div>
-                        <div class="stat-box"><span>Institución</span><strong>Escuela Primaria Benito Juárez</strong></div>
-                        <div class="stat-box"><span>CURP</span><strong>MAGL850312MDFRRR09</strong></div>
+                        <div class="stat-box"><span>Cursos activos</span><strong>{{ total_cursos }}</strong></div>
+                        <div class="stat-box"><span>Nivel</span><strong>{{ usuario.nivel|default:"N/A" }}</strong></div>
+                        <div class="stat-box"><span>Institución</span><strong>{{ usuario.institucion.nombre|default:"N/A" }}</strong></div>
+                        <div class="stat-box"><span>CURP</span><strong>{{ usuario.curp|default:"N/A" }}</strong></div>
                     </div>
                 </div>
 
@@ -114,13 +114,26 @@
 
                 <div class="card">
                     <div class="card-title">Progreso de Rutas (Completar)</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
-                        <span style="font-size: 0.85rem; font-weight: 600;">Curso de Actualización Docente</span>
-                        <span style="font-size: 0.75rem; color: var(--turquesa);">2025-2026</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                    {% if proceso %}
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+                            <span style="font-size: 0.85rem; font-weight: 600;">{{ proceso.tipo_promocion|default:"Proceso de Escalafón" }}</span>
+                            <span style="font-size: 0.75rem; color: var(--turquesa);">{{ proceso.fecha_inicio|date:"Y" }}-{{ proceso.fecha_fin|date:"Y" }}</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: {{ proceso.porcentaje_completado|default:0 }}%;"></div></div>
+                    {% else %}
+                        <p style="font-size: 0.85rem; color: #666; margin-top: 15px;">No tienes procesos de escalafón activos.</p>
+                    {% endif %}
                     
-                    <p style="font-size: 0.85rem; color: #666; margin-top: 15px;">Aún no tienes más cursos activos registrados.</p>
+                    {% if cursos %}
+                        {% for curso in cursos|slice:":3" %}
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+                            <span style="font-size: 0.85rem; font-weight: 600;">{{ curso.titulo }}</span>
+                            <span style="font-size: 0.75rem; color: var(--turquesa);">{{ curso.estado }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size: 0.85rem; color: #666; margin-top: 15px;">Aún no tienes cursos activos registrados.</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -139,9 +152,13 @@
                     <div class="card-title" style="font-size: 0.9rem;">Estatus de Promoción (Consulta)</div>
                     <div style="text-align: center; padding: 10px;">
                         <i class="fas fa-user-clock fa-3x" style="color: var(--dorado); margin-bottom: 1rem;"></i>
-                        <p style="font-size: 0.75rem; color: #666;">CURP: MAGL850312MDFRRR09</p>
-                        <p style="font-size: 0.8rem; font-weight: 600;">Validación de Portafolio en Proceso</p>
-                        <div class="progress-bar" style="height: 5px;"><div class="progress-fill" style="width: 60%; background: var(--turquesa);"></div></div>
+                        <p style="font-size: 0.75rem; color: #666;">CURP: {{ usuario.curp|default:"N/A" }}</p>
+                        {% if proceso %}
+                            <p style="font-size: 0.8rem; font-weight: 600;">{{ proceso.estado|default:"Validación de Portafolio en Proceso" }}</p>
+                            <div class="progress-bar" style="height: 5px;"><div class="progress-fill" style="width: {{ proceso.porcentaje_completado|default:0 }}%; background: var(--turquesa);"></div></div>
+                        {% else %}
+                            <p style="font-size: 0.8rem; font-weight: 600;">Sin proceso de promoción activo</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

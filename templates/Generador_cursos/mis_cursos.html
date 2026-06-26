@@ -370,8 +370,8 @@
             
             <div class="user-dropdown">
                 <button class="btn-user">
-                    <img src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Fabiola+Q&background=D4C19C&color=691C32'" alt="Avatar">
-                    Bienvenida Fabiola <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    <img src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name={{ usuario.nombre|default:"Usuario" }}+{{ usuario.apellido_paterno|default:"" }}&background=D4C19C&color=691C32'" alt="Avatar">
+                    Bienvenida {{ usuario.nombre|default:"Usuario" }} <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                 </button>
                 <div class="user-dropdown-content">
                     <a href="#"><i class="fas fa-circle-question" style="margin-right: 8px;"></i> Ayuda y Soporte</a>
@@ -390,52 +390,34 @@
 
             <div class="courses-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(350px,1fr)); gap:25px; margin-bottom:2rem;">
                 
+                {% for curso in cursos %}
                 <div class="course-card" style="background:rgb(251, 247, 247); border-radius:20px; border:1px solid #E5E7EB; overflow:hidden; display:flex; flex-direction:column; transition:0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div class="card-header" style="padding:20px; background:#F9FAFB; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:flex-start;">
-                        <span class="level-tag" style="background:#691C32; color:white; padding:4px 10px; border-radius:6px; font-size:0.65rem; font-weight:800; text-transform:uppercase;">Educación Básica</span>
-                        <div style="color:#007A7C; font-size:0.65rem; font-weight:900;">ACEPTADO <i class="fas fa-check-circle"></i></div>
+                        <span class="level-tag" style="background:#691C32; color:white; padding:4px 10px; border-radius:6px; font-size:0.65rem; font-weight:800; text-transform:uppercase;">{{ curso.nivel|default:"General" }}</span>
+                        <div style="color:{% if curso.estado == 'Aprobado' %}#007A7C{% elif curso.estado == 'En Revisión' %}#64748B{% elif curso.estado == 'Observaciones' %}#9A3412{% else %}#64748B{% endif %}; font-size:0.65rem; font-weight:900;">
+                            {{ curso.estado|upper }} {% if curso.estado == 'Aprobado' %}<i class="fas fa-check-circle"></i>{% elif curso.estado == 'En Revisión' %}<i class="fas fa-hourglass-half"></i>{% elif curso.estado == 'Observaciones' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+                        </div>
                     </div>
                     <div class="card-body" style="padding:25px; flex:1;">
-                        <h3 style="font-family:'Montserrat'; font-size:1.1rem; color:#1A1A1A; margin-bottom:10px;">Nueva Escuela Mexicana (NEM)</h3>
-                        <p style="color:#64748B; font-size:0.9rem; line-height:1.5;">Estructura validada sobre principios éticos y participación comunitaria.</p>
+                        <h3 style="font-family:'Montserrat'; font-size:1.1rem; color:#1A1A1A; margin-bottom:10px;">{{ curso.titulo }}</h3>
+                        <p style="color:#64748B; font-size:0.9rem; line-height:1.5;">{{ curso.descripcion|truncatewords:20|default:"Sin descripción" }}</p>
                     </div>
                     <div class="card-footer" style="padding:15px 25px; background:#FDFDFD; display:flex; gap:10px; border-top:1px solid #F3F4F6;">
-                        <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="openDetails('NEM')">VISUALIZAR</button>
-                        <button class="btn-edit" style="flex:1; background:white; color:#691C32; border:1.5px solid #691C32; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="editarCurso('Nueva Escuela Mexicana')"><i class="fas fa-pen"></i></button>
-                    </div>
-                </div>
-
-                <div class="course-card" style="background:white; border-radius:20px; border:1px solid #E5E7EB; overflow:hidden; display:flex; flex-direction:column; transition:0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <div class="card-header" style="padding:20px; background:#F9FAFB; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:flex-start;">
-                        <span class="level-tag" style="background:#691C32; color:white; padding:4px 10px; border-radius:6px; font-size:0.65rem; font-weight:800; text-transform:uppercase;">Media Superior</span>
-                        <div style="color:#64748B; font-size:0.65rem; font-weight:900;">EN REVISIÓN <i class="fas fa-hourglass-half"></i></div>
-                    </div>
-                    <div class="card-body" style="padding:25px; flex:1;">
-                        <h3 style="font-family:'Montserrat'; font-size:1.1rem; color:#1A1A1A; margin-bottom:10px;">Cultura Digital TICCAD</h3>
-                        <p style="color:#64748B; font-size:0.9rem; line-height:1.5;">Contenido bajo dictaminación pedagógica. Edición bloqueada.</p>
-                    </div>
-                    <div class="card-footer" style="padding:15px 25px; background:#FDFDFD; display:flex; gap:10px; border-top:1px solid #F3F4F6;">
-                        <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="openDetails('Cultura')">VISUALIZAR</button>
+                        <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="openDetails('{{ curso.id_curso }}')">VISUALIZAR</button>
+                        {% if curso.estado == 'En Revisión' %}
                         <button class="btn-edit disabled" style="flex:1; background:#f1f5f9; color:#64748B; border:1px solid #cbd5e1; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:not-allowed; opacity:0.6;" onclick="alert('Este curso está bloqueado mientras se encuentra EN REVISIÓN.')"><i class="fas fa-lock"></i></button>
+                        {% else %}
+                        <button class="btn-edit" style="flex:1; background:white; color:#691C32; border:1.5px solid #691C32; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="editarCurso('{{ curso.id_curso }}', '{{ curso.titulo }}')"><i class="fas fa-pen"></i></button>
+                        {% endif %}
                     </div>
                 </div>
-
-                <div class="course-card" style="background:white; border-radius:20px; border:1px solid #E5E7EB; overflow:hidden; display:flex; flex-direction:column; transition:0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <div class="card-header" style="padding:20px; background:#F9FAFB; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:flex-start;">
-                        <span class="level-tag" style="background:#BC955C; color:white; padding:4px 10px; border-radius:6px; font-size:0.65rem; font-weight:800; text-transform:uppercase;">Extracurricular</span>
-                        <div style="color:#9A3412; font-size:0.65rem; font-weight:900;">OBSERVACIONES <i class="fas fa-exclamation-triangle"></i></div>
-                    </div>
-                    <div class="card-body" style="padding:25px; flex:1;">
-                        <h3 style="font-family:'Montserrat'; font-size:1.1rem; color:#1A1A1A; margin-bottom:10px;">Neuroeducación en el Aula</h3>
-                        <p style="color:#64748B; font-size:0.9rem; line-height:1.5;">Requiere ajustes en la descripción del Módulo 3 para aprobación.</p>
-                    </div>
-                    <div class="card-footer" style="padding:15px 25px; background:#FDFDFD; display:flex; gap:10px; border-top:1px solid #F3F4F6;">
-                        <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="openDetails('Neuro')">VISUALIZAR</button>
-                        <button class="btn-edit" style="flex:1; background:white; color:#BC955C; border:1.5px solid #BC955C; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="editarCurso('Neuroeducación')"><i class="fas fa-pen"></i></button>
-                    </div>
+                {% empty %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">
+                    <p>No tienes cursos creados aún.</p>
                 </div>
+                {% endfor %}
 
-                <div class="course-card card-add-new" style="border:2px dashed #E5E7EB; background:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; min-height:250px; transition:0.3s;" onclick="window.location.href='generador.html'">
+                <div class="course-card card-add-new" style="border:2px dashed #E5E7EB; background:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; min-height:250px; transition:0.3s;" onclick="window.location.href='{% url "generador_cursos:generador_de_cursos" %}'">
                     <i class="fas fa-plus-circle" style="font-size:3rem; color:#691C32; margin-bottom:15px; opacity:0.6;"></i>
                     <h3 style="font-family:'Montserrat'; font-weight:800; color:#691C32; font-size:1rem;">GENERA OTRO CURSO</h3>
                     <p style="font-size:0.8rem; padding:0 30px; margin-top:5px; color:#661919;">Crea una nueva propuesta pedagógica con Inteligencia Artificial</p>
@@ -468,19 +450,29 @@
 
         // Lógica de Detalles de Cursos
         const courseData = {
-            'NEM': { title: "Nueva Escuela Mexicana", modules: [{ t: "Módulo 1: Marco Legal", p: "Análisis del Artículo 3° Constitucional." }, { t: "Módulo 2: Comunidad", p: "Vinculación escuela-comunidad." }] },
-            'Cultura': { title: "Cultura Digital", modules: [{ t: "Módulo 1: TICCAD", p: "Uso pedagógico de nubes compartidas." }] },
-            'Neuro': { title: "Neuroeducación", modules: [{ t: "Módulo 1: El Cerebro", p: "Procesos de atención y memoria." }] }
+            {% for curso in cursos %}
+            '{{ curso.id_curso }}': { title: "{{ curso.titulo }}", description: "{{ curso.descripcion|default:"Sin descripción" }}", estado: "{{ curso.estado }}" }{% if not forloop.last %},{% endif %}
+            {% endfor %}
         };
 
         function openDetails(id) {
             const data = courseData[id];
+            if (!data) {
+                alert('Curso no encontrado');
+                return;
+            }
             document.getElementById('modalCourseTitle').innerText = data.title.toUpperCase();
             const content = document.getElementById('modalContent');
-            content.innerHTML = "";
-            data.modules.forEach(m => {
-                content.innerHTML += `<div class="module-item" style="background:#F8FAFC; border-radius:12px; padding:20px; margin-bottom:15px; border-left:5px solid #007A7C;"><h4 style="font-family:'Montserrat'; color:#691C32; margin-bottom:5px;">${m.t}</h4><p style="margin:0;">${m.p}</p></div>`;
-            });
+            content.innerHTML = `
+                <div style="background:#F8FAFC; border-radius:12px; padding:20px; margin-bottom:15px; border-left:5px solid #007A7C;">
+                    <h4 style="font-family:'Montserrat'; color:#691C32; margin-bottom:5px;">Descripción</h4>
+                    <p style="margin:0;">${data.description}</p>
+                </div>
+                <div style="background:#F8FAFC; border-radius:12px; padding:20px; margin-bottom:15px; border-left:5px solid #007A7C;">
+                    <h4 style="font-family:'Montserrat'; color:#691C32; margin-bottom:5px;">Estado</h4>
+                    <p style="margin:0;">${data.estado}</p>
+                </div>
+            `;
             document.getElementById('detailsModal').style.display = 'flex';
         }
 
@@ -488,9 +480,9 @@
             document.getElementById('detailsModal').style.display = 'none'; 
         }
 
-        function editarCurso(nombre) {
+        function editarCurso(id, nombre) {
             if (confirm(`¿Deseas abrir el editor para el curso: ${nombre}?`)) {
-                window.location.href = '{% url "generador_cursos:generador_de_cursos" %}';
+                window.location.href = '{% url "generador_cursos:generador_de_cursos" %}?curso_id=' + id;
             }
         }
 
