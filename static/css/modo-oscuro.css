@@ -1,0 +1,2594 @@
+﻿/* ============================================ */
+/* MODO OSCURO - Extraído de accesibilidad.css  */
+/* ============================================ */
+
+body.dark-theme .skip-link {
+    background: linear-gradient(135deg, #3a6ea8, #5b9bd5);
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(91, 155, 213, 0.45);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+body.dark-theme .skip-link:hover,
+body.dark-theme .skip-link:focus {
+    background: linear-gradient(135deg, #4a80be, #6aaae0);
+    outline-color: #a0d0ff;
+}
+
+body.dark-theme :focus-visible {
+    outline-color: #8ab4d4 !important;
+}
+
+/* ======================== */
+/* MODO OSCURO - COLORES VINO */
+/* ======================== */
+
+body.dark-theme {
+    background: #111318;
+    color: #e4e2ea;
+}
+
+/* Panel de accesibilidad en modo oscuro */
+body.dark-theme .accesibilidad-panel {
+    background: #282c38;
+    border: 1px solid #3d4358;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+body.dark-theme .accesibilidad-panel-header {
+    background: linear-gradient(135deg, #edb03f, #cfa059);
+}
+
+
+body.dark-theme .accesibilidad-panel-header i,
+body.dark-theme .accesibilidad-panel-header h3 {
+    color: white;
+}
+
+body.dark-theme .accesibilidad-seccion {
+    border-bottom-color: #32374a;
+}
+
+body.dark-theme .accesibilidad-seccion h4 {
+    color: #e4e2ea;
+}
+
+body.dark-theme .accesibilidad-opcion {
+    border-bottom-color: #32374a;
+}
+
+body.dark-theme .accesibilidad-opcion span {
+    color: #e4e2ea;
+}
+
+body.dark-theme .accesibilidad-footer {
+    border-top-color: #32374a;
+}
+
+body.dark-theme .btn-reset {
+    border-color: #c4637a;
+    color: #c4637a;
+}
+
+body.dark-theme .btn-reset:hover {
+    background: linear-gradient(135deg, #a84f68, #bc6278);
+    color: white;
+}
+
+body.dark-theme .btn-range {
+    background: #32374a;
+    border-color: #3d4358;
+    color: #e4e2ea;
+}
+
+body.dark-theme .btn-range:hover {
+    background: linear-gradient(135deg, #a84f68, #bc6278);
+    color: white;
+}
+
+body.dark-theme .range-value {
+    color: #9997aa;
+}
+
+body.dark-theme .cursor-opt {
+    border-color: #3d4358;
+    color: #e4e2ea;
+}
+
+body.dark-theme .cursor-opt:hover,
+body.dark-theme .cursor-opt.active {
+    border-color: #8ab4d4;
+    background: rgba(100,140,180,0.20);
+}
+
+/* TÃ­tulos en modo oscuro */
+body.dark-theme .titulo,
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme .seccion-titulo,
+body.dark-theme .tarjeta-numero,
+body.dark-theme .evaluacion-titulo,
+body.dark-theme .perfil-nombre-completo {
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .subtitulo,
+body.dark-theme .tarjeta-texto,
+body.dark-theme .evaluacion-descripcion,
+body.dark-theme .pregunta-enunciado {
+    color: #b8b6c8 !important;
+}
+
+/* Barra lateral en modo oscuro */
+body.dark-theme .barra-lateral {
+    background: linear-gradient(180deg, #1a1d25 0%, #111318 100%);
+    border-right: 1px solid rgba(61,74,92,0.45);
+}
+
+body.dark-theme .barra-lateral-link {
+    color: #ccc8d8 !important;
+}
+
+body.dark-theme .barra-lateral-link:hover {
+    background: linear-gradient(135deg, rgba(100,140,180,0.20), rgba(100,140,180,0.07));
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .barra-lateral-link.activo {
+    background: linear-gradient(135deg, rgba(100,140,180,0.20), rgba(100,140,180,0.10));
+    color: #8ab4d4 !important;
+    box-shadow: inset 4px 0 0 #8ab4d4;
+}
+
+body.dark-theme .divisor {
+    border-bottom: 1px solid rgba(192, 87, 115, 0.423);
+}
+
+/* Jaguar brand */
+body.dark-theme .jaguar-brand img {
+    border-color: #d9d56a;
+    box-shadow: 0 0 10px rgba(185, 181, 60, 0.3);
+    background: #22252f;
+}
+
+/* Barra superior â€” se mantiene igual en modo oscuro (igual que modo claro) */
+/* No se sobreescribe .barra-superior en dark-theme */
+
+/* BotÃ³n de usuario â€” mantener colores del modo claro */
+
+/* Contenido principal */
+body.dark-theme .principal {
+    background: linear-gradient(135deg, #111318, #1a1d25);
+}
+
+/* Tarjetas y secciones */
+body.dark-theme .seccion-dashboard,
+body.dark-theme .config-card,
+body.dark-theme .perfil-card,
+body.dark-theme .tarjeta,
+body.dark-theme .panel-tabla,
+body.dark-theme .barra-herramientas,
+body.dark-theme .panel-filtros,
+body.dark-theme .visor-pregunta,
+body.dark-theme .panel-validacion,
+body.dark-theme .lista-pendientes,
+body.dark-theme .calendario-principal,
+body.dark-theme .leyenda-eventos,
+body.dark-theme .proximos-eventos,
+body.dark-theme .calendario-procesos,
+body.dark-theme .grafico-container,
+body.dark-theme .estadistica-item,
+body.dark-theme .tarjeta-metrica,
+body.dark-theme .tarjeta-evaluacion,
+body.dark-theme .tarjeta-plantilla,
+body.dark-theme .tarjeta-nueva-evaluacion,
+body.dark-theme .opcion-exportacion,
+body.dark-theme .comparativa-grupo {
+    background: #22252f;
+    border-color: #32374a;
+}
+
+/* Encabezados de tarjetas */
+body.dark-theme .config-card-header,
+body.dark-theme .perfil-card-titulo,
+body.dark-theme .evaluacion-header {
+    background: linear-gradient(135deg, #22252f, #1a1d25);
+    border-bottom-color: #32374a;
+}
+
+body.dark-theme .config-card-header h3,
+body.dark-theme .perfil-card-titulo h3 {
+    color: #8ab4d4 !important;
+}
+
+/* Tablas */
+body.dark-theme .tabla-preguntas thead,
+body.dark-theme .tabla-recientes thead,
+body.dark-theme .tabla-procesos thead {
+    background: #1a1d25;
+}
+
+body.dark-theme .tabla-preguntas th,
+body.dark-theme .tabla-recientes th,
+body.dark-theme .tabla-procesos th {
+    color: #8ab4d4 !important;
+    border-bottom-color: #32374a;
+}
+
+body.dark-theme .tabla-preguntas td,
+body.dark-theme .tabla-recientes td,
+body.dark-theme .tabla-procesos td {
+    border-bottom-color: #32374a;
+    color: #b8b6c8 !important;
+}
+
+body.dark-theme .tabla-preguntas tbody tr:hover,
+body.dark-theme .tabla-recientes tbody tr:hover,
+body.dark-theme .tabla-procesos tbody tr:hover {
+    background: rgba(100,140,180,0.07);
+}
+
+/* Formularios e inputs */
+body.dark-theme .form-group input,
+body.dark-theme .form-group select,
+body.dark-theme .form-group textarea,
+body.dark-theme .select-filtro,
+body.dark-theme .input-fecha,
+body.dark-theme .select-sm,
+body.dark-theme .buscador input,
+body.dark-theme .jump-input,
+body.dark-theme .filtro-select,
+body.dark-theme .textarea-comentario,
+body.dark-theme .form-control {
+    background: #111318 !important;
+    border-color: #32374a !important;
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .form-group input::placeholder,
+body.dark-theme .buscador input::placeholder {
+    color: #5e5c6e !important;
+}
+
+body.dark-theme .form-group input:focus,
+body.dark-theme .form-group select:focus,
+body.dark-theme .form-group textarea:focus,
+body.dark-theme .buscador input:focus {
+    border-color: #3d4a5c !important;
+    box-shadow: 0 0 0 3px rgba(100,140,180,0.20);
+}
+
+body.dark-theme .form-group label {
+    color: #b8b6c8 !important;
+}
+
+/* Botones secundarios */
+body.dark-theme .btn-outline,
+body.dark-theme .btn-secondary,
+body.dark-theme .btn-icon,
+body.dark-theme .btn-paginacion,
+body.dark-theme .btn-navegacion,
+body.dark-theme .btn-filtro,
+body.dark-theme .btn-jump,
+body.dark-theme .btn-cancelar,
+body.dark-theme .btn-link {
+    background: #111318 !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+
+body.dark-theme .btn-outline:hover,
+body.dark-theme .btn-secondary:hover,
+body.dark-theme .btn-icon:hover,
+body.dark-theme .btn-filtro:hover,
+body.dark-theme .btn-jump:hover,
+body.dark-theme .btn-cancelar:hover {
+    background: #32374a !important;
+    border-color: #3d4a5c !important;
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .btn-outline:hover i,
+body.dark-theme .btn-secondary:hover i,
+body.dark-theme .btn-icon:hover i {
+    color: #8ab4d4 !important;
+}
+
+/* BotÃ³n primario */
+body.dark-theme .btn-primary {
+    background: linear-gradient(135deg, #2e5878, #3d6e96) !important;
+    color: white !important;
+}
+
+body.dark-theme .btn-primary i {
+    color: white !important;
+}
+
+body.dark-theme .btn-primary:hover {
+    background: linear-gradient(135deg, #3d6e96, #8ab4d4) !important;
+}
+
+/* Chatbot en modo oscuro */
+body.dark-theme #ventana-chatbot {
+    background: #282c38;
+    border: 1px solid #3d4358;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+body.dark-theme .cabecera-chatbot {
+    background: #2f3340;
+    border-bottom: 2px solid #3d4358;
+}
+
+body.dark-theme .cabecera-chatbot p {
+    color: #c4637a !important;
+}
+
+body.dark-theme .chatbot {
+    background: #1e2130;
+}
+
+body.dark-theme .mensaje-usuario {
+    background: #a84f68;
+    color: white !important;
+}
+
+body.dark-theme .mensaje-bot {
+    background: #2a2e3a;
+    color: #e4e2ea !important;
+    border-color: #3d4358;
+}
+
+body.dark-theme .input-chatbot {
+    background: #2f3340;
+    border-top: 1px solid #3d4358;
+}
+
+body.dark-theme .input-chatbot input {
+    background: #1e2130;
+    border-color: #3d4358;
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .input-chatbot input::placeholder {
+    color: #5e5c6e;
+}
+
+body.dark-theme .input-chatbot button {
+    background: #2e5878;
+    color: white;
+}
+
+body.dark-theme .input-chatbot button:hover {
+    background: #3d6e96;
+}
+
+/* Dropdown menu */
+body.dark-theme .menu-dropdown {
+    background: #282c38;
+    border: 1px solid #3d4358;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+}
+
+body.dark-theme .menu-dropdown a {
+    color: #b8b6c8 !important;
+    border-bottom-color: #32374a;
+}
+
+body.dark-theme .menu-dropdown a:hover {
+    background: #32374a;
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .menu-dropdown a i {
+    color: #b8b6c8 !important;
+}
+
+body.dark-theme .menu-dropdown a:hover i {
+    color: #8ab4d4 !important;
+}
+
+/* Badges */
+body.dark-theme .badge {
+    background: rgba(100,140,180,0.12);
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .badge-info {
+    background: rgba(100,140,180,0.12);
+    color: #8ab4d4 !important;
+}
+
+/* EstadÃ­sticas */
+body.dark-theme .estadistica-icono.estadistica-total {
+    background: rgba(100,140,180,0.12);
+    color: #8ab4d4;
+}
+
+body.dark-theme .estadistica-icono.estadistica-validadas {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+}
+
+body.dark-theme .estadistica-icono.estadistica-pendientes {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+}
+
+body.dark-theme .estadistica-icono.estadistica-rechazadas {
+    background: rgba(248, 113, 113, 0.15);
+    color: #f87171;
+}
+
+/* Scrollbar */
+body.dark-theme ::-webkit-scrollbar-track {
+    background: #1a1d25;
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+    background: #2e5878;
+    border-radius: 4px;
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+    background: #3d6e96;
+}
+
+/* Modo oscuro - ajuste de colores para mejor contraste */
+body.dark-theme .accesibilidad-seccion:first-of-type h4 i { color: #5dade2; }
+body.dark-theme .accesibilidad-opcion:first-of-type span i { color: #bdc3c7; }
+body.dark-theme .accesibilidad-opcion:nth-of-type(2) span i { color: #f39c12; }
+body.dark-theme .accesibilidad-opcion:nth-of-type(3) span i { color: #bb8fce; }
+
+body.dark-theme .accesibilidad-seccion:nth-of-type(2) h4 i { color: #f39c12; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(2) .accesibilidad-opcion:first-of-type span i { color: #48c9b0; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(2) .accesibilidad-opcion:nth-of-type(2) span i { color: #f4d03f; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(2) .accesibilidad-opcion:nth-of-type(3) span i { color: #58d68d; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(2) .accesibilidad-opcion:nth-of-type(4) span i { color: #ec7063; }
+
+body.dark-theme .accesibilidad-seccion:nth-of-type(3) h4 i { color: #48c9b0; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(3) .accesibilidad-opcion:first-of-type span i { color: #48c9b0; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(3) .accesibilidad-opcion:nth-of-type(2) span i { color: #f7dc6f; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(3) .accesibilidad-opcion:nth-of-type(3) span i { color: #f5b041; }
+body.dark-theme .accesibilidad-seccion:nth-of-type(3) .accesibilidad-opcion:nth-of-type(4) span i { color: #af7ac5; }
+
+body.dark-theme .accesibilidad-seccion:nth-of-type(4) h4 i { color: #58d68d; }
+body.dark-theme .btn-reset i { color: #95a5a6; }
+body.dark-theme .btn-reset:hover i { color: white; }
+
+/* ======================== */
+/* DARK THEME - COBERTURA COMPLETA */
+/* ======================== */
+
+/* Footer â€” estilos del modo claro se conservan en modo oscuro */
+
+/* Dashboard - tarjetas de iconos */
+body.dark-theme .tarjeta-icono {
+    filter: brightness(0.85);
+}
+
+/* Acciones rÃ¡pidas */
+body.dark-theme .accion-rapida {
+    background: #22252f !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+
+body.dark-theme .accion-rapida:hover {
+    background: rgba(100,140,180,0.12) !important;
+    border-color: #3d4a5c !important;
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .accion-rapida i {
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .accion-rapida span {
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .accion-rapida small {
+    color: #5e5c6e !important;
+}
+
+/* Actividad reciente */
+body.dark-theme .actividad-item {
+    border-bottom-color: #32374a !important;
+}
+
+body.dark-theme .actividad-contenido p {
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .actividad-fecha {
+    color: #5e5c6e !important;
+}
+
+/* Perfil */
+body.dark-theme .curp-destacado,
+body.dark-theme .clave-institucion {
+    background: rgba(100,140,180,0.12) !important;
+    color: #8ab4d4 !important;
+    border-color: rgba(61,74,92,0.45) !important;
+}
+
+body.dark-theme .perfil-campo label {
+    color: #9997aa !important;
+}
+
+body.dark-theme .perfil-campo span {
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .perfil-rol {
+    background: rgba(100,140,180,0.20) !important;
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .correo-info {
+    color: #b8b6c8 !important;
+}
+
+body.dark-theme .correo-info i {
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .institucion-nombre {
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .avatar-imagen {
+    background: rgba(100,140,180,0.12) !important;
+    border-color: rgba(100,140,180,0.20) !important;
+    color: #8ab4d4 !important;
+}
+
+/* Botones de perfil */
+body.dark-theme .btn-perfil.btn-editar {
+    background: rgba(100,140,180,0.12) !important;
+    border-color: rgba(100,140,180,0.20) !important;
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .btn-perfil.btn-editar:hover {
+    background: #2e5878 !important;
+    color: white !important;
+}
+
+body.dark-theme .btn-perfil.btn-seguridad {
+    background: rgba(52, 73, 94, 0.4) !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+
+body.dark-theme .btn-perfil.btn-seguridad:hover {
+    background: #32374a !important;
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .btn-copiar {
+    color: #9997aa !important;
+    background: rgba(255,255,255,0.05) !important;
+    border-color: #32374a !important;
+}
+
+body.dark-theme .btn-copiar:hover {
+    color: #8ab4d4 !important;
+}
+
+/* Encabezado de pÃ¡gina */
+body.dark-theme .encabezado-pagina {
+    border-bottom-color: #32374a !important;
+}
+
+/* Modal genÃ©rico */
+body.dark-theme .modal-contenido,
+body.dark-theme .modal-body,
+body.dark-theme .modal-footer {
+    background: #22252f !important;
+    border-color: #32374a !important;
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .modal-header {
+    background: linear-gradient(135deg, #2e5878, #3d6e96) !important;
+}
+
+/* Select filtros */
+body.dark-theme select option {
+    background: #22252f !important;
+    color: #e4e2ea !important;
+}
+
+/* Notificaciones */
+body.dark-theme .notificacion-global {
+    background: #2a2e3a !important;
+    border-color: #32374a !important;
+    color: #e4e2ea !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+}
+
+/* Panel de accesibilidad - cuerpo */
+body.dark-theme .accesibilidad-panel-body {
+    background: #2a2e3a;
+}
+
+/* Asegurar que texto en modo oscuro siempre sea legible */
+body.dark-theme p,
+body.dark-theme span,
+body.dark-theme label,
+body.dark-theme li,
+body.dark-theme td,
+body.dark-theme th,
+body.dark-theme small {
+    color: inherit;
+}
+
+/* ======================== */
+/* CORRECCIONES DARK THEME  */
+/* ======================== */
+
+/* Footer — se mantiene igual en modo oscuro (usa colores brand originales) */
+
+/* ---- Herramientas de lectura visibles en modo oscuro ---- */
+body.dark-theme #acc-reading-mask {
+    background: rgba(196, 99, 122, 0.22) !important;
+    border-top-color: #8ab4d4 !important;
+    border-bottom-color: #8ab4d4 !important;
+}
+
+body.dark-theme #acc-reading-guide {
+    background: #8ab4d4 !important;
+    opacity: 0.7 !important;
+}
+
+/* Resaltar enlaces en modo oscuro */
+body.dark-theme.highlight-links a {
+    background-color: rgba(196, 99, 122, 0.22) !important;
+    color: #8ab4d4 !important;
+    text-decoration-color: #8ab4d4 !important;
+}
+
+body.dark-theme.highlight-links a:hover {
+    background-color: #2e5878 !important;
+    color: #ffffff !important;
+}
+
+/* ---- Textos invisibles en modo oscuro â€” forzar legibilidad ---- */
+
+/* Textos grises sobre fondos oscuros que perdÃ­an contraste */
+body.dark-theme .tarjeta-texto,
+body.dark-theme .evaluacion-descripcion,
+body.dark-theme .actividad-contenido p,
+body.dark-theme .actividad-fecha,
+body.dark-theme .accion-rapida small,
+body.dark-theme .perfil-campo label,
+body.dark-theme .range-value,
+body.dark-theme .subtitulo {
+    color: #b0b0c0 !important;
+}
+
+body.dark-theme .tarjeta-numero,
+body.dark-theme .accion-rapida span,
+body.dark-theme .barra-lateral-link span,
+body.dark-theme .evaluacion-titulo,
+body.dark-theme .pregunta-enunciado {
+    color: #e4e2ea !important;
+}
+
+/* Ãconos de actividad y tarjetas */
+body.dark-theme .actividad-icono i {
+    color: #8ab4d4 !important;
+}
+
+/* Encabezado de secciÃ³n */
+body.dark-theme .encabezado-seccion .ver-todo {
+    color: #8ab4d4 !important;
+}
+
+/* Tabs y pestaÃ±as */
+body.dark-theme .tab-btn,
+body.dark-theme .tab-item {
+    color: #b0b0c0 !important;
+    border-color: #32374a !important;
+}
+
+body.dark-theme .tab-btn.activo,
+body.dark-theme .tab-btn:hover {
+    color: #8ab4d4 !important;
+    border-bottom-color: #8ab4d4 !important;
+}
+
+/* Buscador / filtros */
+body.dark-theme .buscador,
+body.dark-theme .barra-herramientas {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+
+/* Texto dentro de inputs/selects que podÃ­a desaparecer */
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+    color: #606070 !important;
+    opacity: 1 !important;
+}
+
+/* Listas y texto de items */
+body.dark-theme .lista-actividad {
+    background: #22252f !important;
+}
+
+/* PaginaciÃ³n */
+body.dark-theme .paginacion-info,
+body.dark-theme .contador-preguntas {
+    color: #b0b0c0 !important;
+}
+
+/* Estado badges genÃ©ricos */
+body.dark-theme .estado-pendiente,
+body.dark-theme .badge-pendiente {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important;
+}
+
+body.dark-theme .estado-validada,
+body.dark-theme .badge-validada,
+body.dark-theme .estado-publicada {
+    background: rgba(74, 222, 128, 0.15) !important;
+    color: #4ade80 !important;
+}
+
+body.dark-theme .estado-borrador,
+body.dark-theme .badge-borrador {
+    background: rgba(148, 163, 184, 0.15) !important;
+    color: #94a3b8 !important;
+}
+
+body.dark-theme .estado-rechazada,
+body.dark-theme .badge-rechazada {
+    background: rgba(248, 113, 113, 0.15) !important;
+    color: #f87171 !important;
+}
+
+/* Contenedor principal fondo */
+body.dark-theme .contenedor-principal {
+    background: #111318 !important;
+}
+
+/* ======================== */
+/* MODALES EN MODO OSCURO   */
+/* ======================== */
+
+body.dark-theme .modal-overlay {
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body.dark-theme .modal,
+body.dark-theme .modal-content,
+body.dark-theme .modal-contenido,
+body.dark-theme .modal-contenido-creacion,
+body.dark-theme .details-modal,
+body.dark-theme .modal-eventos,
+body.dark-theme .modal-creacion-evaluacion,
+body.dark-theme .modal-agregar-pregunta,
+body.dark-theme .modal-previsualizacion {
+    background: #2a2e3a !important;
+    color: #e4e2ea !important;
+    border-color: #32374a !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-theme .modal-header,
+body.dark-theme .modal-eventos .modal-header,
+body.dark-theme .modal-header-creacion,
+body.dark-theme .modal-creacion-evaluacion .modal-header,
+body.dark-theme .modal-previsualizacion .modal-header {
+    background: linear-gradient(135deg, #2e5878, #3d6e96) !important;
+    color: #ffffff !important;
+    border-bottom-color: #32374a !important;
+}
+
+body.dark-theme .modal-header h2,
+body.dark-theme .modal-header h3,
+body.dark-theme .modal-header h4 {
+    color: #ffffff !important;
+}
+
+body.dark-theme .modal-body,
+body.dark-theme .modal-contenido,
+body.dark-theme .modal-scroll,
+body.dark-theme .modal-body-creacion,
+body.dark-theme .modal-body-previsualizacion {
+    background: #2a2e3a !important;
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .modal-footer,
+body.dark-theme .modal-footer-previsualizacion {
+    background: #22252f !important;
+    border-top-color: #32374a !important;
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .btn-cerrar-modal,
+body.dark-theme .btn-cerrar,
+body.dark-theme .btn-cerrar-modal-creacion {
+    color: #ffffff !important;
+}
+
+body.dark-theme .btn-cerrar-modal:hover,
+body.dark-theme .btn-cerrar:hover {
+    color: #8ab4d4 !important;
+}
+
+body.dark-theme .modal-actions {
+    background: #22252f !important;
+    border-top-color: #32374a !important;
+}
+
+body.dark-theme .btn-cancel,
+body.dark-theme .btn-modal-cancelar {
+    background: #32374a !important;
+    color: #b8b6c8 !important;
+    border-color: #3d4358 !important;
+}
+
+body.dark-theme .btn-cancel:hover,
+body.dark-theme .btn-modal-cancelar:hover {
+    background: #3d4358 !important;
+    color: #e4e2ea !important;
+}
+
+body.dark-theme .btn-save,
+body.dark-theme .btn-modal-confirmar {
+    background: linear-gradient(135deg, #2e5878, #3d6e96) !important;
+    color: #ffffff !important;
+}
+
+body.dark-theme .btn-save:hover,
+body.dark-theme .btn-modal-confirmar:hover {
+    background: linear-gradient(135deg, #3d6e96, #8ab4d4) !important;
+}
+
+body.dark-theme .modal label,
+body.dark-theme .modal-content label {
+    color: #b8b6c8 !important;
+}
+
+body.dark-theme .modal input,
+body.dark-theme .modal select,
+body.dark-theme .modal textarea,
+body.dark-theme .modal-content input,
+body.dark-theme .modal-content select,
+body.dark-theme .modal-content textarea {
+    background: #111318 !important;
+    border-color: #32374a !important;
+    color: #e4e2ea !important;
+}
+
+/* ============================================ */
+/* EVALUADOR-SPECIFIC DARK OVERRIDES            */
+/* ============================================ */
+
+/* Dashboard stat cards */
+body.dark-theme .tarjeta-evaluaciones {
+    background: rgba(52, 152, 219, 0.15) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .tarjeta-validadas {
+    background: rgba(39, 174, 96, 0.15) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .tarjeta-pendientes {
+    background: rgba(243, 156, 18, 0.15) !important;
+    color: #f4d03f !important;
+}
+body.dark-theme .tarjeta-fechas {
+    background: rgba(155, 89, 182, 0.15) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .tarjeta-banco {
+    background: rgba(89, 143, 182, 0.15) !important;
+    color: #85c1e9 !important;
+}
+
+/* Acción rápida */
+body.dark-theme .accion-rapida {
+    background: #22252f !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .accion-rapida:hover {
+    background: rgba(100,140,180,0.12) !important;
+    border-color: #3d4a5c !important;
+    color: #8ab4d4 !important;
+}
+body.dark-theme .accion-rapida i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .accion-rapida span {
+    color: #e4e2ea !important;
+}
+body.dark-theme .accion-rapida small {
+    color: #5e5c6e !important;
+}
+
+/* Actividad reciente */
+body.dark-theme .actividad-item {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .actividad-contenido p {
+    color: #e4e2ea !important;
+}
+body.dark-theme .actividad-fecha {
+    color: #5e5c6e !important;
+}
+body.dark-theme .actividad-icono i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .actividad-ia i,
+body.dark-theme .actividad-validacion i,
+body.dark-theme .actividad-evaluacion i,
+body.dark-theme .actividad-revision i {
+    color: inherit;
+}
+
+/* Encabezado de sección */
+body.dark-theme .encabezado-seccion .ver-todo {
+    color: #8ab4d4 !important;
+}
+
+/* Evaluacion status indicators */
+body.dark-theme .evaluacion-borrador {
+    background: rgba(243, 156, 18, 0.15) !important;
+    color: #f4d03f !important;
+}
+body.dark-theme .evaluacion-revision {
+    background: rgba(52, 152, 219, 0.15) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .evaluacion-publicada {
+    background: rgba(39, 174, 96, 0.15) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .evaluacion-programada {
+    background: rgba(155, 89, 182, 0.15) !important;
+    color: #bb8fce !important;
+}
+
+/* Evaluacion meta items */
+body.dark-theme .meta-item {
+    color: #9997aa !important;
+}
+body.dark-theme .meta-item i {
+    color: #5dade2 !important;
+}
+body.dark-theme .evaluacion-fechas {
+    background: rgba(52, 152, 219, 0.08) !important;
+}
+body.dark-theme .fecha-item {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .fecha-item strong {
+    color: #e4e2ea !important;
+}
+body.dark-theme .evaluacion-progreso {
+    background: rgba(52, 152, 219, 0.08) !important;
+}
+body.dark-theme .progreso-info {
+    color: #9997aa !important;
+}
+body.dark-theme .progreso-info span {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .progreso-bar {
+    background: #32374a !important;
+}
+body.dark-theme .progreso-fill {
+    background: linear-gradient(135deg, #8ab4d4, #2e5878) !important;
+}
+body.dark-theme .evaluacion-revisores {
+    background: rgba(52, 152, 219, 0.08) !important;
+}
+body.dark-theme .evaluacion-footer {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+}
+
+/* Nueva evaluacion card */
+body.dark-theme .nueva-evaluacion-contenido h3 {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .nueva-evaluacion-contenido p {
+    color: #9997aa !important;
+}
+
+/* Seccion recientes */
+body.dark-theme .seccion-recientes {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+
+/* Badge variants */
+body.dark-theme .badge-asignatura {
+    color: #e4e2ea !important;
+    opacity: 0.85;
+}
+body.dark-theme .badge-asignatura.badge-espanol {
+    background: #2471a3 !important;
+}
+body.dark-theme .badge-asignatura.badge-matematicas {
+    background: #b03a2e !important;
+}
+body.dark-theme .badge-asignatura.badge-ciencias {
+    background: #1e8449 !important;
+}
+body.dark-theme .badge-asignatura.badge-historia {
+    background: #76448a !important;
+}
+body.dark-theme .badge-asignatura.badge-geografia {
+    background: #d4ac0d !important;
+    color: #2a2e3a !important;
+}
+body.dark-theme .badge-asignatura.badge-formacion-civica {
+    background: #148f77 !important;
+}
+body.dark-theme .badge-asignatura.badge-artes {
+    background: #ca6f1e !important;
+}
+body.dark-theme .badge-asignatura.badge-educacion-fisica {
+    background: #2c3e50 !important;
+}
+body.dark-theme .badge-asignatura.badge-pedagogia {
+    background: #117a65 !important;
+}
+body.dark-theme .badge-asignatura.badge-evaluacion {
+    background: #6c3483 !important;
+}
+body.dark-theme .badge-asignatura.badge-inclusion {
+    background: #1a252f !important;
+}
+
+/* Badge tipo */
+body.dark-theme .badge-opcion-multiple {
+    background: rgba(52, 152, 219, 0.2) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .badge-verdadero-falso {
+    background: rgba(155, 89, 182, 0.2) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .badge-caso-practico {
+    background: rgba(230, 126, 34, 0.2) !important;
+    color: #eb984e !important;
+}
+body.dark-theme .badge-relacionar {
+    background: rgba(26, 188, 156, 0.2) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .badge-completar {
+    background: rgba(243, 156, 18, 0.2) !important;
+    color: #f4d03f !important;
+}
+
+/* Badge estado */
+body.dark-theme .badge-estado-archivada {
+    background: rgba(149, 165, 166, 0.2) !important;
+    color: #aeb6bf !important;
+}
+body.dark-theme .badge-revision {
+    background: rgba(52, 152, 219, 0.2) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .badge-en-curso {
+    background: rgba(39, 174, 96, 0.2) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .badge-completado {
+    background: rgba(149, 165, 166, 0.2) !important;
+    color: #aeb6bf !important;
+}
+body.dark-theme .badge-critico {
+    background: rgba(231, 76, 60, 0.2) !important;
+    color: #ec7063 !important;
+}
+body.dark-theme .badge-proximo {
+    background: rgba(52, 152, 219, 0.2) !important;
+    color: #5dade2 !important;
+}
+
+/* Badge dificultad */
+body.dark-theme .badge-dificultad {
+    background: rgba(149, 165, 166, 0.15) !important;
+    color: #aeb6bf !important;
+}
+
+/* Badge dimension */
+body.dark-theme .badge-dimension {
+    background: rgba(52, 152, 219, 0.2) !important;
+    color: #5dade2 !important;
+}
+
+/* Badge origen */
+body.dark-theme .badge-origen-ia {
+    background: rgba(155, 89, 182, 0.2) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .badge-origen-humano {
+    background: rgba(52, 152, 219, 0.2) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .badge-nivel {
+    background: rgba(46, 204, 113, 0.2) !important;
+    color: #58d68d !important;
+}
+
+/* Bloom badges */
+body.dark-theme .badge-bloom {
+    background: rgba(149, 165, 166, 0.15) !important;
+    color: #aeb6bf !important;
+}
+
+/* Estado badges */
+body.dark-theme .badge-borrador {
+    background: rgba(148, 163, 184, 0.15) !important;
+    color: #94a3b8 !important;
+}
+
+/* Tabla contenedor */
+body.dark-theme .tabla-contenedor {
+    border-color: #32374a !important;
+}
+body.dark-theme .tabla-header {
+    border-color: #32374a !important;
+}
+body.dark-theme .tabla-info h3 {
+    color: #e4e2ea !important;
+}
+
+/* Tabla paginacion */
+body.dark-theme .tabla-paginacion {
+    border-color: #32374a !important;
+}
+body.dark-theme .paginacion-ellipsis {
+    color: #5e5c6e !important;
+}
+body.dark-theme .items-por-pagina label {
+    color: #9997aa !important;
+}
+
+/* Filtros panel */
+body.dark-theme .filtros-header {
+    background: linear-gradient(135deg, #22252f, #1a1d25) !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .filtros-header h3 {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .filtros-header h3 i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .filtros-contenido {
+    border-color: #32374a !important;
+}
+body.dark-theme .filtro-grupo label {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .filtro-grupo label i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .filtros-acciones {
+    border-color: #32374a !important;
+}
+body.dark-theme .contador-filtros {
+    background: #1a1d25 !important;
+    color: #9997aa !important;
+}
+body.dark-theme .contador-filtros span {
+    color: #8ab4d4 !important;
+}
+
+/* Checkbox options */
+body.dark-theme .checkbox-option {
+    background: #1a1d25 !important;
+    color: #b8b6c8 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .checkbox-option:hover {
+    background: rgba(100,140,180,0.10) !important;
+}
+
+/* ============================================ */
+/* CONFIGURACION DARK                           */
+/* ============================================ */
+
+body.dark-theme .config-tabs {
+    border-color: #32374a !important;
+}
+body.dark-theme .tab-btn {
+    color: #9997aa !important;
+}
+body.dark-theme .tab-btn.activo,
+body.dark-theme .tab-btn:hover {
+    color: #8ab4d4 !important;
+    border-color: #3d4a5c !important;
+}
+body.dark-theme .form-actions {
+    border-color: #32374a !important;
+}
+body.dark-theme .form-hint {
+    color: #5e5c6e !important;
+}
+
+/* Security options */
+body.dark-theme .security-option {
+    border-color: #32374a !important;
+}
+body.dark-theme .security-option .option-info h4 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .security-option .option-info p {
+    color: #9997aa !important;
+}
+
+/* Toggle switch */
+body.dark-theme .toggle-switch .toggle-slider {
+    background-color: #3d4358 !important;
+}
+body.dark-theme .toggle-switch input:checked + .toggle-slider {
+    background-color: #2e5878 !important;
+}
+
+/* Theme options */
+body.dark-theme .theme-option {
+    border-color: #32374a !important;
+    background: #22252f !important;
+}
+body.dark-theme .theme-option.active {
+    border-color: #3d4a5c !important;
+    background: rgba(100,140,180,0.12) !important;
+}
+body.dark-theme .theme-option .theme-label {
+    color: #e4e2ea !important;
+}
+body.dark-theme .theme-preview.light-preview {
+    background: #f4f4f4 !important;
+    border-color: #ccc !important;
+}
+body.dark-theme .theme-preview.dark-preview {
+    background: #111318 !important;
+    border-color: #3d4a5c !important;
+}
+body.dark-theme .theme-preview.system-preview {
+    background: linear-gradient(135deg, #f4f4f4 50%, #111318 50%) !important;
+    border-color: #32374a !important;
+}
+
+/* ============================================ */
+/* CALENDARIO DARK                              */
+/* ============================================ */
+
+body.dark-theme .btn-navegacion {
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .btn-navegacion:hover {
+    border-color: #3d4a5c !important;
+    color: #8ab4d4 !important;
+}
+body.dark-theme .mes-actual {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .btn-hoy {
+    background: #2e5878 !important;
+}
+body.dark-theme .btn-hoy:hover {
+    background: #3d6e96 !important;
+}
+
+/* Leyenda */
+body.dark-theme .leyenda-item {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .seccion-header {
+    border-color: #32374a !important;
+}
+body.dark-theme .seccion-header h3 {
+    color: #8ab4d4 !important;
+}
+
+/* Proximos eventos */
+body.dark-theme .evento-proximo {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .evento-proximo:hover {
+    background: rgba(185, 60, 94, 0.08) !important;
+}
+body.dark-theme .evento-fecha {
+    background: #1a1d25 !important;
+}
+body.dark-theme .evento-dia {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .evento-mes {
+    color: #9997aa !important;
+}
+body.dark-theme .evento-contenido h3 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .evento-contenido p {
+    color: #9997aa !important;
+}
+body.dark-theme .evento-meta {
+    color: #9997aa !important;
+}
+
+/* Evento badge */
+body.dark-theme .evento-badge {
+    color: #e4e2ea !important;
+}
+
+/* Tabla procesos */
+body.dark-theme .tiempo-restante {
+    color: #9997aa !important;
+}
+body.dark-theme .tiempo-restante.critico {
+    color: #ec7063 !important;
+}
+
+/* FullCalendar v5 overrides */
+body.dark-theme .fc-theme-standard .fc-scrollgrid {
+    border-color: #32374a !important;
+}
+body.dark-theme .fc-theme-standard td,
+body.dark-theme .fc-theme-standard th {
+    border-color: #32374a !important;
+}
+body.dark-theme .fc .fc-scrollgrid-section > td {
+    background: #22252f !important;
+}
+body.dark-theme .fc-col-header-cell {
+    background: #1a1d25 !important;
+    color: #b8b6c8 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .fc-col-header-cell.fc-day-sun {
+    color: #ec7063 !important;
+}
+body.dark-theme .fc-daygrid-day {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .fc-daygrid-day.fc-day-other {
+    background: #111318 !important;
+}
+body.dark-theme .fc-daygrid-day-number {
+    color: #e4e2ea !important;
+}
+body.dark-theme .fc-daygrid-day.fc-day-today {
+    background: rgba(100,140,180,0.12) !important;
+}
+body.dark-theme .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    background: #2e5878 !important;
+    color: #fff !important;
+}
+body.dark-theme .fc-event {
+    background: #2e5878 !important;
+    border-color: #2e5878 !important;
+    color: #fff !important;
+}
+body.dark-theme .fc-event:hover {
+    background: #3d6e96 !important;
+}
+body.dark-theme .fc .fc-day-other .fc-daygrid-day-top {
+    opacity: 0.5;
+}
+body.dark-theme .fc th {
+    border-color: #32374a !important;
+}
+body.dark-theme .fc td {
+    border-color: #32374a !important;
+}
+body.dark-theme .fc-header-toolbar {
+    color: #e4e2ea !important;
+}
+
+/* Evento evaluacion FullCalendar */
+body.dark-theme .evento-evaluacion-fc {
+    background: #2e5878 !important;
+    border-color: #2e5878 !important;
+}
+
+/* ============================================ */
+/* VALIDACION DARK                              */
+/* ============================================ */
+
+body.dark-theme .visor-header {
+    border-color: #32374a !important;
+}
+body.dark-theme .visor-controles {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .contador-revision {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .contador-revision span {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .pregunta-info {
+    background: #1a1d25 !important;
+}
+body.dark-theme .metadata-label {
+    color: #5e5c6e !important;
+}
+body.dark-theme .metadata-value {
+    color: #e4e2ea !important;
+}
+body.dark-theme .pregunta-contenido {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .opcion {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .opcion.correcta {
+    background: rgba(39, 174, 96, 0.15) !important;
+    border-color: #58d68d !important;
+}
+body.dark-theme .opcion-indice {
+    background: #22252f !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .opcion.correcta .opcion-indice {
+    background: #27ae60 !important;
+    color: #fff !important;
+}
+body.dark-theme .justificacion-ia {
+    background: rgba(155, 89, 182, 0.08) !important;
+    border-color: #bb8fce !important;
+}
+body.dark-theme .justificacion-header {
+    color: #bb8fce !important;
+}
+body.dark-theme .justificacion-texto {
+    color: #b8b6c8 !important;
+}
+
+/* Acciones validacion */
+body.dark-theme .accion-btn {
+    border-color: #32374a !important;
+    background: #22252f !important;
+}
+body.dark-theme .accion-btn:hover {
+    border-color: #3d4a5c !important;
+    background: rgba(100,140,180,0.12) !important;
+}
+body.dark-theme .accion-btn.aprobar {
+    border-color: #58d68d !important;
+}
+body.dark-theme .accion-btn.aprobar:hover {
+    background: rgba(39, 174, 96, 0.15) !important;
+}
+body.dark-theme .accion-btn.rechazar {
+    border-color: #ec7063 !important;
+}
+body.dark-theme .accion-btn.rechazar:hover {
+    background: rgba(231, 76, 60, 0.15) !important;
+}
+body.dark-theme .accion-btn.revisar {
+    border-color: #f4d03f !important;
+}
+body.dark-theme .accion-btn.revisar:hover {
+    background: rgba(243, 156, 18, 0.15) !important;
+}
+body.dark-theme .accion-btn.omitir {
+    border-color: #aeb6bf !important;
+}
+body.dark-theme .accion-icono.aprobar-icon {
+    background: rgba(39, 174, 96, 0.15) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .accion-icono.rechazar-icon {
+    background: rgba(231, 76, 60, 0.15) !important;
+    color: #ec7063 !important;
+}
+body.dark-theme .accion-icono.revisar-icon {
+    background: rgba(243, 156, 18, 0.15) !important;
+    color: #f4d03f !important;
+}
+body.dark-theme .accion-icono.omitir-icon {
+    background: rgba(149, 165, 166, 0.15) !important;
+    color: #aeb6bf !important;
+}
+body.dark-theme .accion-titulo {
+    color: #e4e2ea !important;
+}
+body.dark-theme .accion-descripcion {
+    color: #9997aa !important;
+}
+body.dark-theme .comentarios-validacion {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .comentarios-validacion i {
+    color: #5dade2 !important;
+}
+
+/* Historial validacion */
+body.dark-theme .historial-validacion {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .historial-icono {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .historial-contenido p {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .historial-contenido strong {
+    color: #e4e2ea !important;
+}
+body.dark-theme .historial-fecha {
+    color: #5e5c6e !important;
+}
+
+/* Lista pendientes */
+body.dark-theme .lista-header {
+    border-color: #32374a !important;
+}
+body.dark-theme .lista-header h3 {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .pendiente-item {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .pendiente-item.activa {
+    background: rgba(100,140,180,0.10) !important;
+    border-color: #3d4a5c !important;
+}
+body.dark-theme .pendiente-item:hover {
+    background: rgba(100,140,180,0.07) !important;
+}
+body.dark-theme .pendiente-icono.ia {
+    background: rgba(155, 89, 182, 0.15) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .pendiente-icono.humana {
+    background: rgba(52, 152, 219, 0.15) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .pendiente-contenido h4 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .pendiente-meta {
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* REPORTES DARK                                */
+/* ============================================ */
+
+body.dark-theme .contenedor-filtros-reporte {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .grupo-filtro label {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .grupo-filtro label i {
+    color: #5dade2 !important;
+}
+body.dark-theme .acciones-filtros {
+    border-color: #32374a !important;
+}
+
+/* Metricas */
+body.dark-theme .metrica-icono {
+    border-radius: 8px;
+}
+body.dark-theme .metrica-alfa {
+    background: rgba(52, 152, 219, 0.15) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .metrica-dificultad {
+    background: rgba(46, 204, 113, 0.15) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .metrica-discriminacion {
+    background: rgba(155, 89, 182, 0.15) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .metrica-aprobacion {
+    background: rgba(231, 76, 60, 0.15) !important;
+    color: #ec7063 !important;
+}
+body.dark-theme .metrica-valor {
+    color: #e4e2ea !important;
+}
+body.dark-theme .metrica-texto {
+    color: #9997aa !important;
+}
+
+/* Estado metricas */
+body.dark-theme .estado-excelente {
+    background: rgba(39, 174, 96, 0.15) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .estado-optimo {
+    background: rgba(52, 152, 219, 0.15) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .estado-adecuado {
+    background: rgba(155, 89, 182, 0.15) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .estado-bueno {
+    background: rgba(243, 156, 18, 0.15) !important;
+    color: #f4d03f !important;
+}
+
+/* Graficos */
+body.dark-theme .grafico-header h3 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .barra-grafico {
+    background: linear-gradient(135deg, #2e5878, #8ab4d4) !important;
+}
+body.dark-theme .eje-x {
+    color: #9997aa !important;
+}
+body.dark-theme .select-pequeno {
+    border-color: #32374a !important;
+    background: #1a1d25 !important;
+    color: #b8b6c8 !important;
+}
+
+/* Exportacion */
+body.dark-theme .icono-exportacion {
+    background: rgba(100,140,180,0.12) !important;
+    color: #8ab4d4 !important;
+}
+body.dark-theme .info-exportacion h4 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .info-exportacion p {
+    color: #9997aa !important;
+}
+
+/* Notificacion reportes */
+body.dark-theme .notificacion {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .notificacion.exito {
+    border-left-color: #58d68d !important;
+}
+body.dark-theme .notificacion.error {
+    border-left-color: #ec7063 !important;
+}
+body.dark-theme .notificacion.info {
+    border-left-color: #5dade2 !important;
+}
+body.dark-theme .notificacion .notificacion-contenido p {
+    color: #b8b6c8 !important;
+}
+
+/* ============================================ */
+/* PERFIL DARK                                  */
+/* ============================================ */
+
+body.dark-theme .perfil-avatar {
+    background: linear-gradient(135deg, #22252f, #1a1d25) !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .perfil-card-acciones {
+    background: linear-gradient(135deg, #22252f, #1a1d25) !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .subtitulo-perfil {
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* IA GENERADOR DARK                            */
+/* ============================================ */
+
+body.dark-theme .panel-configuracion,
+body.dark-theme .panel-previa {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .panel-header {
+    background: linear-gradient(135deg, #22252f, #1a1d25) !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .panel-header h3 {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .panel-header h3 i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .panel-subtitulo {
+    color: #9997aa !important;
+}
+
+/* Form groups generador IA */
+body.dark-theme .grupo-formulario-ia label,
+body.dark-theme .grupo-formulario label {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .grupo-formulario-ia label i,
+body.dark-theme .grupo-formulario label i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .input-con-icono,
+body.dark-theme .select-con-icono,
+body.dark-theme .textarea-con-icono {
+    border-color: #32374a !important;
+}
+body.dark-theme .input-con-icono input,
+body.dark-theme .select-con-icono select,
+body.dark-theme .textarea-con-icono textarea {
+    background: #111318 !important;
+    color: #e4e2ea !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .input-con-icono i,
+body.dark-theme .select-con-icono i,
+body.dark-theme .textarea-con-icono i {
+    color: #5e5c6e !important;
+}
+body.dark-theme .grupo-botones-ia,
+body.dark-theme .grupo-botones {
+    border-color: #32374a !important;
+}
+
+/* Estado generador */
+body.dark-theme .estado-generador-ia,
+body.dark-theme .estado-generador {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .estado-icono-ia,
+body.dark-theme .estado-icono {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.05)) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .estado-contenido-ia h3,
+body.dark-theme .estado-contenido h3 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .estado-contenido-ia p,
+body.dark-theme .estado-contenido p {
+    color: #9997aa !important;
+}
+
+/* Preguntas generadas IA */
+body.dark-theme .pregunta-generada-item {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .pregunta-generada-item:hover {
+    background: rgba(100,140,180,0.07) !important;
+}
+body.dark-theme .pregunta-generada-header {
+    border-color: #32374a !important;
+}
+body.dark-theme .pregunta-numero {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .pregunta-generada-enunciado {
+    color: #e4e2ea !important;
+}
+body.dark-theme .pregunta-generada-opciones li {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .pregunta-generada-opciones .opcion-correcta {
+    color: #58d68d !important;
+}
+body.dark-theme .correct-icon {
+    color: #58d68d !important;
+}
+body.dark-theme .pregunta-generada-meta {
+    border-color: #32374a !important;
+}
+body.dark-theme .meta-badge {
+    background: #22252f !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .meta-badge i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .acciones-preguntas-ia,
+body.dark-theme .acciones-preguntas {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .contador-preguntas-ia,
+body.dark-theme .contador-preguntas {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .contador-preguntas-ia span,
+body.dark-theme .contador-preguntas span {
+    color: #8ab4d4 !important;
+}
+
+/* Loading IA */
+body.dark-theme .loading-ia {
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* EVALUACION CREACION MODAL DARK               */
+/* ============================================ */
+
+body.dark-theme .pasos-creacion {
+    border-color: #32374a !important;
+}
+body.dark-theme .paso-item {
+    border-color: #32374a !important;
+    background: #22252f !important;
+}
+body.dark-theme .paso-numero {
+    background: #8ab4d4 !important;
+    color: #fff !important;
+}
+body.dark-theme .paso-item.activo .paso-texto {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .paso-texto {
+    color: #9997aa !important;
+}
+body.dark-theme .metodo-tabs {
+    border-color: #32374a !important;
+}
+body.dark-theme .metodo-tab {
+    color: #9997aa !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .metodo-tab.active {
+    color: #8ab4d4 !important;
+    border-color: #3d4a5c !important;
+}
+body.dark-theme .filtros-header-collapsible {
+    background: #1a1d25 !important;
+    color: #b8b6c8 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .filtros-panel {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .lista-preguntas {
+    border-color: #32374a !important;
+    background: #22252f !important;
+}
+body.dark-theme .pregunta-item-banco {
+    border-color: #32374a !important;
+}
+body.dark-theme .pregunta-item-banco:hover {
+    background: rgba(100,140,180,0.07) !important;
+}
+body.dark-theme .pregunta-contenido-banco {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .pregunta-texto-banco {
+    color: #e4e2ea !important;
+}
+body.dark-theme .pregunta-respuesta-banco {
+    color: #58d68d !important;
+    background: rgba(39, 174, 96, 0.1) !important;
+}
+body.dark-theme .contador-seleccion {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .contador-seleccion span {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .configuracion-ia {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .resultado-ia {
+    border-color: #32374a !important;
+}
+body.dark-theme .resultado-header {
+    border-color: #32374a !important;
+}
+body.dark-theme .preguntas-generadas-lista {
+    border-color: #32374a !important;
+}
+
+/* Dropdown acciones */
+body.dark-theme .dropdown-acciones {
+    background: #22252f !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+body.dark-theme .dropdown-actions {
+    background: #22252f !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+body.dark-theme .dropdown-item {
+    color: #b8b6c8 !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .dropdown-item:hover {
+    background: rgba(100,140,180,0.12) !important;
+    color: #8ab4d4 !important;
+}
+body.dark-theme .dropdown-item i {
+    color: #9997aa !important;
+}
+body.dark-theme .dropdown-item:hover i {
+    color: #8ab4d4 !important;
+}
+
+/* Preview modal specific */
+body.dark-theme .info-evaluacion {
+    background: #1a1d25 !important;
+}
+body.dark-theme .meta-previsualizacion {
+    color: #9997aa !important;
+}
+body.dark-theme .pregunta-previa {
+    border-color: #32374a !important;
+    background: #22252f !important;
+}
+body.dark-theme .opcion-previa {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .opcion-previa.correcta {
+    color: #58d68d !important;
+    border-color: #58d68d !important;
+}
+body.dark-theme .sin-resultados {
+    color: #5e5c6e !important;
+}
+
+/* ============================================ */
+/* CHAT IA DARK                                 */
+/* ============================================ */
+
+body.dark-theme .contenedor-chat-ia {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .chat-header {
+    background: linear-gradient(135deg, #22252f, #1a1d25) !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .bot-info h3 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .bot-info p,
+body.dark-theme .chat-status {
+    color: #9997aa !important;
+}
+body.dark-theme .contenedor-chat {
+    background: #111318 !important;
+}
+body.dark-theme .mensaje.bot {
+    background: #32374a !important;
+    color: #e4e2ea !important;
+}
+body.dark-theme .mensaje.user {
+    background: #2e5878 !important;
+    color: #fff !important;
+}
+body.dark-theme .contenedor-preguntas-frecuentes {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .preguntas-header {
+    border-color: #32374a !important;
+    color: #8ab4d4 !important;
+}
+body.dark-theme .preguntas-body {
+    border-color: #32374a !important;
+}
+body.dark-theme .contenedor-pregunta {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .contenedor-pregunta:hover {
+    background: rgba(100,140,180,0.10) !important;
+    border-color: #3d4a5c !important;
+}
+body.dark-theme .chat-input-container {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .chat-input-container input {
+    background: #111318 !important;
+    border-color: #32374a !important;
+    color: #e4e2ea !important;
+}
+body.dark-theme .chat-input-container input::placeholder {
+    color: #606070 !important;
+}
+body.dark-theme .btn-enviar {
+    background: #2e5878 !important;
+    color: #fff !important;
+}
+body.dark-theme .btn-enviar:hover {
+    background: #3d6e96 !important;
+}
+body.dark-theme .contador-caracteres {
+    color: #5e5c6e !important;
+}
+body.dark-theme .typing-indicator {
+    color: #9997aa !important;
+}
+body.dark-theme .typing-dot {
+    background: #9997aa !important;
+}
+
+/* ============================================ */
+/* TABLA FIXES - BACKGROUNDS                    */
+/* ============================================ */
+
+body.dark-theme .tabla-preguntas {
+    background: #22252f !important;
+}
+body.dark-theme .tabla-recientes table {
+    background: #22252f !important;
+}
+body.dark-theme .tabla-recientes td strong {
+    color: #e4e2ea !important;
+}
+body.dark-theme .tabla-recientes td small {
+    color: #9997aa !important;
+}
+body.dark-theme .tabla-procesos table {
+    background: #22252f !important;
+}
+
+/* ============================================ */
+/* CORREO INFO - PERFIL                         */
+/* ============================================ */
+
+body.dark-theme .correo-info {
+    background: rgba(100,140,180,0.12) !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .correo-info i {
+    color: #8ab4d4 !important;
+}
+
+/* ============================================ */
+/* SECCION HEADER + BOTONES FALTANTES           */
+/* ============================================ */
+
+body.dark-theme .seccion-header h2 {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .seccion-header h2 i {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .btn-buscar {
+    color: #9997aa !important;
+}
+body.dark-theme .btn-buscar:hover {
+    color: #8ab4d4 !important;
+}
+
+/* ============================================ */
+/* TOAST / NOTIFICACION ADICIONAL               */
+/* ============================================ */
+
+body.dark-theme .toast-notification {
+    background: #27ae60 !important;
+    color: #fff !important;
+}
+body.dark-theme .required {
+    color: #ec7063 !important;
+}
+body.dark-theme .ayuda-texto {
+    color: #5e5c6e !important;
+}
+
+/* ============================================ */
+/* BOTONES ADICIONALES                          */
+/* ============================================ */
+
+body.dark-theme .btn-success {
+    background: #27ae60 !important;
+    color: #fff !important;
+}
+body.dark-theme .btn-success:hover {
+    background: #2ecc71 !important;
+}
+body.dark-theme .btn-warning {
+    background: #f39c12 !important;
+    color: #2a2e3a !important;
+}
+body.dark-theme .btn-warning:hover {
+    background: #f4d03f !important;
+}
+body.dark-theme .btn-danger {
+    background: #e74c3c !important;
+    color: #fff !important;
+}
+body.dark-theme .btn-danger:hover {
+    background: #ec7063 !important;
+}
+body.dark-theme .btn-cerrar-modal,
+body.dark-theme .btn-cerrar {
+    color: #ffffff !important;
+}
+body.dark-theme .btn-cerrar-modal:hover,
+body.dark-theme .btn-cerrar:hover {
+    color: #8ab4d4 !important;
+}
+body.dark-theme .btn-guardar {
+    background: #27ae60 !important;
+    color: #fff !important;
+}
+body.dark-theme .btn-guardar:hover {
+    background: #2ecc71 !important;
+}
+body.dark-theme .btn-cancelar {
+    color: #b8b6c8 !important;
+}
+
+/* ============================================ */
+/* ESTADISTICAS ADICIONALES                     */
+/* ============================================ */
+
+body.dark-theme .estadistica-borrador {
+    background: rgba(243, 156, 18, 0.15) !important;
+    color: #f4d03f !important;
+}
+body.dark-theme .estadistica-publicada {
+    background: rgba(39, 174, 96, 0.15) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .estadistica-programada {
+    background: rgba(155, 89, 182, 0.15) !important;
+    color: #bb8fce !important;
+}
+body.dark-theme .estadistica-contenido h3 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .estadistica-contenido p {
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* MODAL OVERLAYS AND CANCEL BUTTONS            */
+/* ============================================ */
+
+body.dark-theme .btn-modal-cancelar {
+    border-color: #3d4358 !important;
+}
+body.dark-theme .btn-modal-cancelar:hover {
+    background: #3d4358 !important;
+    color: #e4e2ea !important;
+}
+body.dark-theme .btn-modal-confirmar {
+    background: linear-gradient(135deg, #2e5878, #3d6e96) !important;
+}
+body.dark-theme .btn-modal-confirmar:hover {
+    background: linear-gradient(135deg, #3d6e96, #8ab4d4) !important;
+}
+
+/* ============================================ */
+/* PASSWORD STRENGTH - CONFIG                   */
+/* ============================================ */
+
+body.dark-theme .password-strength .strength-text {
+    color: #9997aa !important;
+}
+body.dark-theme .password-strength .strength-bar {
+    background: #32374a !important;
+}
+
+/* ============================================ */
+/* MODAL BANCO PREGUNTAS - INNER CONTENT        */
+/* ============================================ */
+
+body.dark-theme .opcion-creacion {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .opcion-creacion:hover {
+    border-color: #3d4a5c !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3) !important;
+}
+body.dark-theme .opcion-icono {
+    background: linear-gradient(135deg, rgba(100,140,180,0.20), rgba(100,140,180,0.07)) !important;
+    color: #8ab4d4 !important;
+}
+body.dark-theme .opcion-creacion h3 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .opcion-creacion p {
+    color: #9997aa !important;
+}
+body.dark-theme .opcion-caracteristicas li {
+    color: #b8b6c8 !important;
+}
+body.dark-theme .opcion-caracteristicas li i {
+    color: #58d68d !important;
+}
+
+/* Panel header inside modal */
+body.dark-theme .panel-header {
+    border-bottom-color: #32374a !important;
+}
+body.dark-theme .panel-header h3 {
+    color: #e4e2ea !important;
+}
+
+/* Boton volver */
+body.dark-theme .btn-volver {
+    background: #1a1d25 !important;
+    border-color: #32374a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .btn-volver:hover {
+    background: rgba(100,140,180,0.12) !important;
+}
+
+/* Form manual */
+body.dark-theme .form-manual {
+    background: #22252f !important;
+}
+
+/* IA panel config variants (-ia suffix) */
+body.dark-theme .panel-configuracion-ia,
+body.dark-theme .panel-previa-ia {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .panel-header-ia {
+    background: linear-gradient(135deg, #22252f, #1a1d25) !important;
+    border-bottom-color: #32374a !important;
+}
+body.dark-theme .panel-header-ia h4 {
+    color: #e4e2ea !important;
+}
+body.dark-theme .contenedor-generador-ia {
+    background: transparent;
+}
+
+/* ============================================ */
+/* BADGE TIPO (generic purple badge)            */
+/* ============================================ */
+
+body.dark-theme .badge-tipo {
+    background: rgba(155, 89, 182, 0.2) !important;
+    color: #bb8fce !important;
+}
+
+/* ============================================ */
+/* BADGE ESTADO variants                       */
+/* ============================================ */
+
+body.dark-theme .badge-estado-validada {
+    background: rgba(39, 174, 96, 0.2) !important;
+    color: #58d68d !important;
+}
+body.dark-theme .badge-estado-pendiente {
+    background: rgba(243, 156, 18, 0.2) !important;
+    color: #f4d03f !important;
+}
+body.dark-theme .badge-estado-rechazada {
+    background: rgba(231, 76, 60, 0.2) !important;
+    color: #ec7063 !important;
+}
+
+/* ============================================ */
+/* PREGUNTA TIPO BADGE                          */
+/* ============================================ */
+
+body.dark-theme .pregunta-tipo-badge {
+    background: rgba(52, 152, 219, 0.2) !important;
+    color: #5dade2 !important;
+}
+body.dark-theme .pregunta-tipo-badge.verdadero_falso {
+    background: rgba(155, 89, 182, 0.2) !important;
+    color: #bb8fce !important;
+}
+
+/* ============================================ */
+/* CONFIG PAGE                                   */
+/* ============================================ */
+
+body.dark-theme .info-configuracion {
+    background: #22252f !important;
+}
+body.dark-theme .info-badge {
+    background: #2a2e3a !important;
+    color: #b8b6c8 !important;
+}
+body.dark-theme .accessibility-option,
+body.dark-theme .notification-option {
+    border-color: #32374a !important;
+}
+
+/* ============================================ */
+/* BANCO PREGUNTAS - MANUAL FORM                 */
+/* ============================================ */
+
+body.dark-theme .pregunta-item-manual {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .pregunta-item-manual:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+body.dark-theme .opcion-item-manual {
+    background: #1a1d25 !important;
+}
+body.dark-theme .opcion-texto-input {
+    background: #111318 !important;
+    border-color: #32374a !important;
+    color: #e4e2ea !important;
+}
+
+/* ============================================ */
+/* NOTIFICACIONES                                */
+/* ============================================ */
+
+body.dark-theme .btn-cerrar-notificacion {
+    color: #5e5c6e !important;
+}
+body.dark-theme .btn-cerrar-notificacion:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #b8b6c8 !important;
+}
+
+/* ============================================ */
+/* PREGUNTA ID                                   */
+/* ============================================ */
+
+body.dark-theme .pregunta-id {
+    color: #5e5c6e !important;
+}
+
+/* ============================================ */
+/* MODAL PREVISUALIZACION                        */
+/* ============================================ */
+
+body.dark-theme .modal-contenido-previsualizacion {
+    background: #22252f !important;
+}
+body.dark-theme .modal-header-previsualizacion {
+    background: linear-gradient(135deg, #22252f, #1a1d25) !important;
+    border-bottom: 2px solid #32374a !important;
+    color: #e4e2ea !important;
+}
+body.dark-theme .modal-header-previsualizacion h2 {
+    color: #e4e2ea !important;
+}
+
+/* ============================================ */
+/* NUEVA EVALUACION - empty state icon           */
+/* ============================================ */
+
+body.dark-theme .nueva-evaluacion-contenido i {
+    color: #5dade2 !important;
+}
+
+/* ============================================ */
+/* OPCION TEXTO                                  */
+/* ============================================ */
+
+body.dark-theme .opcion .opcion-texto {
+    color: #b8b6c8 !important;
+}
+
+/* ============================================ */
+/* CHATBOT (chat-eva.css)                       */
+/* ============================================ */
+
+body.dark-theme .btn-cerrar-chatbot {
+    color: #9997aa !important;
+}
+body.dark-theme .btn-cerrar-chatbot:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #e4e2ea !important;
+}
+body.dark-theme .mensajes-chatbot::-webkit-scrollbar-track {
+    background: #111318 !important;
+}
+body.dark-theme .mensajes-chatbot::-webkit-scrollbar-thumb {
+    background: #32374a !important;
+}
+body.dark-theme .mensajes-chatbot::-webkit-scrollbar-thumb:hover {
+    background: #3d4358 !important;
+}
+
+/* Chatbot - typing indicator */
+body.dark-theme .indicador-escritura {
+    background: #32374a !important;
+    color: #9997aa !important;
+    border-color: #3d4358 !important;
+}
+
+/* Chatbot - input focus */
+body.dark-theme .input-chatbot input:focus {
+    border-color: #3d4a5c !important;
+    box-shadow: 0 0 0 2px rgba(196, 99, 122, 0.2) !important;
+}
+
+/* ============================================ */
+/* LOGO JAGUAR - WHITE BG CROP                 */
+/* ============================================ */
+
+body.dark-theme .logo-jaguar img {
+    background: #22252f !important;
+}
+
+/* ============================================ */
+/* NOTIFICACION GLOBAL VARIANT BACKGROUNDS      */
+/* ============================================ */
+
+body.dark-theme .notificacion-global-success,
+body.dark-theme .notificacion-global-error,
+body.dark-theme .notificacion-global-info,
+body.dark-theme .notificacion-global-warning {
+    background: #2a2e3a !important;
+}
+
+body.dark-theme .notificacion-global-success i:first-child {
+    color: #58d68d !important;
+}
+body.dark-theme .notificacion-global-error i:first-child {
+    color: #ec7063 !important;
+}
+body.dark-theme .notificacion-global-info i:first-child {
+    color: #5dade2 !important;
+}
+body.dark-theme .notificacion-global-warning i:first-child {
+    color: #f4d03f !important;
+}
+
+/* ============================================ */
+/* PREGUNTA GENERADA (white card)              */
+/* ============================================ */
+
+body.dark-theme .pregunta-generada {
+    background: #22252f !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .pregunta-generada-header {
+    border-bottom-color: #32374a !important;
+}
+
+/* ============================================ */
+/* ACCIONES GENERADAS                           */
+/* ============================================ */
+
+body.dark-theme .acciones-generadas {
+    background: #1a1d25 !important;
+    border-top-color: #32374a !important;
+}
+
+/* ============================================ */
+/* DROPDOWN MENU ACCIONES                      */
+/* ============================================ */
+
+body.dark-theme .dropdown-menu-acciones {
+    background: #22252f !important;
+    border-color: #32374a !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ============================================ */
+/* PREGUNTA PREVIA (preview modal)             */
+/* ============================================ */
+
+body.dark-theme .pregunta-previa-texto {
+    color: #e4e2ea !important;
+}
+body.dark-theme .pregunta-previa-respuesta {
+    background: #1a1d25 !important;
+}
+
+/* ============================================ */
+/* AVATAR PENDIENTE                             */
+/* ============================================ */
+
+body.dark-theme .avatar-pendiente {
+    background: #32374a !important;
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* SUBTITULO Y TEXTOS DE CONFIG                */
+/* ============================================ */
+
+body.dark-theme .subtitulo-config {
+    color: #9997aa !important;
+}
+body.dark-theme .option-info p {
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* FILTRO FECHA SPAN                           */
+/* ============================================ */
+
+body.dark-theme .filtro-fecha span {
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* PREGUNTA CONTENIDO MANUAL LABEL             */
+/* ============================================ */
+
+body.dark-theme .pregunta-contenido-manual label {
+    color: #b8b6c8 !important;
+}
+
+/* ============================================ */
+/* PREGUNTA HEADER MANUAL                      */
+/* ============================================ */
+
+body.dark-theme .pregunta-header-manual {
+    border-bottom-color: #32374a !important;
+}
+
+/* ============================================ */
+/* CALENDARIO - LEYENDA TEXTO                  */
+/* ============================================ */
+
+body.dark-theme .leyenda-texto {
+    color: #b8b6c8 !important;
+}
+
+/* ============================================ */
+/* REVISORES INFO                              */
+/* ============================================ */
+
+body.dark-theme .revisores-info {
+    color: #9997aa !important;
+}
+
+/* ============================================ */
+/* HISTORIAL ITEM BORDER                       */
+/* ============================================ */
+
+body.dark-theme .historial-item {
+    border-bottom-color: #32374a !important;
+}
+
+/* ============================================ */
+/* BADGE PUBLICADA                              */
+/* ============================================ */
+
+body.dark-theme .badge-publicada {
+    background: rgba(39, 174, 96, 0.2) !important;
+    color: #58d68d !important;
+}
+
+/* ============================================ */
+/* THEME PREVIEWS (standalone)                 */
+/* ============================================ */
+
+body.dark-theme .light-preview {
+    background: linear-gradient(135deg, #2a2e3a, #22252f) !important;
+    border-color: #32374a !important;
+}
+body.dark-theme .system-preview {
+    background: linear-gradient(135deg, #2a2e3a, #32374a) !important;
+    border-color: #3d4358 !important;
+}

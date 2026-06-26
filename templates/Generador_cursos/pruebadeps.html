@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador IA USICAMM | EscalafonIA</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* =========================================
+           1. RESET Y ESTRUCTURA ORIGINAL (COMPROBADA)
+           ========================================= */
+        html, body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            width: 100%; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--bg-gris, #F4F4F4);
+            font-family: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --guinda: #691C32;
+            --guinda-light: #8a2a45;
+            --turquesa: #007A7C;
+            --turquesa-light: #1a9a9c;
+            --dorado: #BC955C;
+            --dorado-light: #d4af37;
+            --bg: #F4F4F4;
+            --white: #FFFFFF;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --borde: #E2E8F0;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        /* =========================================
+           2. SIDEBAR FIJO (Estilo Original)
+           ========================================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--guinda);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-right: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-title { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: bold; color: var(--dorado); }
+
+        .btn-menu-toggle { background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer; transition: var(--transition); }
+        .btn-menu-toggle:hover { color: var(--dorado); transform: scale(1.1); }
+
+        .sidebar-brand { display: flex; align-items: center; justify-content: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); text-decoration: none; color: white; }
+        .brand-text { margin-left: 12px; display: flex; flex-direction: column; }
+        .brand-text span { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1rem; line-height: 1.2; }
+        .brand-text small { font-size: 0.65rem; color: var(--dorado); font-weight: 600; }
+
+        .nav-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .nav-link { display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important; padding: 15px 20px !important; color: white; text-decoration: none; transition: 0.3s; white-space: nowrap; }
+        .nav-link i { width: 30px; text-align: center; font-size: 1.2rem; }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); border-left: 4px solid var(--dorado); }
+
+        .sidebar.mini { width: 70px; }
+        .sidebar.mini .menu-title, .sidebar.mini .menu-texto, .sidebar.mini .brand-text { display: none; }
+        .sidebar.mini .sidebar-header { justify-content: center; padding: 15px 0; }
+        .sidebar.mini .nav-link { padding: 15px 0 !important; justify-content: center !important; border-left: none; }
+        .sidebar.mini .nav-link i { margin: 0; }
+
+        /* =========================================
+           3. CONTENEDOR CENTRAL (Estilo Original)
+           ========================================= */
+        .main-container {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            padding: 0 !important; 
+        }
+        .main-container.expandido {
+            margin-left: 70px;
+        }
+
+        .top-bar-vino {
+            background-color: var(--guinda) !important;
+            color: white !important;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--dorado);
+            width: 100%;
+            margin: 0 !important; 
+        }
+        .top-bar-vino h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; font-family: 'Montserrat', sans-serif; }
+
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-outline-w { background: transparent; color: white; border: 2px solid white; padding: 8px 18px; border-radius: 30px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
+        .btn-outline-w:hover { background: white; color: var(--guinda); }
+        .btn-solid-w { background: white; color: var(--guinda); border: 2px solid white; padding: 8px 18px; border-radius: 30px; font-weight: 800; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
+        .btn-solid-w:hover { background: var(--dorado); color: var(--guinda); border-color: var(--dorado); }
+
+        .user-dropdown { position: relative; display: inline-block; }
+        .btn-user { background-color: transparent; border: 1px solid var(--dorado); color: white; padding: 8px 18px; border-radius: 25px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.95rem; }
+        .btn-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .btn-user:hover { background-color: rgba(255,255,255,0.1); }
+        .user-dropdown-content { display: none; position: absolute; right: 0; background-color: white; min-width: 180px; box-shadow: var(--shadow-md); border-radius: 8px; z-index: 1000; margin-top: 10px; overflow: hidden; border: 1px solid var(--borde); }
+        .user-dropdown-content a { color: var(--text); padding: 12px 16px; text-decoration: none; display: block; font-size: 0.85rem; font-family: 'Open Sans', sans-serif; }
+        .user-dropdown-content a:hover { background-color: var(--bg); color: var(--guinda); }
+        .user-dropdown:hover .user-dropdown-content { display: block; }
+
+        .footer-vino {
+            background-color: var(--guinda) !important;
+            color: white !important;
+            text-align: center;
+            padding: 20px;
+            border-top: 4px solid var(--dorado);
+            margin-top: auto; /* Empuja el footer hacia abajo */
+            width: 100%;
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+
+        /* =========================================
+           4. ÁREA DE TRABAJO Y CENTRADO PERFECTO
+           ========================================= */
+        .workspace-area { 
+            flex-grow: 1; 
+            padding: 40px 30px; 
+            display: flex;
+            flex-direction: column; 
+            position: relative; 
+            background: var(--bg); 
+        }
+        
+        .feed-container { width: 100%; max-width: 900px; margin: 0 auto; padding-bottom: 50px; }
+
+        /* MENÚ INICIAL CENTRADO */
+        #menu-inicial { 
+            margin: auto; /* Centrado vertical y horizontal perfecto */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .menu-grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center;
+            gap: 20px; 
+            width: 100%; 
+            margin-top: 30px; 
+        }
+        
+        .menu-card { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 35px 25px; 
+            box-shadow: var(--shadow-sm); 
+            border: 2px solid transparent; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 15px; 
+            flex: 1 1 280px; 
+            max-width: 320px;
+        }
+        .menu-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--turquesa); }
+        .menu-card i { font-size: 3rem; color: var(--guinda); }
+        .menu-card h3 { font-family: 'Montserrat', sans-serif; color: var(--text); font-size: 1.2rem; margin: 0; }
+        .menu-card p { color: var(--text-light); font-size: 0.9rem; line-height: 1.4; margin: 0; }
+
+        /* =========================================
+           5. MODAL DIVIDIDO (Info + Formulario)
+           ========================================= */
+        .config-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        
+        .config-modal-box { 
+            background: white; border-radius: 20px; width: 900px; max-width: 95%; height: 85vh; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; display: flex; flex-direction: column; overflow: hidden;
+            position: relative;
+        }
+
+        .btn-close-x {
+            position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: white;
+            font-size: 1.8rem; cursor: pointer; transition: 0.2s; z-index: 10;
+        }
+        .btn-close-x:hover { color: var(--dorado); transform: scale(1.1); }
+
+        .config-modal-header { background: var(--guinda); color: white; padding: 20px 30px; flex-shrink: 0; border-bottom: 4px solid var(--dorado); }
+        .config-modal-title { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: bold; margin: 0; display: flex; align-items: center; gap: 10px; }
+
+        .config-modal-body { display: flex; flex: 1; overflow: hidden; }
+
+        .config-info-panel { width: 55%; background: #F8FAFC; padding: 30px; overflow-y: auto; border-right: 1px solid var(--borde); text-align: left; }
+        .config-info-panel h4 { color: var(--guinda); font-family: 'Montserrat', sans-serif; font-size: 1.05rem; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+        .config-info-panel p { color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+        .config-info-panel ul { color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; padding-left: 20px; }
+        .config-info-panel li { margin-bottom: 5px; }
+
+        .config-form-panel { width: 45%; padding: 30px; display: flex; flex-direction: column; justify-content: center; background: white; text-align: left; }
+        .config-field { margin-bottom: 20px; }
+        .config-field label { display: block; font-weight: 700; color: var(--text); margin-bottom: 8px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .config-field input, .config-field select { width: 100%; padding: 14px 15px; border-radius: 12px; border: 2px solid var(--borde); font-family: inherit; font-size: 1rem; outline: none; transition: 0.2s; background: #F8FAFC; }
+        .config-field input:focus, .config-field select:focus { border-color: var(--turquesa); background: white; box-shadow: 0 0 0 4px rgba(0, 122, 124, 0.1); }
+        
+        .config-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .btn-config-ai { background: var(--turquesa); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-config-ai:hover { background: var(--turquesa-light); transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0, 122, 124, 0.2); }
+        
+        .btn-config-manual { background: var(--guinda); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-config-manual:hover { background: var(--guinda-light); transform: translateY(-2px); box-shadow: 0 8px 15px rgba(105, 28, 50, 0.2); }
+
+        .btn-config-back { background: transparent; color: var(--text-light); border: 2px solid var(--borde); padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-config-back:hover { background: #F1F5F9; color: var(--text); }
+
+        /* =========================================
+           6. PANEL IA LATERAL (Flotante)
+           ========================================= */
+        .ai-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 380px; 
+            background: white; 
+            border-left: 1px solid var(--borde);
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh;
+            box-shadow: -10px 0 25px rgba(0,0,0,0.1); 
+            transform: translateX(100%); 
+            transition: transform 0.3s ease; 
+            z-index: 1050; 
+        }
+        .ai-panel.activo { transform: translateX(0); } 
+
+        .panel-header-ai { padding: 20px; font-weight: 800; background: white; color: var(--guinda); border-bottom: 2px solid var(--borde); font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; height: 70px; }
+        .panel-header-ai .logo-title { display: flex; align-items: center; gap: 10px; font-family: 'Montserrat', sans-serif; }
+        .panel-header-ai img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--dorado); padding: 2px; }
+
+        .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #F8FAFC; text-align: left;}
+        .bubble { padding: 15px 20px; border-radius: 20px; font-size: 0.95rem; line-height: 1.5; max-width: 90%; box-shadow: 0 2px 5px rgba(0,0,0,0.02); animation: popIn 0.3s ease; }
+        .bubble.ia { background: white; color: var(--text); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--borde); }
+        .bubble.user { background: var(--guinda); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+
+        .input-area { padding: 20px; background: white; border-top: 1px solid var(--borde); flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+        .input-area textarea { width: 100%; height: 60px; padding: 12px 15px; border: 2px solid var(--borde); border-radius: 15px; resize: none; outline: none; font-family: inherit; font-size: 0.95rem; transition: 0.2s; background: #F8FAFC; }
+        .input-area textarea:focus { border-color: var(--turquesa); background: white; }
+        .btn-enviar-ia { align-self: flex-end; padding: 10px 20px; background: var(--turquesa); color: white; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-enviar-ia:hover { background: var(--turquesa-light); transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,122,124,0.2); }
+
+        .quick-options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; border-top: 1px dashed var(--borde); padding-top: 12px;}
+        .quick-option-btn { background: white; border: 1.5px solid var(--turquesa); color: var(--turquesa); padding: 10px 15px; border-radius: 12px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s; text-align: left; display: flex; align-items: center; gap: 8px;}
+        .quick-option-btn:hover { background: var(--turquesa); color: white; }
+
+        /* =========================================
+           7. COMPONENTES DEL CURSO (BLOQUES)
+           ========================================= */
+        .block { background: var(--white); border-radius: 24px; padding: 35px; margin-top: 15px; margin-bottom: 35px; box-shadow: var(--shadow-sm); border-left: 6px solid var(--turquesa); position: relative; transition: 0.3s; border-top: 1px solid var(--borde); border-right: 1px solid var(--borde); border-bottom: 1px solid var(--borde); display: none; text-align: left;}
+        .block.activo { display: block; animation: fadeUp 0.4s ease; }
+        .block:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .block.editing { border-left-color: var(--dorado); background: #FFFCF5; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .block-label { position: absolute; top: -14px; left: 30px; background: var(--text); color: white; padding: 5px 20px; font-size: 0.7rem; font-weight: 800; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .badge-purpose { position: absolute; top: -14px; right: 30px; background: var(--dorado); color: var(--guinda); padding: 5px 20px; font-size: 0.7rem; font-weight: 800; border-radius: 20px; text-transform: uppercase; }
+        .badge-purpose.puntos { background: var(--turquesa); color: white; }
+        
+        .btn-edit-block { position: absolute; top: 20px; right: 65px; background: #F1F5F9; border: 1px solid var(--borde); color: var(--text-light); padding: 6px 15px; border-radius: 20px; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: 0.2s; }
+        .btn-edit-block:hover { background: var(--guinda); color: white; }
+        
+        .btn-delete-block { position: absolute; top: 20px; right: 165px; background: #FEE2E2; border: 1px solid #FECACA; color: #EF4444; padding: 6px 15px; border-radius: 20px; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: 0.2s; }
+        .btn-delete-block:hover { background: #EF4444; color: white; border-color: #EF4444; }
+
+        .btn-ai-assist { position: absolute; top: 15px; right: 15px; background: #F8FAFC; color: var(--turquesa); border: 1px solid var(--turquesa); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .btn-ai-assist:hover { background: var(--turquesa); transform: scale(1.1); color: white; }
+
+        .h1-input { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: var(--guinda); margin-bottom: 15px; outline: none; }
+        .p-input { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; outline: none; margin-bottom: 20px; }
+        
+        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #F8FAFC; padding: 20px; border-radius: 15px; border: 1px solid var(--borde); font-size: 0.9rem; }
+        .grid-info div { display: flex; align-items: center; gap: 10px; color: var(--text); }
+        .grid-info i { color: var(--turquesa); width: 20px; }
+
+        .add-content-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-add-c { background: white; border: 1.5px dashed var(--turquesa); color: var(--turquesa); padding: 8px 18px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-add-c:hover { background: var(--turquesa); color: white; }
+
+        .content-item { position: relative; margin: 20px 0; padding: 20px; border: 1px solid var(--borde); border-radius: 15px; background: white; }
+        .btn-remove-item { position: absolute; top: 10px; right: 10px; background: #FEE2E2; color: #ef4444; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; z-index: 10;}
+        .btn-remove-item:hover { background: #ef4444; color: white; }
+        
+        .video-box { width: 100%; height: 220px; background: #1E293B; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; margin-top: 10px; }
+        .audio-container { background: #1E293B; border-radius: 30px; padding: 15px 25px; color: white; display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+        .quiz-item { padding: 15px; border: 1px solid var(--borde); border-radius: 15px; margin-bottom: 15px; position: relative; background: #F8FAFC; margin-top: 10px; }
+        .option-editable { display: block; padding: 10px 15px; margin: 8px 0; border-radius: 20px; background: white; border: 1px solid var(--borde); font-size: 0.85rem; outline: none; }
+        .option-editable.correct { border-left: 5px solid var(--turquesa); background: #F0FDF4; font-weight: 600; }
+
+        .lock-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 24px; text-align: center; }
+        .hidden { display: none !important; }
+
+        #btn-docente-back { position: fixed; bottom: 30px; left: 290px; z-index: 2000; background: var(--guinda); color: white; padding: 12px 25px; border-radius: 30px; border: none; font-weight: 800; cursor: pointer; display: none; box-shadow: var(--shadow-md); transition: 0.3s; }
+        #btn-docente-back:hover { background: var(--dorado); color: var(--guinda); }
+
+        /* =========================================
+           8. MODO OSCURO (Blindado con !important)
+           ========================================= */
+        body.dark-theme,
+        body.dark-theme .main-container,
+        body.dark-theme .workspace-area { background-color: #0F121C !important; }
+
+        body.dark-theme .menu-card,
+        body.dark-theme .block,
+        body.dark-theme .grid-info,
+        body.dark-theme .content-item,
+        body.dark-theme .quiz-item,
+        body.dark-theme .option-editable,
+        body.dark-theme .user-dropdown-content { background-color: #1A1A2E !important; border-color: #2D3748 !important; color: #E2E8F0 !important; }
+        
+        body.dark-theme .menu-card h3,
+        body.dark-theme .block-label { color: #E2E8F0 !important; }
+        body.dark-theme .h1-input { color: var(--dorado) !important; }
+        body.dark-theme .p-input { color: #A0AEC0 !important; }
+        
+        body.dark-theme .btn-edit-block { background: #2D3748 !important; color: white !important; border-color: #4A5568 !important; }
+        body.dark-theme .btn-delete-block { background: #742A2A !important; color: #FEB2B2 !important; border-color: #9B2C2C !important; }
+        body.dark-theme .btn-ai-assist { background: #1A1A2E !important; }
+        body.dark-theme .video-box, body.dark-theme .audio-container { background: #0F121C !important; }
+        body.dark-theme .option-editable.correct { background: rgba(0, 122, 124, 0.2) !important; }
+        body.dark-theme #menu-inicial h2 { color: var(--dorado) !important; }
+
+        /* Panel IA Oscuro */
+        body.dark-theme .ai-panel { background: #1A1A2E !important; border-left-color: #2D3748 !important; }
+        body.dark-theme .panel-header-ai { background: #161625 !important; color: var(--dorado) !important; border-bottom-color: #2D3748 !important; }
+        body.dark-theme .chat-box { background: #0F121C !important; }
+        body.dark-theme .bubble.ia { background: #1E293B !important; color: #E2E8F0 !important; border-color: #334155 !important; }
+        body.dark-theme .input-area { background: #161625 !important; border-top-color: #2D3748 !important; }
+        body.dark-theme .input-area textarea { background: #0F121C !important; border-color: #334155 !important; color: white !important; }
+        body.dark-theme .quick-option-btn { background: #1E293B !important; border-color: var(--turquesa) !important; color: #38B2AC !important; }
+        body.dark-theme .quick-option-btn:hover { background: var(--turquesa) !important; color: white !important; }
+        
+        /* Modal Oscuro */
+        body.dark-theme .config-modal-box { background: #1A1A2E !important; }
+        body.dark-theme .config-info-panel { background: #0F121C !important; border-right-color: #2D3748 !important; }
+        body.dark-theme .config-form-panel { background: #161625 !important; }
+        body.dark-theme .config-field label { color: #E2E8F0 !important; }
+        body.dark-theme .config-field input, body.dark-theme .config-field select { background: #0F121C !important; color: white !important; border-color: #334155 !important; }
+        body.dark-theme .config-info-panel h4 { color: var(--dorado) !important; }
+        body.dark-theme .config-modal-title { color: var(--dorado) !important; }
+
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* Cursores de Accesibilidad */
+        body.cursor-medium, body.cursor-medium * { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="black" stroke="white" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L5.5 3.21z"/></svg>'), auto !important; }
+        body.cursor-large, body.cursor-large * { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="black" stroke="white" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L5.5 3.21z"/></svg>'), auto !important; }
+        body.cursor-xlarge, body.cursor-xlarge * { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path fill="black" stroke="white" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L5.5 3.21z"/></svg>'), auto !important; }
+
+        /* Responsividad */
+        @media (max-width: 1024px) {
+            .config-modal-body { flex-direction: column; overflow-y: auto; }
+            .config-info-panel, .config-form-panel { width: 100%; border-right: none; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { width: 100% !important; height: 60px !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; padding: 0 20px !important; z-index: 2000 !important; position: fixed;}
+            .sidebar-header { border: none; padding: 0; margin: 0; }
+            .sidebar-brand { display: none; }
+            .nav-menu { display: none; }
+            .main-container { margin-left: 0; margin-top: 60px; min-height: calc(100vh - 60px); }
+            .top-bar-vino h1 { font-size: 1.2rem; }
+            .header-actions .btn-outline-w span, .header-actions .btn-solid-w span { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-accesibilidad" id="btnAccesibilidad" title="Abrir panel de accesibilidad" style="z-index: 10001; position: fixed; bottom: 30px; right: 30px;">
+        <i class="fas fa-universal-access"></i>
+    </button>
+    <div class="accesibilidad-panel" id="panelAccesibilidad" style="z-index: 10002;">
+        <div class="accesibilidad-panel-header">
+            <i class="fas fa-universal-access"></i><h3>Accesibilidad</h3>
+            <button class="btn-cerrar-panel" id="btnCerrarPanel"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="accesibilidad-panel-body">
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-eye"></i> Visual</h4>
+                <div class="accesibilidad-opcion"><span>Escala de grises</span><label class="toggle-switch"><input type="checkbox" id="acc-grayscale"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Alto contraste</span><label class="toggle-switch"><input type="checkbox" id="acc-high-contrast"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Invertir colores</span><label class="toggle-switch"><input type="checkbox" id="acc-invert-colors"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Modo oscuro</span><label class="toggle-switch"><input type="checkbox" id="acc-dark-theme"><span class="toggle-slider"></span></label></div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-book-reader"></i> Herramientas de Lectura</h4>
+                <div class="accesibilidad-opcion"><span>Lector de pantalla</span><label class="toggle-switch"><input type="checkbox" id="acc-screen-reader"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Máscara de lectura</span><label class="toggle-switch"><input type="checkbox" id="acc-reading-mask"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Guía de lectura</span><label class="toggle-switch"><input type="checkbox" id="acc-reading-guide"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Resaltar enlaces</span><label class="toggle-switch"><input type="checkbox" id="acc-highlight-links"><span class="toggle-slider"></span></label></div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-font"></i> Tipografía</h4>
+                <div class="accesibilidad-opcion"><span>Fuente Dislexia</span><label class="toggle-switch"><input type="checkbox" id="acc-dyslexic-font"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion">
+                    <span>Espaciado vertical</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLineHeight"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="lineHeightValue">1.6</span>
+                        <button class="btn-range" id="increaseLineHeight"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span>Espaciado horizontal</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLetterSpacing"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="letterSpacingValue">0</span>
+                        <button class="btn-range" id="increaseLetterSpacing"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span>Tamaño texto</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseFontSize"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="fontSizeValue">100%</span>
+                        <button class="btn-range" id="increaseFontSize"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-mouse-pointer"></i> Tamaño del cursor</h4>
+                <div class="accesibilidad-opcion cursor-selector">
+                    <span>Cursor</span>
+                    <div class="cursor-size-selector">
+                        <button class="cursor-opt" data-size="small" title="Pequeño"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt active" data-size="medium" title="Mediano"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="large" title="Grande"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="xlarge" title="Muy grande"><i class="fas fa-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accesibilidad-footer"><button class="btn-reset" id="resetAccesibilidad"><i class="fas fa-undo-alt"></i> Restablecer</button></div>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="miSidebar">
+        <div class="sidebar-header">
+            <span class="menu-title">Menú</span>
+            <button class="btn-menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+        <a href="#" class="sidebar-brand">
+            <img src="../../static/imagenes/logosimbolo.png" alt="Logo" onerror="this.src='https://placehold.co/100x100/691C32/FFFFFF?text=E'" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--dorado);">
+            <div class="brand-text">
+                <span>ESCALAFONIA</span>
+                <small>Generador IA</small>
+            </div>
+        </a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="javascript:history.back()" class="nav-link"><i class="fas fa-chevron-left"></i> <span class="menu-texto">Regresar</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:index_generador' %}" class="nav-link"><i class="fas fa-th-large"></i> <span class="menu-texto">Dashboard</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-link active"><i class="fas fa-magic"></i> <span class="menu-texto">Creación IA</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:cursos' %}" class="nav-link"><i class="fas fa-folder"></i> <span class="menu-texto">Mis cursos</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-link"><i class="fas fa-chart-line"></i> <span class="menu-texto">Estadísticas</span></a></li>
+            <li class="nav-item" style="margin-top: 20px;"><a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-link"><i class="fas fa-user-circle"></i> <span class="menu-texto">Mi perfil</span></a></li>
+        </ul>
+    </aside>
+
+    <button id="btn-docente-back" onclick="togglePreviewMode()"><i class="fas fa-edit"></i> REGRESAR AL EDITOR IA</button>
+
+    <main class="main-container" id="contenidoPrincipal">
+        
+        <header class="top-bar-vino">
+            <div>
+                <h1>EscalafonIA</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn-outline-w" onclick="togglePreviewMode()" id="btn-vista-docente" style="display: none;"><i class="fas fa-eye"></i> <span>VISTA DOCENTE</span></button>
+                <button class="btn-solid-w" onclick="subirAAprobacion()" id="btn-subir" style="display: none;"><i class="fas fa-cloud-upload-alt"></i> <span>ENVIAR A USICAMM</span></button>
+                
+                <div class="user-dropdown">
+                    <button class="btn-user">
+                        <img id="header-avatar" src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Fabiola+Q&background=D4C19C&color=691C32'" alt="Avatar">
+                        Bienvenida Fabiola <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    </button>
+                    <div class="user-dropdown-content">
+                        <a href="#"><i class="fas fa-robot" style="margin-right: 8px;"></i> Ayuda del Asistente</a>
+                        <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fas fa-user-gear" style="margin-right: 8px;"></i> Mi Perfil</a>
+                        <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="workspace-area" id="mainCanvas">
+            
+            <div id="menu-inicial">
+                <i class="fas fa-wand-magic-sparkles" style="font-size: 4rem; color: var(--dorado); margin-bottom: 20px;"></i>
+                <h2 style="font-family: 'Montserrat'; font-size: 2.5rem; color: var(--guinda); margin-bottom: 10px;">¿Qué tipo de curso deseas generar?</h2>
+                <p style="color: var(--text-light); font-size: 1.1rem;">Selecciona una de las modalidades para estructurar el curso según los requerimientos de USICAMM.</p>
+                
+                <div class="menu-grid">
+                    <div class="menu-card" onclick="abrirConfiguracion('vertical')">
+                        <i class="fas fa-sitemap"></i>
+                        <h3>Promoción Vertical</h3>
+                        <p>Ascenso a puestos de dirección o supervisión. Requiere examen.</p>
+                    </div>
+                    <div class="menu-card" onclick="abrirConfiguracion('horizontal')">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Promoción Horizontal</h3>
+                        <p>Incentivos y aumento salarial manteniendo el mismo cargo.</p>
+                    </div>
+                    <div class="menu-card" onclick="abrirConfiguracion('puntos')">
+                        <i class="fas fa-star"></i>
+                        <h3>Generar Puntos</h3>
+                        <p>Cursos de formación continua para acumulación de horas/puntos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loader" style="display:none; text-align:center; margin-top:20vh;">
+                <i class="fas fa-cog fa-spin fa-4x" style="color:var(--guinda);"></i>
+                <h2 style="margin-top:20px; font-family:'Montserrat'; color:var(--guinda);">JAGUAR IA ESTRUCTURANDO CURSO...</h2>
+                <p style="color:var(--text-light);">Aplicando lineamientos pedagógicos USICAMM 2026</p>
+            </div>
+            
+            <div id="feed-central" class="feed-container"></div>
+        </div>
+
+        <footer class="footer-vino">
+            &copy; 2026 EscalafonIA · Plataforma Autorizada USICAMM
+        </footer>
+    </main>
+
+    <aside class="ai-panel" id="aiPanel">
+        <div class="panel-header-ai">
+            <div class="logo-title">
+                <img src="../../static/imagenes/logosimbolo.png" onerror="this.src='https://placehold.co/100x100/691C32/FFFFFF?text=J'" alt="Jaguar">
+                JAGUAR IA
+            </div>
+            <button onclick="document.getElementById('aiPanel').classList.remove('activo')" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-light);"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-box" id="chat-box">
+            </div>
+        <div class="input-area">
+            <textarea id="user-input" placeholder="Escribe instrucciones aquí. Ej: Agrega un módulo sobre evaluación formativa..."></textarea>
+            <button class="btn-enviar-ia" onclick="procesarIA()"><i class="fas fa-paper-plane"></i> ENVIAR</button>
+        </div>
+    </aside>
+
+    <div id="configModal" class="config-modal-overlay">
+        <div class="config-modal-box">
+            <button class="btn-close-x" onclick="intentarCerrarConfiguracion()">&times;</button>
+            <div class="config-modal-header">
+                <h2 class="config-modal-title" id="configTitle"><i class="fas fa-cogs"></i> Configuración del Curso</h2>
+            </div>
+            
+            <div class="config-modal-body">
+                <div class="config-info-panel" id="configInfoText">
+                    </div>
+                
+                <div class="config-form-panel">
+                    <input type="hidden" id="configTipo">
+                    
+                    <div class="config-field">
+                        <label><i class="fas fa-heading"></i> Nombre del Curso</label>
+                        <input type="text" id="configNombre" placeholder="Ej: Estrategias Didácticas Avanzadas">
+                    </div>
+                    
+                    <div class="config-field">
+                        <label><i class="fas fa-clock"></i> Duración del curso</label>
+                        <select id="configDuracion">
+                            <option value="20">20 Horas</option>
+                            <option value="30">30 Horas</option>
+                            <option value="40">40 Horas</option>
+                            <option value="60">60 Horas</option>
+                            <option value="120">120 Horas</option>
+                            <option value="200">200 Horas</option>
+                        </select>
+                    </div>
+
+                    <div class="config-actions">
+                        <button class="btn-config-ai" onclick="iniciarGeneracion('ia')"><i class="fas fa-robot"></i> Generar con IA Completo</button>
+                        <button class="btn-config-manual" onclick="iniciarGeneracion('manual')"><i class="fas fa-layer-group"></i> Estructura Base (Manual)</button>
+                        <button class="btn-config-back" onclick="intentarCerrarConfiguracion()"><i class="fas fa-arrow-left"></i> Elegir otra promoción</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Lógica de Sidebar
+        function toggleMenu() { 
+            document.getElementById('miSidebar').classList.toggle('mini'); 
+            document.getElementById('contenidoPrincipal').classList.toggle('expandido');
+        }
+
+        // Variables Globales
+        let cursoActual = { tipo: '', titulo: '', duracion: '' };
+        let enModoEditor = true;
+
+        // Base de conocimientos de texto (Proporcionada por el usuario)
+        const infoPromociones = {
+            vertical: `
+                <h4><i class="fas fa-question-circle"></i> ¿Qué es?</h4>
+                <p>Es un programa de preparación diseñado para docentes de educación básica que aspiran a ascender a cargos con funciones directivas o de supervisión dentro del sistema educativo nacional, como director, supervisor o jefe de sector.</p>
+                <h4><i class="fas fa-clock"></i> Horas de capacitación:</h4>
+                <p>El curso tiene una duración de 40 horas en modalidad mixta (presencial y virtual) y se desarrolla típicamente en un periodo de entre 6 y 8 semanas.</p>
+                <h4><i class="fas fa-list-ul"></i> Temas que se abordan:</h4>
+                <ul>
+                    <li>Habilidades de liderazgo y gestión educativa.</li>
+                    <li>Legislación educativa y normatividad aplicable a funciones directivas.</li>
+                    <li>Planeación estratégica y mejora continua en instituciones escolares.</li>
+                    <li>Comunicación efectiva y trabajo colaborativo con la comunidad escolar.</li>
+                    <li>Evaluación del desempeño docente y rendición de cuentas.</li>
+                </ul>
+                <h4><i class="fas fa-users"></i> ¿Quiénes pueden tomarlo?</h4>
+                <p>Docentes de educación básica con plaza base, título de licenciatura y 4 años de experiencia (director) o 5 años (supervisor).</p>
+            `,
+            horizontal: `
+                <h4><i class="fas fa-question-circle"></i> ¿Qué es?</h4>
+                <p>Es un curso de actualización y desarrollo profesional que permite a los docentes obtener un estímulo económico permanente como reconocimiento a su desempeño y formación continua, sin necesidad de cambiar de puesto o función.</p>
+                <h4><i class="fas fa-clock"></i> Horas de capacitación:</h4>
+                <p>Para obtener la máxima puntuación en formación continua, se requieren 200 horas de cursos acreditados ante la USICAMM. Acumulables en uno o varios ciclos.</p>
+                <h4><i class="fas fa-list-ul"></i> Temas que se abordan:</h4>
+                <ul>
+                    <li>Innovación educativa y uso de tecnología en el aula.</li>
+                    <li>Inclusión y atención a la diversidad.</li>
+                    <li>Evaluación formativa y diseño de planeaciones didácticas.</li>
+                    <li>Gestión escolar y clima organizacional.</li>
+                    <li>Habilidades socioemocionales y educación para la salud.</li>
+                </ul>
+                <h4><i class="fas fa-users"></i> ¿Quiénes pueden tomarlo?</h4>
+                <p>Todos los maestros y maestras de educación básica con plaza base (mínimo 2 años de servicio ininterrumpido con nombramiento definitivo).</p>
+            `,
+            puntos: `
+                <h4><i class="fas fa-question-circle"></i> ¿Qué es?</h4>
+                <p>Son cursos, talleres o diplomados del Catálogo Nacional de USICAMM. No están ligados directamente a un ascenso, sino que permiten acumular puntos para Promoción Horizontal, asignación de horas o admisión.</p>
+                <h4><i class="fas fa-clock"></i> Horas de capacitación:</h4>
+                <p>Varían entre 20 y 200 horas acumulables. Para alcanzar el puntaje máximo en la mayoría de procesos, se requieren 200 horas acreditadas.</p>
+                <h4><i class="fas fa-list-ul"></i> Temas que se abordan:</h4>
+                <ul>
+                    <li>Competencias digitales para educación a distancia.</li>
+                    <li>Liderazgo y gestión escolar para la NEM.</li>
+                    <li>Educación inclusiva y atención a la vulnerabilidad.</li>
+                    <li>Evaluación educativa e instrumentos.</li>
+                    <li>Educación emocional y manejo del estrés.</li>
+                </ul>
+                <h4><i class="fas fa-trophy"></i> ¿Para qué participan?</h4>
+                <p>Para sumar puntaje en Promoción Horizontal, procesos de Admisión o Asignación de Horas Adicionales y estímulos.</p>
+            `
+        };
+
+        // Mostrar el modal de configuración según la opción elegida
+        function abrirConfiguracion(tipo) {
+            document.getElementById('configTipo').value = tipo;
+            let titulo = "";
+            let icono = "";
+            
+            if(tipo === 'vertical') { titulo = "Promoción Vertical"; icono = "fa-sitemap"; }
+            else if(tipo === 'horizontal') { titulo = "Promoción Horizontal"; icono = "fa-chart-line"; }
+            else { titulo = "Generación de Puntos"; icono = "fa-star"; }
+            
+            document.getElementById('configTitle').innerHTML = `<i class="fas ${icono}"></i> ${titulo}`;
+            document.getElementById('configInfoText').innerHTML = infoPromociones[tipo];
+            
+            document.getElementById('configNombre').value = '';
+            document.getElementById('configDuracion').value = (tipo==='horizontal' || tipo==='puntos') ? '200' : '40';
+            
+            document.getElementById('configModal').style.display = 'flex';
+        }
+
+        // Lógica para prevenir la pérdida de datos
+        function intentarCerrarConfiguracion() {
+            const nombre = document.getElementById('configNombre').value.trim();
+            if (nombre.length > 0) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Tienes datos escritos. Si cierras, se perderá tu progreso.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#64748B',
+                    confirmButtonText: 'Sí, descartar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('configModal').style.display = 'none';
+                    }
+                });
+            } else {
+                document.getElementById('configModal').style.display = 'none';
+            }
+        }
+
+        // Iniciar la generación (Manual o IA)
+        function iniciarGeneracion(modo) {
+            const nombre = document.getElementById('configNombre').value.trim();
+            const duracion = document.getElementById('configDuracion').value;
+            const tipo = document.getElementById('configTipo').value;
+
+            if(!nombre) {
+                Swal.fire('Atención', 'Por favor ingresa un nombre para el curso antes de continuar.', 'warning');
+                return;
+            }
+
+            cursoActual = { tipo, titulo: nombre, duracion: duracion + ' horas' };
+            document.getElementById('configModal').style.display = 'none';
+            document.getElementById('menu-inicial').style.display = 'none';
+            document.getElementById('btn-vista-docente').style.display = 'flex';
+            document.getElementById('btn-subir').style.display = 'flex';
+
+            if(modo === 'ia') {
+                document.getElementById('aiPanel').classList.add('activo');
+                agregarMensajeInicialIA();
+                generarCursoConIA();
+            } else {
+                generarCursoManual();
+            }
+        }
+
+        // Simulación de carga IA
+        function generarCursoConIA() {
+            document.getElementById('loader').style.display = "block";
+            document.getElementById('feed-central').innerHTML = '';
+            
+            setTimeout(() => {
+                document.getElementById('loader').style.display = "none";
+                renderizarCurso(true); // true = Rellena con datos de ejemplo IA
+                agregarMensaje('ia', '✅ <b>¡Curso Generado!</b> He estructurado los módulos basados en los requerimientos USICAMM. Puedes pedirme cambios en el chat o editarlos manualmente.');
+            }, 2500);
+        }
+
+        // Generación Manual
+        function generarCursoManual() {
+            document.getElementById('feed-central').innerHTML = '';
+            renderizarCurso(false); // false = Módulos vacíos
+        }
+
+        // Renderizar el HTML de los bloques en el feed
+        function renderizarCurso(conDatos) {
+            const feed = document.getElementById('feed-central');
+            const esPuntos = cursoActual.tipo === 'puntos';
+            const badgeC = esPuntos ? 'badge-purpose puntos' : 'badge-purpose';
+            const badgeT = esPuntos ? 'PARA PUNTOS' : 'REQUISITO USICAMM';
+            const tipoLargo = cursoActual.tipo === 'vertical' ? 'Promoción Vertical' : (cursoActual.tipo === 'horizontal' ? 'Promoción Horizontal' : 'Puntaje General');
+
+            let html = `
+                <div class="block activo">
+                    <span class="block-label">Presentación</span>
+                    <span class="${badgeC}">${badgeT}</span>
+                    <button class="btn-ai-assist" onclick="solicitarAyudaIA('presentacion')"><i class="fas fa-magic"></i></button>
+                    <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
+                    <h1 class="h1-input" contenteditable="false">${cursoActual.titulo.toUpperCase()}</h1>
+                    <p class="p-input" contenteditable="false">Curso diseñado específicamente para lineamientos de ${tipoLargo}.</p>
+                    <div class="grid-info">
+                        <div><i class="fas fa-clock"></i> <strong>Duración:</strong> ${cursoActual.duracion}</div>
+                        <div><i class="fas fa-bullseye"></i> <strong>Modalidad:</strong> En línea (Autogestivo)</div>
+                    </div>
+                </div>
+            `;
+
+            // Crear 3 Módulos
+            for (let i = 1; i <= 3; i++) {
+                html += `
+                    <div class="block activo" id="bloque${i}">
+                        <span class="block-label">Módulo ${i}</span>
+                        <button class="btn-ai-assist" onclick="solicitarAyudaIA('Módulo ${i}')"><i class="fas fa-robot"></i></button>
+                        <button class="btn-delete-block" onclick="eliminarModulo(this)"><i class="fas fa-trash"></i> ELIMINAR</button>
+                        <button class="btn-edit-block" onclick="toggleEdit(this)"><i class="fas fa-pen"></i> EDITAR</button>
+                        <h1 class="h1-input" contenteditable="false">${conDatos ? 'Tema Principal de la unidad ' + i : 'Título del Módulo ' + i}</h1>
+                        <div id="cont-bloque${i}"></div>
+                        <div class="add-content-buttons">
+                            <button class="btn-add-c" onclick="agregarVideo(${i})"><i class="fas fa-video"></i> Añadir Video</button>
+                            <button class="btn-add-c" onclick="agregarQuiz(${i})"><i class="fas fa-question"></i> Añadir Quiz</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Si NO es solo para puntos, lleva examen
+            if (!esPuntos) {
+                html += `
+                    <div class="block activo">
+                        <div class="lock-overlay docente-lock hidden"><i class="fas fa-lock fa-3x" style="color:var(--guinda)"></i><h2 style="margin-top:15px; color:var(--guinda);">EXAMEN BLOQUEADO</h2><p>Completa todos los módulos para habilitar.</p></div>
+                        <span class="block-label">Evaluación</span>
+                        <h1 class="h1-input">Examen Final Acreditatorio</h1>
+                        <div id="quiz-final"></div>
+                        <button class="btn-add-c" style="margin-top:15px;" onclick="agregarPregunta('quiz-final')"><i class="fas fa-plus"></i> Añadir Pregunta</button>
+                    </div>
+                `;
+            }
+
+            feed.innerHTML = html;
+
+            // Rellenar con contenido si es IA
+            if (conDatos) {
+                agregarVideo(1); 
+                agregarQuiz(2);
+                if (!esPuntos) agregarPregunta('quiz-final');
+            }
+        }
+
+        // ==========================================
+        // FUNCIONES DE CONTENIDO Y EDICIÓN
+        // ==========================================
+        function agregarVideo(id) {
+            document.getElementById(`cont-bloque${id}`).innerHTML += `<div class="content-item"><button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button><div class="video-box"><i class="fas fa-play-circle fa-3x"></i><p style="margin-top:10px;">Video Multimedia</p></div></div>`;
+        }
+        function agregarQuiz(id) {
+            document.getElementById(`cont-bloque${id}`).innerHTML += `<div class="content-item"><button class="btn-remove-item" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button><strong style="color:var(--guinda);">Cuestionario Formativo</strong><div id="q-${id}"></div><button class="btn-add-c" style="margin-top:10px;" onclick="agregarPregunta('q-${id}')"><i class="fas fa-plus"></i> Añadir pregunta</button></div>`;
+            agregarPregunta(`q-${id}`);
+        }
+        function agregarPregunta(id) {
+            document.getElementById(id).innerHTML += `<div class="quiz-item"><button class="btn-remove-item" style="top:5px; right:5px; width:25px; height:25px;" onclick="this.parentElement.remove()"><i class="fas fa-trash" style="font-size:0.7rem;"></i></button><strong contenteditable="true">Escribe la pregunta...</strong><div class="option-editable correct" contenteditable="true">Respuesta Correcta</div><div class="option-editable" contenteditable="true">Distractor 1</div></div>`;
+        }
+        
+        function eliminarModulo(btn) {
+            Swal.fire({
+                title: '¿Eliminar Módulo?',
+                text: "Esta acción borrará todo el contenido de este bloque y no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#64748B',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    btn.closest('.block').remove();
+                }
+            });
+        }
+
+        function toggleEdit(btn) {
+            const b = btn.closest('.block');
+            const ed = b.classList.toggle('editing');
+            b.querySelectorAll('[contenteditable]').forEach(e => e.contentEditable = ed);
+            btn.innerHTML = ed ? '<i class="fas fa-save"></i> GUARDAR' : '<i class="fas fa-pen"></i> EDITAR';
+        }
+
+        function togglePreviewMode() {
+            document.querySelectorAll('.docente-lock').forEach(e => e.classList.toggle('hidden'));
+            
+            const panelIA = document.getElementById('aiPanel');
+            if(panelIA.classList.contains('activo')) {
+                panelIA.style.display = enModoEditor ? 'none' : 'flex';
+            }
+            
+            document.getElementById('btn-docente-back').style.display = enModoEditor ? 'block' : 'none';
+            document.querySelectorAll('.btn-edit-block, .btn-delete-block, .btn-ai-assist, .add-content-buttons, .btn-remove-item').forEach(e => e.style.display = enModoEditor ? 'none' : '');
+            
+            enModoEditor = !enModoEditor;
+            Swal.fire({ title: enModoEditor ? 'Modo Editor' : 'Vista Estudiante', text: enModoEditor ? 'Los candados han sido eliminados.' : 'Visualizando curso con restricciones y bloqueos.', icon: 'info', timer: 2000, showConfirmButton: false });
+        }
+
+        function subirAAprobacion() {
+            Swal.fire({ title: '¿Enviar a validación USICAMM?', text: 'El curso será bloqueado para edición mientras es revisado por el comité.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#691C32', confirmButtonText: 'SÍ, ENVIAR' }).then(r => { if(r.isConfirmed) Swal.fire('Enviado','El curso se ha subido correctamente a la plataforma nacional.','success'); });
+        }
+
+        // ==========================================
+        // LÓGICA DEL CHAT DE IA MEJORADO
+        // ==========================================
+        function agregarMensajeInicialIA() {
+            const chat = document.getElementById('chat-box');
+            chat.innerHTML = '';
+            agregarMensaje('ia', `¡Hola! Soy Jaguar IA 🐾.<br><br>He generado la estructura base para el curso <b>"${cursoActual.titulo}"</b>.<br><br><b>¿Qué deseas hacer ahora?</b>
+            <div class="quick-options">
+                <button class="quick-option-btn" onclick="rellenarTextoIA()">📘 Redactar textos del Módulo 1</button>
+                <button class="quick-option-btn" onclick="crearExamenIA()">📗 Generar Examen Final con 10 preguntas</button>
+                <button class="quick-option-btn" onclick="document.getElementById('user-input').focus()">📙 Le daré instrucciones manuales</button>
+            </div>`);
+        }
+
+        function rellenarTextoIA() {
+            agregarMensaje('user', 'Por favor, redacta el contenido teórico para el Módulo 1.');
+            setTimeout(() => { agregarMensaje('ia', '✅ Textos redactados e insertados en el Módulo 1 con base en los principios pedagógicos solicitados.'); }, 1500);
+        }
+
+        function crearExamenIA() {
+            agregarMensaje('user', 'Genera las preguntas del examen final.');
+            setTimeout(() => { agregarMensaje('ia', '✅ He agregado 10 preguntas de opción múltiple al bloque de Evaluación. Puedes revisarlas y editarlas.'); }, 1500);
+        }
+
+        function agregarMensaje(rol, texto) {
+            const chat = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `bubble ${rol}`;
+            div.innerHTML = texto;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function procesarIA() {
+            const input = document.getElementById('user-input');
+            const txt = input.value.trim();
+            if (!txt) return;
+            agregarMensaje('user', txt);
+            setTimeout(() => { agregarMensaje('ia', 'Entendido. He aplicado los cambios solicitados en el área de trabajo.'); }, 1000);
+            input.value = '';
+        }
+
+        function solicitarAyudaIA(seccion) {
+            document.getElementById('aiPanel').classList.add('activo');
+            document.getElementById('aiPanel').style.display = 'flex';
+            const input = document.getElementById('user-input');
+            input.value = `Mejora el contenido de: ${seccion}... `;
+            input.focus();
+        }
+
+        // ==========================================
+        // ACCESIBILIDAD 100% GARANTIZADA
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Abrir/Cerrar Panel
+            const btnAcc = document.getElementById('btnAccesibilidad');
+            const panel = document.getElementById('panelAccesibilidad');
+            const btnCerrar = document.getElementById('btnCerrarPanel');
+            
+            if(btnAcc && panel) {
+                btnAcc.addEventListener('click', function() {
+                    panel.classList.toggle('active');
+                });
+            }
+            if(btnCerrar && panel) {
+                btnCerrar.addEventListener('click', function() {
+                    panel.classList.remove('active');
+                });
+            }
+
+            // 2. Toggles Visuales y Modo Oscuro
+            const toggles = [
+                { id: 'acc-grayscale', class: 'grayscale' },
+                { id: 'acc-high-contrast', class: 'high-contrast' },
+                { id: 'acc-invert-colors', class: 'invert-colors' },
+                { id: 'acc-dark-theme', class: 'dark-theme' },
+                { id: 'acc-reading-mask', class: 'reading-mask' },
+                { id: 'acc-reading-guide', class: 'reading-guide' },
+                { id: 'acc-highlight-links', class: 'highlight-links' },
+                { id: 'acc-dyslexic-font', class: 'dyslexic-font' }
+            ];
+
+            toggles.forEach(function(item) {
+                const checkbox = document.getElementById(item.id);
+                if(checkbox) {
+                    checkbox.addEventListener('change', function(e) {
+                        if(e.target.checked) {
+                            document.body.classList.add(item.class);
+                        } else {
+                            document.body.classList.remove(item.class);
+                        }
+                    });
+                }
+            });
+
+            // Lector de pantalla simulado
+            const mReader = document.getElementById('acc-screen-reader');
+            if(mReader) {
+                mReader.addEventListener('change', function(e) {
+                    if(e.target.checked && typeof Swal !== 'undefined') {
+                        Swal.fire('Lector de Pantalla', 'Simulación: El soporte ARIA está activado.', 'info');
+                    }
+                });
+            }
+
+            // 3. Controles de Tipografía (Rango)
+            let lineHeight = 1.6;
+            let letterSpacing = 0;
+            let fontSize = 100;
+
+            const btnIncLH = document.getElementById('increaseLineHeight');
+            const btnDecLH = document.getElementById('decreaseLineHeight');
+            const valLH = document.getElementById('lineHeightValue');
+            if(btnIncLH && btnDecLH && valLH) {
+                btnIncLH.addEventListener('click', function() {
+                    lineHeight = Math.min(2.5, lineHeight + 0.1);
+                    document.documentElement.style.lineHeight = lineHeight;
+                    valLH.textContent = lineHeight.toFixed(1);
+                });
+                btnDecLH.addEventListener('click', function() {
+                    lineHeight = Math.max(1.2, lineHeight - 0.1);
+                    document.documentElement.style.lineHeight = lineHeight;
+                    valLH.textContent = lineHeight.toFixed(1);
+                });
+            }
+
+            const btnIncLS = document.getElementById('increaseLetterSpacing');
+            const btnDecLS = document.getElementById('decreaseLetterSpacing');
+            const valLS = document.getElementById('letterSpacingValue');
+            if(btnIncLS && btnDecLS && valLS) {
+                btnIncLS.addEventListener('click', function() {
+                    letterSpacing = Math.min(5, letterSpacing + 0.5);
+                    document.documentElement.style.letterSpacing = letterSpacing + 'px';
+                    valLS.textContent = letterSpacing + 'px';
+                });
+                btnDecLS.addEventListener('click', function() {
+                    letterSpacing = Math.max(-2, letterSpacing - 0.5);
+                    document.documentElement.style.letterSpacing = letterSpacing + 'px';
+                    valLS.textContent = letterSpacing + 'px';
+                });
+            }
+
+            const btnIncFS = document.getElementById('increaseFontSize');
+            const btnDecFS = document.getElementById('decreaseFontSize');
+            const valFS = document.getElementById('fontSizeValue');
+            if(btnIncFS && btnDecFS && valFS) {
+                btnIncFS.addEventListener('click', function() {
+                    fontSize = Math.min(200, fontSize + 10);
+                    document.documentElement.style.fontSize = fontSize + '%';
+                    valFS.textContent = fontSize + '%';
+                });
+                btnDecFS.addEventListener('click', function() {
+                    fontSize = Math.max(60, fontSize - 10);
+                    document.documentElement.style.fontSize = fontSize + '%';
+                    valFS.textContent = fontSize + '%';
+                });
+            }
+
+            // 4. Cursores
+            const cursorOpts = document.querySelectorAll('.cursor-opt');
+            cursorOpts.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    cursorOpts.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.body.classList.remove('cursor-small', 'cursor-medium', 'cursor-large', 'cursor-xlarge');
+                    const size = this.getAttribute('data-size');
+                    if(size && size !== 'default') {
+                        document.body.classList.add('cursor-' + size);
+                    }
+                });
+            });
+
+            // 5. Restablecer
+            const btnReset = document.getElementById('resetAccesibilidad');
+            if(btnReset) {
+                btnReset.addEventListener('click', function() {
+                    document.body.className = ''; // Limpia todas las clases del body
+                    document.documentElement.style.lineHeight = '';
+                    document.documentElement.style.letterSpacing = '';
+                    document.documentElement.style.fontSize = '';
+                    
+                    lineHeight = 1.6;
+                    letterSpacing = 0;
+                    fontSize = 100;
+                    
+                    if(valLH) valLH.textContent = '1.6';
+                    if(valLS) valLS.textContent = '0';
+                    if(valFS) valFS.textContent = '100%';
+                    
+                    const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => cb.checked = false);
+                    
+                    cursorOpts.forEach(b => b.classList.remove('active'));
+                    const medCursor = document.querySelector('.cursor-opt[data-size="medium"]');
+                    if(medCursor) medCursor.classList.add('active');
+                    
+                    panel.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

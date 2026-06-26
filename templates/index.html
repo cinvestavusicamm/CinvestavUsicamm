@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EscalafonIA Jaguar | Gestión de Talento Docente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/main.css">
+</head>
+<body>
+
+    <header class="header-main">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <a href="javascript:void(0)" onclick="showPage('index')" class="brand">
+                <img src="../../static/imagenes/logo.png" alt="Logo Jaguar">
+                <div class="brand-text">
+                    <h1 style="color: white; margin: 0; font-size: 1.4rem; letter-spacing: 1px;">ESCALAFONIA</h1>
+                </div>
+            </a>
+
+            <div class="logos-institucionales" style="display: flex; align-items: center; gap: 15px; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.3);">
+                <img src="../../static/imagenes/USICAMM.jpg" alt="Logo USICAMM" style="height: 40px; width: auto; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+                <img src="../../static/imagenes/usi.jpg" alt="Logo Cinvestav" style="height: 40px; width: auto; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+            </div>
+        </div>
+
+        <div class="header-nav">
+            <a href="javascript:void(0)" onclick="showPage('guide')" class="btn-nav">GUÍA TÉCNICA</a>
+            <a href="{% url 'sesion' %}" class="btn-nav" style="background: var(--dorado); color: var(--guinda); border: none;">
+                <i class="fas fa-user-circle"></i> INICIAR SESIÓN
+            </a>
+        </div>
+    </header>
+
+    <main id="index-page" class="page-content page-active">
+        <div class="welcome-container">
+            <div>
+                <img src="../../static/imagenes/USI.png" class="jaguar-hero-img" alt="Imagen Institucional USI" style="max-width: 480px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            </div>
+            
+            <div class="welcome-text">
+                <h2 style="color: var(--dorado); letter-spacing: 3px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase;">Gestión de Talento</h2>
+                <h1>Bienvenido {{ usuario.nombre }} a tu futuro profesional</h1>
+                <p>Soy tu <strong>Asistente Jaguar</strong>. Utilizo inteligencia artificial para agilizar tu dictamen de escalafón USICAMM.</p>
+                <p style="font-size: 0.9rem; color: var(--dorado);">Tienes {{ total_cursos }} cursos asignados para este ciclo.</p>
+                
+                <div class="info-cards">
+                    <div class="card">
+                        <i class="fas fa-file-shield"></i>
+                        <h3>Firma y Sellos</h3>
+                        <p>Validación automática de códigos QR.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Proyección</h3>
+                        <p>Cálculo predictivo de puntaje.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <a href="{% url 'registro' %}" class="btn-main">Iniciar Registro</a>
+                    <a href="javascript:void(0)" onclick="showPage('guide')" style="text-decoration: none; color: var(--texto); font-weight: bold; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-play-circle fa-2x" style="color: var(--turquesa);"></i> Ver Guía
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-vino" style="background-color: var(--guinda);">
+        <p style="font-weight: 700; color: var(--dorado); margin: 0 0 5px 0;">CINVESTAV • USICAMM • SEP</p>
+        <p style="font-size: 0.7rem; opacity: 0.8; margin: 0;">EscalafonIA 2026: Sistema de validación autónoma.</p>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('page-active'));
+            const page = document.getElementById(pageId + '-page');
+            if(page) page.classList.add('page-active');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EscalafonIA - Panel Principal</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+
+    <style>
+        /* Eliminar absolutamente todos los espacios en blanco nativos */
+        html, body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            width: 100%; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--bg-gris, #F4F4F4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* =========================================
+           1. SIDEBAR Y HAMBURGUESA DENTRO DEL MENÚ
+           ========================================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--guinda, #691C32);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Cabecera del Sidebar */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dorado, #D4C19C);
+        }
+
+        .btn-menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .btn-menu-toggle:hover {
+            color: var(--dorado, #D4C19C);
+            transform: scale(1.1);
+        }
+
+        /* Alineación del texto a la izquierda */
+        .nav-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important; 
+            gap: 15px !important; 
+            padding: 15px 20px !important;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-link i {
+            width: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        /* Modo Mini del Sidebar */
+        .sidebar.mini {
+            width: 70px;
+        }
+        .sidebar.mini .menu-title, 
+        .sidebar.mini .menu-texto {
+            display: none;
+        }
+        .sidebar.mini .sidebar-header {
+            justify-content: center;
+            padding: 15px 0;
+        }
+        .sidebar.mini .nav-link {
+            padding: 15px 0 !important;
+            justify-content: center !important;
+        }
+        .sidebar.mini .nav-link i {
+            margin: 0;
+        }
+
+        /* =========================================
+           2. CONTENEDOR PRINCIPAL AL RAS
+           ========================================= */
+        .main-container {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            padding: 0 !important; 
+        }
+        .main-container.expandido {
+            margin-left: 70px;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+            flex-grow: 1; 
+        }
+
+        /* =========================================
+           3. HEADER Y FOOTER (Borde a Borde)
+           ========================================= */
+        .top-bar-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--dorado, #D4C19C);
+            width: 100%;
+            margin: 0 !important; 
+        }
+
+        .top-bar-vino h1 {
+            color: white !important;
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            text-align: center;
+            padding: 20px;
+            border-top: 4px solid var(--dorado, #D4C19C);
+            margin-top: auto;
+            width: 100%;
+        }
+
+        /* =========================================
+           4. DROPDOWN Y CARRUSEL
+           ========================================= */
+        .user-dropdown { position: relative; display: inline-block; }
+        .btn-user {
+            background-color: transparent; border: 1px solid var(--dorado, #D4C19C);
+            color: white; padding: 8px 18px; border-radius: 25px; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.95rem;
+        }
+        .btn-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .btn-user:hover { background-color: rgba(255,255,255,0.1); }
+        .user-dropdown-content {
+            display: none; position: absolute; right: 0; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000;
+        }
+        .user-dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 0.85rem; }
+        .user-dropdown-content a:hover { background-color: #f4f4f4; color: var(--guinda, #691C32); }
+        .user-dropdown:hover .user-dropdown-content { display: block; }
+
+        .carousel-wrapper { width: 100%; overflow: hidden; border-radius: 15px; margin-bottom: 30px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel-slide { min-width: 100%; height: 320px; background-size: cover; background-position: center; position: relative; }
+        .carousel-overlay { position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 30px; }
+        .carousel-overlay h2 { color: var(--dorado, #D4C19C); margin-bottom: 5px; font-family: 'Montserrat', sans-serif;}
+        .carousel-overlay p { color: white; margin: 0; }
+
+        /* =========================================
+           5. MODAL DE ADVERTENCIAS
+           ========================================= */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px);
+        }
+        .modal-box {
+            background: white; border-radius: 12px; padding: 30px; width: 400px; max-width: 90%;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-top: 6px solid var(--alerta, #F39C12);
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .modal-icon { font-size: 3rem; color: var(--alerta, #F39C12); margin-bottom: 15px; }
+        .modal-title { font-family: 'Montserrat', sans-serif; color: var(--guinda, #691C32); font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
+        .modal-text { font-size: 0.95rem; color: #555; margin-bottom: 25px; }
+        .btn-modal-close {
+            background-color: var(--guinda, #691C32); color: white; border: none; padding: 10px 25px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .btn-modal-close:hover { background-color: #4a1422; }
+
+        /* =========================================
+           6. CURSORES ACCESIBLES
+           ========================================= */
+        body.cursor-medium, body.cursor-medium * { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="black" stroke="white" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L5.5 3.21z"/></svg>'), auto !important; }
+        body.cursor-large, body.cursor-large * { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="black" stroke="white" stroke-width="2" d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L5.5 3.21z"/></svg>'), auto !important; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar .menu-title, .sidebar .menu-texto { display: none; }
+            .sidebar .sidebar-header { justify-content: center; padding: 15px 0; }
+            .sidebar .nav-link { padding: 15px 0 !important; justify-content: center !important; }
+            .sidebar .nav-link i { margin: 0; }
+            .main-container { margin-left: 70px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .top-bar-vino h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    
+    <aside class="sidebar" id="miSidebar">
+        <div class="sidebar-header">
+            <span class="menu-title">Menú</span>
+            <button class="btn-menu-toggle" onclick="toggleMenu()" aria-label="Abrir/Cerrar Menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="nav-menu" style="list-style: none; padding: 0; margin: 0;">
+            <li class="nav-item"><a href="{% url 'generador_cursos:index_generador' %}" class="nav-link active"><i class="fa-solid fa-house"></i> <span class="menu-texto">Inicio</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> <span class="menu-texto">Generador de Cursos</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:cursos' %}" class="nav-link"><i class="fa-solid fa-book"></i> <span class="menu-texto">Mis Cursos</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-link"><i class="fa-solid fa-chart-line"></i> <span class="menu-texto">Estadísticas</span></a></li>
+            <li class="nav-item" style="margin-top: 20px;"><a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-link"><i class="fa-solid fa-user"></i> <span class="menu-texto">Mi Perfil</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="main-container" id="contenidoPrincipal">
+        
+        <header class="top-bar-vino">
+            <div>
+                <h1>EscalafonIA</h1>
+            </div>
+            
+            <div class="user-dropdown">
+                <button class="btn-user">
+                    <img src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name={{ usuario.nombre|default:"Usuario" }}+{{ usuario.apellido_paterno|default:"" }}&background=D4C19C&color=691C32'" alt="Avatar">
+                    Bienvenida {{ usuario.nombre|default:"Usuario" }} <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </button>
+                <div class="user-dropdown-content">
+                    <a href="#"><i class="fa-solid fa-circle-question" style="margin-right: 8px;"></i> Ayuda y Soporte</a>
+                    <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fa-solid fa-user-gear" style="margin-right: 8px;"></i> Ajustes de Perfil</a>
+                    <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Salir del Sistema</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="carousel-wrapper">
+                <div class="carousel-track" id="track">
+                    <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80');">
+                        <div class="carousel-overlay">
+                            <h2>Innovación Didáctica 2027</h2>
+                            <p>Diseña planes de estudio estructurados bajo normativas de excelencia académica actualizadas USICAMM.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1200&q=80');">
+                        <div class="carousel-overlay">
+                            <h2>Procesos de Promoción</h2>
+                            <p>Valida tus propuestas curriculares para acumular puntos válidos ante las juntas de promoción.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dashboard-grid">
+                
+                <div>
+                    <div class="card">
+                        <h2 class="card-title"><i class="fa-solid fa-layer-group"></i> Cursos Generados por el Usuario</h2>
+                        <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">Haz clic sobre el estatus de los cursos para ver detalles o correcciones.</p>
+                        
+                        <div class="table-container">
+                            <table class="custom-table" aria-label="Estatus de cursos">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Curso</th>
+                                        <th>Estatus</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for curso in cursos|slice:":5" %}
+                                    <tr>
+                                        <td>{{ curso.titulo }}</td>
+                                        <td>
+                                            {% if curso.estado == 'Aprobado' %}
+                                            <button class="table-status status-valid" style="border: none; cursor: pointer;" onclick="mostrarAlerta('¡Felicidades! Este curso ha sido evaluado y aceptado exitosamente. Ya es válido para generar puntaje.', 'fa-circle-check', 'var(--exito)')">Aceptado</button>
+                                            {% elif curso.estado == 'En Revisión' %}
+                                            <button class="table-status status-info" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso se encuentra actualmente en proceso de revisión por el comité académico. Te notificaremos pronto.', 'fa-clock', 'var(--turquesa)')">En revisión</button>
+                                            {% elif curso.estado == 'Observaciones' %}
+                                            <button class="table-status status-pending" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso requiere correcciones en su estructura didáctica. Por favor atiende las observaciones en el panel de evaluación.', 'fa-triangle-exclamation', 'var(--alerta)')">En observación</button>
+                                            {% else %}
+                                            <button class="table-status status-info" style="border: none; cursor: pointer;">{{ curso.estado }}</button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2" style="text-align: center; color: #999;">No hay cursos generados aún</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="btn-primary-custom" style="display:inline-block; text-align:center; width:auto; padding: 12px 25px; text-decoration:none;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Ir a Generador de Cursos
+                        </a>
+                    </div>
+                </div>
+
+                <aside>
+                    <div class="card">
+                        <h2 class="card-title"><i class="fa-solid fa-calendar-days"></i> Próximos Eventos</h2>
+                        <div class="table-container">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Evento</th>
+                                        <th>Fecha Límite</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if proceso and proceso.fecha_inicio %}
+                                    <tr>
+                                        <td>Generar Puntos</td>
+                                        <td><strong>{{ proceso.fecha_inicio|date:"d M Y" }}</strong></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if proceso and proceso.fecha_fin %}
+                                    <tr>
+                                        <td>Promoción Vertical</td>
+                                        <td><strong>{{ proceso.fecha_fin|date:"d M Y" }}</strong></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if proceso and proceso.fecha_evaluacion %}
+                                    <tr>
+                                        <td>Promoción Horizontal</td>
+                                        <td><strong>{{ proceso.fecha_evaluacion|date:"d M Y"|default:"17 Mar 2027" }}</strong></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not proceso %}
+                                    <tr>
+                                        <td colspan="2" style="text-align: center; color: #999;">No hay eventos programados</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+        
+        <footer class="footer-vino">
+            <p style="margin: 0; font-weight: bold;">&copy; 2026 EscalafonIA</p>
+            <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: var(--dorado, #D4C19C);">Plataforma Institucional para la Mejora Continua</p>
+        </footer>
+    </main>
+
+    <div id="alertaModal" class="modal-overlay">
+        <div class="modal-box" id="cajaModal">
+            <i id="alertaIcono" class="fa-solid fa-triangle-exclamation modal-icon"></i>
+            <h3 class="modal-title">Atención</h3>
+            <p class="modal-text" id="alertaMensaje">Mensaje de error aquí.</p>
+            <button class="btn-modal-close" onclick="cerrarAlerta()">Entendido</button>
+        </div>
+    </div>
+
+    <button class="btn-accesibilidad" onclick="toggleAccesibilidad()" aria-label="Abrir menú de accesibilidad" style="z-index: 9999;">
+        <i class="fa-solid fa-universal-access"></i>
+    </button>
+
+    <div class="accesibilidad-panel" id="panelAcc" style="z-index: 10000;">
+        <div class="accesibilidad-panel-header">
+            <h3><i class="fa-solid fa-sliders"></i> Accesibilidad</h3>
+            <button class="btn-cerrar-panel" onclick="toggleAccesibilidad()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="accesibilidad-panel-body">
+            
+            <div class="accesibilidad-seccion">
+                <h4><i class="fa-solid fa-eye"></i> Contraste Visual</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fa-solid fa-circle-half-stroke"></i> Modo Oscuro</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" onchange="document.body.classList.toggle('dark-theme')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fa-solid fa-palette"></i> Alto Contraste</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" onchange="document.body.classList.toggle('high-contrast')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fa-solid fa-droplet-slash"></i> Escala de Grises</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" onchange="document.body.classList.toggle('grayscale')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fa-solid fa-font"></i> Tipografía y Lectura</h4>
+                
+                <div class="accesibilidad-opcion">
+                    <span><i class="fa-solid fa-text-height"></i> Tamaño de Texto</span>
+                    <div class="range-control" style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn-range" onclick="ajustarTexto(-1)"><i class="fa-solid fa-minus"></i></button>
+                        <span class="range-value" id="indicadorTexto">100%</span>
+                        <button class="btn-range" onclick="ajustarTexto(1)"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <div class="accesibilidad-opcion">
+                    <span><i class="fa-solid fa-arrows-up-down"></i> Espaciado Vertical</span>
+                    <button class="btn-range" style="width: auto; padding: 0 10px; border-radius: 6px;" onclick="ajustarInterlineado()">Ajustar</button>
+                </div>
+
+                <div class="accesibilidad-opcion">
+                    <span><i class="fa-solid fa-arrows-left-right"></i> Espaciado Horizontal</span>
+                    <button class="btn-range" style="width: auto; padding: 0 10px; border-radius: 6px;" onclick="ajustarLetras()">Ajustar</button>
+                </div>
+
+                <div class="accesibilidad-opcion">
+                    <span><i class="fa-solid fa-pen-nib"></i> Fuente Dislexia</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" onchange="document.body.classList.toggle('dyslexic-font')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fa-solid fa-arrow-pointer"></i> Tamaño del Cursor</h4>
+                <div class="accesibilidad-opcion" style="justify-content: center; gap: 15px; margin-top: 10px;">
+                    <button class="cursor-opt" data-size="default" onclick="cambiarCursor('default')" style="font-size: 1rem;"><i class="fa-solid fa-arrow-pointer"></i></button>
+                    <button class="cursor-opt" data-size="medium" onclick="cambiarCursor('medium')" style="font-size: 1.5rem;"><i class="fa-solid fa-arrow-pointer"></i></button>
+                    <button class="cursor-opt" data-size="large" onclick="cambiarCursor('large')" style="font-size: 2rem;"><i class="fa-solid fa-arrow-pointer"></i></button>
+                </div>
+            </div>
+            
+            <button class="btn-reset" onclick="location.reload()"><i class="fa-solid fa-rotate-right" style="margin-right: 5px;"></i> Restablecer Ajustes</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Lógica del Menú Hamburguesa en el Sidebar
+        function toggleMenu() {
+            document.getElementById('miSidebar').classList.toggle('mini');
+            document.getElementById('contenidoPrincipal').classList.toggle('expandido');
+        }
+
+        // 2. Lógica de la Alerta Estética (Dinámica por colores e íconos)
+        function mostrarAlerta(mensaje, iconoClase, colorClase) {
+            document.getElementById('alertaMensaje').innerText = mensaje;
+            
+            const icono = document.getElementById('alertaIcono');
+            icono.className = 'modal-icon fa-solid ' + iconoClase;
+            icono.style.color = colorClase;
+            
+            document.getElementById('cajaModal').style.borderTopColor = colorClase;
+            document.getElementById('alertaModal').style.display = 'flex';
+        }
+        function cerrarAlerta() {
+            document.getElementById('alertaModal').style.display = 'none';
+        }
+
+        // 3. Script del Carrusel
+        let slideIndex = 0;
+        const track = document.getElementById('track');
+        const slides = document.querySelectorAll('.carousel-slide');
+        setInterval(() => {
+            slideIndex++;
+            if (slideIndex >= slides.length) slideIndex = 0;
+            track.style.transform = `translateX(-${slideIndex * 100}%)`;
+        }, 5000);
+
+        // 4. Lógica de Accesibilidad Completa
+        function toggleAccesibilidad() {
+            document.getElementById('panelAcc').classList.toggle('active');
+        }
+
+        // Texto
+        let tamañoActual = 100;
+        function ajustarTexto(direccion) {
+            tamañoActual += direccion * 10;
+            if(tamañoActual < 80) tamañoActual = 80;
+            if(tamañoActual > 150) tamañoActual = 150;
+            document.body.style.fontSize = tamañoActual + '%';
+            document.getElementById('indicadorTexto').innerText = tamañoActual + '%';
+        }
+
+        // Interlineado
+        let interlineadoBase = 1.6;
+        function ajustarInterlineado() {
+            interlineadoBase = interlineadoBase === 1.6 ? 2.0 : 1.6;
+            document.body.style.lineHeight = interlineadoBase;
+        }
+
+        // Espaciado Letras
+        let espaciadoLetras = 0;
+        function ajustarLetras() {
+            espaciadoLetras = espaciadoLetras === 0 ? 1.5 : 0;
+            document.body.style.letterSpacing = espaciadoLetras + 'px';
+        }
+
+        // Tamaños de Cursor
+        function cambiarCursor(size) {
+            document.body.classList.remove('cursor-medium', 'cursor-large');
+            if(size !== 'default') {
+                document.body.classList.add('cursor-' + size);
+            }
+        }
+    </script>
+</body>
+</html>

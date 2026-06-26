@@ -1,0 +1,38 @@
+<<<<<<< HEAD
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+
+.env
+.venv
+venv/
+env/
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+.DS_Store
+Thumbs.db
+=======
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Docker
+postgres_data/
+ollama_models/
+
+# VS Code
+.vscode/
+
+# Sistema
+.DS_Store
+>>>>>>> agente-prueba

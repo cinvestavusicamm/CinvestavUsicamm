@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Documentos SEP | EscalafonIA</title>
+    
+    <!-- Fuentes e Íconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Rutas a tus CSS base -->
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* =========================================
+           1. RESET Y ESTRUCTURA MAESTRA (FLEXBOX ESTRICTO)
+           ========================================= */
+        * { box-sizing: border-box !important; margin: 0; padding: 0; }
+
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            overflow: hidden !important; 
+            background-color: var(--bg-gris, #F4F4F4) !important;
+            font-family: 'Inter', sans-serif;
+            display: flex !important;
+            flex-direction: row !important;
+        }
+
+        :root {
+            --guinda: #691C32;
+            --guinda-light: #8a2a45;
+            --turquesa: #007A7C;
+            --turquesa-light: #1a9a9c;
+            --dorado: #BC955C;
+            --dorado-light: #d4af37;
+            --bg: #F4F4F4;
+            --white: #FFFFFF;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --borde: #E2E8F0;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        /* =========================================
+           2. SIDEBAR MAESTRO (Izquierda)
+           ========================================= */
+        .sidebar {
+            flex: 0 0 260px !important;
+            width: 260px !important;
+            background-color: var(--guinda) !important;
+            color: white !important;
+            height: 100vh !important;
+            z-index: 1000 !important;
+            transition: flex-basis 0.3s ease, width 0.3s ease !important;
+            display: flex !important;
+            flex-direction: column !important;
+            border-right: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-title { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: bold; color: var(--dorado); }
+        .btn-menu-toggle { background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer; transition: var(--transition); }
+        .btn-menu-toggle:hover { color: var(--dorado); transform: scale(1.1); }
+
+        .sidebar-brand { display: flex; align-items: center; justify-content: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); text-decoration: none; color: white; }
+        .brand-text { margin-left: 12px; display: flex; flex-direction: column; }
+        .brand-text span { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1rem; line-height: 1.2; }
+        .brand-text small { font-size: 0.65rem; color: var(--dorado); font-weight: 600; }
+
+        .nav-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; overflow-y: auto; }
+        .nav-link { display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important; padding: 15px 20px !important; color: white; text-decoration: none; transition: 0.3s; white-space: nowrap; }
+        .nav-link i { width: 30px; text-align: center; font-size: 1.2rem; }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); border-left: 4px solid var(--dorado); }
+
+        .sidebar.mini { flex: 0 0 70px !important; width: 70px !important; }
+        .sidebar.mini .menu-title, .sidebar.mini .menu-texto, .sidebar.mini .brand-text { display: none !important; }
+        .sidebar.mini .sidebar-header { justify-content: center; padding: 15px 0; }
+        .sidebar.mini .nav-link { padding: 15px 0 !important; justify-content: center !important; border-left: none; }
+        .sidebar.mini .nav-link i { margin: 0; }
+
+        /* =========================================
+           3. CONTENEDOR CENTRAL AL RAS (Sin Espacios)
+           ========================================= */
+        .main-container {
+            flex: 1 1 0 !important; 
+            min-width: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            background: var(--bg) !important;
+            position: relative;
+        }
+
+        .top-bar-vino {
+            flex: 0 0 70px !important; 
+            background-color: var(--guinda) !important;
+            color: white !important;
+            padding: 0 30px !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            border-bottom: 3px solid var(--dorado) !important;
+            width: 100% !important;
+        }
+        .top-bar-vino h1 { margin: 0; font-size: 1.6rem; letter-spacing: 1px; font-family: 'Montserrat', sans-serif; }
+
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        
+        .user-dropdown { position: relative; display: inline-block; }
+        .btn-user { background-color: transparent; border: 1px solid var(--dorado); color: white; padding: 6px 15px; border-radius: 25px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; }
+        .btn-user img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+        .btn-user:hover { background-color: rgba(255,255,255,0.1); }
+        .user-dropdown-content { display: none; position: absolute; right: 0; background-color: white; min-width: 180px; box-shadow: var(--shadow-md); border-radius: 8px; z-index: 1000; margin-top: 10px; overflow: hidden; border: 1px solid var(--borde); }
+        .user-dropdown-content a { color: var(--text); padding: 12px 16px; text-decoration: none; display: block; font-size: 0.85rem; font-family: 'Open Sans', sans-serif; }
+        .user-dropdown-content a:hover { background-color: var(--bg); color: var(--guinda); }
+        .user-dropdown:hover .user-dropdown-content { display: block; }
+
+        .workspace-area { 
+            flex: 1 1 auto !important; 
+            padding: 40px !important; 
+            overflow-y: auto !important; 
+            position: relative !important; 
+            background: transparent; 
+        }
+        
+        .feed-container { max-width: 1000px; margin: 0 auto; padding-bottom: 50px; }
+
+        .footer-vino {
+            flex: 0 0 50px !important; 
+            background-color: var(--guinda) !important;
+            color: white !important;
+            text-align: center !important;
+            border-top: 3px solid var(--dorado) !important;
+            width: 100% !important;
+            font-size: 0.75rem !important;
+            font-weight: 700 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* =========================================
+           4. DISEÑO DE PERFIL (Hero, Grid, Inputs)
+           ========================================= */
+        .profile-hero {
+            display: flex; align-items: center; gap: 35px; margin-bottom: 3rem; padding: 2.5rem; 
+            background: white; border-radius: 25px; border: 1px solid var(--borde); box-shadow: var(--shadow-sm);
+        }
+        .photo-uploader { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+        .profile-img { width: 100%; height: 100%; border-radius: 25px; object-fit: cover; border: 4px solid var(--guinda); }
+        .edit-photo-btn { position: absolute; bottom: -10px; right: -10px; background: #1A1A1A; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; transition: 0.2s; }
+        .edit-photo-btn:hover { background: var(--guinda); transform: scale(1.1); }
+        
+        .hero-text h1 { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: var(--text); font-weight: 900; margin-bottom: 5px; }
+        .hero-text p { color: var(--guinda); font-weight: 700; font-size: 1rem; text-transform: uppercase; margin-bottom: 15px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; background: #138871; color: white; padding: 6px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 3rem; }
+        .field { display: flex; flex-direction: column; gap: 8px; }
+        .field label { font-size: 0.75rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* Input Normal (Editable) */
+        .input-editable { 
+            padding: 14px 15px; border-radius: 12px; border: 2px solid var(--borde); 
+            font-size: 0.95rem; font-weight: 600; color: var(--text); 
+            background: white; outline: none; transition: 0.2s; font-family: 'Inter', sans-serif; 
+        }
+        .input-editable:focus { border-color: var(--turquesa); box-shadow: 0 0 0 3px rgba(0,122,124,0.1); }
+        
+        /* Input Protegido (NO Editable) - Candados y grises */
+        .input-protected { 
+            padding: 14px 15px; border-radius: 12px; border: 2px solid var(--borde); 
+            font-size: 0.95rem; font-weight: 600; color: #64748B !important; 
+            background: #F1F5F9 !important; outline: none; cursor: not-allowed !important; 
+            font-family: 'Inter', sans-serif; user-select: none;
+        }
+
+        .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 3rem; }
+        .impact-card { background: var(--guinda); color: white; padding: 25px; border-radius: 20px; text-align: center; box-shadow: var(--shadow-sm); transition: 0.2s; }
+        .impact-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+        .impact-card h5 { font-size: 0.75rem; opacity: 0.8; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
+        .impact-card p { font-size: 2.2rem; font-family: 'Montserrat', sans-serif; font-weight: 900; color: var(--dorado); margin: 0; }
+
+        .secure-section { margin-bottom: 3rem; background: white; padding: 30px; border-radius: 25px; border: 1px solid var(--borde); box-shadow: var(--shadow-sm); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-left: 5px solid var(--guinda); padding-left: 15px; }
+        .section-header h3 { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 900; color: var(--text); margin: 0; }
+        .btn-add { background: var(--guinda); color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-add:hover { background: var(--guinda-light); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(105,28,50,0.2); }
+
+        .doc-card { background: #F8FAFC; border: 1px solid var(--borde); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 20px; transition: 0.2s; }
+        .doc-card:hover { border-color: var(--turquesa); }
+        .doc-icon { width: 50px; height: 50px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--guinda); font-size: 1.4rem; box-shadow: var(--shadow-sm); }
+        .doc-info { flex: 1; }
+        .doc-info h4 { font-size: 1rem; font-weight: 800; color: var(--text); margin: 0 0 5px; }
+        .doc-info p { font-size: 0.85rem; color: var(--text-light); margin: 0 0 8px; }
+        .doc-meta { display: flex; gap: 15px; align-items: center; }
+        .verified-tag { color: #138871; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 4px; background: #D1FAE5; padding: 4px 10px; border-radius: 20px; }
+        .pending-tag { color: #D97706; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 4px; background: #FEF3C7; padding: 4px 10px; border-radius: 20px; }
+        .delete-doc { background: #FEE2E2; border: none; color: #EF4444; cursor: pointer; font-size: 0.9rem; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .delete-doc:hover { background: #EF4444; color: white; }
+
+        .btn-save-profile { background: var(--turquesa); color: white; border: none; padding: 16px 45px; border-radius: 15px; font-weight: 900; font-size: 0.9rem; cursor: pointer; float: right; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,122,124,0.2); }
+        .btn-save-profile:hover { background: var(--turquesa-light); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,122,124,0.3); }
+
+        /* Modal de Documentos */
+        .config-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px); }
+        .modal-content { background: white; border-radius: 20px; padding: 30px; width: 500px; max-width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; }
+        
+        /* =========================================
+           5. MODO OSCURO BLINDADO (Mi Perfil)
+           ========================================= */
+        body.dark-theme,
+        body.dark-theme .main-container,
+        body.dark-theme .workspace-area { background-color: #0F121C !important; }
+
+        body.dark-theme .profile-hero,
+        body.dark-theme .secure-section,
+        body.dark-theme .doc-card,
+        body.dark-theme .modal-content,
+        body.dark-theme .input-editable { background-color: #1A1A2E !important; border-color: #2D3748 !important; color: #E2E8F0 !important; }
+        
+        body.dark-theme .hero-text h1,
+        body.dark-theme .section-header h3,
+        body.dark-theme .doc-info h4,
+        body.dark-theme .field label { color: #E2E8F0 !important; }
+
+        body.dark-theme .input-protected { background-color: #0F121C !important; border-color: #2D3748 !important; color: #64748B !important; }
+        body.dark-theme .doc-icon { background: #0F121C !important; }
+        body.dark-theme .sep-links { background: #0F121C !important; }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            html, body { flex-direction: column !important; }
+            .sidebar { width: 100vw !important; height: 60px !important; flex-direction: row !important; align-items: center !important; justify-content: space-between !important; padding: 0 20px !important; z-index: 2000 !important; flex: 0 0 60px !important;}
+            .sidebar-header { border: none; padding: 0; margin: 0; }
+            .sidebar-brand { display: none; }
+            .nav-menu { display: none; }
+            .main-container { width: 100vw !important; height: calc(100vh - 60px) !important; }
+            .top-bar-vino h1 { font-size: 1.2rem; }
+            .profile-hero { flex-direction: column; text-align: center; }
+            .info-grid, .impact-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         PANEL DE ACCESIBILIDAD 100% FUNCIONAL
+         ========================================== -->
+    <button class="btn-accesibilidad" id="btnAccesibilidad" title="Abrir panel de accesibilidad" style="z-index: 10001; position: fixed; bottom: 30px; right: 30px;">
+        <i class="fas fa-universal-access"></i>
+    </button>
+    <div class="accesibilidad-panel" id="panelAccesibilidad" style="z-index: 10002;">
+        <div class="accesibilidad-panel-header">
+            <i class="fas fa-universal-access"></i><h3>Accesibilidad</h3>
+            <button class="btn-cerrar-panel" id="btnCerrarPanel"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="accesibilidad-panel-body">
+            <!-- Visual -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-eye"></i> Visual</h4>
+                <div class="accesibilidad-opcion"><span>Escala de grises</span><label class="toggle-switch"><input type="checkbox" id="acc-grayscale"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Alto contraste</span><label class="toggle-switch"><input type="checkbox" id="acc-high-contrast"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Invertir colores</span><label class="toggle-switch"><input type="checkbox" id="acc-invert-colors"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Modo oscuro</span><label class="toggle-switch"><input type="checkbox" id="acc-dark-theme"><span class="toggle-slider"></span></label></div>
+            </div>
+            <!-- Lectura -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-book-reader"></i> Herramientas de Lectura</h4>
+                <div class="accesibilidad-opcion"><span>Lector de pantalla</span><label class="toggle-switch"><input type="checkbox" id="acc-screen-reader"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Máscara de lectura</span><label class="toggle-switch"><input type="checkbox" id="acc-reading-mask"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Guía de lectura</span><label class="toggle-switch"><input type="checkbox" id="acc-reading-guide"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion"><span>Resaltar enlaces</span><label class="toggle-switch"><input type="checkbox" id="acc-highlight-links"><span class="toggle-slider"></span></label></div>
+            </div>
+            <!-- Tipografía -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-font"></i> Tipografía</h4>
+                <div class="accesibilidad-opcion"><span>Fuente Dislexia</span><label class="toggle-switch"><input type="checkbox" id="acc-dyslexic-font"><span class="toggle-slider"></span></label></div>
+                <div class="accesibilidad-opcion">
+                    <span>Espaciado vertical</span>
+                    <div class="range-control"><button class="btn-range" id="decreaseLineHeight"><i class="fas fa-minus"></i></button><span class="range-value" id="lineHeightValue">1.6</span><button class="btn-range" id="increaseLineHeight"><i class="fas fa-plus"></i></button></div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span>Espaciado horizontal</span>
+                    <div class="range-control"><button class="btn-range" id="decreaseLetterSpacing"><i class="fas fa-minus"></i></button><span class="range-value" id="letterSpacingValue">0</span><button class="btn-range" id="increaseLetterSpacing"><i class="fas fa-plus"></i></button></div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span>Tamaño texto</span>
+                    <div class="range-control"><button class="btn-range" id="decreaseFontSize"><i class="fas fa-minus"></i></button><span class="range-value" id="fontSizeValue">100%</span><button class="btn-range" id="increaseFontSize"><i class="fas fa-plus"></i></button></div>
+                </div>
+            </div>
+            <!-- Tamaño del cursor -->
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-mouse-pointer"></i> Tamaño del cursor</h4>
+                <div class="accesibilidad-opcion cursor-selector">
+                    <span>Cursor</span>
+                    <div class="cursor-size-selector">
+                        <button class="cursor-opt" data-size="small" title="Pequeño"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt active" data-size="medium" title="Mediano"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="large" title="Grande"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="xlarge" title="Muy grande"><i class="fas fa-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="accesibilidad-footer"><button class="btn-reset" id="resetAccesibilidad"><i class="fas fa-undo-alt"></i> Restablecer</button></div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SIDEBAR MAESTRO
+         ========================================== -->
+    <aside class="sidebar" id="miSidebar">
+        <div class="sidebar-header">
+            <span class="menu-title">Menú</span>
+            <button class="btn-menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+        <a href="#" class="sidebar-brand">
+            <img src="../../static/imagenes/logosimbolo.png" alt="Logo" onerror="this.src='https://placehold.co/100x100/691C32/FFFFFF?text=E'" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--dorado);">
+            <div class="brand-text">
+                <span>ESCALAFONIA</span>
+                <small>Mi Perfil</small>
+            </div>
+        </a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="javascript:history.back()" class="nav-link"><i class="fas fa-chevron-left"></i> <span class="menu-texto">Regresar</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:index_generador' %}" class="nav-link"><i class="fas fa-th-large"></i> <span class="menu-texto">Dashboard</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-link"><i class="fas fa-magic"></i> <span class="menu-texto">Creación IA</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:cursos' %}" class="nav-link"><i class="fas fa-folder"></i> <span class="menu-texto">Mis cursos</span></a></li>
+            <li class="nav-item"><a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-link"><i class="fas fa-chart-line"></i> <span class="menu-texto">Estadísticas</span></a></li>
+            <li class="nav-item" style="margin-top: 20px;"><a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-link active"><i class="fas fa-user-circle"></i> <span class="menu-texto">Mi perfil</span></a></li>
+        </ul>
+    </aside>
+
+    <!-- ==========================================
+         CONTENEDOR CENTRAL AL RAS
+         ========================================== -->
+    <main class="main-container" id="contenidoPrincipal">
+        
+        <!-- Header institucional -->
+        <header class="top-bar-vino">
+            <div>
+                <h1>Mi Expediente</h1>
+            </div>
+            <div class="header-actions">
+                <div class="user-dropdown">
+                    <button class="btn-user">
+                        <img id="header-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2.5&w=300&h=300&q=80" onerror="this.src='https://ui-avatars.com/api/?name=Ricardo+M&background=D4C19C&color=691C32'" alt="Avatar">
+                        Dr. Ricardo Mendieta <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    </button>
+                    <div class="user-dropdown-content">
+                        <a href="#"><i class="fas fa-robot" style="margin-right: 8px;"></i> Ayuda del Asistente</a>
+                        <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fas fa-user-gear" style="margin-right: 8px;"></i> Mi Perfil</a>
+                        <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Área de contenido con scroll interno -->
+        <div class="workspace-area">
+            <div class="feed-container">
+                
+                <!-- Perfil Hero -->
+                <div class="profile-hero">
+                    <div class="photo-uploader">
+                        <img id="avatar-img" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2.5&w=300&h=300&q=80" class="profile-img">
+                        <label for="photo-input" class="edit-photo-btn"><i class="fas fa-camera"></i></label>
+                        <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="previewImage(event)">
+                    </div>
+                    <div class="hero-text">
+                        <h1>{{ user.get_full_name }}</h1>
+                        <p>Investigador de Carrera • SEP Federal</p>
+                        <span class="status-badge"><i class="fas fa-check-circle"></i> PERFIL VERIFICADO</span>
+                    </div>
+                </div>
+
+                <!-- Información (Editables vs Protegidos) -->
+                <div class="info-grid">
+                    <div class="field">
+                        <label><i class="fas fa-lock" style="color:#691C32; margin-right:5px;"></i> Nombre Completo (Protegido)</label>
+                        <input type="text" value="Ricardo Mendieta Rodriguez" readonly class="input-protected">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-lock" style="color:#691C32; margin-right:5px;"></i> CURP (Protegido)</label>
+                        <input type="text" value="MERR850111HDFRRN01" readonly class="input-protected">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-envelope" style="color:var(--turquesa); margin-right:5px;"></i> Correo de Contacto (Editable)</label>
+                        <input type="email" value="r.mendieta@sep.gob.mx" class="input-editable">
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-phone" style="color:var(--turquesa); margin-right:5px;"></i> Teléfono (Editable)</label>
+                        <input type="tel" value="+52 55 1234 5678" class="input-editable">
+                    </div>
+                </div>
+
+                <!-- Impacto -->
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <h5>Cursos Publicados</h5>
+                        <p>12</p>
+                    </div>
+                    <div class="impact-card">
+                        <h5>Cursos realizados</h5>
+                        <p>24</p>
+                    </div>
+                    <div class="impact-card">
+                        <h5>Impacto Docente</h5>
+                        <p>8.4K</p>
+                    </div>
+                </div>
+
+                <!-- Sección de documentos oficiales -->
+                <div class="secure-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-shield-alt" style="margin-right:8px; color:var(--guinda);"></i> Cédulas, Títulos y Certificados</h3>
+                        <button class="btn-add" id="openModalBtn"><i class="fas fa-plus"></i> Agregar documento</button>
+                    </div>
+
+                    <div id="documentsList">
+                        <!-- Documento verificado -->
+                        <div class="doc-card" data-id="1" data-status="verified">
+                            <div class="doc-icon"><i class="fas fa-id-card"></i></div>
+                            <div class="doc-info">
+                                <h4>Cédula Profesional Federal</h4>
+                                <p>Doctorado en Pedagogía • Registro: 8492033</p>
+                                <div class="doc-meta">
+                                    <span class="verified-tag"><i class="fas fa-check-circle"></i> Validado por SEP</span>
+                                    <span><i class="far fa-calendar-alt"></i> 2022</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Documento pendiente -->
+                        <div class="doc-card" data-id="2" data-status="pending">
+                            <div class="doc-icon"><i class="fas fa-award"></i></div>
+                            <div class="doc-info">
+                                <h4>Certificación USICAMM 2025</h4>
+                                <p>Evaluador de Carrera Docente • Folio: 992-IA</p>
+                                <div class="doc-meta">
+                                    <span class="pending-tag"><i class="fas fa-clock"></i> Pendiente de validación</span>
+                                    <span><i class="far fa-calendar-alt"></i> 2025</span>
+                                </div>
+                            </div>
+                            <div class="doc-actions">
+                                <button class="delete-doc" title="Eliminar" onclick="deleteDocument(2)"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding-bottom: 30px;">
+                    <button class="btn-save-profile" onclick="Swal.fire('Guardado', 'Datos de contacto actualizados correctamente.', 'success')">GUARDAR CAMBIOS</button>
+                    <div style="clear: both;"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="footer-vino">
+            &copy; 2026 EscalafonIA · Validación SEP Nacional
+        </footer>
+    </main>
+
+    <!-- Modal para agregar documento -->
+    <div class="config-modal-overlay" id="documentModal">
+        <div class="modal-content">
+            <h2 style="font-family:'Montserrat', sans-serif; font-size:1.3rem; color:var(--guinda); margin-bottom:20px; border-bottom:3px solid var(--dorado); padding-bottom:10px;"><i class="fas fa-file-upload"></i> Agregar nuevo documento</h2>
+            
+            <div style="display:flex; flex-direction:column; gap:15px;">
+                <div>
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text); text-transform:uppercase;">Tipo de documento</label>
+                    <select id="docTypeSelect" onchange="handleDocTypeChange()" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none; font-family:inherit;">
+                        <option value="cedula">Cédula profesional / Título universitario</option>
+                        <option value="curso">Curso / Certificado / Diplomado</option>
+                    </select>
+                </div>
+
+                <div id="sepLinksContainer" class="sep-links" style="background:#F8FAFC; border-radius:10px; padding:15px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <div id="fieldsCedula" style="display:block;">
+                    <div style="margin-bottom:15px;">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Número de cédula / Registro</label>
+                        <input type="text" id="cedulaNumber" placeholder="Ej: 8492033" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Descripción (título, especialidad)</label>
+                        <input type="text" id="cedulaDesc" placeholder="Ej: Doctorado en Pedagogía" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Institución que lo expide</label>
+                            <input type="text" id="cedulaInstitution" placeholder="Ej: UNAM" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Año de obtención</label>
+                            <input type="text" id="cedulaYear" placeholder="2022" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="fieldsCurso" style="display:none;">
+                    <div style="margin-bottom:15px;">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Nombre del curso / certificado</label>
+                        <input type="text" id="cursoName" placeholder="Ej: Diplomado en Innovación Educativa" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Institución / Proveedor</label>
+                        <input type="text" id="cursoInstitution" placeholder="Ej: SEP - CREFAL" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Duración</label>
+                            <input type="text" id="cursoDuration" placeholder="120 hrs" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Periodo</label>
+                            <input type="text" id="cursoDate" placeholder="2024-2025" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Folio/Clave</label>
+                            <input type="text" id="cursoFolio" placeholder="Opcional" style="width:100%; padding:12px; border-radius:10px; border:2px solid var(--borde); margin-top:5px; outline:none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="font-size:0.8rem; font-weight:700; color:var(--text);">Archivo Adjunto <span style="color:#64748B; font-weight:normal;">*Requerido para validación</span></label>
+                    <input type="file" id="docFile" accept=".pdf, image/*" style="width:100%; padding:10px; border-radius:10px; border:2px dashed var(--turquesa); margin-top:5px; outline:none; background:#F0FDF4;">
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button onclick="closeModal()" style="padding:12px 25px; border-radius:30px; border:none; font-weight:700; cursor:pointer; background:#E2E8F0; color:var(--text); transition:0.2s;">Cancelar</button>
+                    <button onclick="saveDocument()" style="padding:12px 25px; border-radius:30px; border:none; font-weight:700; cursor:pointer; background:var(--guinda); color:white; transition:0.2s;">Guardar Documento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de la vista -->
+    <script>
+        // Toggle Sidebar
+        function toggleMenu() { 
+            document.getElementById('miSidebar').classList.toggle('mini'); 
+        }
+
+        // Previsualizar foto de perfil localmente (sin backend)
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                document.getElementById('avatar-img').src = reader.result;
+                document.getElementById('header-avatar').src = reader.result;
+            };
+            if(event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        // Lógica Modal Documentos
+        const modal = document.getElementById('documentModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+
+        function openModal() {
+            modal.style.display = 'flex';
+            document.getElementById('docTypeSelect').value = 'cedula';
+            handleDocTypeChange();
+            // Limpiar inputs
+            const inputs = modal.querySelectorAll('input[type="text"], input[type="file"]');
+            inputs.forEach(input => input.value = '');
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        openModalBtn.addEventListener('click', openModal);
+
+        function handleDocTypeChange() {
+            const type = document.getElementById('docTypeSelect').value;
+            const sepLinks = document.getElementById('sepLinksContainer');
+            const fieldsCedula = document.getElementById('fieldsCedula');
+            const fieldsCurso = document.getElementById('fieldsCurso');
+
+            if (type === 'cedula') {
+                fieldsCedula.style.display = 'block';
+                fieldsCurso.style.display = 'none';
+                sepLinks.innerHTML = `
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--guinda);">Bases de Consulta Oficiales:</span>
+                    <a href="https://cedulaprofesional.sep.gob.mx/cedula/" target="_blank" style="background:white; border:1px solid var(--guinda); color:var(--guinda); padding:6px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-id-card"></i> Cédula SEP</a>
+                    <a href="https://renoes.sep.gob.mx/" target="_blank" style="background:white; border:1px solid var(--guinda); color:var(--guinda); padding:6px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-university"></i> RENOES</a>
+                `;
+            } else {
+                fieldsCedula.style.display = 'none';
+                fieldsCurso.style.display = 'block';
+                sepLinks.innerHTML = `
+                    <span style="font-size:0.8rem; font-weight:700; color:var(--guinda);">Verificar en:</span>
+                    <a href="https://www.gob.mx/sep/acciones-y-programas/registro-nacional-de-profesionistas" target="_blank" style="background:white; border:1px solid var(--guinda); color:var(--guinda); padding:6px 12px; border-radius:20px; font-size:0.7rem; font-weight:700; text-decoration:none;"><i class="fas fa-search"></i> Catálogo Nacional (RNP)</a>
+                `;
+            }
+        }
+
+        function saveDocument() {
+            const type = document.getElementById('docTypeSelect').value;
+            let title = ''; let description = ''; let year = '';
+
+            if (type === 'cedula') {
+                const number = document.getElementById('cedulaNumber').value.trim();
+                const desc = document.getElementById('cedulaDesc').value.trim();
+                year = document.getElementById('cedulaYear').value.trim();
+                if (!number || !desc) { Swal.fire('Error','Cédula y descripción requeridos.','error'); return; }
+                title = 'Cédula / Título';
+                description = `${desc} • Registro: ${number}`;
+            } else {
+                const name = document.getElementById('cursoName').value.trim();
+                const inst = document.getElementById('cursoInstitution').value.trim();
+                const date = document.getElementById('cursoDate').value.trim();
+                if (!name || !inst) { Swal.fire('Error','Nombre e institución requeridos.','error'); return; }
+                title = 'Curso / Certificado';
+                description = `${name} • ${inst}`;
+                year = date.split('-')[0] || '';
+            }
+
+            const newId = Date.now();
+            let iconClass = type === 'cedula' ? 'fa-id-card' : 'fa-award';
+
+            const newCard = document.createElement('div');
+            newCard.className = 'doc-card';
+            newCard.setAttribute('data-id', newId);
+            newCard.setAttribute('data-status', 'pending');
+            newCard.innerHTML = `
+                <div class="doc-icon"><i class="fas ${iconClass}"></i></div>
+                <div class="doc-info">
+                    <h4>${title}</h4>
+                    <p>${description}</p>
+                    <div class="doc-meta">
+                        <span class="pending-tag"><i class="fas fa-clock"></i> Pendiente de revisión</span>
+                        <span style="font-size:0.75rem; color:#64748B;"><i class="far fa-calendar-alt"></i> ${year || 'N/A'}</span>
+                    </div>
+                </div>
+                <div class="doc-actions">
+                    <button class="delete-doc" title="Eliminar" onclick="deleteDocument(${newId})"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `;
+
+            document.getElementById('documentsList').appendChild(newCard);
+            closeModal();
+            Swal.fire('Documento agregado', 'Se ha enviado para validación institucional.', 'success');
+        }
+
+        window.deleteDocument = function(id) {
+            const doc = document.querySelector(`.doc-card[data-id="${id}"]`);
+            if (doc) {
+                const status = doc.getAttribute('data-status');
+                if (status === 'pending') {
+                    Swal.fire({
+                        title: '¿Retirar documento?',
+                        text: "Se cancelará la solicitud de validación.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Sí, retirar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            doc.remove();
+                        }
+                    });
+                } else {
+                    Swal.fire('Acción Bloqueada', 'Los documentos ya verificados por SEP no pueden eliminarse del expediente.', 'error');
+                }
+            }
+        };
+
+        // ==========================================
+        // LÓGICA DE ACCESIBILIDAD 
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAcc = document.getElementById('btnAccesibilidad');
+            const panel = document.getElementById('panelAccesibilidad');
+            const btnCerrar = document.getElementById('btnCerrarPanel');
+            const body = document.body;
+
+            if(btnAcc && panel) btnAcc.addEventListener('click', () => panel.classList.toggle('active'));
+            if(btnCerrar && panel) btnCerrar.addEventListener('click', () => panel.classList.remove('active'));
+
+            // Toggles Visuales
+            const toggles = [
+                { id: 'acc-grayscale', class: 'grayscale' },
+                { id: 'acc-high-contrast', class: 'high-contrast' },
+                { id: 'acc-invert-colors', class: 'invert-colors' },
+                { id: 'acc-dark-theme', class: 'dark-theme' },
+                { id: 'acc-reading-mask', class: 'reading-mask' },
+                { id: 'acc-reading-guide', class: 'reading-guide' },
+                { id: 'acc-highlight-links', class: 'highlight-links' },
+                { id: 'acc-dyslexic-font', class: 'dyslexic-font' }
+            ];
+
+            toggles.forEach(function(item) {
+                const checkbox = document.getElementById(item.id);
+                if(checkbox) {
+                    checkbox.addEventListener('change', function(e) {
+                        if(e.target.checked) {
+                            body.classList.add(item.class);
+                        } else {
+                            body.classList.remove(item.class);
+                        }
+                    });
+                }
+            });
+
+            // Lector de pantalla simulado
+            const mReader = document.getElementById('acc-screen-reader');
+            if(mReader) {
+                mReader.addEventListener('change', function(e) {
+                    if(e.target.checked && typeof Swal !== 'undefined') Swal.fire('Lector de Pantalla', 'Simulación: El soporte ARIA está activado.', 'info');
+                });
+            }
+
+            // Controles Matemáticos de Tipografía
+            let lineHeight = 1.6, letterSpacing = 0, fontSize = 100;
+
+            const btnIncLH = document.getElementById('increaseLineHeight');
+            const btnDecLH = document.getElementById('decreaseLineHeight');
+            const valLH = document.getElementById('lineHeightValue');
+            if(btnIncLH && btnDecLH && valLH) {
+                btnIncLH.addEventListener('click', function() {
+                    lineHeight = Math.min(2.5, lineHeight + 0.1);
+                    document.documentElement.style.lineHeight = lineHeight;
+                    valLH.textContent = lineHeight.toFixed(1);
+                });
+                btnDecLH.addEventListener('click', function() {
+                    lineHeight = Math.max(1.2, lineHeight - 0.1);
+                    document.documentElement.style.lineHeight = lineHeight;
+                    valLH.textContent = lineHeight.toFixed(1);
+                });
+            }
+
+            const btnIncLS = document.getElementById('increaseLetterSpacing');
+            const btnDecLS = document.getElementById('decreaseLetterSpacing');
+            const valLS = document.getElementById('letterSpacingValue');
+            if(btnIncLS && btnDecLS && valLS) {
+                btnIncLS.addEventListener('click', function() {
+                    letterSpacing = Math.min(5, letterSpacing + 0.5);
+                    document.documentElement.style.letterSpacing = letterSpacing + 'px';
+                    valLS.textContent = letterSpacing + 'px';
+                });
+                btnDecLS.addEventListener('click', function() {
+                    letterSpacing = Math.max(-2, letterSpacing - 0.5);
+                    document.documentElement.style.letterSpacing = letterSpacing + 'px';
+                    valLS.textContent = letterSpacing + 'px';
+                });
+            }
+
+            const btnIncFS = document.getElementById('increaseFontSize');
+            const btnDecFS = document.getElementById('decreaseFontSize');
+            const valFS = document.getElementById('fontSizeValue');
+            if(btnIncFS && btnDecFS && valFS) {
+                btnIncFS.addEventListener('click', function() {
+                    fontSize = Math.min(200, fontSize + 10);
+                    document.documentElement.style.fontSize = fontSize + '%';
+                    valFS.textContent = fontSize + '%';
+                });
+                btnDecFS.addEventListener('click', function() {
+                    fontSize = Math.max(60, fontSize - 10);
+                    document.documentElement.style.fontSize = fontSize + '%';
+                    valFS.textContent = fontSize + '%';
+                });
+            }
+
+            // Cursores
+            const cursorOpts = document.querySelectorAll('.cursor-opt');
+            cursorOpts.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    cursorOpts.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    body.className = body.className.replace(/\bcursor-\S+/g, '');
+                    const size = this.getAttribute('data-size');
+                    if(size && size !== 'default' && size !== 'small') {
+                        body.classList.add('cursor-' + size);
+                    }
+                });
+            });
+
+            // Restablecer Total
+            const btnReset = document.getElementById('resetAccesibilidad');
+            if(btnReset) {
+                btnReset.addEventListener('click', function() {
+                    body.className = ''; 
+                    document.documentElement.style.lineHeight = '';
+                    document.documentElement.style.letterSpacing = '';
+                    document.documentElement.style.fontSize = '';
+                    
+                    lineHeight = 1.6; letterSpacing = 0; fontSize = 100;
+                    
+                    if(valLH) valLH.textContent = '1.6';
+                    if(valLS) valLS.textContent = '0';
+                    if(valFS) valFS.textContent = '100%';
+                    
+                    const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => cb.checked = false);
+                    
+                    cursorOpts.forEach(b => b.classList.remove('active'));
+                    const medCursor = document.querySelector('.cursor-opt[data-size="medium"]');
+                    if(medCursor) medCursor.classList.add('active');
+                    
+                    panel.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

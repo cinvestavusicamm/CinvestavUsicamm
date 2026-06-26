@@ -1,0 +1,38 @@
+services:
+  # ... (Base de datos y Ollama se quedan igual) ...
+
+  # MICROSERVICIO DE IA (Antes backend_api)
+  ia_service_core:  # <--- Nuevo nombre del servicio
+    container_name: ia_service_core
+    build:
+      context: ../ia_service_core  # <--- Apunta a la nueva carpeta
+      dockerfile: Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      # Credenciales de BD
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      # Conexión a Ollama
+      OLLAMA_BASE_URL: "http://motor_ollama:11434"
+      # ★ LA CLAVE SECRETA COMPARTIDA
+      MICROSERVICE_SECRET: ${MICROSERVICE_SECRET:-super_secreto_interno}
+    ports:
+      - "8003:8000" # Puerto 8003 expuesto (Solo para pruebas, luego se cierra)
+    depends_on:
+      database:
+        condition: service_healthy
+      motor_ollama:
+        condition: service_started
+    networks:
+      - escalafon_net
+    restart: on-failure
+
+  # (Aquí irá Django en el futuro)
+
+networks:
+  escalafon_net:
+    driver: bridge
