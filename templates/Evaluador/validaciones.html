@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../static/css/evaluador.css">
-    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
-    <link rel="stylesheet" href="../../static/css/chat-eva.css">
-    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/modo-oscuro.css">
     <link rel="icon" type="image/x-icon"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>EscalafonIA</title>
 </head>
 
-<body>
+<body data-agente-ajax-url="{% url 'agente_ajax' %}" data-total-pendientes="{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}">
     <header class="barra-superior">
 
         <div class="marca">
@@ -29,6 +29,9 @@
                         alt="Logo EscalafonIa"></a>
             </div>
             <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
+            <div class="linea-vertical"></div>
+            <img class="logo-institucional logo-cinvestav" src="../../static/imagenes/logosimbolo.png" alt="Logo Cinvestav">
+            <img class="logo-institucional logo-usicamm" src="../../static/imagenes/USICAMMm.png" alt="Logo Usicamm">
         </div>
 
         <div class="user-profile">
@@ -303,7 +306,7 @@
 
             </div>
             <footer class="contenedor-footer">
-                <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+               <p> Derechos reservados &copy; Cinvestav-USICAMM</p>
             </footer>
         </div>
     </div>
@@ -329,171 +332,15 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../../static/js/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/chat-eva.js"></script>
+    <script src="../../static/js/evaluador/accesibilidad.js"></script>
+    <script src="../../static/js/evaluador/menu-usuario.js"></script>
+    <script src="../../static/js/evaluador/validaciones.js"></script>
     <script>
         const agenteAjaxURL = "{% url 'agente_ajax' %}";
     </script>
-    <script src="../../static/js/chat-eva.js"></script>
-    <script src="../../static/js/accesibilidad.js"></script>
-    <script src="../../static/js/menu-usuario.js"></script>
 
-    <!-- Scripts -->
-    <script>
-        // Script para funcionalidades de validaciones
-        document.addEventListener('DOMContentLoaded', function () {
-            // Variables de estado
-            let preguntaActual = 1;
-            const totalPreguntas = Number('{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}');
-            const pendientes = document.querySelectorAll('.pendiente-item');
-
-            // Actualizar contadores
-            function actualizarContadores() {
-                document.getElementById('numeroActual').textContent = preguntaActual;
-                document.getElementById('totalPendientes').textContent = totalPreguntas;
-                document.getElementById('contadorPendientes').textContent = totalPreguntas;
-            }
-
-            // Inicializar contadores
-            actualizarContadores();
-
-            // Navegación entre preguntas
-            document.getElementById('btnAnterior')?.addEventListener('click', function () {
-                if (preguntaActual > 1) {
-                    preguntaActual--;
-                    actualizarContadores();
-                    actualizarPreguntaActiva();
-                    console.log('Pregunta anterior:', preguntaActual);
-                }
-            });
-
-            document.getElementById('btnSiguiente')?.addEventListener('click', function () {
-                if (preguntaActual < totalPreguntas) {
-                    preguntaActual++;
-                    actualizarContadores();
-                    actualizarPreguntaActiva();
-                    console.log('Pregunta siguiente:', preguntaActual);
-                }
-            });
-
-            // Actualizar pregunta activa en la lista
-            function actualizarPreguntaActiva() {
-                pendientes.forEach(item => {
-                    item.classList.remove('activa');
-                    const itemId = parseInt(item.getAttribute('data-id'));
-                    if (itemId === preguntaActual) {
-                        item.classList.add('activa');
-                    }
-                });
-            }
-
-            // Hacer clic en items de la lista
-            pendientes.forEach(item => {
-                item.addEventListener('click', function () {
-                    const itemId = parseInt(this.getAttribute('data-id'));
-                    preguntaActual = itemId;
-                    actualizarContadores();
-                    actualizarPreguntaActiva();
-
-                    // Simular cambio de pregunta (en realidad cambiaría el contenido)
-                    console.log('Cargando pregunta:', itemId);
-                });
-            });
-
-            // Acciones de validación
-            document.getElementById('btnAprobar')?.addEventListener('click', function () {
-                const comentarios = document.getElementById('comentariosValidacion').value;
-                console.log('Pregunta aprobada', {
-                    pregunta: preguntaActual,
-                    comentarios: comentarios
-                });
-
-                // Simular aprobación
-                alert(`Pregunta #${preguntaActual} aprobada correctamente.`);
-                siguientePregunta();
-            });
-
-            document.getElementById('btnRechazar')?.addEventListener('click', function () {
-                const comentarios = document.getElementById('comentariosValidacion').value;
-                if (!comentarios.trim()) {
-                    alert('Por favor, ingresa los motivos del rechazo en los comentarios.');
-                    return;
-                }
-
-                console.log('Pregunta rechazada', {
-                    pregunta: preguntaActual,
-                    comentarios: comentarios
-                });
-
-                alert(`Pregunta #${preguntaActual} rechazada.`);
-                siguientePregunta();
-            });
-
-            document.getElementById('btnRevisar')?.addEventListener('click', function () {
-                const comentarios = document.getElementById('comentariosValidacion').value;
-                if (!comentarios.trim()) {
-                    alert('Por favor, ingresa las modificaciones sugeridas.');
-                    return;
-                }
-
-                console.log('Pregunta enviada a revisión', {
-                    pregunta: preguntaActual,
-                    comentarios: comentarios
-                });
-
-                alert(`Pregunta #${preguntaActual} enviada a revisión.`);
-                siguientePregunta();
-            });
-
-            document.getElementById('btnOmitir')?.addEventListener('click', function () {
-                console.log('Pregunta omitida:', preguntaActual);
-                siguientePregunta();
-            });
-
-            function siguientePregunta() {
-                if (preguntaActual < totalPreguntas) {
-                    preguntaActual++;
-                    actualizarContadores();
-                    actualizarPreguntaActiva();
-                    document.getElementById('comentariosValidacion').value = '';
-                } else {
-                    alert('¡Has revisado todas las preguntas pendientes!');
-                }
-            }
-
-            // Filtros
-            document.getElementById('filtroPrioridad')?.addEventListener('change', function () {
-                console.log('Filtrando por prioridad:', this.value);
-            });
-
-            document.getElementById('filtroAsignatura')?.addEventListener('change', function () {
-                console.log('Filtrando por asignatura:', this.value);
-            });
-
-            document.getElementById('filtroOrden')?.addEventListener('change', function () {
-                console.log('Ordenando por:', this.value);
-            });
-
-            // Botones de la barra de herramientas
-            document.getElementById('btnModoRapido')?.addEventListener('click', function () {
-                this.classList.toggle('btn-primary');
-                this.classList.toggle('btn-success');
-                const modoRapido = this.classList.contains('btn-success');
-                console.log('Modo rápido:', modoRapido ? 'ACTIVADO' : 'DESACTIVADO');
-            });
-
-            document.getElementById('btnFiltrarIA')?.addEventListener('click', function () {
-                this.classList.toggle('btn-outline');
-                this.classList.toggle('btn-primary');
-                console.log('Filtrar solo IA:', this.classList.contains('btn-primary'));
-            });
-
-            document.getElementById('btnFiltrarHumanas')?.addEventListener('click', function () {
-                this.classList.toggle('btn-outline');
-                this.classList.toggle('btn-primary');
-                console.log('Filtrar solo humanas:', this.classList.contains('btn-primary'));
-            });
-        });
-    </script>
 </body>
 
 </html>

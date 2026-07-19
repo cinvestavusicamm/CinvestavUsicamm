@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
-    <link rel="stylesheet" href="../../static/css/evaluador.css">
-    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
-    <link rel="stylesheet" href="../../static/css/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/modo-oscuro.css">
     <title>EscalafonIA</title>
 
 </head>
 
-<body>
+<body data-agente-ajax-url="{% url 'agente_ajax' %}">
     <header class="barra-superior">
         
         <div class="marca">
@@ -31,6 +31,9 @@
                         alt="Logo EscalafonIa"></a>
             </div>
             <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
+            <div class="linea-vertical"></div>
+            <img class="logo-institucional logo-cinvestav" src="../../static/imagenes/logosimbolo.png" alt="Logo Cinvestav">
+            <img class="logo-institucional logo-usicamm" src="../../static/imagenes/USICAMMm.png" alt="Logo Usicamm">
         </div>
 
         <div class="user-profile">
@@ -173,13 +176,13 @@
                         </div>
 
                         <div class="acciones-filtros">
-                            <button id="btn-generar-reporte" class="btn-primario">
+                            <button id="btn-generar-reporte" class="btn btn-primary">
                                 <i class="fas fa-chart-bar"></i> Generar Reporte
                             </button>
-                            <button id="btn-limpiar-filtros" class="btn-secundario">
+                            <button id="btn-limpiar-filtros" class="btn btn-secondary">
                                 <i class="fas fa-eraser"></i> Limpiar Filtros
                             </button>
-                            <button id="btn-guardar-filtro" class="btn-secundario">
+                            <button id="btn-guardar-filtro" class="btn btn-secondary">
                                 <i class="fas fa-save"></i> Guardar Filtro
                             </button>
                         </div>
@@ -245,12 +248,12 @@
                             <div class="grafico-placeholder">
                                 <div class="grafico-simulado">
                                     <!-- Aquí iría un gráfico real (Chart.js, D3.js, etc.) -->
-                                    <div class="barra-grafico" style="height: 20%;" title="40-50 puntos: 5%"></div>
-                                    <div class="barra-grafico" style="height: 35%;" title="50-60 puntos: 12%"></div>
-                                    <div class="barra-grafico" style="height: 60%;" title="60-70 puntos: 25%"></div>
-                                    <div class="barra-grafico" style="height: 85%;" title="70-80 puntos: 35%"></div>
-                                    <div class="barra-grafico" style="height: 70%;" title="80-90 puntos: 28%"></div>
-                                    <div class="barra-grafico" style="height: 40%;" title="90-100 puntos: 15%"></div>
+                                    <div class="barra-grafico barra-altura-1" title="40-50 puntos: 5%"></div>
+                                    <div class="barra-grafico barra-altura-2" title="50-60 puntos: 12%"></div>
+                                    <div class="barra-grafico barra-altura-3" title="60-70 puntos: 25%"></div>
+                                    <div class="barra-grafico barra-altura-4" title="70-80 puntos: 35%"></div>
+                                    <div class="barra-grafico barra-altura-5" title="80-90 puntos: 28%"></div>
+                                    <div class="barra-grafico barra-altura-6" title="90-100 puntos: 15%"></div>
                                 </div>
                                 <div class="eje-x">
                                     <span>40-50</span><span>50-60</span><span>60-70</span>
@@ -265,31 +268,26 @@
                             </div>
                             <div class="grafico-placeholder grafico-circular">
                                 <!-- Gráfico circular simulado -->
-                                <div class="sector-circular" style="--porcentaje: 30%; --color: #3498db;"
+                                <div class="sector-circular sector-pedagogica"
                                     title="Pedagógica: 30%"></div>
-                                <div class="sector-circular" style="--porcentaje: 25%; --color: #2ecc71;"
+                                <div class="sector-circular sector-disciplinar"
                                     title="Disciplinar: 25%"></div>
-                                <div class="sector-circular" style="--porcentaje: 20%; --color: #9b59b6;"
+                                <div class="sector-circular sector-tic"
                                     title="TIC: 20%"></div>
-                                <div class="sector-circular" style="--porcentaje: 15%; --color: #e74c3c;"
+                                <div class="sector-circular sector-gestion"
                                     title="Gestión: 15%"></div>
-                                <div class="sector-circular" style="--porcentaje: 10%; --color: #f39c12;"
+                                <div class="sector-circular sector-comunitaria"
                                     title="Comunitaria: 10%"></div>
                                 <div class="centro-circular">
                                     <span>100%</span>
                                 </div>
                             </div>
                             <div class="leyenda-grafico">
-                                <div class="item-leyenda"><span class="color-leyenda"
-                                        style="background: #3498db;"></span>Pedagógica</div>
-                                <div class="item-leyenda"><span class="color-leyenda"
-                                        style="background: #2ecc71;"></span>Disciplinar</div>
-                                <div class="item-leyenda"><span class="color-leyenda"
-                                        style="background: #9b59b6;"></span>TIC</div>
-                                <div class="item-leyenda"><span class="color-leyenda"
-                                        style="background: #e74c3c;"></span>Gestión</div>
-                                <div class="item-leyenda"><span class="color-leyenda"
-                                        style="background: #f39c12;"></span>Comunitaria</div>
+                                <div class="item-leyenda"><span class="color-leyenda color-pedagogica"></span>Pedagógica</div>
+                                <div class="item-leyenda"><span class="color-leyenda color-disciplinar"></span>Disciplinar</div>
+                                <div class="item-leyenda"><span class="color-leyenda color-tic"></span>TIC</div>
+                                <div class="item-leyenda"><span class="color-leyenda color-gestion"></span>Gestión</div>
+                                <div class="item-leyenda"><span class="color-leyenda color-comunitaria"></span>Comunitaria</div>
                             </div>
                         </div>
                     </div>
@@ -310,7 +308,7 @@
                                     <p>Gráficos</p>
 
                                 </div>
-                                <button class="btn-primario">
+                                <button class="btn btn-primary">
                                     <i class="fas fa-download"></i> Generar PDF
                                 </button>
                             </div>
@@ -324,7 +322,7 @@
                                     <p>Datos tabulares en hojas de cálculo</p>
 
                                 </div>
-                                <button class="btn-primario">
+                                <button class="btn btn-primary">
                                     <i class="fas fa-download"></i> Exportar Excel
                                 </button>
                             </div>
@@ -337,7 +335,7 @@
                 </section>
             </div>
             <footer class="contenedor-footer">
-               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+               <p> Derechos reservados &copy; Cinvestav-USICAMM</p>
             </footer>
         </div>
     </div>
@@ -363,82 +361,16 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../../static/js/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/chat-eva.js"></script>
+    <script src="../../static/js/evaluador/menu-usuario.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="../../static/js/evaluador/accesibilidad.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="../../static/js/evaluador/reportes.js"></script>
     <script>
         const agenteAjaxURL = "{% url 'agente_ajax' %}";
-    </script>
-    <script src="../../static/js/chat-eva.js"></script>
-    <script src="../../static/js/menu-usuario.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="../../static/js/accesibilidad.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-
-    <script>
-        // Inicializar selectores de fecha
-        flatpickr("#fecha-inicio", {
-            locale: "es",
-            dateFormat: "d/m/Y",
-            defaultDate: "today",
-            maxDate: "today"
-        });
-
-        flatpickr("#fecha-fin", {
-            locale: "es",
-            dateFormat: "d/m/Y",
-            defaultDate: "today"
-        });
-
-        // Manejo de generación de reportes
-        document.getElementById('btn-generar-reporte').addEventListener('click', function () {
-            const evaluacion = document.getElementById('select-evaluacion').value;
-            const tipo = document.getElementById('select-tipo').value;
-
-            // Simulación de carga de datos
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
-            this.disabled = true;
-
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-chart-bar"></i> Reporte Generado';
-                this.disabled = false;
-
-                // Mostrar notificación
-                mostrarNotificacion('success', 'Reporte generado exitosamente');
-            }, 1500);
-        });
-
-        document.getElementById('btn-limpiar-filtros').addEventListener('click', function () {
-            // Limpiar todos los filtros
-            document.querySelectorAll('.select-filtro, .input-fecha').forEach(element => {
-                if (element.tagName === 'SELECT') {
-                    element.selectedIndex = 0;
-                } else {
-                    element.value = '';
-                }
-            });
-            mostrarNotificacion('info', 'Filtros limpiados');
-        });
-
-        function mostrarNotificacion(tipo, mensaje) {
-            // Crear notificación
-            const notificacion = document.createElement('div');
-            notificacion.className = `notificacion notificacion-${tipo}`;
-            notificacion.innerHTML = `
-                <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'info-circle'}"></i>
-                <span>${mensaje}</span>
-            `;
-
-            document.body.appendChild(notificacion);
-
-            // Animación de entrada
-            setTimeout(() => notificacion.classList.add('mostrar'), 10);
-
-            // Remover después de 3 segundos
-            setTimeout(() => {
-                notificacion.classList.remove('mostrar');
-                setTimeout(() => notificacion.remove(), 300);
-            }, 3000);
-        }
-    </script>
+    </script
 </body>
 
 </html>

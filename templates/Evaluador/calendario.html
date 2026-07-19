@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- FullCalendar CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
-    <link rel="stylesheet" href="../../static/css/evaluador.css">
-    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
-    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
-    <link rel="stylesheet" href="../../static/css/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/modo-oscuro.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
     <title>EscalafonIA</title>
 </head>
 
-<body>
+<body data-agente-ajax-url="{% url 'agente_ajax' %}">
     <header class="barra-superior">
 
         <div class="marca">
@@ -31,6 +31,9 @@
                         alt="Logo EscalafonIa"></a>
             </div>
             <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
+            <div class="linea-vertical"></div>
+            <img class="logo-institucional logo-cinvestav" src="../../static/imagenes/logosimbolo.png" alt="Logo Cinvestav">
+            <img class="logo-institucional logo-usicamm" src="../../static/imagenes/USICAMMm.png" alt="Logo Usicamm">
         </div>
 
         <div class="user-profile">
@@ -133,29 +136,17 @@
                     </div>
                 </div>
 
-                <!-- Próximos Eventos -->
-                <div class="proximos-eventos">
-                    <div class="seccion-header">
-                        <h2><i class="fas fa-clock"></i> Próximos Eventos</h2>
-                        <button class="btn-link" id="btnVerTodosEventos">
-                            Ver todos
-                        </button>
-                    </div>
+                
 
-                    <div class="lista-proximos-eventos" id="listaProximosEventos">
-                    </div>
-                </div>
-
-                <!-- Calendario de Procesos USICAMM -->
+                <!-- Proximos eventos -->
                 <div class="calendario-procesos">
 
                     <div class="seccion-header">
-                        <h2><i class="fas fa-calendar-check"></i> Calendario de Procesos USICAMM 2026</h2>
+                        <h2><i class="fas fa-calendar-check"></i> Proximos eventos</h2>
                     </div>
 
                     <div class="barra-herramientas">
                         <div class="herramientas-izquierda">
-
 
                             <!-- Filtros -->
                             <div class="filtros">
@@ -211,7 +202,7 @@
                 </div>
             </div>
             <footer class="contenedor-footer">
-                <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+               <p> Derechos reservados &copy; Cinvestav-USICAMM</p>
             </footer>
         </div>
     </div>
@@ -331,14 +322,14 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
 
     <!-- Scripts -->
-    <script src="../../static/js/barra-lateral.js"></script>
-    <script src="../../static/js/menu-usuario.js"></script>
-    <script src="../../static/js/accesibilidad.js"></script>
+    <script src="../../static/js/evaluador/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/menu-usuario.js"></script>
+    <script src="../../static/js/evaluador/accesibilidad.js"></script>
+    <script src="../../static/js/evaluador/chat-eva.js"></script>
+    <script src="../../static/js/evaluador/calendario.js"></script>
     <script>
         const agenteAjaxURL = "{% url 'agente_ajax' %}";
     </script>
-    <script src="../../static/js/chat-eva.js"></script>
-    <script src="../../static/js/calendario.js"></script>
 </body>
 
 </html>

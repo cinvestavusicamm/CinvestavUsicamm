@@ -7,15 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icono" type="image/x-icono"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
-    <link rel="stylesheet" href="../../static/css/evaluador.css">
-    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
-    <link rel="stylesheet" href="../../static/css/modo-oscuro.css">
-    <link rel="stylesheet" href="../../static/css/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/modo-oscuro.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>EscalafonIA</title>
 </head>
 
-<body>
+<body data-agente-ajax-url="{% url 'agente_ajax' %}">
     <header class="barra-superior">
 
         <div class="marca">
@@ -30,6 +30,9 @@
                         alt="Logo EscalafonIa"></a>
             </div>
             <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
+            <div class="linea-vertical"></div>
+            <img class="logo-institucional logo-cinvestav" src="../../static/imagenes/logosimbolo.png" alt="Logo Cinvestav">
+            <img class="logo-institucional logo-usicamm" src="../../static/imagenes/USICAMMm.png" alt="Logo Usicamm">
         </div>
 
         <div class="user-profile">
@@ -221,7 +224,7 @@
 
             </div>
             <footer class="contenedor-footer">
-               <p> SECRETARÍA DE EDUCACIÓN PÚBLICA | ESCALAFONIA JAGUAR V.2.0 | MÉXICO 2026</p>
+               <p> Derechos reservados &copy; Cinvestav-USICAMM</p>
             </footer>
         </div>
     </div>
@@ -247,13 +250,13 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../../static/js/barra-lateral.js"></script>
-    <script src="../../static/js/menu-usuario.js"></script>
-    <script src="../../static/js/accesibilidad.js"></script>
+    <script src="../../static/js/evaluador/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/menu-usuario.js"></script>
+    <script src="../../static/js/evaluador/accesibilidad.js"></script>
+    <script src="../../static/js/evaluador/chat-eva.js"></script>
     <script>
         const agenteAjaxURL = "{% url 'agente_ajax' %}";
     </script>
-    <script src="../../static/js/chat-eva.js"></script>
 
 </body>
 

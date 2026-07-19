@@ -16,7 +16,6 @@ class AccessibilityManager {
             darkTheme: false,
             lineSpacing: 1.5,
             letterSpacing: 0,
-            fontSize: 16,
             screenReader: false
         };
         
@@ -211,18 +210,6 @@ class AccessibilityManager {
                                 </button>
                             </div>
                         </div>
-                        <div class="accesibilidad-opcion">
-                            <span><i class="fa-solid fa-text-height icon-accesibilidad"></i> Redimensionamiento</span>
-                            <div class="range-control">
-                                <button class="btn-range" data-action="decrease" data-target="fontSize">
-                                    <i class="fa-solid fa-minus"></i>
-                                </button>
-                                <span id="fontSizeValue" class="range-value">16px</span>
-                                <button class="btn-range" data-action="increase" data-target="fontSize">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
                     </div>
                     
                     <div class="accesibilidad-footer">
@@ -331,8 +318,7 @@ class AccessibilityManager {
         
         const ranges = [
             { target: 'lineSpacing', min: 1, max: 2.5, step: 0.1, unit: '' },
-            { target: 'letterSpacing', min: 0, max: 5, step: 0.5, unit: 'px' },
-            { target: 'fontSize', min: 12, max: 32, step: 1, unit: 'px' }
+            { target: 'letterSpacing', min: 0, max: 5, step: 0.5, unit: 'px' }
         ];
         
         ranges.forEach(({ target, min, max, step, unit }) => {
@@ -397,7 +383,7 @@ class AccessibilityManager {
                     if (!document.getElementById('acc-reading-mask')) {
                         const el = document.createElement('div');
                         el.id = 'acc-reading-mask';
-                        el.style.cssText = `position:fixed;left:0;right:0;height:60px;background:rgba(105,28,50,0.18);border-top:2px solid #691C32;border-bottom:2px solid #691C32;pointer-events:none;z-index:9999;transform:translateY(-50%);top:${this._mouseY||window.innerHeight/2}px;transition:top 0.05s linear;`;
+                        el.style.cssText = `position:fixed;left:0;right:0;height:60px;background:rgba(207,160,89,0.25);border-top:2px solid #cfa059;border-bottom:2px solid #cfa059;pointer-events:none;z-index:9999;transform:translateY(-50%);top:${this._mouseY||window.innerHeight/2}px;transition:top 0.05s linear;`;
                         document.body.appendChild(el);
                     }
                 } else {
@@ -411,7 +397,7 @@ class AccessibilityManager {
                     if (!document.getElementById('acc-reading-guide')) {
                         const el = document.createElement('div');
                         el.id = 'acc-reading-guide';
-                        el.style.cssText = `position:fixed;left:0;right:0;height:2px;background:#691C32;opacity:0.6;pointer-events:none;z-index:9998;top:${this._mouseY||window.innerHeight/2}px;transition:top 0.05s linear;`;
+                        el.style.cssText = `position:fixed;left:0;right:0;height:2px;background:#cfa059;opacity:0.8;pointer-events:none;z-index:9998;top:${this._mouseY||window.innerHeight/2}px;transition:top 0.05s linear;box-shadow:0 0 15px rgba(207,160,89,0.4);`;
                         document.body.appendChild(el);
                     }
                 } else {
@@ -438,17 +424,7 @@ class AccessibilityManager {
             case 'letterSpacing':
                 body.style.letterSpacing = this.state.letterSpacing + 'px';
                 break;
-            case 'fontSize':
-                this.applyFontSizeToAll();
-                break;
         }
-    }
-    
-    applyFontSizeToAll() {
-        const fontSize = this.state.fontSize;
-        const scaleFactor = fontSize / 16;
-        document.documentElement.style.setProperty("--acc-font-scale", scaleFactor);
-        document.body.style.zoom = scaleFactor;
     }
     
     applyAllSettings() {
@@ -480,30 +456,9 @@ class AccessibilityManager {
         
         const lineSpacingSpan = document.getElementById('lineSpacingValue');
         const letterSpacingSpan = document.getElementById('letterSpacingValue');
-        const fontSizeSpan = document.getElementById('fontSizeValue');
         
         if (lineSpacingSpan) lineSpacingSpan.textContent = this.state.lineSpacing;
         if (letterSpacingSpan) letterSpacingSpan.textContent = this.state.letterSpacing + 'px';
-        if (fontSizeSpan) fontSizeSpan.textContent = this.state.fontSize + 'px';
-    }
-    
-    setCursorSize(size) {
-        let cursorSizePx;
-        switch(size) {
-            case 'small': cursorSizePx = 'auto'; break;
-            case 'medium': cursorSizePx = '24px'; break;
-            case 'large': cursorSizePx = '32px'; break;
-            case 'xlarge': cursorSizePx = '48px'; break;
-            default: cursorSizePx = 'auto';
-        }
-        
-        if (cursorSizePx !== 'auto') {
-            document.body.style.cursor = `url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="${parseInt(cursorSizePx)}" height="${parseInt(cursorSizePx)}" viewBox="0 0 24 24"%3E%3Cpath fill="black" d="M5 3l14 9-5.5 2.5L12 20l-3-6-4-11z"/%3E%3C/svg%3E') ${parseInt(cursorSizePx) / 2} 0, auto`;
-        } else {
-            document.body.style.cursor = '';
-        }
-        
-        localStorage.setItem('cursorSize', size);
     }
     
     enableScreenReader() {
@@ -655,7 +610,6 @@ class AccessibilityManager {
             darkTheme: currentDarkTheme,  // se conserva
             lineSpacing: 1.5,
             letterSpacing: 0,
-            fontSize: 16,
             screenReader: false
         };
         
@@ -668,9 +622,6 @@ class AccessibilityManager {
         
         body.style.lineHeight = '';
         body.style.letterSpacing = '';
-        body.style.zoom = '';
-        body.style.fontSize = '';
-        document.documentElement.style.removeProperty('--acc-font-scale');
         
         // Remover elementos de herramientas de lectura
         const mask = document.getElementById('acc-reading-mask');
@@ -794,8 +745,7 @@ class AccessibilityManager {
             
             const configRanges = [
                 { id: 'lineSpacing', prop: 'lineSpacing' },
-                { id: 'letterSpacing', prop: 'letterSpacing' },
-                { id: 'fontSize', prop: 'fontSize' }
+                { id: 'letterSpacing', prop: 'letterSpacing' }
             ];
             
             configRanges.forEach(({ id, prop }) => {
