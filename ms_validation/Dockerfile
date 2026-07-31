@@ -29,7 +29,6 @@ RUN pip install --no-cache-dir -r /app/ms_validation/requirements.txt
 # ── 3. Copiar código fuente de ms_validation ──
 # Copiado seguro y específico apuntando a la nueva estructura src/
 COPY ms_validation/src/ /app/ms_validation/src/
-COPY ms_validation/pyproject.toml /app/ms_validation/
 
 # Crear usuario de seguridad (MoProSoft: Seguridad de la información)
 RUN useradd -m escalafonia && chown -R escalafonia:escalafonia /app

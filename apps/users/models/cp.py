@@ -2,6 +2,7 @@ from django.db import models
 from .municipio import Municipio
 
 class CP(models.Model):
+    id = models.BigAutoField(primary_key=True)
     codigo = models.CharField(max_length=10)
     zona = models.CharField(max_length=50)
     municipio = models.ForeignKey(Municipio, on_delete=models.CASCADE, related_name="cps")

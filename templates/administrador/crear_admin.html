@@ -236,9 +236,10 @@
                        id="curp"
                        placeholder="Ej: PEJC890101HDFRRN01" 
                        maxlength="18"
-                       required>
+                       required
+                       pattern="[A-Z0-9]{17,18}">
                 <div class="error-message" id="curpError">
-                     CURP inválida. Debe tener 18 caracteres alfanuméricos en mayúsculas
+                     CURP inválida. Debe tener 17 o 18 caracteres alfanuméricos en mayúsculas
                 </div>
             </div>
 
@@ -280,9 +281,9 @@
         // Convertir a mayúsculas
         curp = curp.toUpperCase();
         
-        // Expresión regular para CURP mexicana
-        // Letras, números, formato: 4 letras + 6 números + 6 alfanuméricos
-        const curpRegex = /^[A-Z]{4}[0-9]{6}[A-Z0-9]{6}$/;
+        // Validación básica: debe tener 17 o 18 caracteres alfanuméricos
+        // Las CURPs mexicanas pueden tener 17 o 18 caracteres
+        const curpRegex = /^[A-Z0-9]{17,18}$/;
         
         return curpRegex.test(curp);
     }

@@ -2,6 +2,7 @@
 
 import django.utils.timezone
 from django.db import migrations, models
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -17,13 +18,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id_institucion', models.AutoField(primary_key=True, serialize=False)),
                 ('nombre', models.CharField(max_length=150)),
-                ('domicilio', models.TextField()),
-                ('claves', models.CharField(max_length=100)),
-                ('activo', models.BooleanField(default=True)),
+                ('tipo', models.CharField(max_length=100)),
+                ('activo', models.BooleanField()),
             ],
             options={
                 'db_table': 'instituciones',
-                'managed': False,
             },
         ),
         migrations.CreateModel(
@@ -34,7 +33,6 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'roles',
-                'managed': False,
             },
         ),
         migrations.CreateModel(
@@ -45,15 +43,22 @@ class Migration(migrations.Migration):
                 ('apellido_paterno', models.CharField(max_length=100)),
                 ('apellido_materno', models.CharField(blank=True, max_length=100, null=True)),
                 ('correo', models.EmailField(max_length=254, unique=True)),
-                ('contraseña', models.CharField(max_length=255)),
+                ('contrasena', models.CharField(max_length=255)),
                 ('curp', models.CharField(max_length=18, unique=True)),
                 ('fecha_registro', models.DateTimeField(default=django.utils.timezone.now)),
                 ('ultimo_acceso', models.DateTimeField(blank=True, null=True)),
                 ('activo', models.BooleanField(default=True)),
+                ('rol', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='users.rol'
+                )),
+                ('institucion', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
+                    to='users.institucion'
+                )),
             ],
             options={
                 'db_table': 'usuarios',
-                'managed': False,
             },
         ),
     ]

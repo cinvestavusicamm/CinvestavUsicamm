@@ -6,8 +6,7 @@ class Foro(models.Model):
     curso = models.ForeignKey(
         Curso,
         on_delete=models.CASCADE,
-        related_name="foros",
-        db_column='curso_id'
+        related_name="foros"
     )
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField()

@@ -512,8 +512,8 @@
                 <p>Panel de administración</p>
             </div>
             <nav class="nav-menu">
-                <a href="{% url 'panel_admin' %}" class="nav-link"><i class="fas fa-users-cog"></i> Usuarios</a>
-                <a href="{% url 'bd_tablas' %}" class="nav-link active"><i class="fas fa-database"></i> Base de datos</a>
+                <a href="{% url 'administrador:panel_admin' %}" class="nav-link"><i class="fas fa-users-cog"></i> Usuarios</a>
+                <a href="{% url 'administrador:bd_tablas' %}" class="nav-link active"><i class="fas fa-database"></i> Base de datos</a>
                 <a href="{% url 'logout' %}" class="nav-link"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
             </nav>
         </aside>
@@ -534,7 +534,7 @@
                         <p>Consulta el esquema real de la base de datos: columnas, tipos, llaves, relaciones,
                             índices y conteo de registros por tabla.</p>
                     </div>
-                    <a class="json-link" href="{% url 'bd_tablas' %}?format=json">
+                    <a class="json-link" href="{% url 'administrador:bd_tablas' %}?format=json">
                         <i class="fas fa-code"></i> Ver JSON
                     </a>
                 </div>

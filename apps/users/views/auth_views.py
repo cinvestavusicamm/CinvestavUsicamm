@@ -19,7 +19,7 @@ def sesion(request):
         
         time.sleep(0.5)
         
-        curp_pattern = re.compile(r'^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]\d$')
+        curp_pattern = re.compile(r'^[A-Z0-9]{17,18}$')
         if not curp_pattern.match(curp):
             logger.warning(f"CURP inválida desde IP: {ip}")
             messages.error(request, 'Usuario o contraseña incorrectos')
@@ -46,7 +46,7 @@ def sesion(request):
         
         if not usuario_valido:
             LoginSecurityService.registrar_fallo(curp, ip)
-            messages.error(request, 'Usuario o contraseña incorrectos')
+            messages.error(request, 'Usuario no encontrado')
             return redirect('sesion')
         
         LoginSecurityService.limpiar_intentos(curp, ip)
@@ -117,12 +117,9 @@ def registro(request):
         if not institucion_id:
             errores.append('Debe seleccionar una institución')
         
-        curp_pattern = re.compile(r'^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]\d$')
+        curp_pattern = re.compile(r'^[A-Z0-9]{17,18}$')
         if curp and not curp_pattern.match(curp):
-            errores.append('Formato de CURP inválido. Ejemplo: GODE561231HDFRPR09')
-        
-        if curp and len(curp) != 18:
-            errores.append('La CURP debe tener exactamente 18 caracteres')
+            errores.append('Formato de CURP inválido. Debe tener 17 o 18 caracteres alfanuméricos en mayúsculas')
         
         if password1:
             if len(password1) < 8:

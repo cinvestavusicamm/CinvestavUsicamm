@@ -7,17 +7,20 @@ class PostForo(models.Model):
     foro = models.ForeignKey(
         Foro,
         on_delete=models.CASCADE,
-        related_name="posts",
-        db_column='foro_id'
+        related_name="posts"
     )
     autor = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,
-        db_column='autor_id'
+        related_name="posts_foro"
     )
+    titulo = models.CharField(max_length=200, blank=True, null=True)
     contenido = models.TextField()
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
     fecha_edicion = models.DateTimeField(auto_now=True)
+    activo = models.BooleanField(default=True)
+    likes = models.IntegerField(default=0)
+    comentarios_count = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'posts_foro'

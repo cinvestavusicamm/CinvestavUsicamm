@@ -70,7 +70,7 @@ class AuthViewsUnitTests(TestCase):
         response = sesion(request)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("panel_admin"))
+        self.assertEqual(response.url, reverse("administrador:panel_admin"))
         self.assertEqual(request.session["usuario_id"], 10)
         self.assertEqual(request.session["usuario_nombre"], "Ana")
         self.assertEqual(request.session["usuario_rol"], "Administrador")
@@ -82,7 +82,7 @@ class UsersAjaxPermissionTests(TestCase):
         self.factory = RequestFactory()
 
     def test_agregar_usuario_ajax_requires_session(self):
-        request = self.factory.post(reverse("agregar_usuario_ajax"), data={})
+        request = self.factory.post(reverse("administrador:agregar_usuario_ajax"), data={})
         _attach_session_and_messages(request)
 
         response = agregar_usuario_ajax(request)
@@ -93,7 +93,7 @@ class UsersAjaxPermissionTests(TestCase):
         self.assertEqual(payload["error"], "No autorizado")
 
     def test_toggle_usuario_blocks_self_deactivation(self):
-        request = self.factory.post(reverse("toggle_usuario", kwargs={"id": 9}))
+        request = self.factory.post(reverse("administrador:toggle_usuario", kwargs={"id": 9}))
         _attach_session_and_messages(request)
         request.session["usuario_id"] = 9
 
@@ -123,7 +123,7 @@ class UsersAjaxCrudTests(TestCase):
         )
         user_service.obtener_usuario.return_value = fake_user
 
-        request = self.factory.get(reverse("obtener_usuario_ajax", kwargs={"id": 7}))
+        request = self.factory.get(reverse("administrador:obtener_usuario_ajax", kwargs={"id": 7}))
         _attach_session_and_messages(request)
         request.session["usuario_id"] = 1
 
@@ -141,7 +141,7 @@ class UsersAjaxCrudTests(TestCase):
 
         user_service.obtener_usuario.side_effect = Usuario.DoesNotExist
 
-        request = self.factory.get(reverse("obtener_usuario_ajax", kwargs={"id": 999}))
+        request = self.factory.get(reverse("administrador:obtener_usuario_ajax", kwargs={"id": 999}))
         _attach_session_and_messages(request)
         request.session["usuario_id"] = 1
 
@@ -168,7 +168,7 @@ class UsersAjaxCrudTests(TestCase):
         usuario_model.objects.get.return_value = fake_user
 
         request = self.factory.post(
-            reverse("editar_usuario_ajax", kwargs={"id": 5}),
+            reverse("administrador:editar_usuario_ajax", kwargs={"id": 5}),
             data={
                 "nombre": "Nuevo",
                 "apellido_paterno": "Apellido",
@@ -190,7 +190,7 @@ class UsersAjaxCrudTests(TestCase):
         registrar_bitacora.assert_called_once()
 
     def test_editar_usuario_ajax_requires_post(self):
-        request = self.factory.get(reverse("editar_usuario_ajax", kwargs={"id": 5}))
+        request = self.factory.get(reverse("administrador:editar_usuario_ajax", kwargs={"id": 5}))
         _attach_session_and_messages(request)
         request.session["usuario_id"] = 1
 

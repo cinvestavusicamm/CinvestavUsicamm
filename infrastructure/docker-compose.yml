@@ -131,7 +131,7 @@ services:
       ORCHESTRATOR_PORT: 9000
       VALIDATION_SERVICE_URL: http://localhost:8001
       BACKEND_API_URL: http://backend:8003
-      MICROSERVICE_DB_URL: http://localhost:8002
+      MICROSERVICE_DB_URL: http://ms_db:8002
       DJANGO_BACKEND_URL: http://django:8000
       SERVICE_TIMEOUT: 30
       SERVICE_CONNECT_TIMEOUT: 10

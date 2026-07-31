@@ -16,14 +16,12 @@ FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
 def docente_ajax(request):
     if not request.session.get('usuario_id'):
         return respuesta_error(
-            request,
             mensaje="No autorizado",
             status=401
         )
 
     if request.method != "POST":
         return respuesta_error(
-            request,
             mensaje="Método no permitido",
             status=405
         )
@@ -32,7 +30,6 @@ def docente_ajax(request):
 
     if not pregunta:
         return respuesta_error(
-            request,
             mensaje="La pregunta no puede estar vacía",
             status=400
         )
@@ -43,9 +40,8 @@ def docente_ajax(request):
     # 👉 SI ES BD, NO VA A IA
     if tipo == "bd":
         return respuesta_ok(
-            request,
             mensaje="Consulta resuelta desde base de datos",
-            datos={"answer": "Consulta detectada como BD"}
+            data={"answer": "Consulta detectada como BD"}
         )
 
     # 👇 SOLO SI ES AGENTE
@@ -67,17 +63,15 @@ def docente_ajax(request):
 
         respuesta = data.get("response", "No se pudo generar una respuesta")
         return respuesta_ok(
-            request,
             mensaje="Respuesta generada correctamente",
-            datos={"answer": respuesta}
+            data={"answer": respuesta}
         )
 
     except Exception as e:
         logger.exception(f"Error inesperado en agente_ajax: {e}")
         return respuesta_error(
-            request,
             mensaje="Ocurrió un error inesperado",
-            errores=str(e),
+            errors=str(e),
             status=500
         )
 

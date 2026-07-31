@@ -6,7 +6,8 @@ logger = logging.getLogger(__name__)
 
 def get_user_context(request):
     """Obtener contexto del usuario para páginas de error."""
-    user = request.user if request.user.is_authenticated else None
+    user = getattr(request, 'user', None)
+    user = user if user and user.is_authenticated else None
     
     # Determinar rol del usuario
     user_role = None

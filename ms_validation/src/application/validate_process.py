@@ -15,9 +15,9 @@ from pydantic import ValidationError
 from ia_common.application.ports.output import LLMService, VectorRepository
 
 # Imports internos (ms_validation)
-from ms_validation.src.domain.exceptions import LLMOutputParseError
-from ms_validation.src.domain.prompts import build_validation_prompt
-from ms_validation.src.domain.schemas import (
+from domain.exceptions import LLMOutputParseError
+from domain.prompts import build_validation_prompt
+from domain.schemas import (
     ProcessInput,
     ValidationResponse,
     ValidationResult,

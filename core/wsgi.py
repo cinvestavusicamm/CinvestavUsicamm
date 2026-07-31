@@ -1,6 +1,3 @@
-import gevent.monkey
-gevent.monkey.patch_all()
-
 import os
 from django.core.wsgi import get_wsgi_application
 

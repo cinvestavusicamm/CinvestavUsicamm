@@ -17,7 +17,7 @@ class DbSchemaViewsTests(TestCase):
     def test_listar_tablas_bd_requires_admin_role(self):
         self._login_con_rol(ROLE_DOCENTE)
 
-        response = self.client.get(reverse("bd_tablas"))
+        response = self.client.get(reverse("administrador:bd_tablas"))
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("sesion"))
@@ -25,7 +25,7 @@ class DbSchemaViewsTests(TestCase):
     def test_listar_tablas_bd_returns_html_for_admin(self):
         self._login_con_rol(ROLE_ADMIN)
 
-        response = self.client.get(reverse("bd_tablas"))
+        response = self.client.get(reverse("administrador:bd_tablas"))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "admin/bd_tablas.html")
@@ -34,7 +34,7 @@ class DbSchemaViewsTests(TestCase):
     def test_listar_tablas_bd_returns_database_schema_as_json_for_admin(self):
         self._login_con_rol(ROLE_ADMIN)
 
-        response = self.client.get(f"{reverse('bd_tablas')}?format=json")
+        response = self.client.get(f"{reverse('administrador:bd_tablas')}?format=json")
         payload = response.json()
 
         self.assertEqual(response.status_code, 200)

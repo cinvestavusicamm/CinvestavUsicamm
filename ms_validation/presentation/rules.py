@@ -7,8 +7,8 @@ Permite subir los PDFs que alimentarán el motor RAG.
 import logging
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status
 
-from ms_validation.src.application.ingest_rules import IngestRulesUseCase
-from ms_validation.src.infrastructure.dependencies import get_ingest_use_case
+from application.ingest_rules import IngestRulesUseCase
+from infrastructure.dependencies import get_ingest_use_case
 
 logger = logging.getLogger("ms_validation.api.rules")
 router = APIRouter()

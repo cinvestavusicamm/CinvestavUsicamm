@@ -14,5 +14,4 @@ class Rol(models.Model):
 
     class Meta:
         db_table  = 'roles'
-        managed   = False
         ordering  = ['nombre_rol']

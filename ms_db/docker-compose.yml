@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ms_db:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      - db  # Asumiendo que hay un servicio db en el compose principal, pero como es independiente, quizás no.
+
+# Nota: Este microservicio asume que la base de datos está disponible externamente.
+# Si necesitas una DB local, agrega un servicio db aquí.

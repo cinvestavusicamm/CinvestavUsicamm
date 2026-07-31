@@ -16,21 +16,25 @@ class Usuario(models.Model):
     fecha_registro = models.DateTimeField(default=timezone.now)
     ultimo_acceso = models.DateTimeField(blank=True, null=True)
     activo = models.BooleanField(default=True)
+    telefono = models.CharField(max_length=15, blank=True, null=True)
+    numero_empleado = models.CharField(max_length=20, blank=True, null=True)
+    antiguedad = models.CharField(max_length=50, blank=True, null=True)
+    nivel_escolar = models.CharField(max_length=100, blank=True, null=True)
+    rol = models.ForeignKey(
+        Rol,
+        on_delete=models.PROTECT
+    )
+    institucion = models.ForeignKey(
+        Institucion,
+        on_delete=models.PROTECT
+    )
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.contrasena)
-    rol = models.ForeignKey(
-        Rol,
-        on_delete=models.PROTECT,
-        db_column='rol_id'
-    )
-
-    institucion = models.ForeignKey(
-        Institucion,
-        on_delete=models.PROTECT,
-        db_column='institucion_id'
-    )
+    
+    @property
+    def nombre_completo(self):
+        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno or ''}".strip()
 
     class Meta:
         db_table = 'usuarios'
-        managed = False

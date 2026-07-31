@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
     'apps.users',
 ]
 
@@ -153,6 +154,11 @@ SESSION_COOKIE_SECURE = False  # Habilitar en producción
 CSRF_COOKIE_SECURE = False  # Habilitar en producción
 X_FRAME_OPTIONS = 'DENY'
 
+# Redis Cache Configuration (solo para producción)
+REDIS_HOST = config('REDIS_HOST', default='redis')
+REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
+REDIS_DB = config('REDIS_DB', default=0, cast=int)
+
 # Configuración específica para pruebas
 if 'test' in sys.argv or 'pytest' in sys.argv:
     DATABASES = {
@@ -161,3 +167,43 @@ if 'test' in sys.argv or 'pytest' in sys.argv:
             'NAME': ':memory:',
         }
     }
+    
+    # Usar cache local para pruebas
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
+    }
+    
+    # Usar session backend de base de datos para pruebas
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+else:
+    # Configuración de producción con Redis
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+            'KEY_PREFIX': 'cinvestav',
+            'TIMEOUT': 300,
+        }
+    }
+    
+    # Session Backend using Redis
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_CACHE_ALIAS = 'default'
+
+# Celery Configuration
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default=f'redis://{REDIS_HOST}:{REDIS_PORT}/1')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default=f'redis://{REDIS_HOST}:{REDIS_PORT}/2')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'America/Mexico_City'
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
