@@ -20,7 +20,7 @@ def perfil_docente(request):
         'usuario': usuario,
         'proceso': proceso
     }
-    return render(request, 'docente/perfil_docente.html', context)
+    return render(request, 'docente/Perfil_docente.html', context)
 
 @require_http_methods(["PUT"])
 @requiere_rol(ROLE_DOCENTE)

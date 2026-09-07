@@ -1,7 +1,7 @@
 from django.urls import path
 from apps.users.views.docentes.index_docente import index_docente
 from apps.users.views.docentes.perfil_docente import perfil_docente, actualizar_perfil_docente, actualizar_contrasena_docente
-from apps.users.views.docentes.consultar_progreso import consultar_progreso, actualizar_progreso_docente
+from apps.users.views.docentes.consultar_progreso import consultar_progreso, actualizar_progreso_docente, ver_certificado
 from apps.users.views.docentes.cursos_promociones import cursos_promociones
 from apps.users.views.docentes.Foros import foros, crear_foro_docente, actualizar_foro_docente, eliminar_foro_docente, crear_post_docente, actualizar_post_docente, eliminar_post_docente
 from apps.users.views.docentes.promociones_docente import promociones_docente
@@ -18,6 +18,7 @@ urlpatterns = [
     path('panel-docente/', panel_docente, name= 'panel_docente'),
     path('cursos-promociones/', cursos_promociones, name='cursos_promociones'),     #Promocion
     path('consultar-progreso/', consultar_progreso, name='consultar_progreso'),     #Consultar progreso del docente
+    path('ver-certificado/<int:curso_id>/', ver_certificado, name='ver_certificado'),     #Ver certificado de curso
     path('foros/', foros, name='foros'),            #Foros
     path('promociones-docente/', promociones_docente, name='promociones_docente'),     #Promociones conexion con fabiola y norma
     path('promociones-vertical/', promociones_vertical, name='promociones_vertical'),

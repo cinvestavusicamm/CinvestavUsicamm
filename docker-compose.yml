@@ -102,6 +102,9 @@ services:
       - django_static:/app/staticfiles
       - django_media:/app/media
       - ./logs:/app/logs
+      - ./apps:/app/apps
+      - ./templates:/app/templates
+      - ./static:/app/static
     env_file:
       - .env
     environment:
@@ -111,6 +114,7 @@ services:
       - REDIS_PORT=6379
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - AI_AGENT_SERVICE_URL=http://ms_ai_agent_service:8107
     command: >
       sh -c "echo '============================================================' &&
             echo 'LEVANTANDO SERVICIOS...' &&
@@ -129,6 +133,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      ms_ai_agent_service:
+        condition: service_healthy
     networks:
       - cinvestav_net
     restart: always
@@ -144,6 +150,9 @@ services:
     command: celery -A core worker -l info --concurrency=4
     volumes:
       - ./logs:/app/logs
+      - ./apps:/app/apps
+      - ./templates:/app/templates
+      - ./static:/app/static
     env_file:
       - .env
     environment:
@@ -154,8 +163,10 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/2
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - cinvestav_net
     restart: always
@@ -181,8 +192,10 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/2
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - cinvestav_net
     restart: always

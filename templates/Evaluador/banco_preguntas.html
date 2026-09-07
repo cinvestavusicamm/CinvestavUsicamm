@@ -321,12 +321,12 @@
 	                                        </div>
 	                                    </td>
 	                                    <td>
-	                                        <span class="badge-asignatura badge-espanol">No modelada</span>
+	                                        <span class="badge-asignatura badge-espanol">{{ evaluacion.contenido_json.asignatura|default:"No modelada" }}</span>
 	                                    </td>
-	                                    <td>No modelado</td>
-	                                    <td>No modelada</td>
+	                                    <td>{{ evaluacion.contenido_json.nivel|default:"No modelado" }}</td>
+	                                    <td>{{ evaluacion.contenido_json.dimension|default:"No modelada" }}</td>
 	                                    <td>
-	                                        <span class="badge-tipo badge-opcion-multiple">Curso</span>
+	                                        <span class="badge-tipo badge-opcion-multiple">{{ evaluacion.contenido_json.tipo|default:"Curso" }}</span>
 	                                    </td>
 	                                    <td>
 	                                        <span class="badge-estado badge-estado-pendiente">{{ evaluacion.estado }}</span>
@@ -334,9 +334,9 @@
 	                                    <td>{% if evaluacion.fecha_creacion %}{{ evaluacion.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</td>
 	                                    <td>
 	                                        <div class="acciones-tabla">
-	                                            <button class="btn-icon btn-sm" title="Ver detalles">
+	                                            <a href="{% url 'evaluador:validaciones' %}?curso_id={{ evaluacion.id }}" class="btn-icon btn-sm" title="Ver detalles">
 	                                                <i class="fas fa-eye"></i>
-	                                            </button>
+	                                            </a>
 	                                        </div>
 	                                    </td>
 	                                </tr>

@@ -358,12 +358,12 @@
                 <div class="user-dropdown">
                     <button class="btn-user">
                         <img id="header-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2.5&w=300&h=300&q=80" onerror="this.src='https://ui-avatars.com/api/?name=Ricardo+M&background=D4C19C&color=691C32'" alt="Avatar">
-                        Dr. Ricardo Mendieta <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                        {{ username}} <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
                     </button>
                     <div class="user-dropdown-content">
                         <a href="#"><i class="fas fa-robot" style="margin-right: 8px;"></i> Ayuda del Asistente</a>
                         <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fas fa-user-gear" style="margin-right: 8px;"></i> Mi Perfil</a>
-                        <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir</a>
+                        <a href="{% url 'logout' %}" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir</a>
                     </div>
                 </div>
             </div>

@@ -52,21 +52,21 @@
     </header>
 
     <nav class="nav-actions-top">
-        <a href="#" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR</a>
+        <a href="{% url 'Docente:panel_docente' %}" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR</a>
         <a href="#" class="btn-nav btn-exit"><i class="fas fa-sign-out-alt"></i> SALIDA SEGURA</a>
     </nav>
 
     <div class="container">
         
         <aside class="forum-categories">
-            <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Mis Cursos Activos</h4>
+            <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Mis Cursos Activos ({{ total_cursos }})</h4>
             {% for curso in cursos %}
             <div class="category-item {% if forloop.first %}active{% endif %}"><i class="fas fa-book"></i> {{ curso.titulo }}</div>
             {% empty %}
             <div class="category-item" style="color: #999;">No hay cursos activos</div>
             {% endfor %}
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-            <div class="category-item" style="color: var(--dorado);"><i class="fas fa-star"></i> Mis Discusiones</div>
+            <div class="category-item" style="color: var(--dorado);"><i class="fas fa-star"></i> Mis Discusiones ({{ posts_usuario|length }})</div>
         </aside>
 
         <main class="forum-feed principal">
@@ -118,25 +118,33 @@
                         </div>
                     </div>
 
+                    {% for post in posts_usuario %}
                     <div class="post-card">
                         <div class="post-header">
                             <div class="user-meta">
-                                <img src="https://ui-avatars.com/api/?name=Maria+Lopez&background=007A7C&color=fff" alt="Avatar de María López">
+                                <img src="https://ui-avatars.com/api/?name={{ post.autor.nombre }}+{{ post.autor.apellido_paterno }}&background=691C32&color=fff" alt="Avatar de {{ post.autor.nombre }}">
                                 <div>
-                                    <div class="name">María López Hernández</div>
-                                    <div class="role">Matemáticas • Hace 1 día</div>
+                                    <div class="name">{{ post.autor.nombre }} {{ post.autor.apellido_paterno }}</div>
+                                    <div class="role">Hace {{ post.fecha_publicacion|timesince }}</div>
                                 </div>
                             </div>
                         </div>
                         <div class="post-content">
-                            <h3>Estrategias para enseñar fracciones con materiales concretos</h3>
-                            <p>Comparto esta actividad con "pizza fraccionaria" que me ha funcionado muy bien.</p>
+                            <p>{{ post.contenido|truncatewords:30 }}</p>
                         </div>
                         <div class="post-actions">
-                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta, 42 me gustas actuales"><i class="far fa-heart"></i> <span class="like-count">42</span></span>
-                            <span><i class="far fa-comment"></i> 31 comentarios</span>
+                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta"><i class="far fa-heart"></i> <span class="like-count">0</span></span>
+                            <span><i class="far fa-comment"></i> 0 comentarios</span>
+                            {% if post.autor.id_usuario == usuario.id_usuario %}
+                            <span onclick="eliminarPost({{ post.id_post }})" style="cursor:pointer; color: red; margin-left: auto;"><i class="fas fa-trash"></i> Eliminar</span>
+                            {% endif %}
                         </div>
                     </div>
+                    {% empty %}
+                    <div class="post-card" style="text-align: center; padding: 40px;">
+                        <p style="color: #999;">No has publicado nada aún.</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </main>
@@ -146,18 +154,27 @@
                 <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Mascota Jaguar">
                 <h4 style="margin-top: 0; font-family: 'Montserrat';"><i class="fas fa-paw"></i> Guía Jaguar IA</h4>
                 <p style="font-size: 0.8rem; line-height: 1.5;">
-                    Laura, aquí puedes intercambiar experiencias con otros docentes.<br><br>
+                    {{ usuario.nombre }}, aquí puedes intercambiar experiencias con otros docentes.<br><br>
+                    Tienes {{ total_foros }} foros activos y {{ total_posts }} publicaciones en total.<br><br>
                     Mantén un tono respetuoso y constructivo.
                 </p>
             </div>
 
             <div class="card" style="margin-top: 20px;">
-                <h4 style="color: var(--guinda); margin-top: 0;">Usuarios Activos Ahora</h4>
-                <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-                    <img src="https://ui-avatars.com/api/?name=AR" style="width: 32px; height: 32px; border-radius: 50%;" alt="Usuario AR conectado">
-                    <img src="https://ui-avatars.com/api/?name=MC" style="width: 32px; height: 32px; border-radius: 50%;" alt="Usuario MC conectado">
-                    <img src="https://ui-avatars.com/api/?name=JP" style="width: 32px; height: 32px; border-radius: 50%;" alt="Usuario JP conectado">
-                    <span style="color: #666; line-height: 32px; font-size: 0.85rem;">+87 conectados</span>
+                <h4 style="color: var(--guinda); margin-top: 0;">Estadísticas</h4>
+                <div style="margin-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #666; font-size: 0.85rem;">Total Foros</span>
+                        <span style="font-weight: bold; color: var(--guinda);">{{ total_foros }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #666; font-size: 0.85rem;">Total Posts</span>
+                        <span style="font-weight: bold; color: var(--guinda);">{{ total_posts }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 0.85rem;">Mis Posts</span>
+                        <span style="font-weight: bold; color: var(--turquesa);">{{ posts_usuario|length }}</span>
+                    </div>
                 </div>
             </div>
         </aside>

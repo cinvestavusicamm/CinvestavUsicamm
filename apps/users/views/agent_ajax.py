@@ -1,4 +1,5 @@
 import requests
+from django.conf import settings
 from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
@@ -9,8 +10,9 @@ from apps.users.services.router_service import RouterService
 
 logger = logging.getLogger(__name__)
 
-FASTAPI_URL = "http://ia_service_core:8003/api/ask"
-FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
+BACKEND_API_URL = getattr(settings, 'BACKEND_API_URL', 'http://localhost:8003').rstrip('/')
+FASTAPI_URL = f"{BACKEND_API_URL}/api/ask"
+FASTAPI_STREAM_URL = f"{BACKEND_API_URL}/api/ask/stream"
 INTERNAL_SERVICE_KEY = os.getenv("MICROSERVICE_SECRET", "clave_estricta_por_defecto_cambiar_en_prod")
 
 

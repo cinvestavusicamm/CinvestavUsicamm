@@ -1,4 +1,5 @@
 import requests
+from django.conf import settings
 from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
@@ -8,8 +9,12 @@ from apps.users.services.router_service import RouterService
 
 logger = logging.getLogger(__name__)
 
-FASTAPI_URL = "http://ia_service_core:8003/api/ask"
-FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
+AI_AGENT_SERVICE_URL = getattr(settings, 'AI_AGENT_SERVICE_URL', 'http://ms_ai_agent_service:8107').rstrip('/')
+IA_AGENT_CHAT_URL = getattr(settings, 'IA_AGENT_CHAT_URL', f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat').rstrip('/')
+IA_AGENT_STREAM_URL = getattr(settings, 'IA_AGENT_STREAM_URL', f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat/stream').rstrip('/')
+
+FASTAPI_URL = IA_AGENT_CHAT_URL
+FASTAPI_STREAM_URL = IA_AGENT_STREAM_URL
 
 
 @csrf_exempt
@@ -61,7 +66,7 @@ def generador_ajax(request):
         r.raise_for_status()
         data = r.json()
 
-        respuesta = data.get("response", "No se pudo generar una respuesta")
+        respuesta = data.get("response") or data.get("reply") or data.get("answer") or "No se pudo generar una respuesta"
         return respuesta_ok(
             mensaje="Respuesta generada correctamente",
             data={"answer": respuesta}

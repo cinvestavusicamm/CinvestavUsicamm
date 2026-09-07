@@ -28,6 +28,7 @@ def obtener_curso_generador(request, curso_id):
             'estado': curso.estado,
             'tipo': 'vertical',  # o deduce de algún campo, si no lo tienes pon un valor por defecto
             'duracion': '40 horas',  # igual, puedes calcularlo o dejarlo fijo
+            'generado_con_ia': curso.generado_con_ia,
             'contenido': curso.contenido_json
         })
     except Curso.DoesNotExist:

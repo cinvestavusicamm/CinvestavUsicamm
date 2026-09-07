@@ -16,16 +16,50 @@ def foros(request):
     cursos = CursoService.obtener_cursos_docente(usuario_id)
     
     foro_items = []
+    total_foros = 0
+    total_posts = 0
+    
     for curso in cursos:
+        foros_curso = ForoService.obtener_foros_curso(curso.id_curso)
+        total_foros += foros_curso.count()
+        
+        foros_con_posts = []
+        for foro in foros_curso:
+            posts_foro = ForoService.obtener_posts_foro(foro.id_foro)
+            total_posts += posts_foro.count()
+            
+            foros_con_posts.append({
+                'foro': foro,
+                'posts': posts_foro,
+                'total_posts': posts_foro.count(),
+            })
+        
         foro_items.append({
             'curso': curso,
-            'foros': ForoService.obtener_foros_curso(curso.id_curso),
+            'foros': foros_con_posts,
+            'total_foros_curso': foros_curso.count(),
         })
+    
+    # Obtener posts recientes del usuario
+    posts_usuario = []
+    for curso in cursos:
+        foros_curso = ForoService.obtener_foros_curso(curso.id_curso)
+        for foro in foros_curso:
+            posts_foro = ForoService.obtener_posts_foro(foro.id_foro)
+            posts_usuario.extend([post for post in posts_foro if post.autor_id == usuario_id])
+    
+    # Ordenar posts por fecha de publicación
+    posts_usuario.sort(key=lambda x: x.fecha_publicacion, reverse=True)
+    posts_usuario = posts_usuario[:10]  # Limitar a 10 posts recientes
     
     context = {
         'usuario': usuario,
         'cursos': cursos,
         'foro_items': foro_items,
+        'total_foros': total_foros,
+        'total_posts': total_posts,
+        'posts_usuario': posts_usuario,
+        'total_cursos': cursos.count(),
     }
     return render(request, 'docente/Foros.html', context)
 

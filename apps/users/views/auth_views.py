@@ -46,7 +46,7 @@ def sesion(request):
         
         if not usuario_valido:
             LoginSecurityService.registrar_fallo(curp, ip)
-            messages.error(request, 'Usuario no encontrado')
+            messages.error(request, 'Usuario o contraseña incorrectos')
             return redirect('sesion')
         
         LoginSecurityService.limpiar_intentos(curp, ip)

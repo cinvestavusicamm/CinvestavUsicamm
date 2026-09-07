@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../static/css/main.css">
     <link rel="stylesheet" href="../../static/css/accesibilidad.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../static/js/generador/cursos.js"></script>
 
     <style>
         /* Eliminar absolutamente todos los espacios en blanco nativos */
@@ -376,7 +377,7 @@
                 <div class="user-dropdown-content">
                     <a href="#"><i class="fas fa-circle-question" style="margin-right: 8px;"></i> Ayuda y Soporte</a>
                     <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fas fa-user-gear" style="margin-right: 8px;"></i> Ajustes de Perfil</a>
-                    <a href="#" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir del Sistema</a>
+                    <a href="{% url 'logout' %}" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir del Sistema</a>
                 </div>
             </div>
         </header>
@@ -403,7 +404,7 @@
                         <p style="color:#64748B; font-size:0.9rem; line-height:1.5;">{{ curso.descripcion|truncatewords:20|default:"Sin descripción" }}</p>
                     </div>
                     <div class="card-footer" style="padding:15px 25px; background:#FDFDFD; display:flex; gap:10px; border-top:1px solid #F3F4F6;">
-                        <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="openDetails('{{ curso.id_curso }}')">VISUALIZAR</button>
+                        <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="verDetalleCurso('{{ curso.id_curso }}')">VISUALIZAR</button>
                         {% if curso.estado == 'En Revisión' %}
                         <button class="btn-edit disabled" style="flex:1; background:#f1f5f9; color:#64748B; border:1px solid #cbd5e1; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:not-allowed; opacity:0.6;" onclick="alert('Este curso está bloqueado mientras se encuentra EN REVISIÓN.')"><i class="fas fa-lock"></i></button>
                         {% else %}

@@ -196,15 +196,15 @@
                         <!--<a href="#" class="ver-todo">Ver todo</a>-->
                     </div>
                     <div class="lista-actividad">
-                        {% for evaluacion in evaluaciones_bd %}
+                        {% for curso in cursos %}
                             <div class="actividad-item">
                                 <div class="actividad-icono actividad-evaluacion">
                                     <i class="fas fa-file-alt"></i>
                                 </div>
                                 <div class="actividad-contenido">
-                                    <p><strong>{{ evaluacion.titulo }}</strong></p>
+                                    <p><strong>{{ curso.titulo }}</strong></p>
                                     <span class="actividad-fecha">
-                                        {{ evaluacion.estado }}{% if evaluacion.fecha_creacion %} · {{ evaluacion.fecha_creacion|date:"d/m/Y" }}{% endif %}
+                                        {{ curso.estado }}{% if curso.fecha_creacion %} · {{ curso.fecha_creacion|date:"d/m/Y" }}{% endif %}
                                     </span>
                                 </div>
                             </div>
@@ -214,8 +214,8 @@
                                     <i class="fas fa-database"></i>
                                 </div>
                                 <div class="actividad-contenido">
-                                    <p><strong>Sin evaluaciones registradas en la base de datos</strong></p>
-                                    <span class="actividad-fecha">Agrega cursos/evaluaciones para ver actividad aquí</span>
+                                    <p><strong>Sin cursos registrados en la base de datos</strong></p>
+                                    <span class="actividad-fecha">Agrega cursos para ver actividad aquí</span>
                                 </div>
                             </div>
                         {% endfor %}

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <link rel="icon" type="image/x-icon"
         href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
     <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
@@ -147,7 +148,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-regular fa-envelope"></i> Correo Electrónico</label>
-	                                    <input type="email" value="{{ perfil_usuario.correo|default:'' }}" placeholder="correo@ejemplo.com">
+	                                    <input type="email" id="perfilCorreo" value="{{ perfil_usuario.correo|default:'' }}" placeholder="correo@ejemplo.com">
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-id-card"></i> CURP</label>
@@ -156,7 +157,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fa-solid fa-phone"></i> Teléfono</label>
-	                                    <input type="tel" value="" placeholder="No disponible en modelo Usuario">
+	                                    <input type="tel" id="perfilTelefono" value="{{ perfil_usuario.telefono|default:'' }}" placeholder="Ingresa tu teléfono">
                                 </div>
                             </div>
                             <div class="form-actions">

@@ -7,4 +7,9 @@ from apps.users.services.vistas_bd_service import VistasBdService
 
 @requiere_rol(ROLE_EVALUADOR)
 def dashboard(request):
-    return render(request, "evaluador/dashboard.html", VistasBdService.contexto_evaluador(request))
+    """
+    Vista principal del dashboard del evaluador.
+    Muestra estadísticas, cursos pendientes de revisión y actividad reciente.
+    """
+    context = VistasBdService.contexto_evaluador(request)
+    return render(request, "Evaluador/dashboard.html", context)

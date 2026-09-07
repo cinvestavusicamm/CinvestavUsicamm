@@ -18,7 +18,11 @@ class UsuarioSerializer:
             "apellido_paterno": usuario.apellido_paterno,
             "apellido_materno": usuario.apellido_materno or "",
             "correo": usuario.correo,
+            "telefono": usuario.telefono or "",
             "curp": usuario.curp,
+            "numero_empleado": usuario.numero_empleado or "",
+            "antiguedad": usuario.antiguedad or "",
+            "nivel_escolar": usuario.nivel_escolar or "",
             "rol": getattr(usuario.rol, "nombre_rol", ""),
             "institucion": getattr(usuario.institucion, "nombre", ""),
             "activo": usuario.activo,
@@ -139,6 +143,7 @@ class BitacoraEventoSerializer:
         if not evento:
             return None
         
+        detalles = evento.detalles or {}
         return {
             "id": evento.id_evento,
             "usuario": getattr(evento.usuario, "nombre", ""),
@@ -146,7 +151,11 @@ class BitacoraEventoSerializer:
             "tipo_evento": evento.tipo_evento,
             "descripcion": evento.descripcion or "",
             "fecha_evento": evento.fecha_evento,
-            "detalles": evento.detalles or "",
+            "detalles": detalles,
+            "start": detalles.get("start"),
+            "end": detalles.get("end"),
+            "allDay": detalles.get("allDay", False),
+            "lugar": detalles.get("lugar", ""),
         }
     
     @staticmethod

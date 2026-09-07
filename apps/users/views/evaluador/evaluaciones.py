@@ -5,4 +5,9 @@ from apps.users.services.vistas_bd_service import VistasBdService
 
 @requiere_rol(ROLE_EVALUADOR)
 def evaluaciones(request):
-    return render(request, 'evaluador/evaluaciones.html', VistasBdService.contexto_evaluador(request))
+    """
+    Vista que muestra todos los cursos/evaluaciones disponibles para el evaluador.
+    Permite filtrar, buscar y gestionar evaluaciones.
+    """
+    context = VistasBdService.contexto_evaluador(request)
+    return render(request, 'Evaluador/evaluaciones.html', context)

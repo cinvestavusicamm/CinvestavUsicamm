@@ -5,4 +5,4 @@ from apps.users.services.vistas_bd_service import VistasBdService
 
 @requiere_rol(ROLE_EVALUADOR)
 def chat(request):
-    return render(request, 'evaluador/chat_ia.html', VistasBdService.contexto_evaluador(request))
+    return render(request, 'Evaluador/chat_ia.html', VistasBdService.contexto_evaluador(request))

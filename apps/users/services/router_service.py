@@ -9,6 +9,24 @@ class RouterService:
     def decidir(pregunta: str):
         pregunta = (pregunta or "").lower()
 
+        # Palabras clave que indican modificación de contenido (prioridad máxima - no deben ir a BD)
+        keywords_contenido = [
+            "módulo", "modulo", "módulos", "modulos",
+            "pregunta", "preguntas", "examen",
+            "redacta", "redactar", "texto", "contenido",
+            "título", "titulo", "descripción", "descripcion",
+            "objetivo", "objetivos", "competencia", "competencias",
+            "llenar", "llena", "lleno", "cambiar", "modificar",
+            "agregar", "añadir", "insertar", "pon", "ponga",
+            "integra", "integre", "integres", "integren",
+            "estas", "este", "esto", "estas preguntas"
+        ]
+
+        # Si la pregunta es sobre modificación de contenido, enviar a IA (prioridad máxima)
+        for palabra in keywords_contenido:
+            if palabra in pregunta:
+                return "agente"
+
         keywords_bd = [
             "plaza",
             "plazas",
@@ -20,12 +38,9 @@ class RouterService:
             "usuarios",
             "registro",
             "datos",
-            "curso",
-            "cursos",
-            "proceso",
-            "procesos",
-            "estatus",
-            "estado",
+            "cuento",  # cuenta de cursos
+            "cuantos",  # cuantos cursos
+            "cuántos",  # cuántos cursos
             "estadistica",
             "estadísticas",
             "pendiente",

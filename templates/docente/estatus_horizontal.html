@@ -54,8 +54,8 @@
         
         <div style="display: flex; align-items: center; gap: 15px;">
             <div style="text-align: right;">
-                <div style="font-weight: 700; font-size: 0.95rem;">Laura Martínez García</div>
-                <div style="font-size: 0.7rem; color: var(--dorado);">Folio USICAMM: PD-478291-2026</div>
+                <div style="font-weight: 700; font-size: 0.95rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }} {{ usuario.apellido_materno }}</div>
+                <div style="font-size: 0.7rem; color: var(--dorado);">Folio USICAMM: {% if proceso %}{{ proceso.folio }}{% else %}Sin folio{% endif %}</div>
             </div>
             
             <!-- Foto del docente con menú desplegable -->
@@ -93,51 +93,31 @@
                 <p style="font-size: 0.9rem; color: #666;">Seguimiento detallado de su participación en el proceso de Promoción Horizontal 2026.</p>
 
                 <div class="timeline-vertical">
-                    <div class="step completado">
-                        <div class="step-marker"><i class="fas fa-check"></i></div>
+                    {% for etapa in etapas %}
+                    <div class="step {% if etapa.estado == 'completado' %}completado{% elif etapa.estado == 'actual' %}actual{% else %}{% endif %}">
+                        <div class="step-marker">{% if etapa.estado == 'completado' %}<i class="fas fa-check"></i>{% elif etapa.estado == 'actual' %}{% else %}{{ etapa.numero }}{% endif %}</div>
                         <div class="step-content">
-                            <h3 class="step-title">1. Convocatoria y Acuerdos</h3>
-                            <p class="step-desc">Publicación del acuerdo y convocatoria en la página de USICAMM. Generación de usuario en Plataforma VENUS.</p>
-                            <span class="step-date">Finalizado: 15 Ene 2026</span>
-                        </div>
-                    </div>
-
-                    <div class="step completado">
-                        <div class="step-marker"><i class="fas fa-check"></i></div>
-                        <div class="step-content">
-                            <h3 class="step-title">2. Registro y Verificación</h3>
-                            <p class="step-desc">Generación de cita y entrega documental para validación de los elementos multifactoriales.</p>
-                            <span class="step-date">Finalizado: 28 Feb 2026</span>
-                        </div>
-                    </div>
-
-                    <div class="step actual">
-                        <div class="step-marker"></div>
-                        <div class="step-content">
-                            <h3 class="step-title">3. Apreciación de Conocimientos</h3>
-                            <p class="step-desc">Aplicación del instrumento de apreciación de conocimientos y aptitudes (CENEVAL). Revise su sede y horario.</p>
+                            <h3 class="step-title">{{ etapa.numero }}. {{ etapa.nombre }}</h3>
+                            <p class="step-desc">{{ etapa.descripcion }}</p>
+                            {% if etapa.estado == 'actual' %}
                             <div style="margin-top: 10px;">
-                                <span class="step-date" style="background: rgba(245, 127, 23, 0.1); color: var(--alerta);">Próximo evento: 18 May 2026</span>
-                                <button style="margin-left: 10px; background: var(--alerta); border: none; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: bold;">VER DETALLES SEDE</button>
+                                <span class="step-date" style="background: rgba(245, 127, 23, 0.1); color: var(--alerta);">En proceso</span>
+                                <button style="margin-left: 10px; background: var(--alerta); border: none; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: bold;">VER DETALLES</button>
                             </div>
+                            {% elif etapa.estado == 'completado' %}
+                            <span class="step-date">Finalizado</span>
+                            {% endif %}
                         </div>
                     </div>
-
+                    {% empty %}
                     <div class="step">
-                        <div class="step-marker"></div>
+                        <div class="step-marker">1</div>
                         <div class="step-content">
-                            <h3 class="step-title" style="color:#999;">4. Consulta de Resultados</h3>
-                            <p class="step-desc">Publicación de resultados por participante y periodo para recurso de reconsideración.</p>
+                            <h3 class="step-title">Sin proceso activo</h3>
+                            <p class="step-desc">No tienes un proceso de promoción horizontal activo actualmente.</p>
                         </div>
                     </div>
-
-                    <div class="step">
-                        <div class="step-marker"></div>
-                        <div class="step-content">
-                            <h3 class="step-title" style="color:#999;">5. Asignación de Incentivos</h3>
-                            <p class="step-desc">Publicación del listado nominal ordenado de resultados y evento público de asignación.</p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -147,15 +127,15 @@
                     <ul class="score-list">
                         <li class="score-item">
                             <span class="score-label">Formación Profesional</span>
-                            <span class="score-value">15 / 15</span>
+                            <span class="score-value">{{ puntaje_formacion_profesional }} / 15</span>
                         </li>
                         <li class="score-item">
-                            <span class="score-label">Antigüedad</span>
-                            <span class="score-value">22 / 35</span>
+                            <span class="score-label">Antigüedad ({{ usuario.antiguedad|default:"N/A" }})</span>
+                            <span class="score-value">{{ puntaje_antiguedad }} / 35</span>
                         </li>
                         <li class="score-item">
-                            <span class="score-label">Desarrollo Profesional</span>
-                            <span class="score-value">20 / 20</span>
+                            <span class="score-label">Desarrollo Profesional ({{ horas_formacion }} hrs)</span>
+                            <span class="score-value">{{ puntaje_cursos }} / 20</span>
                         </li>
                         <li class="score-item">
                             <span class="score-label">Apreciación (Examen)</span>
@@ -164,7 +144,7 @@
                     </ul>
                     <div class="score-total">
                         <div style="font-size: 0.8rem; color: #666; font-weight: 600;">Puntaje Parcial Acumulado</div>
-                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--guinda);">57 <span style="font-size: 1rem; color: #999;">/ 70</span></div>
+                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--guinda);">{{ puntaje_total }} <span style="font-size: 1rem; color: #999;">/ 100</span></div>
                     </div>
                 </div>
 

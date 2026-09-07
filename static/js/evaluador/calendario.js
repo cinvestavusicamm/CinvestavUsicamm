@@ -1,7 +1,7 @@
 // ========================
 // DATOS DEL CALENDARIO
 // ========================
-const eventosData = [
+const eventosData = window.eventosData || [
     // Evaluaciones
     { title: 'Evaluación Primaria', start: '2024-06-10T09:00:00', end: '2024-06-10T12:00:00', className: 'evento-evaluacion-fc', tipo: 'evaluacion', descripcion: 'Evaluación para promoción horizontal de maestros de primaria', lugar: 'Plataforma en línea' },
     { title: 'Evaluación Secundaria', start: '2024-06-15T09:00:00', end: '2024-06-15T12:00:00', className: 'evento-evaluacion-fc', tipo: 'evaluacion', descripcion: 'Evaluación para promoción horizontal de maestros de secundaria', lugar: 'Plataforma en línea' },
@@ -18,7 +18,7 @@ const eventosData = [
     { title: 'Capacitación NEM', start: '2024-06-26T09:00:00', end: '2024-06-26T14:00:00', className: 'evento-capacitacion-fc', tipo: 'capacitacion', descripcion: 'Capacitación sobre Nuevo Modelo Educativo', lugar: 'Centro de capacitación' }
 ];
 
-const procesosData = [
+const procesosData = window.procesosData || [
     { proceso: 'Promoción Horizontal 2026', tipo: 'evaluacion', fechaInicio: '04/03/2024', fechaFin: '30/03/2024', estado: 'en-curso', descripcion: 'Evaluación de conocimientos y aptitudes' },
     { proceso: 'Promoción Vertical 2026', tipo: 'evaluacion', fechaInicio: '15/06/2024', fechaFin: '15/11/2024', estado: 'en-curso', descripcion: 'Ascenso a cargos directivos' },
     { proceso: 'Validación Preguntas IA', tipo: 'revision', fechaInicio: '01/06/2024', fechaFin: '18/06/2024', estado: 'critico', descripcion: 'Revisión de contenido generado' },
@@ -32,16 +32,57 @@ let calendar;
 // ========================
 // FUNCIONES AUXILIARES
 // ========================
-function formatearFecha(fechaStr) {
+function parseFechaString(fechaStr) {
+    if (!fechaStr) return null;
+    if (fechaStr.includes('-')) {
+        const fecha = new Date(fechaStr);
+        return Number.isNaN(fecha.getTime()) ? null : fecha;
+    }
     const partes = fechaStr.split('/');
-    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    if (partes.length !== 3) return null;
+    return new Date(partes[2], partes[1] - 1, partes[0]);
+}
+
+function formatearFecha(fechaStr) {
+    const fecha = parseFechaString(fechaStr);
+    if (!fecha) return '';
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${fecha.getFullYear()}-${mes}-${dia}`;
 }
 
 function calcularDiasRestantes(fechaFinStr) {
     const hoy = new Date();
-    const partes = fechaFinStr.split('/');
-    const fechaFin = new Date(partes[2], partes[1] - 1, partes[0]);
+    const fechaFin = parseFechaString(fechaFinStr);
+    if (!fechaFin) return 0;
     return Math.ceil((fechaFin - hoy) / (1000 * 60 * 60 * 24));
+}
+
+function normalizarTipo(tipo) {
+    if (!tipo) return 'evento';
+    const valor = tipo.toString().toLowerCase();
+    if (valor.includes('evalu') || valor.includes('horizontal') || valor.includes('vertical')) {
+        return 'evaluacion';
+    }
+    if (valor.includes('plazo') || valor.includes('límite') || valor.includes('limite')) {
+        return 'plazo';
+    }
+    if (valor.includes('revision') || valor.includes('revisión')) {
+        return 'revision';
+    }
+    if (valor.includes('public') || valor.includes('resultado') || valor.includes('publicación')) {
+        return 'publicacion';
+    }
+    if (valor.includes('reunion') || valor.includes('reunión')) {
+        return 'reunion';
+    }
+    if (valor.includes('capacita') || valor.includes('capacitacion')) {
+        return 'capacitacion';
+    }
+    if (valor.includes('convocatoria')) {
+        return 'convocatoria';
+    }
+    return 'evento';
 }
 
 function getEstadoBadge(estado) {
@@ -150,6 +191,36 @@ function seleccionarColor(color) {
     }
 }
 
+function obtenerCsrfToken() {
+    const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return cookie ? cookie.split('=')[1] : '';
+}
+
+function mostrarNotificacion(mensaje, tipo = 'success') {
+    const toast = document.getElementById('toastNotificacion');
+    const toastMsg = document.getElementById('toastMensaje');
+    const icon = toast && toast.querySelector('i');
+
+    if (toastMsg) toastMsg.textContent = mensaje;
+    if (icon) {
+        if (tipo === 'error') {
+            icon.className = 'fa-solid fa-circle-exclamation';
+            toast.style.background = '#e74c3c';
+        } else if (tipo === 'warning') {
+            icon.className = 'fa-solid fa-triangle-exclamation';
+            toast.style.background = '#f39c12';
+        } else {
+            icon.className = 'fa-solid fa-circle-check';
+            toast.style.background = '#27ae60';
+        }
+    }
+
+    if (toast) {
+        toast.classList.add('active');
+        setTimeout(() => toast.classList.remove('active'), 3000);
+    }
+}
+
 function abrirModal() {
     document.getElementById('eventoFecha').value = new Date().toISOString().split('T')[0];
     seleccionarColor('evaluacion');
@@ -165,15 +236,20 @@ function cerrarModal() {
 if (btnNuevoEvento) btnNuevoEvento.addEventListener('click', abrirModal);
 if (btnCerrarModal) btnCerrarModal.addEventListener('click', cerrarModal);
 if (btnCancelarEvento) btnCancelarEvento.addEventListener('click', cerrarModal);
-modal?.addEventListener('click', e => { if (e.target === modal) cerrarModal(); });
+if (modal) {
+    modal.addEventListener('click', e => { if (e.target === modal) cerrarModal(); });
+}
 
 document.querySelectorAll('.color-option').forEach(opt => {
     opt.addEventListener('click', () => seleccionarColor(opt.dataset.color));
 });
 
-document.getElementById('eventoTipo')?.addEventListener('change', function() {
-    if (this.value) seleccionarColor(this.value);
-});
+const eventoTipo = document.getElementById('eventoTipo');
+if (eventoTipo) {
+    eventoTipo.addEventListener('change', function() {
+        if (this.value) seleccionarColor(this.value);
+    });
+}
 
 if (btnGuardarEvento) {
     btnGuardarEvento.addEventListener('click', () => {
@@ -189,18 +265,61 @@ if (btnGuardarEvento) {
         const lugar = document.getElementById('eventoUbicacion').value || 'Por definir';
         const descripcion = document.getElementById('eventoDescripcion').value || 'Sin descripción';
         
-        calendar.addEvent({
+        const eventoPayload = {
             title: titulo,
             start: horaInicio ? `${fecha}T${horaInicio}` : fecha,
             end: horaFin ? `${fecha}T${horaFin}` : fecha,
             allDay: !horaInicio,
-            className: `evento-${color}-fc`,
-            extendedProps: { tipo, descripcion, lugar }
-        });
-        
-        cerrarModal();
-        alert(`Evento "${titulo}" agregado`);
-        calendar.gotoDate(fecha);
+            tipo,
+            descripcion,
+            lugar,
+            color,
+        };
+
+        fetch('/evaluador/api/eventos/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': obtenerCsrfToken(),
+            },
+            body: JSON.stringify(eventoPayload),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.error || 'No se pudo guardar el evento');
+                }
+
+                const eventoGuardado = data.evento;
+                const allDayValue = eventoGuardado.allDay !== undefined
+                    ? eventoGuardado.allDay
+                    : (eventoGuardado.detalles && eventoGuardado.detalles.allDay);
+                const tituloEvento = eventoGuardado.detalles && eventoGuardado.detalles.titulo
+                    ? eventoGuardado.detalles.titulo
+                    : titulo;
+                const endEvento = eventoGuardado.end || (eventoGuardado.detalles && eventoGuardado.detalles.end) || eventoGuardado.fecha_evento;
+
+                calendar.addEvent({
+                    title: tituloEvento,
+                    start: eventoGuardado.start || eventoGuardado.fecha_evento,
+                    end: endEvento,
+                    allDay: allDayValue || !horaInicio,
+                    className: `evento-${color}-fc`,
+                    extendedProps: {
+                        tipo,
+                        descripcion,
+                        lugar,
+                    },
+                });
+
+                cerrarModal();
+                mostrarNotificacion(`Evento "${titulo}" guardado`);
+                calendar.gotoDate(fecha);
+            })
+            .catch(error => {
+                console.error(error);
+                alert(error.message || 'Error guardando el evento');
+            });
     });
 }
 
@@ -224,7 +343,10 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(info) {
             const e = info.event;
             const tipos = { evaluacion: 'Evaluación', plazo: 'Plazo', revision: 'Revisión', publicacion: 'Publicación', reunion: 'Reunión', capacitacion: 'Capacitación', convocatoria: 'Convocatoria' };
-            alert(`${e.title}\n\nTipo: ${tipos[e.extendedProps.tipo]}\nFecha: ${e.start.toLocaleDateString()}\nLugar: ${e.extendedProps.lugar}\n\n${e.extendedProps.descripcion}`);
+            const tipoEvento = e.extendedProps && e.extendedProps.tipo ? e.extendedProps.tipo : '';
+            const lugarEvento = e.extendedProps && e.extendedProps.lugar ? e.extendedProps.lugar : '';
+            const descripcionEvento = e.extendedProps && e.extendedProps.descripcion ? e.extendedProps.descripcion : '';
+            alert(`${e.title}\n\nTipo: ${tipos[tipoEvento]}\nFecha: ${e.start.toLocaleDateString()}\nLugar: ${lugarEvento}\n\n${descripcionEvento}`);
         },
         datesSet: function(info) {
             const fecha = info.view.currentStart;
@@ -235,27 +357,33 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.render();
     
     // Controles
-    document.getElementById('btnAnteriorMes')?.addEventListener('click', () => calendar.prev());
-    document.getElementById('btnSiguienteMes')?.addEventListener('click', () => calendar.next());
-    document.getElementById('btnHoy')?.addEventListener('click', () => calendar.today());
-    document.getElementById('btnVerTodosEventos')?.addEventListener('click', () => calendar.changeView('listMonth'));
+    const btnAnteriorMes = document.getElementById('btnAnteriorMes');
+    const btnSiguienteMes = document.getElementById('btnSiguienteMes');
+    const btnHoy = document.getElementById('btnHoy');
+    const btnVerTodosEventos = document.getElementById('btnVerTodosEventos');
+    if (btnAnteriorMes) btnAnteriorMes.addEventListener('click', () => calendar.prev());
+    if (btnSiguienteMes) btnSiguienteMes.addEventListener('click', () => calendar.next());
+    if (btnHoy) btnHoy.addEventListener('click', () => calendar.today());
+    if (btnVerTodosEventos) btnVerTodosEventos.addEventListener('click', () => calendar.changeView('listMonth'));
     
     // Filtros
     const filtroTipo = document.getElementById('filtroTipo');
     const filtroFecha = document.getElementById('filtroFecha');
     const aplicarFiltros = () => {
-        const tipo = filtroTipo?.value || '';
-        const fecha = filtroFecha?.value || '';
+        const tipo = filtroTipo && filtroTipo.value ? filtroTipo.value : '';
+        const fecha = filtroFecha && filtroFecha.value ? filtroFecha.value : '';
         calendar.getEvents().forEach(e => {
-            const matchTipo = !tipo || e.extendedProps?.tipo === tipo;
+            const matchTipo = !tipo || (e.extendedProps && e.extendedProps.tipo === tipo);
             const matchFecha = !fecha || e.start.toISOString().split('T')[0] === fecha;
             e.setProp('display', matchTipo && matchFecha ? 'auto' : 'none');
         });
         renderizarTablaProcesos(tipo, fecha);
     };
     
-    document.getElementById('btnAplicarFiltro')?.addEventListener('click', aplicarFiltros);
-    document.getElementById('btnLimpiarFiltro')?.addEventListener('click', () => {
+    const btnAplicarFiltro = document.getElementById('btnAplicarFiltro');
+    const btnLimpiarFiltro = document.getElementById('btnLimpiarFiltro');
+    if (btnAplicarFiltro) btnAplicarFiltro.addEventListener('click', aplicarFiltros);
+    if (btnLimpiarFiltro) btnLimpiarFiltro.addEventListener('click', () => {
         if (filtroTipo) filtroTipo.value = '';
         if (filtroFecha) filtroFecha.value = '';
         calendar.getEvents().forEach(e => e.setProp('display', 'auto'));

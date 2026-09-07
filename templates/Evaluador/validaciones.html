@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
     <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
     <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
@@ -92,7 +93,7 @@
             </ul>
         </nav>
 
-        <div class="principal" id="principal">
+        <div class="principal" id="principal" data-curso-id="{{ curso_actual.id_curso|default:'' }}">
             <div class="contenido">
                 <div class="encabezado-pagina">
                     <h1 class="titulo">
@@ -162,16 +163,39 @@
 
                 <!-- Sistema de Revisión -->
                 <div class="sistema-revision">
+                    <div class="lista-pendientes-panel">
+                        <div class="lista-pendientes-header">
+                            <h3><i class="fas fa-list"></i> Items pendientes</h3>
+                            <span>{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }} pendientes</span>
+                        </div>
+                        <div class="lista-pendientes-body">
+                            {% for validacion in validaciones_bd %}
+                                <div class="pendiente-item {% if forloop.first %}activa{% endif %}" data-id="{{ forloop.counter }}" data-curso-id="{{ validacion.id }}">
+                                    <div class="pendiente-item-titulo">{{ validacion.titulo }}</div>
+                                    <div class="pendiente-item-meta">
+                                        <span>{{ validacion.estado|default:'Sin estado' }}</span>
+                                        <span>{{ validacion.version|default:1 }}ª versión</span>
+                                    </div>
+                                    <div class="pendiente-item-descripcion">{{ validacion.descripcion|truncatechars:80 }}</div>
+                                </div>
+                            {% empty %}
+                                <div class="pendiente-item vacio">
+                                    <p>No hay validaciones pendientes en la base de datos.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
                     <!-- Visor de Preguntas -->
                     <div class="visor-pregunta">
                         <div class="visor-header">
-                            <h2><i class="fas fa-eye"></i> Pregunta en Revisión</h2>
+                            <h2><i class="fas fa-eye"></i> Registro en Revisión</h2>
                             <div class="visor-controles">
                                 <button class="btn btn-outline btn-sm" id="btnAnterior">
                                     <i class="fas fa-chevron-left"></i> Anterior
                                 </button>
                                 <div class="contador-revision">
-                                    Pregunta <span id="numeroActual">1</span> de <span id="totalPendientes">{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</span>
+                                    Item <span id="numeroActual">1</span> de <span id="totalPendientes">{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</span>
                                 </div>
                                 <button class="btn btn-outline btn-sm" id="btnSiguiente">
                                     Siguiente <i class="fas fa-chevron-right"></i>
@@ -182,64 +206,77 @@
                         <!-- Información de la pregunta -->
                         <div class="pregunta-info">
                             <div class="pregunta-metadata">
-                                    {% for validacion in validaciones_bd %}
-                                    {% if forloop.first %}
-	                                <div class="metadata-item">
-	                                    <span class="metadata-label">ID</span>
-	                                    <span class="metadata-value">#{{ validacion.id }}</span>
-	                                </div>
-	                                <div class="metadata-item">
-	                                    <span class="metadata-label">Origen</span>
-	                                    <span class="badge badge-origen-ia">
-	                                        <i class="fas fa-robot"></i> {% if validacion.generado_con_ia %}Generada por IA{% else %}Registro manual{% endif %}
-	                                    </span>
-	                                </div>
-	                                <div class="metadata-item">
-	                                    <span class="metadata-label">Curso</span>
-	                                    <span class="metadata-value">{{ validacion.titulo }}</span>
-	                                </div>
-	                                <div class="metadata-item">
-	                                    <span class="metadata-label">Estado</span>
-	                                    <span class="metadata-value">{{ validacion.estado }}</span>
-	                                </div>
-	                                <div class="metadata-item">
-	                                    <span class="metadata-label">Versión</span>
-	                                    <span class="metadata-value">{{ validacion.version|default:1 }}</span>
-	                                </div>
-	                                <div class="metadata-item">
-	                                    <span class="metadata-label">Fecha</span>
-	                                    <span class="badge badge-nivel">{% if validacion.fecha_creacion %}{{ validacion.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</span>
-	                                </div>
-                                    {% endif %}
-                                    {% empty %}
+                                {% if curso_actual %}
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">ID</span>
+                                            <span class="metadata-value">#{{ curso_actual.id_curso }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Origen</span>
+                                            <span class="badge badge-origen-ia">
+                                                <i class="fas fa-robot"></i> {% if curso_actual.generado_con_ia %}Generada por IA{% else %}Registro manual{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Curso</span>
+                                            <span class="metadata-value">{{ curso_actual.titulo }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Estado</span>
+                                            <span class="metadata-value">{{ curso_actual.estado }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Versión</span>
+                                            <span class="metadata-value">{{ curso_actual.version|default:1 }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Fecha</span>
+                                            <span class="badge badge-nivel">{% if curso_actual.fecha_creacion %}{{ curso_actual.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Docente</span>
+                                            <span class="metadata-value">{{ curso_actual.docente.nombre_completo|default:"Sin docente" }}</span>
+                                        </div>
+                                    {% else %}
                                     <div class="metadata-item">
                                         <span class="metadata-label">Estado</span>
                                         <span class="metadata-value">Sin registros pendientes en BD</span>
                                     </div>
-                                    {% endfor %}
+                                    {% endif %}
                             </div>
                         </div>
 
                         <!-- Contenido de la pregunta -->
                         <div class="pregunta-contenido">
-	                            <div class="pregunta-enunciado">
-                                    {% for validacion in validaciones_bd %}
-                                        {% if forloop.first %}
-                                            {{ validacion.descripcion|default:"Este registro no tiene descripción en la base de datos." }}
-                                        {% endif %}
-                                    {% empty %}
-                                        No hay preguntas modeladas ni cursos pendientes de validación en la base de datos.
-                                    {% endfor %}
-	                            </div>
+                            <div class="pregunta-enunciado">
+                                {% if curso_actual %}
+                                    {{ curso_actual.descripcion|default:"Este registro no tiene descripción en la base de datos." }}
+                                {% else %}
+                                    No hay preguntas modeladas ni cursos pendientes de validación en la base de datos.
+                                {% endif %}
+                            </div>
 
                             <div class="pregunta-opciones">
-	                                <div class="opcion correcta">
-	                                    <div class="opcion-indice">BD</div>
-	                                    <div class="opcion-texto">
-	                                        Las opciones de pregunta no existen todavía en los modelos. Consulta `apps/users/docs/datos_faltantes_para_bd.md`.
-	                                    </div>
-	                                </div>
+                                <div class="opcion correcta">
+                                    <div class="opcion-indice">BD</div>
+                                    <div class="opcion-texto">
+                                        La información de reactivos aún no está disponible en los modelos actuales. Utiliza el curso como fuente de validación.
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- Justificación de la IA -->
+                            <div class="justificacion-ia">
+                                <div class="justificacion-header">
+                                    <i class="fas fa-robot"></i>
+                                    <h4>Justificación generada por IA</h4>
+                                </div>
+                                <div class="justificacion-texto">
+                                    No hay modelo para justificaciones de reactivos. Las validaciones disponibles se muestran desde `Curso` y `ProcesoAprobacionCursos`.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                             <!-- Justificación de la IA -->
                             <div class="justificacion-ia">

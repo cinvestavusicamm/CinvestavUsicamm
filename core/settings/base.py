@@ -159,6 +159,12 @@ REDIS_HOST = config('REDIS_HOST', default='redis')
 REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
 REDIS_DB = config('REDIS_DB', default=0, cast=int)
 
+# URL del backend de IA / servicio FastAPI
+BACKEND_API_URL = config('BACKEND_API_URL', default='http://localhost:8003')
+AI_AGENT_SERVICE_URL = config('AI_AGENT_SERVICE_URL', default='http://ms_ai_agent_service:8107')
+IA_AGENT_CHAT_URL = config('IA_AGENT_CHAT_URL', default=f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat')
+IA_AGENT_STREAM_URL = config('IA_AGENT_STREAM_URL', default=f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat/stream')
+
 # Configuración específica para pruebas
 if 'test' in sys.argv or 'pytest' in sys.argv:
     DATABASES = {

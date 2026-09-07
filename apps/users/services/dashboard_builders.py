@@ -108,12 +108,13 @@ class EvaluadorContextBuilder(DashboardContextBuilder):
             Q(decision__icontains="rechaz")
             | Q(decision__icontains="no aprob")
         ).count()
+        procesos_programados = ProcesoEscalafonRepository.model.objects.count()
         
         return {
             "evaluaciones_pendientes": cursos_pendientes.count(),
-            "preguntas_pendientes_validar": 0,
-            "preguntas_banco": 0,
-            "evaluaciones_programadas": 0,
+            "preguntas_pendientes_validar": cursos_pendientes.count(),
+            "preguntas_banco": cursos.count(),
+            "evaluaciones_programadas": procesos_programados,
             "total_evaluaciones": cursos.count(),
             "evaluaciones_borrador": cursos.filter(estado__icontains="borrador").count(),
             "evaluaciones_publicadas": cursos.filter(estado__icontains="public").count(),

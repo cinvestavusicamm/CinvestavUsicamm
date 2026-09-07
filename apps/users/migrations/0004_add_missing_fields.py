@@ -50,4 +50,9 @@ class Migration(migrations.Migration):
             name='comentarios_count',
             field=models.IntegerField(default=0),
         ),
+        # BitacoraEvento fields already added manually to database
+        migrations.RunSQL(
+            sql="SELECT 1",  # No-op, fields already exist
+            reverse_sql="SELECT 1"
+        ),
     ]

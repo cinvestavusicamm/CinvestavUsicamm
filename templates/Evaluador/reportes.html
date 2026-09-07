@@ -108,8 +108,8 @@
                                 <label for="select-evaluacion"><i class="fas fa-file-alt"></i> Evaluación</label>
                                 <select id="select-evaluacion" class="select-filtro">
                                     <option value="">Todas las evaluaciones</option>
-                                    {% for evaluacion in evaluaciones_bd %}
-                                        <option value="{{ evaluacion.id }}">{{ evaluacion.titulo }}</option>
+                                    {% for evaluacion in evaluaciones_bd_full %}
+                                        <option value="{{ evaluacion.id_curso }}">{{ evaluacion.titulo }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -182,8 +182,11 @@
                             <button id="btn-limpiar-filtros" class="btn btn-secondary">
                                 <i class="fas fa-eraser"></i> Limpiar Filtros
                             </button>
-                            <button id="btn-guardar-filtro" class="btn btn-secondary">
-                                <i class="fas fa-save"></i> Guardar Filtro
+                            <button id="btn-exportar-pdf" class="btn btn-secondary">
+                                <i class="fas fa-file-pdf"></i> Exportar PDF
+                            </button>
+                            <button id="btn-exportar-excel" class="btn btn-secondary">
+                                <i class="fas fa-file-excel"></i> Exportar Excel
                             </button>
                         </div>
                     </div>
@@ -204,7 +207,7 @@
                                 <i class="fas fa-shield-alt"></i>
                             </div>
                             <div class="metrica-contenido">
-                                <h3 class="metrica-valor">{{ reportes_bd.total_revisiones|default:0 }}</h3>
+                                <h3 class="metrica-valor" id="metric-total-revisiones">{{ reportes_bd.total_revisiones|default:0 }}</h3>
                                 <p class="metrica-texto">Revisiones registradas</p>
                                 <span class="metrica-estado estado-excelente">BD</span>
                             </div>
@@ -215,20 +218,18 @@
                                 <i class="fas fa-balance-scale"></i>
                             </div>
                             <div class="metrica-contenido">
-                                <h3 class="metrica-valor">{{ reportes_bd.total_cursos|default:0 }}</h3>
+                                <h3 class="metrica-valor" id="metric-total-cursos">{{ reportes_bd.total_cursos|default:0 }}</h3>
                                 <p class="metrica-texto">Cursos/Evaluaciones</p>
                                 <span class="metrica-estado estado-optimo">BD</span>
                             </div>
                         </div>
-
-
 
                         <div class="tarjeta-metrica">
                             <div class="metrica-icono metrica-aprobacion">
                                 <i class="fas fa-percentage"></i>
                             </div>
                             <div class="metrica-contenido">
-                                <h3 class="metrica-valor">{{ reportes_bd.tasa_aprobacion|default:0 }}%</h3>
+                                <h3 class="metrica-valor" id="metric-tasa-aprobacion">{{ reportes_bd.tasa_aprobacion|default:0 }}%</h3>
                                 <p class="metrica-texto">Tasa Aprobación</p>
                                 <span class="metrica-estado estado-bueno">Buena</span>
                             </div>
@@ -246,18 +247,24 @@
                                 </select>
                             </div>
                             <div class="grafico-placeholder">
-                                <div class="grafico-simulado">
-                                    <!-- Aquí iría un gráfico real (Chart.js, D3.js, etc.) -->
-                                    <div class="barra-grafico barra-altura-1" title="40-50 puntos: 5%"></div>
-                                    <div class="barra-grafico barra-altura-2" title="50-60 puntos: 12%"></div>
-                                    <div class="barra-grafico barra-altura-3" title="60-70 puntos: 25%"></div>
-                                    <div class="barra-grafico barra-altura-4" title="70-80 puntos: 35%"></div>
-                                    <div class="barra-grafico barra-altura-5" title="80-90 puntos: 28%"></div>
-                                    <div class="barra-grafico barra-altura-6" title="90-100 puntos: 15%"></div>
+                                <div id="barras-estado-container" class="grafico-simulado">
+                                    {% if reportes_adicionales.cursos_por_estado %}
+                                        {% for estado in reportes_adicionales.cursos_por_estado %}
+                                            <div class="barra-grafico" title="{{ estado.estado }}: {{ estado.total }} cursos"
+                                                style="width: {{ estado.bar_percent }}%;">
+                                                <span class="barra-label">{{ estado.estado }} ({{ estado.total }})</span>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="grafico-simulado-empty">No hay datos de cursos</div>
+                                    {% endif %}
                                 </div>
-                                <div class="eje-x">
-                                    <span>40-50</span><span>50-60</span><span>60-70</span>
-                                    <span>70-80</span><span>80-90</span><span>90-100</span>
+                                <div id="eje-estado" class="eje-x eje-x-vertical">
+                                    {% if reportes_adicionales.cursos_por_estado %}
+                                        {% for estado in reportes_adicionales.cursos_por_estado %}
+                                            <span>{{ estado.estado }}</span>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -267,29 +274,31 @@
                                 <h3><i class="fas fa-chart-pie"></i> Resultados por Dimensión</h3>
                             </div>
                             <div class="grafico-placeholder grafico-circular">
-                                <!-- Gráfico circular simulado -->
-                                <div class="sector-circular sector-pedagogica"
-                                    title="Pedagógica: 30%"></div>
-                                <div class="sector-circular sector-disciplinar"
-                                    title="Disciplinar: 25%"></div>
-                                <div class="sector-circular sector-tic"
-                                    title="TIC: 20%"></div>
-                                <div class="sector-circular sector-gestion"
-                                    title="Gestión: 15%"></div>
-                                <div class="sector-circular sector-comunitaria"
-                                    title="Comunitaria: 10%"></div>
-                                <div class="centro-circular">
-                                    <span>100%</span>
-                                </div>
-                            </div>
-                            <div class="leyenda-grafico">
-                                <div class="item-leyenda"><span class="color-leyenda color-pedagogica"></span>Pedagógica</div>
-                                <div class="item-leyenda"><span class="color-leyenda color-disciplinar"></span>Disciplinar</div>
-                                <div class="item-leyenda"><span class="color-leyenda color-tic"></span>TIC</div>
-                                <div class="item-leyenda"><span class="color-leyenda color-gestion"></span>Gestión</div>
-                                <div class="item-leyenda"><span class="color-leyenda color-comunitaria"></span>Comunitaria</div>
-                            </div>
+                            <ul id="lista-decisiones" class="lista-decisiones">
+                                {% if reportes_adicionales.decisiones_por_tipo %}
+                                    {% for decision in reportes_adicionales.decisiones_por_tipo %}
+                                        <li>
+                                            <span class="decision-label">{{ decision.decision|default:'Sin decisión' }}</span>
+                                            <span class="decision-value">{{ decision.total }} ({{ decision.percent }}%)</span>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="grafico-simulado-empty">No hay datos de decisiones</li>
+                                {% endif %}
+                            </ul>
                         </div>
+                        <div id="leyenda-decisiones" class="leyenda-grafico">
+                            {% if reportes_adicionales.decisiones_por_tipo %}
+                                {% for decision in reportes_adicionales.decisiones_por_tipo %}
+                                    <div class="item-leyenda">
+                                        <span class="color-leyenda"></span>{{ decision.decision|default:'Sin decisión' }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="item-leyenda">No hay decisiones registradas</div>
+                            {% endif %}
+                        </div>
+                    </div>
                     </div>
                 </section>
 
@@ -308,21 +317,21 @@
                                     <p>Gráficos</p>
 
                                 </div>
-                                <button class="btn btn-primary">
-                                    <i class="fas fa-download"></i> Generar PDF
-                                </button>
+<button id="btn-exportar-pdf-section" class="btn btn-primary">
+                                <i class="fas fa-download"></i> Generar PDF
+                            </button>
+                        </div>
+
+                        <div class="opcion-exportacion">
+                            <div class="icono-exportacion">
+                                <i class="fas fa-file-excel"></i>
                             </div>
+                            <div class="info-exportacion">
+                                <h4>Datos en Excel</h4>
+                                <p>Datos tabulares en hojas de cálculo</p>
 
-                            <div class="opcion-exportacion">
-                                <div class="icono-exportacion">
-                                    <i class="fas fa-file-excel"></i>
-                                </div>
-                                <div class="info-exportacion">
-                                    <h4>Datos en Excel</h4>
-                                    <p>Datos tabulares en hojas de cálculo</p>
-
-                                </div>
-                                <button class="btn btn-primary">
+                            </div>
+                            <button id="btn-exportar-excel-section" class="btn btn-primary">
                                     <i class="fas fa-download"></i> Exportar Excel
                                 </button>
                             </div>
@@ -367,10 +376,16 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="../../static/js/evaluador/accesibilidad.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    {{ reportes_bd|json_script:"reportesBdData" }}
+    {{ reportes_adicionales|json_script:"reportesAdicionalesData" }}
+    {{ evaluaciones_bd_full|json_script:"evaluacionesBdFullData" }}
+    {{ aprobaciones_bd|json_script:"aprobacionesBdData" }}
     <script src="../../static/js/evaluador/reportes.js"></script>
     <script>
         const agenteAjaxURL = "{% url 'agente_ajax' %}";
-    </script
+    </script>
 </body>
 
 </html>

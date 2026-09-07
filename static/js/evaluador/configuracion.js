@@ -70,10 +70,56 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmPass.addEventListener('input', checkPasswordMatch);
     }
 
+    function obtenerCsrfToken() {
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        if (meta && meta.content) {
+            return meta.content;
+        }
+        const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+        return cookie ? cookie.split('=')[1] : '';
+    }
+
+    function guardarPerfil() {
+        const correoInput = document.getElementById('perfilCorreo');
+        const correo = correoInput ? correoInput.value.trim() : '';
+        const telefonoInput = document.getElementById('perfilTelefono');
+        const telefono = telefonoInput ? telefonoInput.value.trim() : '';
+
+        const btnGuardarPerfil = document.getElementById('btn-guardar-perfil');
+        if (btnGuardarPerfil) btnGuardarPerfil.disabled = true;
+
+        fetch('/evaluador/api/actualizar-perfil/', {
+            method: 'PUT',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': obtenerCsrfToken(),
+            },
+            body: JSON.stringify({ correo, telefono }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.error || 'No se pudo actualizar el perfil');
+                }
+                mostrarNotificacion(data.mensaje || 'Perfil actualizado correctamente');
+            })
+            .catch(error => {
+                console.error(error);
+                mostrarNotificacion(error.message || 'Error actualizando perfil', 'error');
+            })
+            .finally(() => {
+                if (btnGuardarPerfil) btnGuardarPerfil.disabled = false;
+            });
+    }
+
     function cambiarContrasena() {
-        const passActual = document.getElementById('pass-actual')?.value;
-        const passNueva = document.getElementById('pass-nueva')?.value;
-        const passConfirm = document.getElementById('pass-confirm')?.value;
+        const passActualElem = document.getElementById('pass-actual');
+        const passNuevaElem = document.getElementById('pass-nueva');
+        const passConfirmElem = document.getElementById('pass-confirm');
+        const passActual = passActualElem ? passActualElem.value : '';
+        const passNueva = passNuevaElem ? passNuevaElem.value : '';
+        const passConfirm = passConfirmElem ? passConfirmElem.value : '';
 
         if (!passActual) {
             mostrarNotificacion('Por favor ingresa tu contraseña actual', 'error');
@@ -90,20 +136,47 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        mostrarNotificacion('Contraseña actualizada correctamente');
-        document.getElementById('pass-actual').value = '';
-        document.getElementById('pass-nueva').value = '';
-        document.getElementById('pass-confirm').value = '';
-        if (strengthBar) strengthBar.style.width = '0%';
-        if (strengthText) strengthText.textContent = '';
+        const btnActualizarContrasena = document.getElementById('btn-actualizar-contrasena');
+        if (btnActualizarContrasena) btnActualizarContrasena.disabled = true;
+
+        fetch('/evaluador/api/actualizar-contrasena/', {
+            method: 'PUT',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': obtenerCsrfToken(),
+            },
+            body: JSON.stringify({
+                contrasena_actual: passActual,
+                nueva_contrasena: passNueva,
+                confirmar_contrasena: passConfirm,
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.error || 'No se pudo actualizar la contraseña');
+                }
+                mostrarNotificacion(data.mensaje || 'Contraseña actualizada correctamente');
+                if (passActualElem) passActualElem.value = '';
+                if (passNuevaElem) passNuevaElem.value = '';
+                if (passConfirmElem) passConfirmElem.value = '';
+                if (strengthBar) strengthBar.style.width = '0%';
+                if (strengthText) strengthText.textContent = '';
+            })
+            .catch(error => {
+                console.error(error);
+                mostrarNotificacion(error.message || 'Error actualizando contraseña', 'error');
+            })
+            .finally(() => {
+                if (btnActualizarContrasena) btnActualizarContrasena.disabled = false;
+            });
     }
 
     // Botón "Guardar Cambios" del perfil
     const btnGuardarPerfil = document.getElementById('btn-guardar-perfil');
     if (btnGuardarPerfil) {
-        btnGuardarPerfil.addEventListener('click', function () {
-            mostrarNotificacion('Perfil actualizado correctamente');
-        });
+        btnGuardarPerfil.addEventListener('click', guardarPerfil);
     }
 
     // Botón "Actualizar Contraseña"
