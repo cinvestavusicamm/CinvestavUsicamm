@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/modo-oscuro.css">
+    <link rel="icon" type="image/x-icon"
+        href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>EscalafonIA</title>
+</head>
+
+<body data-agente-ajax-url="{% url 'agente_ajax' %}" data-total-pendientes="{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}">
+    <header class="barra-superior">
+
+        <div class="marca">
+            <div class="boton">
+                <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
+            <div class="linea-vertical"></div>
+            <img class="logo-institucional logo-cinvestav" src="../../static/imagenes/logosimbolo.png" alt="Logo Cinvestav">
+            <img class="logo-institucional logo-usicamm" src="../../static/imagenes/USICAMMm.png" alt="Logo Usicamm">
+        </div>
+
+        <div class="user-profile">
+            <button id="userButton">
+                <i class="fa-solid fa-chevron-down"></i>
+                <i class="fa-solid fa-user"></i>
+            </button>
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="{% url 'evaluador:perfil' %}"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'evaluador:configuracion' %}"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="contenedor-principal">
+        <nav class="barra-lateral">
+
+            <ul class="menu-principal">
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <div class="divisor"></div>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:banco_preguntas' %}">
+                        <i class="fa-solid fa-clipboard-question"></i>
+                        <span>Banco de preguntas</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:evaluaciones' %}">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Evaluaciones</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link activo" href="{% url 'evaluador:validaciones' %}">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Validaciones</span>
+                    </a>
+                </li>
+                <div class="divisor"></div>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:calendario' %}">
+                        <i class="fa-solid fa-calendar-alt"></i>
+                        <span>Calendario</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:reportes' %}">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="principal" id="principal" data-curso-id="{{ curso_actual.id_curso|default:'' }}">
+            <div class="contenido">
+                <div class="encabezado-pagina">
+                    <h1 class="titulo">
+                        <i class="fas fa-clipboard-check"></i> Validaciones
+                    </h1>
+                </div>
+
+                <!-- Barra de Herramientas -->
+                <div class="barra-herramientas">
+                    <div class="herramientas-izquierda">
+
+                        <button class="btn btn-outline" id="btnFiltrarIA">
+                            <i class="fas fa-robot"></i> Solo IA
+                        </button>
+                        <button class="btn btn-outline" id="btnFiltrarHumanas">
+                            <i class="fas fa-users"></i> Solo Humanas
+                        </button>
+                    </div>
+
+                    <div class="herramientas-derecha">
+
+                        <div class="contador-revision">
+                            <span id="contadorPendientes">{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</span> preguntas pendientes
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Estadísticas -->
+                <div class="panel-estadisticas">
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-pendientes">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</h3>
+                            <p>Pendientes de revisión</p>
+                        </div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-aprobadas">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.evaluaciones_aprobadas|default:0 }}</h3>
+                            <p>Aprobadas hoy</p>
+                        </div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-rechazadas">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.evaluaciones_rechazadas|default:0 }}</h3>
+                            <p>Rechazadas hoy</p>
+                        </div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-total">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.evaluaciones_revisadas_por_mi|default:0 }}</h3>
+                            <p>Total validadas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sistema de Revisión -->
+                <div class="sistema-revision">
+                    <div class="lista-pendientes-panel">
+                        <div class="lista-pendientes-header">
+                            <h3><i class="fas fa-list"></i> Items pendientes</h3>
+                            <span>{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }} pendientes</span>
+                        </div>
+                        <div class="lista-pendientes-body">
+                            {% for validacion in validaciones_bd %}
+                                <div class="pendiente-item {% if forloop.first %}activa{% endif %}" data-id="{{ forloop.counter }}" data-curso-id="{{ validacion.id }}">
+                                    <div class="pendiente-item-titulo">{{ validacion.titulo }}</div>
+                                    <div class="pendiente-item-meta">
+                                        <span>{{ validacion.estado|default:'Sin estado' }}</span>
+                                        <span>{{ validacion.version|default:1 }}ª versión</span>
+                                    </div>
+                                    <div class="pendiente-item-descripcion">{{ validacion.descripcion|truncatechars:80 }}</div>
+                                </div>
+                            {% empty %}
+                                <div class="pendiente-item vacio">
+                                    <p>No hay validaciones pendientes en la base de datos.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Visor de Preguntas -->
+                    <div class="visor-pregunta">
+                        <div class="visor-header">
+                            <h2><i class="fas fa-eye"></i> Registro en Revisión</h2>
+                            <div class="visor-controles">
+                                <button class="btn btn-outline btn-sm" id="btnAnterior">
+                                    <i class="fas fa-chevron-left"></i> Anterior
+                                </button>
+                                <div class="contador-revision">
+                                    Item <span id="numeroActual">1</span> de <span id="totalPendientes">{{ metricas_evaluador.preguntas_pendientes_validar|default:0 }}</span>
+                                </div>
+                                <button class="btn btn-outline btn-sm" id="btnSiguiente">
+                                    Siguiente <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Información de la pregunta -->
+                        <div class="pregunta-info">
+                            <div class="pregunta-metadata">
+                                {% if curso_actual %}
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">ID</span>
+                                            <span class="metadata-value">#{{ curso_actual.id_curso }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Origen</span>
+                                            <span class="badge badge-origen-ia">
+                                                <i class="fas fa-robot"></i> {% if curso_actual.generado_con_ia %}Generada por IA{% else %}Registro manual{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Curso</span>
+                                            <span class="metadata-value">{{ curso_actual.titulo }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Estado</span>
+                                            <span class="metadata-value">{{ curso_actual.estado }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Versión</span>
+                                            <span class="metadata-value">{{ curso_actual.version|default:1 }}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Fecha</span>
+                                            <span class="badge badge-nivel">{% if curso_actual.fecha_creacion %}{{ curso_actual.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <span class="metadata-label">Docente</span>
+                                            <span class="metadata-value">{{ curso_actual.docente.nombre_completo|default:"Sin docente" }}</span>
+                                        </div>
+                                    {% else %}
+                                    <div class="metadata-item">
+                                        <span class="metadata-label">Estado</span>
+                                        <span class="metadata-value">Sin registros pendientes en BD</span>
+                                    </div>
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Contenido de la pregunta -->
+                        <div class="pregunta-contenido">
+                            <div class="pregunta-enunciado">
+                                {% if curso_actual %}
+                                    {{ curso_actual.descripcion|default:"Este registro no tiene descripción en la base de datos." }}
+                                {% else %}
+                                    No hay preguntas modeladas ni cursos pendientes de validación en la base de datos.
+                                {% endif %}
+                            </div>
+
+                            <div class="pregunta-opciones">
+                                <div class="opcion correcta">
+                                    <div class="opcion-indice">BD</div>
+                                    <div class="opcion-texto">
+                                        La información de reactivos aún no está disponible en los modelos actuales. Utiliza el curso como fuente de validación.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Justificación de la IA -->
+                            <div class="justificacion-ia">
+                                <div class="justificacion-header">
+                                    <i class="fas fa-robot"></i>
+                                    <h4>Justificación generada por IA</h4>
+                                </div>
+                                <div class="justificacion-texto">
+                                    No hay modelo para justificaciones de reactivos. Las validaciones disponibles se muestran desde `Curso` y `ProcesoAprobacionCursos`.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                            <!-- Justificación de la IA -->
+                            <div class="justificacion-ia">
+                                <div class="justificacion-header">
+                                    <i class="fas fa-robot"></i>
+                                    <h4>Justificación generada por IA</h4>
+                                </div>
+                                <div class="justificacion-texto">
+	                                    No hay modelo para justificaciones de reactivos. Las validaciones disponibles se muestran desde `Curso` y `ProcesoAprobacionCursos`.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel de Validación -->
+                    <div class="panel-validacion">
+                        <h2><i class="fas fa-clipboard-check"></i> Acciones de Validación</h2>
+
+                        <!-- Acciones principales -->
+                        <div class="acciones-validacion">
+                            <div class="accion-btn aprobar" id="btnAprobar">
+                                <div class="accion-icono">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="accion-titulo">Aprobar</div>
+                                <div class="accion-descripcion">La pregunta cumple con todos los criterios</div>
+                            </div>
+
+                            <div class="accion-btn rechazar" id="btnRechazar">
+                                <div class="accion-icono">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                                <div class="accion-titulo">Rechazar</div>
+                                <div class="accion-descripcion">No cumple con los estándares requeridos</div>
+                            </div>
+
+                            <div class="accion-btn revisar" id="btnRevisar">
+                                <div class="accion-icono">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <div class="accion-titulo">Revisar</div>
+                                <div class="accion-descripcion">Requiere modificaciones menores</div>
+                            </div>
+
+                            <div class="accion-btn omitir" id="btnOmitir">
+                                <div class="accion-icono">
+                                    <i class="fas fa-forward"></i>
+                                </div>
+                                <div class="accion-titulo">Omitir</div>
+                                <div class="accion-descripcion">Decidir más tarde</div>
+                            </div>
+                        </div>
+
+                        <!-- Comentarios -->
+                        <div class="comentarios-validacion">
+                            <h3><i class="fas fa-comment-dots"></i> Comentarios y Observaciones</h3>
+                            <textarea class="textarea-comentario" id="comentariosValidacion"
+                                placeholder="Escribe aquí tus observaciones, sugerencias o razones para rechazar/modificar la pregunta..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <footer class="contenedor-footer">
+               <p> Derechos reservados &copy; Cinvestav-USICAMM</p>
+            </footer>
+        </div>
+    </div>
+
+    <div id="fondo"></div>
+
+    <button class="btn-chatbot" id="btn-chatbot"><i class="fa-solid fa-robot"></i></button>
+    <div id="ventana-chatbot" class="ventana-oculto-chatbot">
+        <div class="cabecera-chatbot">
+            <p>Chatbot</p>
+            <button class="btn-cerrar-chatbot" id="btn-cerrar-chatbot"><i class="fa-solid fa-circle-xmark"></i></button>
+        </div>
+        <div class="chatbot">
+            <div class="mensajes-chatbot" id="mensajes-chatbot">
+
+            </div>
+            <div class="input-chatbot">
+                <input type="text" id="mensaje-input-chatbot" placeholder="Escribe tu mensaje...">
+                <button id="btn-microfono"><i class="fa-solid fa-microphone"></i></button>
+                <button id="btn-enviar-mensaje-chatbot"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../static/js/evaluador/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/chat-eva.js"></script>
+    <script src="../../static/js/evaluador/accesibilidad.js"></script>
+    <script src="../../static/js/evaluador/menu-usuario.js"></script>
+    <script src="../../static/js/evaluador/validaciones.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
+
+</body>
+
+</html>

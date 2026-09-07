@@ -1,0 +1,669 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablas de BD | EscalafonIA</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --guinda: #691C32;
+            --guinda-oscuro: #4e1425;
+            --dorado: #BC955C;
+            --turquesa: #007A7C;
+            --verde: #27AE60;
+            --azul: #2563EB;
+            --gris-bg: #F4F7F6;
+            --texto: #243041;
+            --texto-suave: #667085;
+            --borde: #E5E7EB;
+            --blanco: #FFFFFF;
+            --font-main: 'Open Sans', sans-serif;
+            --font-title: 'Montserrat', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--gris-bg);
+            color: var(--texto);
+            font-family: var(--font-main);
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 290px;
+            background: var(--guinda);
+            color: var(--blanco);
+            border-right: 4px solid var(--dorado);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 32px 24px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .brand-mark {
+            width: 62px;
+            height: 62px;
+            border-radius: 14px;
+            background: var(--blanco);
+            padding: 8px;
+            object-fit: contain;
+            margin-bottom: 16px;
+        }
+
+        .sidebar h1 {
+            font-family: var(--font-title);
+            font-size: 1.15rem;
+            letter-spacing: 0;
+        }
+
+        .sidebar p {
+            color: #F1D6AD;
+            font-size: 0.88rem;
+            margin-top: 6px;
+        }
+
+        .nav-menu {
+            padding: 24px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--blanco);
+            text-decoration: none;
+            padding: 15px 28px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 5px solid var(--dorado);
+            color: #F1D6AD;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            height: 84px;
+            background: var(--blanco);
+            box-shadow: 0 2px 14px rgba(16, 24, 40, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 34px;
+        }
+
+        .top-bar h2 {
+            color: var(--guinda);
+            font-family: var(--font-title);
+            font-size: 1.35rem;
+        }
+
+        .session-box {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .session-box small {
+            color: var(--turquesa);
+            font-weight: 700;
+        }
+
+        .content {
+            padding: 32px;
+            overflow: auto;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .page-heading h3 {
+            font-family: var(--font-title);
+            color: var(--guinda);
+            font-size: 1.65rem;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: var(--texto-suave);
+            max-width: 720px;
+            line-height: 1.5;
+        }
+
+        .json-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--borde);
+            background: var(--blanco);
+            color: var(--guinda);
+            text-decoration: none;
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(160px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--blanco);
+            border-radius: 8px;
+            border-left: 6px solid var(--turquesa);
+            box-shadow: 0 8px 20px rgba(16, 24, 40, 0.06);
+            padding: 20px;
+        }
+
+        .stat-card:nth-child(2) {
+            border-left-color: var(--dorado);
+        }
+
+        .stat-card:nth-child(3) {
+            border-left-color: var(--verde);
+        }
+
+        .stat-card span {
+            color: var(--texto-suave);
+            font-weight: 700;
+            font-size: 0.88rem;
+        }
+
+        .stat-card strong {
+            display: block;
+            color: var(--guinda);
+            font-family: var(--font-title);
+            font-size: 2.1rem;
+            margin-top: 6px;
+        }
+
+        .toolbar {
+            background: var(--blanco);
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 18px;
+            box-shadow: 0 6px 16px rgba(16, 24, 40, 0.04);
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            padding: 0 12px;
+            background: #FAFBFC;
+        }
+
+        .search-box i {
+            color: var(--texto-suave);
+        }
+
+        .search-box input {
+            width: 100%;
+            min-height: 42px;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            font: inherit;
+        }
+
+        .schema-grid {
+            display: grid;
+            grid-template-columns: minmax(230px, 310px) minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .table-index,
+        .table-detail {
+            background: var(--blanco);
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(16, 24, 40, 0.05);
+        }
+
+        .table-index {
+            position: sticky;
+            top: 18px;
+            overflow: hidden;
+        }
+
+        .panel-title {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--borde);
+            font-family: var(--font-title);
+            color: var(--guinda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .index-list {
+            max-height: calc(100vh - 330px);
+            overflow: auto;
+            padding: 8px;
+        }
+
+        .index-link {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 8px;
+            align-items: center;
+            text-decoration: none;
+            color: var(--texto);
+            padding: 12px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .index-link:hover {
+            background: #F7F4EF;
+            color: var(--guinda);
+        }
+
+        .index-link span:first-child {
+            overflow-wrap: anywhere;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 24px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: #EEF6F6;
+            color: var(--turquesa);
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .schema-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .table-detail {
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            border-bottom: 1px solid var(--borde);
+            background: #FCFCFD;
+        }
+
+        .table-header h4 {
+            color: var(--guinda);
+            font-family: var(--font-title);
+            font-size: 1.2rem;
+            overflow-wrap: anywhere;
+        }
+
+        .table-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .column-table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 13px 14px;
+            border-bottom: 1px solid #F0F2F5;
+            vertical-align: top;
+        }
+
+        th {
+            background: #FAFAFA;
+            color: var(--guinda);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 0.92rem;
+        }
+
+        .col-name {
+            font-weight: 800;
+            color: var(--texto);
+            overflow-wrap: anywhere;
+        }
+
+        .muted {
+            color: var(--texto-suave);
+            font-size: 0.85rem;
+        }
+
+        .flag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .flag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 999px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #344054;
+            background: #F2F4F7;
+        }
+
+        .flag.pk {
+            color: var(--guinda);
+            background: #FCE7EF;
+        }
+
+        .flag.fk {
+            color: var(--azul);
+            background: #EAF1FF;
+        }
+
+        .flag.unique {
+            color: #8A5A00;
+            background: #FFF4D8;
+        }
+
+        .empty-state {
+            background: var(--blanco);
+            border: 1px dashed var(--borde);
+            border-radius: 8px;
+            padding: 28px;
+            color: var(--texto-suave);
+            text-align: center;
+        }
+
+        @media (max-width: 980px) {
+            .layout {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 8px;
+            }
+
+            .nav-link {
+                white-space: nowrap;
+                border-left: 0;
+            }
+
+            .top-bar,
+            .page-heading,
+            .toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .stats-grid,
+            .schema-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-index {
+                position: static;
+            }
+
+            .index-list {
+                max-height: 260px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .content {
+                padding: 20px;
+            }
+
+            .top-bar {
+                height: auto;
+                padding: 18px 20px;
+            }
+
+            .stats-grid {
+                gap: 12px;
+            }
+
+            .table-header {
+                flex-direction: column;
+            }
+
+            .table-meta {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="{% static 'imagenes/logosimbolo.png' %}" class="brand-mark" alt="EscalafonIA">
+                <h1>ESCALAFONIA</h1>
+                <p>Panel de administración</p>
+            </div>
+            <nav class="nav-menu">
+                <a href="{% url 'administrador:panel_admin' %}" class="nav-link"><i class="fas fa-users-cog"></i> Usuarios</a>
+                <a href="{% url 'administrador:bd_tablas' %}" class="nav-link active"><i class="fas fa-database"></i> Base de datos</a>
+                <a href="{% url 'logout' %}" class="nav-link"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="top-bar">
+                <h2>Inventario de base de datos</h2>
+                <div class="session-box">
+                    <div>{{ usuario_nombre|default:"Administrador" }}</div>
+                    <small>{{ usuario_rol|default:"Sesión segura" }}</small>
+                </div>
+            </header>
+
+            <section class="content">
+                <div class="page-heading">
+                    <div>
+                        <h3>Tablas y atributos</h3>
+                        <p>Consulta el esquema real de la base de datos: columnas, tipos, llaves, relaciones,
+                            índices y conteo de registros por tabla.</p>
+                    </div>
+                    <a class="json-link" href="{% url 'administrador:bd_tablas' %}?format=json">
+                        <i class="fas fa-code"></i> Ver JSON
+                    </a>
+                </div>
+
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <span>Tablas</span>
+                        <strong>{{ total_tablas }}</strong>
+                    </article>
+                    <article class="stat-card">
+                        <span>Atributos</span>
+                        <strong>{{ total_columnas }}</strong>
+                    </article>
+                    <article class="stat-card">
+                        <span>Registros</span>
+                        <strong>{{ total_filas }}</strong>
+                    </article>
+                </div>
+
+                <div class="toolbar">
+                    <label class="search-box" for="schemaSearch">
+                        <i class="fas fa-search"></i>
+                        <input id="schemaSearch" type="search" placeholder="Buscar tabla o columna">
+                    </label>
+                </div>
+
+                {% if tablas %}
+                <div class="schema-grid">
+                    <aside class="table-index">
+                        <div class="panel-title">
+                            <span>Tablas</span>
+                            <span class="badge">{{ total_tablas }}</span>
+                        </div>
+                        <div class="index-list" id="tableIndex">
+                            {% for tabla in tablas %}
+                            <a class="index-link" href="#tabla-{{ forloop.counter }}" data-search-item
+                                data-search-text="{{ tabla.name }} {% for columna in tabla.columns %}{{ columna.name }} {{ columna.type }} {% endfor %}">
+                                <span>{{ tabla.name }}</span>
+                                <span class="badge">{{ tabla.columns|length }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </aside>
+
+                    <div class="schema-list" id="schemaList">
+                        {% for tabla in tablas %}
+                        <article class="table-detail" id="tabla-{{ forloop.counter }}" data-search-item
+                            data-search-text="{{ tabla.name }} {% for columna in tabla.columns %}{{ columna.name }} {{ columna.type }} {% endfor %}">
+                            <div class="table-header">
+                                <div>
+                                    <h4><i class="fas fa-table"></i> {{ tabla.name }}</h4>
+                                    <p class="muted">Objeto {{ tabla.type }}</p>
+                                </div>
+                                <div class="table-meta">
+                                    <span class="badge">{{ tabla.columns|length }} columnas</span>
+                                    <span class="badge">{{ tabla.row_count }} registros</span>
+                                </div>
+                            </div>
+
+                            <div class="column-table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Columna</th>
+                                            <th>Tipo</th>
+                                            <th>Nulo</th>
+                                            <th>Default</th>
+                                            <th>Restricciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for columna in tabla.columns %}
+                                        <tr>
+                                            <td>
+                                                <div class="col-name">{{ columna.name }}</div>
+                                                <div class="muted">DB: {{ columna.database_type }}</div>
+                                            </td>
+                                            <td>{{ columna.type }}</td>
+                                            <td>{% if columna.nullable %}Sí{% else %}No{% endif %}</td>
+                                            <td>{{ columna.default|default:"-" }}</td>
+                                            <td>
+                                                <div class="flag-row">
+                                                    {% if columna.primary_key %}
+                                                    <span class="flag pk"><i class="fas fa-key"></i> PK</span>
+                                                    {% endif %}
+                                                    {% if columna.unique %}
+                                                    <span class="flag unique"><i class="fas fa-fingerprint"></i> Única</span>
+                                                    {% endif %}
+                                                    {% for fk in columna.foreign_keys %}
+                                                    <span class="flag fk"><i class="fas fa-link"></i> {{ fk.table }}.{{ fk.column }}</span>
+                                                    {% endfor %}
+                                                    {% if columna.indexes %}
+                                                    <span class="flag"><i class="fas fa-layer-group"></i> Índice</span>
+                                                    {% endif %}
+                                                    {% if not columna.primary_key and not columna.unique and not columna.foreign_keys and not columna.indexes %}
+                                                    <span class="muted">Sin restricciones</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    No se encontraron tablas en la base de datos configurada.
+                </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const input = document.getElementById('schemaSearch');
+        const items = Array.from(document.querySelectorAll('[data-search-item]'));
+
+        input?.addEventListener('input', () => {
+            const query = input.value.trim().toLowerCase();
+            items.forEach((item) => {
+                const text = item.dataset.searchText.toLowerCase();
+                item.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>

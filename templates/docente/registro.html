@@ -1,0 +1,476 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | EscalafonIA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --guinda: #691C32;
+            --guinda-hover: #521627;
+            --teal: #007A7C;
+            --dorado: #BC955C;
+            --borde-fuerte: #94A3B8;
+            --texto-puro: #1E293B;
+            --bg-input: #F8FAFC;
+            --error-bg: #FEE2E2;
+            --error-border: #DC2626;
+            --error-text: #991B1B;
+            --success-bg: #D1FAE5;
+            --success-border: #10B981;
+            --success-text: #065F46;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            background-image: radial-gradient(var(--dorado) 0.5px, transparent 0.5px);
+            background-size: 30px 30px;
+            color: var(--texto-puro);
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--guinda);
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--dorado);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-box { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .brand-box img { width: 45px; border-radius: 50%; border: 2px solid white; background: white; padding: 2px; }
+        .brand-box h1 { font-family: 'Montserrat'; color: white; font-size: 1.2rem; font-weight: 900; }
+
+        nav a { color: white; text-decoration: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-left: 20px; transition: 0.3s; }
+        nav a:hover { color: var(--dorado); }
+
+        /* --- MAIN --- */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .animated-border-box {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            padding: 3px;
+            background: linear-gradient(90deg, var(--guinda), var(--dorado), var(--teal), var(--guinda));
+            background-size: 300% 300%;
+            border-radius: 28px;
+            animation: border-animation 6s linear infinite;
+        }
+
+        @keyframes border-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .auth-card {
+            background: white;
+            width: 100%;
+            padding: 30px 35px;
+            border-radius: 25px;
+            text-align: center;
+        }
+
+        .volver { text-align: left; margin-bottom: 10px; }
+        .btn-volver { text-decoration: none; color: var(--guinda); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
+
+        .logo_jajuar { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--guinda); margin-bottom: 10px; }
+
+        h2 { font-family: 'Montserrat'; color: var(--guinda); font-weight: 900; font-size: 1.4rem; margin-bottom: 25px; text-transform: uppercase; }
+
+        /* --- MENSAJES --- */
+        .messages {
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-error {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+        }
+        .alert-success {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+        }
+        .alert i {
+            font-size: 1rem;
+        }
+
+        /* --- FORMULARIO Y CAMPOS --- */
+        .form-row { display: flex; gap: 15px; }
+        .form-group { text-align: left; margin-bottom: 18px; flex: 1; position: relative; }
+        
+        label { 
+            display: block; 
+            font-size: 0.7rem; 
+            font-weight: 800; 
+            color: var(--guinda); 
+            margin-bottom: 6px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--borde-fuerte);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: var(--bg-input);
+            transition: 0.3s;
+            outline: none;
+            color: var(--texto-puro);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--teal);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 122, 124, 0.1);
+        }
+
+        input.input-error {
+            border-color: var(--error-border);
+            background: var(--error-bg);
+        }
+
+        /* --- REQUISITOS CONTRASEÑA --- */
+        .password-requirements {
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: #666;
+            text-align: left;
+        }
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            font-size: 0.7rem;
+        }
+        .requirement i {
+            font-size: 0.6rem;
+            width: 14px;
+        }
+        .requirement.valid {
+            color: var(--success-text);
+        }
+        .requirement.invalid {
+            color: var(--error-text);
+        }
+
+        /* --- CONTRASEÑA CON OJO --- */
+        .pass-wrapper { position: relative; }
+        .toggle-pass {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94A3B8;
+            font-size: 1rem;
+            z-index: 10;
+        }
+        .toggle-pass:hover { color: var(--guinda); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover { background: #005f61; transform: translateY(-2px); }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--guinda);
+            padding: 1.5rem 0;
+            border-top: 3px solid var(--dorado);
+            text-align: center;
+            color: white;
+        }
+
+        .footer-text { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .auth-card { padding: 20px; }
+            .form-row { flex-direction: column; gap: 0; }
+            .animated-border-box { margin: 0 10px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-container">
+            <a href="/" class="brand-box">
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Logo">
+                <h1>ESCALAFONIA</h1>
+            </a>
+            <nav>
+                <a href="{% url 'sesion' %}"><i class="fas fa-sign-in-alt"></i> Entrar</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="animated-border-box">
+            <div class="auth-card">
+                <div class="volver">
+                    <a href="{% url 'sesion' %}" class="btn-volver"><i class="fas fa-chevron-left"></i> Volver al Inicio</a>
+                </div>
+                <img class="logo_jajuar" src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Jaguar">
+                <h2>Registrarse</h2>
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{% url 'registro' %}" id="registroForm">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Nombre Completo *</label>
+                        <input type="text" name="nombre" placeholder="Nombre(s)" 
+                               value="{{ datos_form.nombre|default:'' }}" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Apellido Paterno *</label>
+                            <input type="text" name="apellido_paterno" 
+                                   value="{{ datos_form.apellido_paterno|default:'' }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido Materno</label>
+                            <input type="text" name="apellido_materno" 
+                                   value="{{ datos_form.apellido_materno|default:'' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>CURP (18 Dígitos) *</label>
+                        <input type="text" name="curp" maxlength="18" minlength="18" 
+                               style="text-transform: uppercase;" 
+                               value="{{ datos_form.curp|default:'' }}"
+                               oninput="this.value = this.value.toUpperCase()" required>
+                        <small style="color: #666; font-size: 0.65rem;">Ej: GODE561231HDFRPR09</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Institución Perteneciente *</label>
+                        <select name="institucion_id" required>
+                            <option value="">Selecciona una opción</option>
+                            {% for inst in instituciones %}
+                            <option value="{{ inst.id_institucion }}" 
+                                    {% if datos_form.institucion_id|stringformat:"s" == inst.id_institucion|stringformat:"s" %}selected{% endif %}>
+                                {{ inst.nombre }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Correo Electrónico Institucional *</label>
+                        <input type="email" name="correo" 
+                               value="{{ datos_form.correo|default:'' }}" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Contraseña *</label>
+                            <div class="pass-wrapper">
+                                <input type="password" name="password1" id="pass1" required>
+                                <i class="fas fa-eye toggle-pass" onclick="togglePassword('pass1', this)"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar Contraseña *</label>
+                            <div class="pass-wrapper">
+                                <input type="password" name="password2" id="pass2" required>
+                                <i class="fas fa-eye toggle-pass" onclick="togglePassword('pass2', this)"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="password-requirements" id="passwordRequirements">
+                        <div class="requirement" id="req-length">
+                            <i class="fas fa-circle"></i> Mínimo 8 caracteres
+                        </div>
+                        <div class="requirement" id="req-uppercase">
+                            <i class="fas fa-circle"></i> Al menos una mayúscula
+                        </div>
+                        <div class="requirement" id="req-lowercase">
+                            <i class="fas fa-circle"></i> Al menos una minúscula
+                        </div>
+                        <div class="requirement" id="req-number">
+                            <i class="fas fa-circle"></i> Al menos un número
+                        </div>
+                        <div class="requirement" id="req-special">
+                            <i class="fas fa-circle"></i> Al menos un carácter especial (!@#$%^&*)
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-user-check"></i> Finalizar Registro
+                    </button>
+                </form>
+
+                <div style="margin-top: 20px; font-size: 0.8rem; font-weight: 600;">
+                    <p>¿Ya tienes cuenta? <a href="{% url 'sesion' %}" style="color: var(--teal); text-decoration: none; font-weight: 800;">Inicia Sesión aquí</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="footer-text">© 2026 ESCALAFONIA | Sistema de Gestión Educativa</p>
+    </footer>
+
+    <script>
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        const passwordInput = document.getElementById('pass1');
+        
+        function validatePassword() {
+            const password = passwordInput.value;
+            
+            const lengthValid = password.length >= 8;
+            const uppercaseValid = /[A-Z]/.test(password);
+            const lowercaseValid = /[a-z]/.test(password);
+            const numberValid = /\d/.test(password);
+            const specialValid = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            updateRequirement('req-length', lengthValid);
+            updateRequirement('req-uppercase', uppercaseValid);
+            updateRequirement('req-lowercase', lowercaseValid);
+            updateRequirement('req-number', numberValid);
+            updateRequirement('req-special', specialValid);
+            
+            if (lengthValid && uppercaseValid && lowercaseValid && numberValid && specialValid) {
+                passwordInput.classList.add('valid');
+                passwordInput.classList.remove('input-error');
+            } else if (password.length > 0) {
+                passwordInput.classList.remove('valid');
+                passwordInput.classList.add('input-error');
+            } else {
+                passwordInput.classList.remove('valid', 'input-error');
+            }
+        }
+        
+        function updateRequirement(id, isValid) {
+            const element = document.getElementById(id);
+            if (isValid) {
+                element.classList.add('valid');
+                element.classList.remove('invalid');
+                element.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                element.classList.add('invalid');
+                element.classList.remove('valid');
+                element.querySelector('i').className = 'fas fa-circle';
+            }
+        }
+        
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            const pass1 = document.getElementById('pass1').value;
+            const pass2 = document.getElementById('pass2').value;
+            
+            if (pass1 !== pass2) {
+                e.preventDefault();
+                alert('Las contraseñas no coinciden');
+                return false;
+            }
+            
+            const lengthValid = pass1.length >= 8;
+            const uppercaseValid = /[A-Z]/.test(pass1);
+            const lowercaseValid = /[a-z]/.test(pass1);
+            const numberValid = /\d/.test(pass1);
+            const specialValid = /[!@#$%^&*(),.?":{}|<>]/.test(pass1);
+            
+            if (!(lengthValid && uppercaseValid && lowercaseValid && numberValid && specialValid)) {
+                e.preventDefault();
+                alert('La contraseña no cumple con todos los requisitos de seguridad');
+                return false;
+            }
+            
+            return true;
+        });
+        
+        if (passwordInput) {
+            passwordInput.addEventListener('input', validatePassword);
+        }
+    </script>
+</body>
+
+</html>

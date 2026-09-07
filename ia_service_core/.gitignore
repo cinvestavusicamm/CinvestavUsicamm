@@ -1,0 +1,35 @@
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# Archivos de configuración con secretos
+config/secrets.yaml
+config/production.yaml
+
+# Logs
+logs/
+*.log
+
+# Base de datos
+*.db
+*.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.dockerignore

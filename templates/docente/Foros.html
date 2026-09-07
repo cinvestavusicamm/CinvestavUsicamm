@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foros Colaborativos | EscalafonIA Jaguar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/main.css">
+    
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+
+    <style>
+        /* Opción A Mejorada: Quita los bordes, recuadros y formas de los logos nuevos sin alterar tu logo de Jaguar */
+        .institucionales-logos img {
+            border-radius: 0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-main barra-superior">
+        <div class="brand" style="display: flex; align-items: center; gap: 15px;">
+            
+            <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" 
+                 alt="Logo Jaguar" 
+                 style="height: 52px; width: auto; object-fit: contain;">
+
+            <div class="institucionales-logos" style="display: flex; align-items: center; gap: 12px;">
+                <img src="../../static/imagenes/USICAMMm.png" 
+                     alt="Logo USICAMM" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+
+                <img src="../../static/imagenes/cinvestavv.png" 
+                     alt="Logo Cinvestav" 
+                     style="height: 48px; width: auto; object-fit: contain;">
+            </div>
+
+            <div class="brand-text">
+                <h1>EscalafonIA Jaguar</h1>
+                <span>Comunidades de Práctica Docente</span>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-weight: 700; font-size: 0.95rem;">{{ usuario.nombre }} {{ usuario.apellido_paterno }} {{ usuario.apellido_materno }}</div>
+            <div style="font-size: 0.7rem; color: var(--dorado);">Sesión encriptada (LGPDPPSO)</div>
+        </div>
+    </header>
+
+    <nav class="nav-actions-top">
+        <a href="{% url 'Docente:panel_docente' %}" class="btn-nav btn-back"><i class="fas fa-arrow-left"></i> REGRESAR</a>
+        <a href="#" class="btn-nav btn-exit"><i class="fas fa-sign-out-alt"></i> SALIDA SEGURA</a>
+    </nav>
+
+    <div class="container">
+        
+        <aside class="forum-categories">
+            <h4 style="color: var(--guinda); font-family: 'Montserrat'; margin-bottom: 15px;">Mis Cursos Activos ({{ total_cursos }})</h4>
+            {% for curso in cursos %}
+            <div class="category-item {% if forloop.first %}active{% endif %}"><i class="fas fa-book"></i> {{ curso.titulo }}</div>
+            {% empty %}
+            <div class="category-item" style="color: #999;">No hay cursos activos</div>
+            {% endfor %}
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <div class="category-item" style="color: var(--dorado);"><i class="fas fa-star"></i> Mis Discusiones ({{ posts_usuario|length }})</div>
+        </aside>
+
+        <main class="forum-feed principal">
+            
+            <div class="contenido">
+                <div class="post-card">
+                    <textarea id="nuevoPost" placeholder="¿Qué experiencia o duda pedagógica quieres compartir hoy?" 
+                              style="width: 100%; border: 1px solid #eee; border-radius: 12px; padding: 15px; font-family: inherit; resize: none; min-height: 110px;"
+                              aria-label="Cuerpo de la nueva publicación del foro"></textarea>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 10px; gap: 10px;">
+                        <button class="btn-back" onclick="limpiarPost()">Cancelar</button>
+                        <button onclick="publicarPost()" style="background: var(--guinda); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;">Publicar</button>
+                    </div>
+                </div>
+
+                <div id="postsContainer">
+                    {% for foro_item in foro_items %}
+                        {% for foro in foro_item.foros %}
+                            {% for post in foro.posts|slice:":5" %}
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="user-meta">
+                                <img src="https://ui-avatars.com/api/?name={{ post.autor.nombre }}+{{ post.autor.apellido_paterno }}&background=691C32&color=fff" alt="Avatar de {{ post.autor.nombre }}">
+                                <div>
+                                    <div class="name">{{ post.autor.nombre }} {{ post.autor.apellido_paterno }}</div>
+                                    <div class="role">{{ foro_item.curso.titulo }} • Hace {{ post.fecha_creacion|timesince }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <h3>{{ post.titulo|default:"Sin título" }}</h3>
+                            <p>{{ post.contenido|truncatewords:30 }}</p>
+                        </div>
+                        <div class="post-actions">
+                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta"><i class="far fa-heart"></i> <span class="like-count">{{ post.likes|default:0 }}</span></span>
+                            <span><i class="far fa-comment"></i> {{ post.comentarios_count|default:0 }} comentarios</span>
+                            {% if post.autor.id_usuario == usuario.id_usuario %}
+                            <span onclick="eliminarPost({{ post.id_post }})" style="cursor:pointer; color: red; margin-left: auto;"><i class="fas fa-trash"></i> Eliminar</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% empty %}
+                    <div class="post-card" style="text-align: center; padding: 40px;">
+                        <p style="color: #999;">No hay publicaciones en los foros aún.</p>
+                    </div>
+                    {% endfor %}
+                        </div>
+                    </div>
+
+                    {% for post in posts_usuario %}
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="user-meta">
+                                <img src="https://ui-avatars.com/api/?name={{ post.autor.nombre }}+{{ post.autor.apellido_paterno }}&background=691C32&color=fff" alt="Avatar de {{ post.autor.nombre }}">
+                                <div>
+                                    <div class="name">{{ post.autor.nombre }} {{ post.autor.apellido_paterno }}</div>
+                                    <div class="role">Hace {{ post.fecha_publicacion|timesince }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>{{ post.contenido|truncatewords:30 }}</p>
+                        </div>
+                        <div class="post-actions">
+                            <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta"><i class="far fa-heart"></i> <span class="like-count">0</span></span>
+                            <span><i class="far fa-comment"></i> 0 comentarios</span>
+                            {% if post.autor.id_usuario == usuario.id_usuario %}
+                            <span onclick="eliminarPost({{ post.id_post }})" style="cursor:pointer; color: red; margin-left: auto;"><i class="fas fa-trash"></i> Eliminar</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="post-card" style="text-align: center; padding: 40px;">
+                        <p style="color: #999;">No has publicado nada aún.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+
+        <aside class="forum-sidebar">
+            <div class="ia-sidebar-card">
+                <img src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg" alt="Mascota Jaguar">
+                <h4 style="margin-top: 0; font-family: 'Montserrat';"><i class="fas fa-paw"></i> Guía Jaguar IA</h4>
+                <p style="font-size: 0.8rem; line-height: 1.5;">
+                    {{ usuario.nombre }}, aquí puedes intercambiar experiencias con otros docentes.<br><br>
+                    Tienes {{ total_foros }} foros activos y {{ total_posts }} publicaciones en total.<br><br>
+                    Mantén un tono respetuoso y constructivo.
+                </p>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <h4 style="color: var(--guinda); margin-top: 0;">Estadísticas</h4>
+                <div style="margin-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #666; font-size: 0.85rem;">Total Foros</span>
+                        <span style="font-weight: bold; color: var(--guinda);">{{ total_foros }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #666; font-size: 0.85rem;">Total Posts</span>
+                        <span style="font-weight: bold; color: var(--guinda);">{{ total_posts }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #666; font-size: 0.85rem;">Mis Posts</span>
+                        <span style="font-weight: bold; color: var(--turquesa);">{{ posts_usuario|length }}</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer-vino contenedor-footer">
+        <div style="font-size: 0.75rem; opacity: 0.8; max-width: 800px; margin: 0 auto; line-height: 1.4;">
+            Este espacio colaborativo está alineado con el fomento a la participación voluntaria.
+        </div>
+        <div style="font-size: 0.65rem; opacity: 0.5; margin-top: 15px;">
+            PLATAFORMA ESCALAFONIA JAGUAR | © 2026 USICAMM MÉXICO
+        </div>
+    </footer>
+
+    <script>
+        // Publicar nuevo post
+        function publicarPost() {
+            const textarea = document.getElementById('nuevoPost');
+            const container = document.getElementById('postsContainer');
+            
+            if (textarea.value.trim() === "") {
+                alert("Por favor escribe algo antes de publicar.");
+                return;
+            }
+
+            const nuevoPostHTML = `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="user-meta">
+                            <img src="https://ui-avatars.com/api/?name=Laura+Martinez&background=691C32&color=fff" alt="Avatar">
+                            <div>
+                                <div class="name">Laura Martínez García</div>
+                                <div class="role">Ahora</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>${textarea.value.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <div class="post-actions">
+                        <span onclick="darLike(this)" style="cursor:pointer;" role="button" aria-label="Dar me gusta, 0 me gustas actuales"><i class="far fa-heart"></i> <span class="like-count">0</span></span>
+                        <span><i class="far fa-comment"></i> 0 comentarios</span>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('afterbegin', nuevoPostHTML);
+            textarea.value = "";
+
+            const msg = document.createElement('div');
+            msg.style.cssText = 'background:#d4edda; color:#155724; padding:10px; border-radius:8px; text-align:center; margin:10px 0;';
+            msg.textContent = '¡Publicación realizada con éxito!';
+            container.insertBefore(msg, container.firstChild);
+            setTimeout(() => msg.remove(), 2500);
+        }
+
+        function limpiarPost() {
+            document.getElementById('nuevoPost').value = "";
+        }
+
+        // Dar Like
+        function darLike(elemento) {
+            const count = elemento.querySelector('.like-count');
+            let likes = parseInt(count.textContent);
+            likes++;
+            count.textContent = likes;
+            elemento.style.color = 'var(--guinda)';
+            elemento.setAttribute('aria-label', `Dar me gusta, ${likes} me gustas actuales`);
+            setTimeout(() => elemento.style.color = '', 800);
+        }
+    </script>
+    
+    <script src="../../static/js/accesibilidad.js"></script>
+</body>
+</html>

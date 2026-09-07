@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon"
+        href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
+    <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/modo-oscuro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>EscalafonIA</title>
+</head>
+
+<body data-agente-ajax-url="{% url 'agente_ajax' %}">
+        <header class="barra-superior">
+        
+        <div class="marca">
+            <div class="boton">
+            <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
+            <div class="linea-vertical"></div>
+            <img class="logo-institucional logo-cinvestav" src="../../static/imagenes/logosimbolo.png" alt="Logo Cinvestav">
+            <img class="logo-institucional logo-usicamm" src="../../static/imagenes/USICAMMm.png" alt="Logo Usicamm">
+        </div>
+
+        <div class="user-profile">
+            <button id="userButton">
+                <i class="fa-solid fa-chevron-down"></i>
+                <i class="fa-solid fa-user"></i>
+            </button>
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="{% url 'evaluador:perfil' %}"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'evaluador:configuracion' %}"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="contenedor-principal">
+        <nav class="barra-lateral">
+            <ul class="menu-principal">
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <div class="divisor"></div>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:banco_preguntas' %}">
+                        <i class="fa-solid fa-clipboard-question"></i>
+                        <span>Banco de preguntas</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link activo" href="{% url 'evaluador:evaluaciones' %}">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Evaluaciones</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:validaciones' %}">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Validaciones</span>
+                    </a>
+                </li>
+                <div class="divisor"></div>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:calendario' %}">
+                        <i class="fa-solid fa-calendar-alt"></i>
+                        <span>Calendario</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:reportes' %}">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+
+        <div class="principal" id="principal">
+            <div class="contenido">
+                <div class="encabezado-pagina">
+                    <h1 class="titulo">
+                        <i class="fas fa-file-alt"></i> Evaluaciones
+                    </h1>
+                </div>
+
+                <!-- Barra de Herramientas -->
+                <div class="barra-herramientas">
+                    <div class="herramientas-izquierda">
+                        <button class="btn btn-primary" id="btnNuevaEvaluacion">
+                            <i class="fas fa-plus-circle"></i> Nueva Evaluación
+                        </button>
+                        
+                    </div>
+                    
+                    <div class="herramientas-derecha">
+                        <div class="filtro-rapido">
+                            <select id="filtroTipoEvaluacion" class="select-sm">
+                                <option value="todas">Todas las evaluaciones</option>
+                                <option value="horizontal">Promoción Horizontal</option>
+                                <option value="vertical">Promoción Vertical</option>
+                                <option value="diagnostica">Evaluación Diagnóstica</option>
+                            </select>
+                            <select id="filtroEstado" class="select-sm">
+                                <option value="todas">Todos los estados</option>
+                                <option value="borrador">Borrador</option>
+                                <option value="revision">En revisión</option>
+                                <option value="publicada">Publicada</option>
+                                <option value="archivada">Archivada</option>
+                            </select>
+                        </div>
+                        <div class="buscador">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="buscadorEvaluaciones" placeholder="Buscar evaluaciones...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Estadísticas -->
+                <div class="panel-estadisticas">
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-total">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.total_evaluaciones|default:0 }}</h3>
+                            <p>Total evaluaciones</p>
+                        </div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-borrador">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.evaluaciones_borrador|default:0 }}</h3>
+                            <p>En borrador</p>
+                        </div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-publicada">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.evaluaciones_publicadas|default:0 }}</h3>
+                            <p>Publicadas</p>
+                        </div>
+                    </div>
+                    <div class="estadistica-item">
+                        <div class="estadistica-icono estadistica-programada">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="estadistica-contenido">
+                            <h3>{{ metricas_evaluador.evaluaciones_programadas|default:0 }}</h3>
+                            <p>Programadas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid de Evaluaciones -->
+                <div class="grid-evaluaciones">
+                    {% for curso in cursos %}
+                        <div class="tarjeta-evaluacion">
+                            <div class="evaluacion-header">
+                                <div class="evaluacion-estado evaluacion-revision">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <span>{{ curso.estado }}</span>
+                                </div>
+                                <div class="evaluacion-acciones">
+                                    <button class="btn-icon" title="Más opciones">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="evaluacion-contenido">
+                                <h3 class="evaluacion-titulo">{{ curso.titulo }}</h3>
+                                <p class="evaluacion-descripcion">
+                                    {{ curso.descripcion|default:"Sin descripción registrada en la base de datos." }}
+                                </p>
+                                <div class="evaluacion-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-code-branch"></i>
+                                        <span>Versión {{ curso.version|default:1 }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-robot"></i>
+                                        <span>{% if curso.generado_con_ia %}Generado con IA{% else %}Registro manual{% endif %}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-user"></i>
+                                        <span>{{ curso.docente.nombre_completo|default:"Sin docente" }}</span>
+                                    </div>
+                                </div>
+                                <div class="evaluacion-fechas">
+                                    <div class="fecha-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span><strong>Creación:</strong> {% if curso.fecha_creacion %}{{ curso.fecha_creacion|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</span>
+                                    </div>
+                                    <div class="fecha-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span><strong>Aprobación:</strong> {% if curso.fecha_aprobacion %}{{ curso.fecha_aprobacion|date:"d/m/Y" }}{% else %}Pendiente{% endif %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="evaluacion-footer">
+                                <a href="{% url 'evaluador:validaciones' %}" class="btn btn-outline btn-sm">
+                                    <i class="fas fa-eye"></i> Revisar
+                                </a>
+                                <button class="btn btn-primary btn-sm" onclick="verDetalleCurso({{ curso.id_curso }})">
+                                    <i class="fas fa-cog"></i> Gestionar
+                                </button>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="tarjeta-evaluacion">
+                            <div class="evaluacion-contenido">
+                                <h3 class="evaluacion-titulo">Sin cursos en la base de datos</h3>
+                                <p class="evaluacion-descripcion">
+                                    Agrega registros de cursos para verlos en esta sección.
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Tarjeta Nueva Evaluación -->
+                    <div class="tarjeta-nueva-evaluacion" id="btnNuevaEvaluacionCard">
+                        <div class="nueva-evaluacion-contenido">
+                            <i class="fas fa-plus-circle"></i>
+                            <h3>Crear Nueva Evaluación</h3>
+                            <p>Diseña una nueva evaluación desde cero</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Evaluaciones Recientes -->
+                <section class="seccion-recientes">
+                    <div class="seccion-header">
+                        <h2><i class="fas fa-history"></i> Evaluaciones Recientes</h2>
+                    </div>
+                    
+                    <div class="tabla-recientes">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha modificación</th>
+                                    <th>Estado</th>
+                                    <th>Creador</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for curso in cursos %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ curso.titulo }}</strong>
+                                            <small>{{ curso.descripcion|default:"Sin descripción" }}</small>
+                                        </td>
+                                        <td>Curso</td>
+                                        <td>{% if curso.fecha_creacion %}{{ curso.fecha_creacion|date:"d/m/Y H:i" }}{% else %}Sin fecha{% endif %}</td>
+                                        <td><span class="badge badge-revision">{{ curso.estado }}</span></td>
+                                        <td>{{ curso.docente.nombre_completo|default:"Sin creador" }}</td>
+                                        <td>
+                                            <a href="{% url 'evaluador:validaciones' %}" class="btn-icon btn-sm" title="Ver">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">Sin cursos registrados en la base de datos.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <footer class="contenedor-footer">
+               <p> Derechos reservados &copy; Cinvestav-USICAMM</p>
+            </footer>
+        </div>
+    </div>
+
+    <div id="fondo"></div>
+
+    <button class="btn-chatbot" id="btn-chatbot"><i class="fa-solid fa-robot"></i></button>
+    <div id="ventana-chatbot" class="ventana-oculto-chatbot">
+        <div class="cabecera-chatbot">
+            <p>Chatbot</p>
+            <button class="btn-cerrar-chatbot" id="btn-cerrar-chatbot"><i class="fa-solid fa-circle-xmark"></i></button>
+        </div>
+        <div class="chatbot">
+            <div class="mensajes-chatbot" id="mensajes-chatbot">
+
+            </div>
+            <div class="input-chatbot">
+                <input type="text" id="mensaje-input-chatbot" placeholder="Escribe tu mensaje...">
+                <button id="btn-microfono"><i class="fa-solid fa-microphone"></i></button>
+                <button id="btn-enviar-mensaje-chatbot"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../static/js/evaluador/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/chat-eva.js"></script>
+    <script src="../../static/js/evaluador/accesibilidad.js"></script> 
+    <script src="../../static/js/evaluador/menu-usuario.js"></script>
+    <script src="../../static/js/evaluador/evaluaciones.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
+    
+</body>
+
+</html>

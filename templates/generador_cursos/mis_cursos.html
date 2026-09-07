@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Cursos | EscalafonIA</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/accesibilidad.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../static/js/generador/cursos.js"></script>
+
+    <style>
+        /* Eliminar absolutamente todos los espacios en blanco nativos */
+        html, body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            width: 100%; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--bg-gris, #F4F4F4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* =========================================
+           1. SIDEBAR Y HAMBURGUESA DENTRO DEL MENÚ
+           ========================================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--guinda, #691C32);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dorado, #D4C19C);
+        }
+
+        .btn-menu-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .btn-menu-toggle:hover {
+            color: var(--dorado, #D4C19C);
+            transform: scale(1.1);
+        }
+
+        .nav-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important; 
+            gap: 15px !important; 
+            padding: 15px 20px !important;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-link i {
+            width: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .sidebar.mini { width: 70px; }
+        .sidebar.mini .menu-title, .sidebar.mini .menu-texto { display: none; }
+        .sidebar.mini .sidebar-header { justify-content: center; padding: 15px 0; }
+        .sidebar.mini .nav-link { padding: 15px 0 !important; justify-content: center !important; }
+        .sidebar.mini .nav-link i { margin: 0; }
+        .sidebar.mini .brand-text { display: none; }
+
+        /* =========================================
+           2. CONTENEDOR PRINCIPAL AL RAS
+           ========================================= */
+        .main-container {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            padding: 0 !important; 
+        }
+        .main-container.expandido {
+            margin-left: 70px;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+            flex-grow: 1; 
+        }
+
+        /* =========================================
+           3. HEADER Y FOOTER (Borde a Borde)
+           ========================================= */
+        .top-bar-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--dorado, #D4C19C);
+            width: 100%;
+            margin: 0 !important; 
+        }
+
+        .top-bar-vino h1 {
+            color: white !important;
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .footer-vino {
+            background-color: var(--guinda, #691C32) !important;
+            color: white !important;
+            text-align: center;
+            padding: 20px;
+            border-top: 4px solid var(--dorado, #D4C19C);
+            margin-top: auto;
+            width: 100%;
+            font-weight: 800;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        /* =========================================
+           4. DROPDOWN DE USUARIO
+           ========================================= */
+        .user-dropdown { position: relative; display: inline-block; }
+        .btn-user {
+            background-color: transparent; border: 1px solid var(--dorado, #D4C19C);
+            color: white; padding: 8px 18px; border-radius: 25px; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.95rem;
+        }
+        .btn-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .btn-user:hover { background-color: rgba(255,255,255,0.1); }
+        .user-dropdown-content {
+            display: none; position: absolute; right: 0; background-color: white;
+            min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); border-radius: 8px; z-index: 1000;
+        }
+        .user-dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 0.85rem; }
+        .user-dropdown-content a:hover { background-color: #f4f4f4; color: var(--guinda, #691C32); }
+        .user-dropdown:hover .user-dropdown-content { display: block; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar .menu-title, .sidebar .menu-texto, .sidebar .brand-text { display: none; }
+            .sidebar .sidebar-header { justify-content: center; padding: 15px 0; }
+            .sidebar .nav-link { padding: 15px 0 !important; justify-content: center !important; }
+            .sidebar .nav-link i { margin: 0; }
+            .main-container { margin-left: 70px; }
+            .top-bar-vino h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-accesibilidad" id="btnAccesibilidad" title="Abrir panel de accesibilidad" style="z-index: 9999;">
+        <i class="fas fa-universal-access"></i>
+    </button>
+    <div class="accesibilidad-panel" id="panelAccesibilidad" style="z-index: 10000;">
+        <div class="accesibilidad-panel-header">
+            <i class="fas fa-universal-access"></i>
+            <h3>Accesibilidad</h3>
+            <button class="btn-cerrar-panel" id="btnCerrarPanel" title="Cerrar panel">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="accesibilidad-panel-body">
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-eye"></i> Ajustes Visuales</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-chart-bar"></i> Escala de grises</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-grayscale">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-adjust"></i> Alto contraste</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-high-contrast">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-exchange-alt"></i> Invertir colores</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-invert-colors">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-moon"></i> Modo oscuro</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-dark-theme">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-book-reader"></i> Herramientas de Lectura</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-volume-up"></i> Lector de pantalla</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-screen-reader">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-mask"></i> Máscara de lectura</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-reading-mask">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-ruler-combined"></i> Guía de lectura</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-reading-guide">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-link"></i> Resaltar enlaces</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-highlight-links">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-font"></i> Tipografía</h4>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-book"></i> Fuente para dislexia</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="acc-dyslexic-font">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-text-height"></i> Espaciado vertical</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLineHeight"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="lineHeightValue">1.6</span>
+                        <button class="btn-range" id="increaseLineHeight"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-text-width"></i> Espaciado horizontal</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseLetterSpacing"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="letterSpacingValue">0</span>
+                        <button class="btn-range" id="increaseLetterSpacing"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="accesibilidad-opcion">
+                    <span><i class="fas fa-asterisk"></i> Tamaño del texto</span>
+                    <div class="range-control">
+                        <button class="btn-range" id="decreaseFontSize"><i class="fas fa-minus"></i></button>
+                        <span class="range-value" id="fontSizeValue">100%</span>
+                        <button class="btn-range" id="increaseFontSize"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accesibilidad-seccion">
+                <h4><i class="fas fa-mouse-pointer"></i> Tamaño del cursor</h4>
+                <div class="accesibilidad-opcion cursor-selector">
+                    <span>Cursor</span>
+                    <div class="cursor-size-selector">
+                        <button class="cursor-opt" data-size="small" title="Pequeño"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt active" data-size="medium" title="Mediano"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="large" title="Grande"><i class="fas fa-circle"></i></button>
+                        <button class="cursor-opt" data-size="xlarge" title="Muy grande"><i class="fas fa-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accesibilidad-footer">
+                <button class="btn-reset" id="resetAccesibilidad">
+                    <i class="fas fa-undo-alt"></i> Restablecer configuración
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="miSidebar">
+        <div class="sidebar-header">
+            <span class="menu-title">Menú</span>
+            <button class="btn-menu-toggle" onclick="toggleMenu()" aria-label="Abrir/Cerrar Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <ul class="nav-menu" style="list-style: none; padding: 0; margin: 0;">
+            <li class="nav-item">
+                <a href="javascript:history.back()" class="nav-link">
+                    <i class="fas fa-chevron-left"></i> <span class="menu-texto">Regresar</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:index_generador' %}" class="nav-link">
+                    <i class="fas fa-th-large"></i> <span class="menu-texto">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:generador_de_cursos' %}" class="nav-link">
+                    <i class="fas fa-magic"></i> <span class="menu-texto">Creación de cursos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:cursos' %}" class="nav-link active">
+                    <i class="fas fa-folder"></i> <span class="menu-texto">Mis cursos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'generador_cursos:estadisticas_cursos' %}" class="nav-link">
+                    <i class="fas fa-chart-line"></i> <span class="menu-texto">Estadísticas</span>
+                </a>
+            </li>
+            <li class="nav-item" style="margin-top: 20px;">
+                <a href="{% url 'generador_cursos:perfil_generador' %}" class="nav-link">
+                    <i class="fas fa-user-circle"></i> <span class="menu-texto">Mi perfil</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-container" id="contenidoPrincipal">
+        
+        <header class="top-bar-vino">
+            <div>
+                <h1>EscalafonIA</h1>
+            </div>
+            
+            <div class="user-dropdown">
+                <button class="btn-user">
+                    <img src="../../static/imagenes/usi.jpg" onerror="this.src='https://ui-avatars.com/api/?name={{ usuario.nombre|default:"Usuario" }}+{{ usuario.apellido_paterno|default:"" }}&background=D4C19C&color=691C32'" alt="Avatar">
+                    Bienvenida {{ usuario.nombre|default:"Usuario" }} <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                </button>
+                <div class="user-dropdown-content">
+                    <a href="#"><i class="fas fa-circle-question" style="margin-right: 8px;"></i> Ayuda y Soporte</a>
+                    <a href="{% url 'generador_cursos:perfil_generador' %}"><i class="fas fa-user-gear" style="margin-right: 8px;"></i> Ajustes de Perfil</a>
+                    <a href="{% url 'logout' %}" style="color: #e74c3c; border-top: 1px solid #eee;"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Salir del Sistema</a>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div style="margin-bottom: 25px;">
+                <h2 style="font-family: 'Montserrat', sans-serif; color: var(--guinda, #691C32); border-bottom: 2px solid var(--dorado, #D4C19C); padding-bottom: 10px; display: inline-block;">
+                    <i class="fas fa-folder-open"></i> Archivo de Mis Cursos
+                </h2>
+            </div>
+
+            <div class="courses-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(350px,1fr)); gap:25px; margin-bottom:2rem;">
+                
+                {% for curso in cursos %}
+                <div class="course-card" style="background:rgb(251, 247, 247); border-radius:20px; border:1px solid #E5E7EB; overflow:hidden; display:flex; flex-direction:column; transition:0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <div class="card-header" style="padding:20px; background:#F9FAFB; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:flex-start;">
+                        <span class="level-tag" style="background:#691C32; color:white; padding:4px 10px; border-radius:6px; font-size:0.65rem; font-weight:800; text-transform:uppercase;">{{ curso.nivel|default:"General" }}</span>
+                        <div style="color:{% if curso.estado == 'Aprobado' %}#007A7C{% elif curso.estado == 'En Revisión' %}#64748B{% elif curso.estado == 'Observaciones' %}#9A3412{% else %}#64748B{% endif %}; font-size:0.65rem; font-weight:900;">
+                            {{ curso.estado|upper }} {% if curso.estado == 'Aprobado' %}<i class="fas fa-check-circle"></i>{% elif curso.estado == 'En Revisión' %}<i class="fas fa-hourglass-half"></i>{% elif curso.estado == 'Observaciones' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding:25px; flex:1;">
+                        <h3 style="font-family:'Montserrat'; font-size:1.1rem; color:#1A1A1A; margin-bottom:10px;">{{ curso.titulo }}</h3>
+                        <p style="color:#64748B; font-size:0.9rem; line-height:1.5;">{{ curso.descripcion|truncatewords:20|default:"Sin descripción" }}</p>
+                    </div>
+                    <div class="card-footer" style="padding:15px 25px; background:#FDFDFD; display:flex; gap:10px; border-top:1px solid #F3F4F6;">
+                        <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="verDetalleCurso('{{ curso.id_curso }}')">VISUALIZAR</button>
+                        {% if curso.estado == 'En Revisión' %}
+                        <button class="btn-edit disabled" style="flex:1; background:#f1f5f9; color:#64748B; border:1px solid #cbd5e1; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:not-allowed; opacity:0.6;" onclick="alert('Este curso está bloqueado mientras se encuentra EN REVISIÓN.')"><i class="fas fa-lock"></i></button>
+                        {% else %}
+                        <button class="btn-edit" style="flex:1; background:white; color:#691C32; border:1.5px solid #691C32; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="editarCurso('{{ curso.id_curso }}', '{{ curso.titulo }}')"><i class="fas fa-pen"></i></button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">
+                    <p>No tienes cursos creados aún.</p>
+                </div>
+                {% endfor %}
+
+                <div class="course-card card-add-new" style="border:2px dashed #E5E7EB; background:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; cursor:pointer; min-height:250px; transition:0.3s;" onclick="window.location.href='{% url "generador_cursos:generador_de_cursos" %}'">
+                    <i class="fas fa-plus-circle" style="font-size:3rem; color:#691C32; margin-bottom:15px; opacity:0.6;"></i>
+                    <h3 style="font-family:'Montserrat'; font-weight:800; color:#691C32; font-size:1rem;">GENERA OTRO CURSO</h3>
+                    <p style="font-size:0.8rem; padding:0 30px; margin-top:5px; color:#661919;">Crea una nueva propuesta pedagógica con Inteligencia Artificial</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer-vino">
+            <p style="margin: 0; font-weight: bold;">&copy; 2026 EscalafonIA - Estudio de Autoría</p>
+            <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: var(--dorado, #D4C19C);">Plataforma Institucional para la Mejora Continua</p>
+        </footer>
+    </main>
+
+    <div class="modal-overlay" id="detailsModal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; z-index:2000; padding:20px;">
+        <div class="details-modal" style="background:white; width:100%; max-width:850px; height:85vh; border-radius:20px; display:flex; flex-direction:column; overflow:hidden; border:3px solid #691C32; box-shadow: 0 15px 40px rgba(0,0,0,0.4);">
+            <div class="modal-header" style="padding:20px 40px; background:#691C32; color:white; display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="modalCourseTitle" style="font-family:'Montserrat'; font-weight:900; margin: 0;"></h3>
+                <button onclick="closeDetails()" style="background:none; border:none; color:white; font-size:2rem; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-scroll" id="modalContent" style="flex:1; overflow-y:auto; padding:30px 40px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica del Menú Hamburguesa en el Sidebar
+        function toggleMenu() {
+            document.getElementById('miSidebar').classList.toggle('mini');
+            document.getElementById('contenidoPrincipal').classList.toggle('expandido');
+        }
+
+        // Lógica de Detalles de Cursos
+        const courseData = {
+            {% for curso in cursos %}
+            '{{ curso.id_curso }}': { title: "{{ curso.titulo }}", description: "{{ curso.descripcion|default:"Sin descripción" }}", estado: "{{ curso.estado }}" }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        function openDetails(id) {
+            const data = courseData[id];
+            if (!data) {
+                alert('Curso no encontrado');
+                return;
+            }
+            document.getElementById('modalCourseTitle').innerText = data.title.toUpperCase();
+            const content = document.getElementById('modalContent');
+            content.innerHTML = `
+                <div style="background:#F8FAFC; border-radius:12px; padding:20px; margin-bottom:15px; border-left:5px solid #007A7C;">
+                    <h4 style="font-family:'Montserrat'; color:#691C32; margin-bottom:5px;">Descripción</h4>
+                    <p style="margin:0;">${data.description}</p>
+                </div>
+                <div style="background:#F8FAFC; border-radius:12px; padding:20px; margin-bottom:15px; border-left:5px solid #007A7C;">
+                    <h4 style="font-family:'Montserrat'; color:#691C32; margin-bottom:5px;">Estado</h4>
+                    <p style="margin:0;">${data.estado}</p>
+                </div>
+            `;
+            document.getElementById('detailsModal').style.display = 'flex';
+        }
+
+        function closeDetails() { 
+            document.getElementById('detailsModal').style.display = 'none'; 
+        }
+
+        function editarCurso(id, nombre) {
+            if (confirm(`¿Deseas abrir el editor para el curso: ${nombre}?`)) {
+                window.location.href = '{% url "generador_cursos:generador_de_cursos" %}?curso_id=' + id;
+            }
+        }
+
+        // Lógica del panel de accesibilidad
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnAcc = document.getElementById('btnAccesibilidad');
+            const panel = document.getElementById('panelAccesibilidad');
+            const btnCerrar = document.getElementById('btnCerrarPanel');
+            const body = document.body;
+
+            btnAcc.addEventListener('click', () => panel.classList.toggle('active'));
+            btnCerrar.addEventListener('click', () => panel.classList.remove('active'));
+
+            document.getElementById('acc-grayscale').addEventListener('change', (e) => body.classList.toggle('grayscale', e.target.checked));
+            document.getElementById('acc-high-contrast').addEventListener('change', (e) => body.classList.toggle('high-contrast', e.target.checked));
+            document.getElementById('acc-invert-colors').addEventListener('change', (e) => body.classList.toggle('invert-colors', e.target.checked));
+            document.getElementById('acc-dark-theme').addEventListener('change', (e) => body.classList.toggle('dark-theme', e.target.checked));
+            document.getElementById('acc-reading-mask').addEventListener('change', (e) => body.classList.toggle('reading-mask', e.target.checked));
+            document.getElementById('acc-reading-guide').addEventListener('change', (e) => body.classList.toggle('reading-guide', e.target.checked));
+            document.getElementById('acc-highlight-links').addEventListener('change', (e) => body.classList.toggle('highlight-links', e.target.checked));
+            document.getElementById('acc-dyslexic-font').addEventListener('change', (e) => body.classList.toggle('dyslexic-font', e.target.checked));
+
+            const root = document.documentElement;
+            let lineHeight = 1.6, letterSpacing = 0, fontSize = 100;
+            
+            document.getElementById('decreaseLineHeight')?.addEventListener('click', () => { lineHeight = Math.max(1.2, lineHeight - 0.1); updateLineHeight(); });
+            document.getElementById('increaseLineHeight')?.addEventListener('click', () => { lineHeight = Math.min(2.5, lineHeight + 0.1); updateLineHeight(); });
+            function updateLineHeight() { root.style.lineHeight = lineHeight; document.getElementById('lineHeightValue').textContent = lineHeight.toFixed(1); }
+
+            document.getElementById('decreaseLetterSpacing')?.addEventListener('click', () => { letterSpacing = Math.max(-2, letterSpacing - 0.5); updateLetterSpacing(); });
+            document.getElementById('increaseLetterSpacing')?.addEventListener('click', () => { letterSpacing = Math.min(5, letterSpacing + 0.5); updateLetterSpacing(); });
+            function updateLetterSpacing() { root.style.letterSpacing = letterSpacing + 'px'; document.getElementById('letterSpacingValue').textContent = letterSpacing + 'px'; }
+
+            document.getElementById('decreaseFontSize')?.addEventListener('click', () => { fontSize = Math.max(60, fontSize - 10); updateFontSize(); });
+            document.getElementById('increaseFontSize')?.addEventListener('click', () => { fontSize = Math.min(200, fontSize + 10); updateFontSize(); });
+            function updateFontSize() { root.style.fontSize = fontSize + '%'; document.getElementById('fontSizeValue').textContent = fontSize + '%'; }
+
+            const cursorOpts = document.querySelectorAll('.cursor-opt');
+            cursorOpts.forEach(btn => btn.addEventListener('click', function() {
+                cursorOpts.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                body.style.cursor = this.dataset.size === 'small' ? 'default' : '';
+            }));
+
+            document.getElementById('resetAccesibilidad').addEventListener('click', () => {
+                body.className = '';
+                lineHeight = 1.6; letterSpacing = 0; fontSize = 100;
+                root.style.lineHeight = ''; root.style.letterSpacing = ''; root.style.fontSize = '';
+                document.getElementById('lineHeightValue').textContent = '1.6';
+                document.getElementById('letterSpacingValue').textContent = '0';
+                document.getElementById('fontSizeValue').textContent = '100%';
+                document.querySelectorAll('.accesibilidad-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
+                cursorOpts.forEach(b => b.classList.remove('active'));
+                document.querySelector('.cursor-opt[data-size="medium"]')?.classList.add('active');
+                body.style.cursor = '';
+                panel.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

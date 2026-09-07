@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon"
+        href="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FullCalendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/evaluador.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/modo-oscuro.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/accesibilidad.css">
+    <link rel="stylesheet" href="../../static/css/evaluador/chat-eva.css">
+    <title>EscalafonIA</title>
+</head>
+
+<body data-agente-ajax-url="{% url 'agente_ajax' %}">
+    <header class="barra-superior">
+
+        <div class="marca">
+            <div class="boton">
+                <button id="btn-menu" class="btn-menu" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="logo-jaguar">
+                <a href="{% url 'evaluador:dashboard' %}"><img
+                        src="https://img.freepik.com/premium-vector/simple-logo-lateral-view-maya-draw-jaguar-head-minimalist-mayan-aesthetic_746655-13160.jpg"
+                        alt="Logo EscalafonIa"></a>
+            </div>
+            <h1><a href="{% url 'evaluador:dashboard' %}"><span>EscalafonIA</span></a></h1>
+            <div class="linea-vertical"></div>
+            <img class="logo-institucional logo-cinvestav" src="../../static/imagenes/logosimbolo.png" alt="Logo Cinvestav">
+            <img class="logo-institucional logo-usicamm" src="../../static/imagenes/USICAMMm.png" alt="Logo Usicamm">
+        </div>
+
+        <div class="user-profile">
+            <button id="userButton">
+                <i class="fa-solid fa-chevron-down"></i>
+                <i class="fa-solid fa-user"></i>
+            </button>
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="{% url 'evaluador:perfil' %}"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'evaluador:configuracion' %}"><i class="fa-solid fa-gear"></i> Configuración</a>
+                <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="contenedor-principal">
+        <nav class="barra-lateral">
+            <ul class="menu-principal">
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:dashboard' %}">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <div class="divisor"></div>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:banco_preguntas' %}">
+                        <i class="fa-solid fa-clipboard-question"></i>
+                        <span>Banco de preguntas</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:evaluaciones' %}">
+                        <i class="fa-solid fa-file-alt"></i>
+                        <span>Evaluaciones</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:validaciones' %}">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Validaciones</span>
+                    </a>
+                </li>
+                <div class="divisor"></div>
+                <li>
+                    <a class="barra-lateral-link activo" href="{% url 'evaluador:calendario' %}">
+                        <i class="fa-solid fa-calendar-alt"></i>
+                        <span>Calendario</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="barra-lateral-link" href="{% url 'evaluador:reportes' %}">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="principal" id="principal">
+            <div class="contenido">
+                <div class="encabezado-pagina">
+                    <h1 class="titulo">
+                        <i class="fas fa-calendar-alt"></i> Calendario
+                    </h1>
+                    <p class="subtitulo">Fechas importantes y plazos de procesos USICAMM 2026</p>
+                </div>
+
+                <!-- Barra de Herramientas -->
+                <div class="barra-herramientas">
+                    <div class="herramientas-izquierda">
+                        <button class="btn btn-primary" id="btnNuevoEvento">
+                            <i class="fas fa-plus-circle"></i> Nuevo Evento
+                        </button>
+
+
+                    </div>
+
+                    <div class="herramientas-derecha">
+                        <div class="controles-calendario">
+                            <div class="navegacion-mes">
+                                <button class="btn-navegacion" id="btnAnteriorMes">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <div class="mes-actual" id="mesActual">Junio 2024</div>
+                                <button class="btn-navegacion" id="btnSiguienteMes">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <button class="btn-hoy" id="btnHoy">Hoy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor Calendario Completo -->
+                <div class="contenedor-calendario">
+                    <!-- Calendario FullCalendar -->
+                    <div class="calendario-principal">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Proximos eventos -->
+                <div class="calendario-procesos">
+
+                    <div class="seccion-header">
+                        <h2><i class="fas fa-calendar-check"></i> Proximos eventos</h2>
+                    </div>
+
+                    <div class="lista-proximos-eventos" id="listaProximosEventos"></div>
+
+                    <div class="barra-herramientas">
+                        <div class="herramientas-izquierda">
+
+                            <!-- Filtros -->
+                            <div class="filtros">
+                                <select class="filtro-select" id="filtroTipo">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="evaluacion">Promoción horizontal</option>
+                                    <option value="plazo">Promoción vertical</option>
+                                </select>
+
+                                <input type="date" class="filtro-select" id="filtroFecha">
+
+                                <button class="btn-filtro" id="btnAplicarFiltro">
+                                    <i class="fas fa-filter"></i> Filtrar
+                                </button>
+
+                                <button class="btn-filtro" id="btnLimpiarFiltro">
+                                    <i class="fas fa-times"></i> Limpiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tabla-procesos">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Proceso</th>
+                                    <th>Tipo</th>
+                                    <th>Registro</th>
+                                    <th>Ciclo</th>
+                                    <th>Estado</th>
+                                    <th>Valoración</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaProcesosBody">
+                                {% for proceso in calendario_procesos_bd %}
+                                    <tr>
+                                        <td>{{ proceso.folio }}</td>
+                                        <td>{{ proceso.tipo_proceso }}</td>
+                                        <td>{% if proceso.fecha_registro %}{{ proceso.fecha_registro|date:"d/m/Y" }}{% else %}Sin fecha{% endif %}</td>
+                                        <td>{{ proceso.ciclo_escolar|default:"No disponible" }}</td>
+                                        <td>{{ proceso.estatus|default:"Desconocido" }}</td>
+                                        <td>{{ proceso.tipo_valoracion|default:"Sin valoración" }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">Sin procesos registrados en la base de datos.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <footer class="contenedor-footer">
+               <p> Derechos reservados &copy; Cinvestav-USICAMM</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Modal Nuevo Evento -->
+    <div class="modal-overlay" id="modalNuevoEvento">
+        <div class="modal-eventos">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Nuevo Evento</h3>
+                <button class="btn-cerrar" id="btnCerrarModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="formNuevoEvento">
+                    <div class="form-group">
+                        <label for="eventoTitulo">Título del Evento *</label>
+                        <input type="text" id="eventoTitulo" class="form-control" placeholder="Ej: Evaluación Primaria"
+                            required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventoFecha">Fecha *</label>
+                            <input type="date" id="eventoFecha" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventoHoraInicio">Hora Inicio</label>
+                            <input type="time" id="eventoHoraInicio" class="form-control" value="09:00">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventoTipo">Tipo de Evento *</label>
+                            <select id="eventoTipo" class="form-control" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="evaluacion">Evaluación</option>
+                                <option value="plazo">Plazo límite</option>
+                                <option value="revision">Revisión</option>
+                                <option value="publicacion">Publicación</option>
+                                <option value="reunion">Reunión</option>
+                                <option value="personal">Personal</option>
+                                <option value="capacitacion">Capacitación</option>
+                                <option value="convocatoria">Convocatoria</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventoHoraFin">Hora Fin</label>
+                            <input type="time" id="eventoHoraFin" class="form-control" value="12:00">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventoUbicacion">Ubicación</label>
+                        <input type="text" id="eventoUbicacion" class="form-control"
+                            placeholder="Ej: Plataforma en línea, Sala 3, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventoColor">Color del Evento</label>
+                        <div class="color-options">
+                            <div class="color-option" data-color="evaluacion" title="Evaluación"></div>
+                            <div class="color-option" data-color="plazo" title="Plazo límite"></div>
+                            <div class="color-option" data-color="revision" title="Revisión"></div>
+                            <div class="color-option" data-color="publicacion" title="Publicación"></div>
+                            <div class="color-option" data-color="reunion" title="Reunión"></div>
+                            <div class="color-option" data-color="personal" title="Personal"></div>
+                            <div class="color-option" data-color="capacitacion" title="Capacitación"></div>
+                            <div class="color-option" data-color="convocatoria" title="Convocatoria"></div>
+                        </div>
+                        <input type="hidden" id="eventoColor" value="evaluacion">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventoDescripcion">Descripción</label>
+                        <textarea id="eventoDescripcion" class="form-control textarea"
+                            placeholder="Descripción detallada del evento..."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelarEvento">Cancelar</button>
+                <button type="button" class="btn-guardar" id="btnGuardarEvento">
+                    <i class="fas fa-save"></i> Guardar Evento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fondo"></div>
+
+    <button class="btn-chatbot" id="btn-chatbot"><i class="fa-solid fa-robot"></i></button>
+    <div id="ventana-chatbot" class="ventana-oculto-chatbot">
+        <div class="cabecera-chatbot">
+            <p>Chatbot</p>
+            <button class="btn-cerrar-chatbot" id="btn-cerrar-chatbot"><i class="fa-solid fa-circle-xmark"></i></button>
+        </div>
+        <div class="chatbot">
+            <div class="mensajes-chatbot" id="mensajes-chatbot">
+
+            </div>
+            <div class="input-chatbot">
+                <input type="text" id="mensaje-input-chatbot" placeholder="Escribe tu mensaje...">
+                <button id="btn-microfono"><i class="fa-solid fa-microphone"></i></button>
+                <button id="btn-enviar-mensaje-chatbot"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
+
+    <!-- Scripts -->
+    <script src="../../static/js/evaluador/barra-lateral.js"></script>
+    <script src="../../static/js/evaluador/menu-usuario.js"></script>
+    <script src="../../static/js/evaluador/accesibilidad.js"></script>
+    <script src="../../static/js/evaluador/chat-eva.js"></script>
+    {% if calendario_procesos_bd %}
+        {{ calendario_procesos_bd|json_script:"calendarioProcesosBd" }}
+    {% endif %}
+    {% if eventos_bd %}
+        {{ eventos_bd|json_script:"eventosBd" }}
+    {% endif %}
+    <script>
+        const calendarioProcesosElem = document.getElementById('calendarioProcesosBd');
+        const eventosBdElem = document.getElementById('eventosBd');
+        const calendarioProcesos = JSON.parse(calendarioProcesosElem ? calendarioProcesosElem.textContent : '[]');
+        const eventosPersistidos = JSON.parse(eventosBdElem ? eventosBdElem.textContent : '[]');
+        window.eventosData = [
+            ...calendarioProcesos.map(proceso => ({
+                title: proceso.folio,
+                start: proceso.fecha_registro ? proceso.fecha_registro.split('T')[0] : null,
+                allDay: true,
+                className: `evento-${String(proceso.tipo_proceso || 'evento').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-fc`,
+                tipo: proceso.tipo_proceso,
+                descripcion: proceso.tipo_valoracion || proceso.estatus || '',
+                lugar: proceso.tipo_sostenimiento || 'No disponible'
+            })),
+            ...eventosPersistidos.map(evento => ({
+                title: evento.detalles && evento.detalles.titulo ? evento.detalles.titulo : (evento.tipo_evento || 'Evento'),
+                start: evento.start || evento.fecha_evento,
+                end: evento.end || (evento.detalles && evento.detalles.end) || evento.fecha_evento,
+                allDay: evento.allDay || (evento.detalles && evento.detalles.allDay) || false,
+                className: `evento-${String(evento.tipo_evento || 'evento').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-fc`,
+                tipo: evento.tipo_evento,
+                descripcion: evento.detalles && evento.detalles.titulo ? evento.detalles.titulo : (evento.descripcion || ''),
+                lugar: evento.lugar || (evento.detalles && evento.detalles.lugar) || '',
+            })),
+        ];
+        window.procesosData = calendarioProcesos.map(proceso => ({
+            proceso: proceso.folio,
+            tipo: proceso.tipo_proceso,
+            fechaInicio: proceso.fecha_registro ? proceso.fecha_registro.split('T')[0] : '',
+            fechaFin: proceso.ciclo_escolar || 'No disponible',
+            estado: proceso.estatus,
+            descripcion: proceso.tipo_valoracion || '',
+        }));
+    </script>
+    <script src="../../static/js/evaluador/calendario.js"></script>
+    <script>
+        const agenteAjaxURL = "{% url 'agente_ajax' %}";
+    </script>
+</body>
+
+</html>

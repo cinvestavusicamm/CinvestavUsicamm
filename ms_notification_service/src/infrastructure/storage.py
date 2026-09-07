@@ -1,0 +1,1 @@
+# Storage placeholder para notificaciones.
