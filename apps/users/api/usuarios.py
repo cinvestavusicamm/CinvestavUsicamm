@@ -10,7 +10,6 @@ from apps.users.services.permisos import requiere_rol
 from apps.users.config.constants import ROLE_ADMIN
 from django.contrib.auth.hashers import make_password
 from django.core.cache import cache
-from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 
 logger = logging.getLogger(__name__)
@@ -57,7 +56,6 @@ def _validate_field_length(value, field_name, max_length):
     return None
 
 
-@csrf_exempt
 @requiere_rol(ROLE_ADMIN)
 def agregar_usuario_ajax(request):
     """API endpoint para agregar un nuevo usuario"""
@@ -140,7 +138,6 @@ def agregar_usuario_ajax(request):
         return JsonResponse({'success': False, 'error': 'Error interno del servidor. Contacte al administrador.'}, status=500)
 
 
-@csrf_exempt
 @requiere_rol(ROLE_ADMIN)
 def toggle_usuario(request, id):
     """API endpoint para activar/desactivar un usuario"""
@@ -178,7 +175,6 @@ def toggle_usuario(request, id):
         return respuesta_error(request, 'Usuario no encontrado')
 
 
-@csrf_exempt
 @requiere_rol(ROLE_ADMIN)
 def editar_usuario_ajax(request, id):
     """API endpoint para editar un usuario"""
@@ -259,7 +255,6 @@ def editar_usuario_ajax(request, id):
         return JsonResponse({'success': False, 'error': 'Error interno del servidor. Contacte al administrador.'}, status=500)
 
 
-@csrf_exempt
 @requiere_rol(ROLE_ADMIN)
 def obtener_usuario_ajax(request, id):
     """API endpoint para obtener datos de un usuario"""
