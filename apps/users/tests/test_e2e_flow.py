@@ -47,7 +47,7 @@ class EndToEndFlowTest(TestCase):
         self.assertIn('usuario_id', self.client.session)
         self.assertEqual(self.client.session['usuario_id'], 1)
         self.assertEqual(self.client.session['usuario_nombre'], 'Admin')
-        self.assertEqual(self.client.session['usuario_rol'], 'Administrador')
+        self.assertEqual(self.client.session['usuario_rol'], ROLE_ADMIN)
         
         # Step 2: Logout
         response = self.client.get(reverse('logout'))
@@ -89,7 +89,7 @@ class EndToEndFlowTest(TestCase):
         
         self.assertEqual(response.status_code, 302, "Login should redirect")
         self.assertIn('usuario_id', self.client.session)
-        self.assertEqual(self.client.session['usuario_rol'], 'Docente')
+        self.assertEqual(self.client.session['usuario_rol'], ROLE_DOCENTE)
         
         # Step 2: Interact with AI agent (communication with microservices)
         response = self.client.post(

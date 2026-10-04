@@ -9,6 +9,7 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from apps.users.config.constants import ROLE_ADMIN
 from apps.users.views.administrador.admin_users_views import (
     agregar_usuario_ajax,
     editar_usuario_ajax,
@@ -55,7 +56,7 @@ class AuthViewsUnitTests(TestCase):
             activo=True,
             id_usuario=10,
             nombre="Ana",
-            rol=SimpleNamespace(nombre_rol="Administrador"),
+            rol=SimpleNamespace(nombre_rol=ROLE_ADMIN),
             check_password=MagicMock(return_value=True),
             save=MagicMock(),
         )
@@ -73,7 +74,7 @@ class AuthViewsUnitTests(TestCase):
         self.assertEqual(response.url, reverse("administrador:panel_admin"))
         self.assertEqual(request.session["usuario_id"], 10)
         self.assertEqual(request.session["usuario_nombre"], "Ana")
-        self.assertEqual(request.session["usuario_rol"], "Administrador")
+        self.assertEqual(request.session["usuario_rol"], ROLE_ADMIN)
         fake_user.save.assert_called_once_with(update_fields=["ultimo_acceso"])
 
 
