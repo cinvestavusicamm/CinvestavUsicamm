@@ -13,8 +13,6 @@ Dos detalles del orden real de las capas que condicionan las aserciones:
 """
 
 import re
-from unittest.mock import patch
-
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -24,7 +22,7 @@ from apps.users.config.constants import (
     ROLE_EVALUADOR,
     ROLE_GENERADOR,
 )
-from apps.users.models import Institucion, Rol, Usuario
+from apps.users.models import BitacoraEvento, Institucion, Rol, Usuario
 
 CSRF_RE = re.compile(r'name="csrfmiddlewaretoken" value="([^"]+)"')
 
@@ -33,15 +31,6 @@ class AdminSecurityTestBase(TestCase):
     ROLES_NO_ADMIN = (ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR)
 
     def setUp(self):
-        # La bitacora se parchea porque la migracion 0003 creo bitacora_eventos
-        # sin las columnas ip_direccion ni detalles que el modelo declara, de
-        # modo que escribir en ella revienta con OperationalError sobre una base
-        # construida desde migraciones. Es una incongruencia de esquema aparte,
-        # ajena a lo que estos tests cubren.
-        patcher = patch("apps.users.api.usuarios._registrar_bitacora")
-        self.registrar = patcher.start()
-        self.addCleanup(patcher.stop)
-
         self.institucion = Institucion.objects.create(
             nombre="Instituto de prueba", tipo="INSTITUCION", activo=True
         )
@@ -250,3 +239,23 @@ class AdminLegitimoTests(AdminSecurityTestBase):
         self.assertEqual(respuesta.status_code, 200)
         self.objetivo.refresh_from_db()
         self.assertFalse(self.objetivo.activo)
+
+    def test_la_bitacora_registra_el_evento(self):
+        """Guarda contra la migracion que creo bitacora_eventos incompleta.
+
+        Antes de 0007_bitacora_evento_missing_fields, escribir en la bitacora
+        fallaba con OperationalError por las columnas ip_direccion y detalles,
+        y estos tests lo ocultaban parcheando _registrar_bitacora.
+        """
+        cliente = self._cliente(self.admin)
+        token = self._token_csrf(cliente)
+
+        cliente.post(
+            reverse("administrador:toggle_usuario", kwargs={"id": self.objetivo.id_usuario}),
+            {"csrfmiddlewaretoken": token},
+        )
+
+        eventos = list(BitacoraEvento.objects.filter(usuario=self.admin))
+        self.assertEqual(len(eventos), 1)
+        self.assertEqual(eventos[0].tipo_evento, "USUARIO_ACTUALIZADO")
+        self.assertEqual(eventos[0].detalles, {"usuario_actualizado": self.objetivo.id_usuario, "activo": False})
