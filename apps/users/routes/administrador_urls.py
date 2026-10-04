@@ -1,6 +1,7 @@
 from django.urls import path
 from apps.users.views.administrador.admin_views import panel_admin
-from apps.users.views.administrador.admin_users_views import crear_admin, agregar_usuario_ajax, editar_usuario_ajax, toggle_usuario, obtener_usuario_ajax
+from apps.users.views.administrador.admin_views import crear_admin
+from apps.users.api.usuarios import agregar_usuario_ajax, editar_usuario_ajax, toggle_usuario, obtener_usuario_ajax
 from apps.users.views.administrador.db_schema_views import listar_tablas_bd
 
 app_name = 'administrador'

@@ -1,9 +1,67 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from ...models import Institucion, Usuario, Rol
 from django.views.decorators.cache import never_cache
 from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE
 from apps.users.services.permisos import requiere_rol
+from apps.users.services.bitacora_service import BitacoraService
+from apps.users.services.user_service import UserService
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def _registrar_bitacora(request, tipo_evento, descripcion, detalles=None):
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return
+
+    try:
+        BitacoraService.registrar(
+            usuario_id=usuario_id,
+            tipo_evento=tipo_evento,
+            descripcion=descripcion,
+            request=request,
+            detalles=detalles,
+        )
+    except Exception as exc:
+        logger.warning("No se pudo registrar bitácora: %s", exc)
+
+
+@never_cache
+@requiere_rol(ROLE_ADMIN)
+def crear_admin(request):
+    if request.method == 'POST':
+        rol_admin = Rol.objects.get(nombre_rol=ROLE_ADMIN)
+        institucion = Institucion.objects.get(id_institucion=request.POST['institucion'])
+
+        usuario = UserService.crear_usuario({
+            'nombre': request.POST['nombre'],
+            'apellido_paterno': request.POST['apellido_paterno'],
+            'apellido_materno': request.POST.get('apellido_materno', ''),
+            'correo': request.POST['correo'],
+            'contrasena': request.POST['password'],
+            'curp': request.POST['curp'],
+            'rol': rol_admin,
+            'institucion': institucion,
+            'activo': True,
+        })
+
+        _registrar_bitacora(
+            request,
+            'ADMIN_CREADO',
+            f'Creó al administrador {usuario.id_usuario}',
+            {'usuario_creado': usuario.id_usuario},
+        )
+
+        messages.success(request, 'Administrador creado correctamente')
+        return redirect('administrador:panel_admin')
+
+    instituciones = Institucion.objects.all()
+    return render(request, 'administrador/crear_admin.html', {'instituciones': instituciones})
+
 
 @never_cache
 @requiere_rol(ROLE_ADMIN)

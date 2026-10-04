@@ -9,7 +9,7 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from apps.users.config.constants import ROLE_ADMIN
-from apps.users.views.administrador.admin_users_views import (
+from apps.users.api.usuarios import (
     agregar_usuario_ajax,
     editar_usuario_ajax,
     obtener_usuario_ajax,
@@ -23,6 +23,12 @@ def _attach_session_and_messages(request):
     middleware.process_request(request)
     request.session.save()
     setattr(request, "_messages", FallbackStorage(request))
+    return request
+
+
+def _login_como_admin(request, usuario_id=1):
+    request.session["usuario_id"] = usuario_id
+    request.session["usuario_rol"] = ROLE_ADMIN
     return request
 
 
@@ -86,16 +92,14 @@ class UsersAjaxPermissionTests(TestCase):
         _attach_session_and_messages(request)
 
         response = agregar_usuario_ajax(request)
-        payload = json.loads(response.content)
 
-        self.assertEqual(response.status_code, 401)
-        self.assertFalse(payload["success"])
-        self.assertEqual(payload["error"], "No autorizado")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("sesion"), response.url)
 
     def test_toggle_usuario_blocks_self_deactivation(self):
         request = self.factory.post(reverse("administrador:toggle_usuario", kwargs={"id": 9}))
         _attach_session_and_messages(request)
-        request.session["usuario_id"] = 9
+        _login_como_admin(request, usuario_id=9)
 
         response = toggle_usuario(request, 9)
         payload = json.loads(response.content)
@@ -109,7 +113,7 @@ class UsersAjaxCrudTests(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-    @patch("apps.users.views.administrador.admin_users_views.UserService")
+    @patch("apps.users.api.usuarios.UserService")
     def test_obtener_usuario_ajax_returns_user_data(self, user_service):
         fake_user = SimpleNamespace(
             id_usuario=7,
@@ -125,7 +129,7 @@ class UsersAjaxCrudTests(TestCase):
 
         request = self.factory.get(reverse("administrador:obtener_usuario_ajax", kwargs={"id": 7}))
         _attach_session_and_messages(request)
-        request.session["usuario_id"] = 1
+        _login_como_admin(request)
 
         response = obtener_usuario_ajax(request, 7)
         payload = json.loads(response.content)
@@ -135,7 +139,7 @@ class UsersAjaxCrudTests(TestCase):
         self.assertEqual(payload["id_usuario"], 7)
         self.assertEqual(payload["correo"], "luis@test.com")
 
-    @patch("apps.users.views.administrador.admin_users_views.UserService")
+    @patch("apps.users.api.usuarios.UserService")
     def test_obtener_usuario_ajax_returns_not_found(self, user_service):
         from apps.users.models import Usuario
 
@@ -143,7 +147,7 @@ class UsersAjaxCrudTests(TestCase):
 
         request = self.factory.get(reverse("administrador:obtener_usuario_ajax", kwargs={"id": 999}))
         _attach_session_and_messages(request)
-        request.session["usuario_id"] = 1
+        _login_como_admin(request)
 
         response = obtener_usuario_ajax(request, 999)
         payload = json.loads(response.content)
@@ -152,8 +156,8 @@ class UsersAjaxCrudTests(TestCase):
         self.assertFalse(payload["success"])
         self.assertEqual(payload["error"], "Usuario no encontrado")
 
-    @patch("apps.users.views.administrador.admin_users_views._registrar_bitacora")
-    @patch("apps.users.views.administrador.admin_users_views.Usuario")
+    @patch("apps.users.api.usuarios._registrar_bitacora")
+    @patch("apps.users.api.usuarios.Usuario")
     def test_editar_usuario_ajax_updates_user_data(self, usuario_model, registrar_bitacora):
         fake_user = SimpleNamespace(
             id_usuario=5,
@@ -178,7 +182,7 @@ class UsersAjaxCrudTests(TestCase):
             },
         )
         _attach_session_and_messages(request)
-        request.session["usuario_id"] = 1
+        _login_como_admin(request)
 
         response = editar_usuario_ajax(request, 5)
         payload = json.loads(response.content)
@@ -192,7 +196,7 @@ class UsersAjaxCrudTests(TestCase):
     def test_editar_usuario_ajax_requires_post(self):
         request = self.factory.get(reverse("administrador:editar_usuario_ajax", kwargs={"id": 5}))
         _attach_session_and_messages(request)
-        request.session["usuario_id"] = 1
+        _login_como_admin(request)
 
         response = editar_usuario_ajax(request, 5)
         payload = json.loads(response.content)
