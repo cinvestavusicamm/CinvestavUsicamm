@@ -19,8 +19,7 @@ class DbSchemaViewsTests(TestCase):
 
         response = self.client.get(reverse("administrador:bd_tablas"))
 
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("sesion"))
+        self.assertEqual(response.status_code, 403)
 
     def test_listar_tablas_bd_returns_html_for_admin(self):
         self._login_con_rol(ROLE_ADMIN)

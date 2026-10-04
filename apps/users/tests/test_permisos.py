@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponse
 from django.test import RequestFactory, TestCase
 
@@ -44,7 +46,21 @@ class RequiereRolDecoratorTest(TestCase):
 
         response = vista_docente(request)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
+
+    def test_decorador_rol_no_permitido_devuelve_json_en_ajax(self):
+        @requiere_rol(ROLE_DOCENTE)
+        def vista_docente(request):
+            return HttpResponse("Acceso permitido")
+
+        request = self.factory.get("/test/", headers={"x-requested-with": "XMLHttpRequest"})
+        request.session = {"usuario_id": 2, "usuario_rol": ROLE_ADMIN}
+
+        response = vista_docente(request)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response["Content-Type"], "application/json")
+        self.assertEqual(json.loads(response.content)["estado"], "error")
 
     def test_decorador_multiples_roles_permitidos(self):
         @requiere_rol(ROLE_DOCENTE, ROLE_ADMIN)
