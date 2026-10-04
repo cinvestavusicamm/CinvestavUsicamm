@@ -10,6 +10,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
+# Resolucion de la base de datos.
+#
+# La politica por entorno NO vive aqui: base solo resuelve lo que se le pasa.
+# core/settings/dev.py pone un default local (SQLite) y core/settings/prov.py
+# convierte la ausencia en un error, porque en produccion no puede haber
+# fallback: si no se indica la base, el proyecto no debe arrancar.
+#
+# Antes se leia config('DATABASE_URL') sin default aqui, lo que hacia que en
+# desarrollo se usara whatever hubiera en el .env local, que apuntaba a
+# Supabase. Ahora si no se indica nada, desarrollo usa un SQLite local.
+DATABASE_URL = config('DATABASE_URL', default=None)
+
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
     default='localhost',
@@ -46,8 +58,11 @@ MIDDLEWARE = [
 ]
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+    'default': dj_database_url.parse(
+        # parse() y no config(): config() vuelve a leer la variable de entorno
+        # por su cuenta y, si esta definida pero vacia, se queda con ella en
+        # lugar de usar el default de aqui.
+        DATABASE_URL or f'sqlite:///{BASE_DIR / "db.sqlite3"}',
         conn_max_age=600,
     )
 }
