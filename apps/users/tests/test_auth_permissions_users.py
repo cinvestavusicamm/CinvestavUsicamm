@@ -7,7 +7,6 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
-from django.utils import timezone
 
 from apps.users.config.constants import ROLE_ADMIN
 from apps.users.views.administrador.admin_users_views import (
@@ -48,10 +47,10 @@ class AuthViewsUnitTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("sesion"))
 
-    @patch("apps.users.views.auth_views.timezone.now")
+    @patch("apps.users.views.auth_views.timezone")
     @patch("apps.users.views.auth_views.Usuario")
-    def test_sesion_sets_session_and_redirects_admin(self, usuario_model, now_mock):
-        now_mock.return_value = timezone.make_aware(datetime(2026, 1, 1))
+    def test_sesion_sets_session_and_redirects_admin(self, usuario_model, timezone_mock):
+        timezone_mock.now.return_value = datetime(2026, 1, 1)
         fake_user = SimpleNamespace(
             activo=True,
             id_usuario=10,
