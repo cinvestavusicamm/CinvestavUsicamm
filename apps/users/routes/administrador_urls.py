@@ -7,7 +7,6 @@ from apps.users.views.administrador.db_schema_views import listar_tablas_bd
 app_name = 'administrador'
 
 urlpatterns = [
-    path('dashboard/', panel_admin, name='dashboard'),
     path('panel-admin/', panel_admin, name='panel_admin'),
     path('crear-admin/', crear_admin, name='crear_admin'),
     path('agregar_usuario_ajax/', agregar_usuario_ajax, name='agregar_usuario_ajax'),

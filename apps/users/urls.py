@@ -1,7 +1,6 @@
 from django.urls import path, include
 from .views.auth_views import sesion, registro, cerrar_sesion
 from .views.dashboard_views import dashboard
-from .views.administrador.admin_views import panel_admin
 from .api.agente import agente_ajax
 from .api.admin import listar_tablas_bd
 from .api.health import health_check

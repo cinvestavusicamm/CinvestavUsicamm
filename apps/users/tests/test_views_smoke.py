@@ -79,7 +79,6 @@ class ViewsSmokeTest(TestCase):
         self._login_con_rol(ROLE_ADMIN)
         
         admin_routes = [
-            'administrador:dashboard',
             'administrador:panel_admin',
             'administrador:bd_tablas',
         ]
