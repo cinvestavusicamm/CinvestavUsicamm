@@ -54,6 +54,28 @@ docker-compose exec django python manage.py migrate
 - **FastAPI**: http://localhost:8003
 - **Health Check**: http://localhost:8001/health/
 
+## 🧪 Pruebas
+
+La suite es la de Django, en `apps/users/tests`. Corre entera con:
+
+```bash
+DJANGO_SETTINGS_MODULE=core.settings.dev DATABASE_URL=sqlite:///:memory: \
+./venv/bin/python manage.py test
+```
+
+`DJANGO_SETTINGS_MODULE` y `DATABASE_URL` se pueden omitir si `manage.py` ya los tiene por defecto y
+`.env` apunta a una base de datos local; la base en memoria evita tocar ninguna.
+
+Un subconjunto se corre por etiqueta:
+
+```bash
+./venv/bin/python manage.py test apps.users.tests.test_admin_protection
+```
+
+Un test aparece como `skipped` en SQLite y no es un fallo: `test_admin_protection_concurrency`
+comprueba `select_for_update`, que SQLite no implementa. Necesita PostgreSQL; el comando está en
+`PLAN.md`, DEUDA-6.
+
 ## 📚 Documentación Completa
 
 Para documentación técnica detallada, consulta la carpeta `/docs`:
