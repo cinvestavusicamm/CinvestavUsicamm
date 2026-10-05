@@ -15,7 +15,36 @@ from apps.users.api.usuarios import (
     obtener_usuario_ajax,
     toggle_usuario,
 )
+from apps.users.models import Institucion, Rol, Usuario
 from apps.users.views.auth_views import sesion
+
+_contador = [0]
+
+
+def _crear_admin_real():
+    """ADMIN de verdad en la base.
+
+    requiere_rol relee el usuario en cada peticion, asi que un
+    usuario_id inventado ya no sirve: la sesion se invalida y la vista
+    responde 302 antes de llegar al codigo que el test quiere ejercitar.
+    """
+    _contador[0] += 1
+    institucion, _ = Institucion.objects.get_or_create(
+        nombre='Institucion de prueba',
+        defaults={'tipo': 'UNIVERSIDAD', 'activo': True},
+    )
+    rol, _ = Rol.objects.get_or_create(nombre_rol=ROLE_ADMIN)
+    return Usuario.objects.create(
+        nombre='Admin',
+        apellido_paterno='Prueba',
+        correo=f'admin{_contador[0]}@test.com',
+        curp=f'ADMP{_contador[0]:02d}000000AAA0',
+        contrasena='x',
+        rol=rol,
+        institucion=institucion,
+        activo=True,
+        fecha_registro=datetime.now(),
+    )
 
 
 def _attach_session_and_messages(request):
@@ -26,7 +55,9 @@ def _attach_session_and_messages(request):
     return request
 
 
-def _login_como_admin(request, usuario_id=1):
+def _login_como_admin(request, usuario_id=None):
+    if usuario_id is None:
+        usuario_id = _crear_admin_real().id_usuario
     request.session["usuario_id"] = usuario_id
     request.session["usuario_rol"] = ROLE_ADMIN
     return request
@@ -97,11 +128,14 @@ class UsersAjaxPermissionTests(TestCase):
         self.assertIn(reverse("sesion"), response.url)
 
     def test_toggle_usuario_blocks_self_deactivation(self):
-        request = self.factory.post(reverse("administrador:toggle_usuario", kwargs={"id": 9}))
+        admin = _crear_admin_real()
+        request = self.factory.post(
+            reverse("administrador:toggle_usuario", kwargs={"id": admin.id_usuario})
+        )
         _attach_session_and_messages(request)
-        _login_como_admin(request, usuario_id=9)
+        _login_como_admin(request, usuario_id=admin.id_usuario)
 
-        response = toggle_usuario(request, 9)
+        response = toggle_usuario(request, admin.id_usuario)
         payload = json.loads(response.content)
 
         self.assertEqual(response.status_code, 400)

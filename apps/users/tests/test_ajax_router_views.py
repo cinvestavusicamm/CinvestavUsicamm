@@ -1,11 +1,14 @@
 import json
+from datetime import datetime
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from django.test import RequestFactory, SimpleTestCase
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
 
 from apps.users.config.constants import ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR
+from apps.users.models import Institucion, Rol, Usuario
 from apps.users.services.router_service import RouterService
 from apps.users.api.agente import agente_ajax
 from apps.users.api.roles import (
@@ -14,8 +17,43 @@ from apps.users.api.roles import (
     datos_generador_ajax,
 )
 
+_contador = [0]
+
+
+def _crear_usuario_real(rol):
+    _contador[0] += 1
+    institucion, _ = Institucion.objects.get_or_create(
+        nombre='Institucion de prueba',
+        defaults={'tipo': 'UNIVERSIDAD', 'activo': True},
+    )
+    rol_obj, _ = Rol.objects.get_or_create(nombre_rol=rol)
+    return Usuario.objects.create(
+        nombre='Usuario',
+        apellido_paterno='Ajax',
+        correo=f'ajax{_contador[0]}@test.com',
+        curp=f'AJAX{_contador[0]:02d}000000AAA0',
+        contrasena='x',
+        rol=rol_obj,
+        institucion=institucion,
+        activo=True,
+        fecha_registro=datetime.now(),
+    )
+
 
 def _request_with_session(request, rol):
+    """Sesion real en base: requiere_rol relee el usuario en cada peticion,
+    asi que un id inventado seria rechazado antes de llegar a la vista."""
+    middleware = SessionMiddleware(lambda req: None)
+    middleware.process_request(request)
+    request.session.save()
+    request.session["usuario_id"] = _crear_usuario_real(rol).id_usuario
+    request.session["usuario_rol"] = rol
+    request.session.save()
+    return request
+
+
+def _request_with_plain_session(request, rol):
+    """Solo para vistas sin requiere_rol (api/agente), que no tocan la base."""
     request.session = {"usuario_id": 1, "usuario_rol": rol}
     return request
 
@@ -36,7 +74,7 @@ class AgentAjaxRouterTests(SimpleTestCase):
     def test_agente_ajax_usa_bd_cuando_el_decisor_lo_indica(self, responder_desde_bd):
         responder_desde_bd.return_value = "Cursos registrados: 3."
         request = self.factory.post(reverse("agente_ajax"), data={"pregunta": "cuantos cursos hay"})
-        _request_with_session(request, ROLE_EVALUADOR)
+        _request_with_plain_session(request, ROLE_EVALUADOR)
 
         response = agente_ajax(request)
         payload = json.loads(response.content)
@@ -46,7 +84,10 @@ class AgentAjaxRouterTests(SimpleTestCase):
         self.assertEqual(payload["datos"]["answer"], "Cursos registrados: 3.")
 
 
-class RoleAjaxEndpointTests(SimpleTestCase):
+class RoleAjaxEndpointTests(TestCase):
+    """Estas vistas pasan por requiere_rol, que ya consulta la base: esta
+    clase necesita acceso a datos y no puede ser SimpleTestCase."""
+
     def setUp(self):
         self.factory = RequestFactory()
         self.usuario = SimpleNamespace(

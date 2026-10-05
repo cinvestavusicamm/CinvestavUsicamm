@@ -1,7 +1,12 @@
+from datetime import datetime
+
 from django.test import Client, TestCase
 from django.urls import reverse
 
 from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE
+from apps.users.models import Institucion, Rol, Usuario
+
+_contador = [0]
 
 
 class DbSchemaViewsTests(TestCase):
@@ -9,8 +14,30 @@ class DbSchemaViewsTests(TestCase):
         self.client = Client()
 
     def _login_con_rol(self, rol):
+        """Sesion con un usuario real del rol pedido.
+
+        requiere_rol valida contra la base, por lo que un usuario_id = 1
+        fijo ya no abre ninguna vista.
+        """
+        _contador[0] += 1
+        institucion, _ = Institucion.objects.get_or_create(
+            nombre='Institucion de prueba',
+            defaults={'tipo': 'UNIVERSIDAD', 'activo': True},
+        )
+        rol_obj, _ = Rol.objects.get_or_create(nombre_rol=rol)
+        usuario = Usuario.objects.create(
+            nombre='Usuario',
+            apellido_paterno='Esquema',
+            correo=f'esquema{_contador[0]}@test.com',
+            curp=f'ESQ{_contador[0]:02d}000000AAA0',
+            contrasena='x',
+            rol=rol_obj,
+            institucion=institucion,
+            activo=True,
+            fecha_registro=datetime.now(),
+        )
         session = self.client.session
-        session["usuario_id"] = 1
+        session["usuario_id"] = usuario.id_usuario
         session["usuario_rol"] = rol
         session.save()
 
