@@ -115,6 +115,10 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/2
       - AI_AGENT_SERVICE_URL=http://ms_ai_agent_service:8107
+      # Clave compartida con ia_service_core para /agente-ajax/ (cabecera
+      # X-Internal-Service-Key). ${VAR:?} corta el `up` si falta, en vez de
+      # dejar el endpoint devolviendo 500 por configuracion incompleta.
+      - INTERNAL_SERVICE_KEY=${INTERNAL_SERVICE_KEY:?define INTERNAL_SERVICE_KEY en .env}
     command: >
       sh -c "echo '============================================================' &&
             echo 'LEVANTANDO SERVICIOS...' &&

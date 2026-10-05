@@ -135,7 +135,7 @@ es otro resto igual que este.
 
 ### DEUDA-8. La clave de servicio entre Django y el microservicio de IA, en cuatro sitios y con tres nombres
 
-**Estado: Django arreglado; el resto del engranaje sigue roto y bloquea el despliegue.**
+**Estado: RESUELTO. Nombre canónico `INTERNAL_SERVICE_KEY`; Django y el microservicio lo leen.**
 
 El valor compartido vive en cuatro ficheros, y no con el mismo nombre:
 
@@ -169,6 +169,34 @@ usa el microservicio), y eso depende de si hay otros consumidores fuera del repo
 `apps/users/api/agente.py`, `INTERNAL_SERVICE_KEY` está documentada en `.env.example`,
 `core.settings.prov` se niega a arrancar sin ella, y `clave_del_servicio()` falla con
 un mensaje que dice qué variable falta y dónde definirla.
+
+**Arreglo aplicado (nombre canónico `INTERNAL_SERVICE_KEY`, decidido).**
+
+| Fichero | Antes | Ahora |
+|---|---|---|
+| `ia_service_core/.../security.py` | `os.getenv("microAI", <valor escrito>)` | `os.getenv("INTERNAL_SERVICE_KEY", "")` + `RuntimeError` al importar si falta |
+| `infrastructure/docker-compose.yml` | `MICROSERVICE_SECRET` en `backend` y `django`, leído por nadie | `INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY:?...}` en ambos |
+| `ia_service_core/docker-compose.yml` | `MICROSERVICE_SECRET: ${...:-super_secreto_interno}` | `INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY:?...}` |
+| `docker-compose.yml`, `docker-compose.prod.yml` | Django sin clave | `INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY:?...}` en `django` |
+
+`microAI` desaparece: nadie la definía, así que solo servía para activar el literal
+de respaldo. Los `MICROSERVICE_SECRET` también: nadie los leía. Y `${VAR:?}` hace que
+`docker compose up` se niegue a arrancar, en vez de dejar el microservicio sin clave
+(que ahora se niega a importar) o dejar `/agente-ajax/` devolviendo 500.
+
+Comprobado: los cuatro compose cortan el arranque sin la variable y renderizan con
+ella; `security.py` lanza `RuntimeError` sin ella (e ignora `microAI`), lee la
+variable correcta con ella, y da 403 ante clave vacía, ausente o distinta.
+
+**Pendiente para quien despliegue:** generar una clave **nueva**
+(`python -c "import secrets; print(secrets.token_urlsafe(48))"`). La anterior está
+escrita en texto plano en `security.py` y en dos compose, así que sigue en el
+historial de git (`git log -p -S microAI`). Ya no sirve para nada, pero hay que dar
+por caducado todo entorno que la usara.
+
+**Ajeno a este arreglo, menor:** `ia_service_core/docker-compose.yml` es un fragmento
+que ya estaba roto antes de tocarlo (`depends_on: database`, un servicio que no
+define). El stack que funciona es `infrastructure/docker-compose.yml`.
 
 ---
 

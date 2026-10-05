@@ -18,8 +18,11 @@ services:
       DB_NAME: ${POSTGRES_DB}
       # Conexión a Ollama
       OLLAMA_BASE_URL: "http://motor_ollama:11434"
-      # ★ LA CLAVE SECRETA COMPARTIDA
-      MICROSERVICE_SECRET: ${MICROSERVICE_SECRET:-super_secreto_interno}
+      # ★ CLAVE SECRETA COMPARTIDA con Django (cabecera X-Internal-Service-Key).
+      # El nombre canonico es INTERNAL_SERVICE_KEY. Este compose solo es un
+      # fragmento de ejemplo: tiene sus propios defaults de BD, asi que para
+      # el stack real se usa infrastructure/docker-compose.yml.
+      INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY:?define INTERNAL_SERVICE_KEY en el entorno o en un .env junto a este compose}
     ports:
       - "8003:8000" # Puerto 8003 expuesto (Solo para pruebas, luego se cierra)
     depends_on:

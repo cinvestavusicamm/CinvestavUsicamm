@@ -66,7 +66,11 @@ services:
       POSTGRES_PORT: 5432
       OLLAMA_BASE_URL: http://motor_ollama:11434
       PYTHONPATH: /app
-      MICROSERVICE_SECRET: clave_estricta_por_defecto_cambiar_en_prod
+      # ${VAR:?} corta el `up` si la variable no esta definida, en vez de
+      # arrancar el microservicio sin clave (que ahora se niega a arrancar).
+      # El nombre canonico es INTERNAL_SERVICE_KEY: antes aqui ponia
+      # MICROSERVICE_SECRET, que no leia nadie.
+      INTERNAL_SERVICE_KEY: ${INTERNAL_SERVICE_KEY:?define INTERNAL_SERVICE_KEY en el entorno o en un .env junto a este compose}
     depends_on:
       db:
         condition: service_healthy
@@ -108,7 +112,9 @@ services:
       - escalafon_net
     environment:
       - DEBUG=False
-      - MICROSERVICE_SECRET=clave_estricta_por_defecto_cambiar_en_prod
+      # Django manda esta misma clave en X-Internal-Service-Key, asi que los
+      # dos lados tienen que leer la variable con el mismo nombre y valor.
+      - INTERNAL_SERVICE_KEY=${INTERNAL_SERVICE_KEY:?define INTERNAL_SERVICE_KEY en el entorno o en un .env junto a este compose}
 
   # -------------------------------------------------------------------------
   # 5. MS_ORCHESTRATOR - Request Orchestrator Microservice
