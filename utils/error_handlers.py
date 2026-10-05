@@ -21,7 +21,7 @@ def get_user_context(request):
         
         # Redirección según rol
         if user_role == 'ADMINISTRADOR' or user_role == 'ADMIN':
-            redirect_url = '/administrador/dashboard/'
+            redirect_url = '/administrador/panel-admin/'
         elif user_role == 'GENERADOR':
             redirect_url = '/generador/dashboard/'
         elif user_role == 'DOCENTE':
