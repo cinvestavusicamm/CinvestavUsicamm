@@ -4,6 +4,8 @@ Validadores para entrada de datos
 from django.core.exceptions import ValidationError
 import re
 
+from apps.users.config.constants import ESTADOS_CURSO, reconocer_estado_curso
+
 
 class UsuarioValidator:
     """Valida datos de Usuario"""
@@ -88,11 +90,22 @@ class CursoValidator:
     
     @staticmethod
     def validar_estado(estado):
-        """Valida que el estado sea válido"""
-        estados_validos = ['Borrador', 'Pendiente', 'Revisión', 'Aprobado', 'Rechazado', 'Inactivo']
-        if estado and estado not in estados_validos:
-            raise ValidationError(f"Estado debe ser uno de: {', '.join(estados_validos)}")
-        return estado
+        """Valida que el estado sea uno de la lista canonica.
+
+        Antes tenia su propia lista --Borrador, Pendiente, Revisión,
+        Aprobado, Rechazado, Inactivo-- que no coincidia con la que usaba el
+        resto del proyecto y que ademas rechazaba el valor canonico
+        'En_Revisión'. Ahora delega en normalizar_estado_curso, que acepta
+        tambien las variantes como 'EnRevision'.
+        """
+        if estado is None or not str(estado).strip():
+            return None
+        canonico = reconocer_estado_curso(estado)
+        if canonico is None:
+            raise ValidationError(
+                f"Estado debe ser uno de: {', '.join(ESTADOS_CURSO)}"
+            )
+        return canonico
 
 
 class LoginValidator:

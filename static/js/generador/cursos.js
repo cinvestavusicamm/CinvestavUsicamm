@@ -237,7 +237,8 @@ function obtenerEstadoClass(estado) {
         'Aprobado': 'status-approved',
         'Rechazado': 'status-rejected',
         'En_Revisión': 'status-review',
-        'Publicado': 'status-published'
+        // Antes 'Publicado', que no es un estado de curso y no lo escribe nadie.
+        'Inactivo': 'status-inactive'
     };
     return estados[estado] || 'status-draft';
 }
@@ -248,7 +249,7 @@ function obtenerEstadoIcon(estado) {
         'Aprobado': 'fas fa-check-circle',
         'Rechazado': 'fas fa-times-circle',
         'En_Revisión': 'fas fa-clock',
-        'Publicado': 'fas fa-globe'
+        'Inactivo': 'fas fa-ban'
     };
     return iconos[estado] || 'fas fa-file-alt';
 }

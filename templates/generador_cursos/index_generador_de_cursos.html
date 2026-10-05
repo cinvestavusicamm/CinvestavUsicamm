@@ -311,10 +311,10 @@
                                         <td>
                                             {% if curso.estado == 'Aprobado' %}
                                             <button class="table-status status-valid" style="border: none; cursor: pointer;" onclick="mostrarAlerta('¡Felicidades! Este curso ha sido evaluado y aceptado exitosamente. Ya es válido para generar puntaje.', 'fa-circle-check', 'var(--exito)')">Aceptado</button>
-                                            {% elif curso.estado == 'En Revisión' %}
+                                            {% elif curso.estado == 'En_Revisión' %}
                                             <button class="table-status status-info" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso se encuentra actualmente en proceso de revisión por el comité académico. Te notificaremos pronto.', 'fa-clock', 'var(--turquesa)')">En revisión</button>
-                                            {% elif curso.estado == 'Observaciones' %}
-                                            <button class="table-status status-pending" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso requiere correcciones en su estructura didáctica. Por favor atiende las observaciones en el panel de evaluación.', 'fa-triangle-exclamation', 'var(--alerta)')">En observación</button>
+                                            {% elif curso.estado == 'Rechazado' %}
+                                            <button class="table-status status-pending" style="border: none; cursor: pointer;" onclick="mostrarAlerta('El curso requiere correcciones en su estructura didáctica. Por favor atiende las observaciones en el panel de evaluación.', 'fa-triangle-exclamation', 'var(--alerta)')">Rechazado</button>
                                             {% else %}
                                             <button class="table-status status-info" style="border: none; cursor: pointer;">{{ curso.estado }}</button>
                                             {% endif %}

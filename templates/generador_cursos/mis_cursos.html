@@ -395,8 +395,8 @@
                 <div class="course-card" style="background:rgb(251, 247, 247); border-radius:20px; border:1px solid #E5E7EB; overflow:hidden; display:flex; flex-direction:column; transition:0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                     <div class="card-header" style="padding:20px; background:#F9FAFB; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:flex-start;">
                         <span class="level-tag" style="background:#691C32; color:white; padding:4px 10px; border-radius:6px; font-size:0.65rem; font-weight:800; text-transform:uppercase;">{{ curso.nivel|default:"General" }}</span>
-                        <div style="color:{% if curso.estado == 'Aprobado' %}#007A7C{% elif curso.estado == 'En Revisión' %}#64748B{% elif curso.estado == 'Observaciones' %}#9A3412{% else %}#64748B{% endif %}; font-size:0.65rem; font-weight:900;">
-                            {{ curso.estado|upper }} {% if curso.estado == 'Aprobado' %}<i class="fas fa-check-circle"></i>{% elif curso.estado == 'En Revisión' %}<i class="fas fa-hourglass-half"></i>{% elif curso.estado == 'Observaciones' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+                        <div style="color:{% if curso.estado == 'Aprobado' %}#007A7C{% elif curso.estado == 'Rechazado' %}#9A3412{% else %}#64748B{% endif %}; font-size:0.65rem; font-weight:900;">
+                            {{ curso.estado|upper }} {% if curso.estado == 'Aprobado' %}<i class="fas fa-check-circle"></i>{% elif curso.estado == 'En_Revisión' %}<i class="fas fa-hourglass-half"></i>{% elif curso.estado == 'Rechazado' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
                         </div>
                     </div>
                     <div class="card-body" style="padding:25px; flex:1;">
@@ -405,7 +405,7 @@
                     </div>
                     <div class="card-footer" style="padding:15px 25px; background:#FDFDFD; display:flex; gap:10px; border-top:1px solid #F3F4F6;">
                         <button class="btn-view" style="flex:2; background:#007A7C; color:white; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="verDetalleCurso('{{ curso.id_curso }}')">VISUALIZAR</button>
-                        {% if curso.estado == 'En Revisión' %}
+                        {% if curso.estado == 'En_Revisión' %}
                         <button class="btn-edit disabled" style="flex:1; background:#f1f5f9; color:#64748B; border:1px solid #cbd5e1; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:not-allowed; opacity:0.6;" onclick="alert('Este curso está bloqueado mientras se encuentra EN REVISIÓN.')"><i class="fas fa-lock"></i></button>
                         {% else %}
                         <button class="btn-edit" style="flex:1; background:white; color:#691C32; border:1.5px solid #691C32; padding:10px; border-radius:8px; font-weight:800; font-size:0.75rem; cursor:pointer;" onclick="editarCurso('{{ curso.id_curso }}', '{{ curso.titulo }}')"><i class="fas fa-pen"></i></button>

@@ -1,4 +1,6 @@
 from django.db import models
+
+from apps.users.config.constants import ESTADOS_CURSO_CHOICES
 from .usuario import Usuario
 from .institucion import Institucion
 
@@ -11,7 +13,21 @@ class Curso(models.Model):
         on_delete=models.CASCADE,
         related_name="cursos_impartidos"
     )
-    estado = models.CharField(max_length=50, blank=True, null=True, default='Borrador')
+    # choices no impone nada en la base: sigue aceptando cualquier texto. Lo que
+    # obliga es la validacion de apps/users/services/curso_service.py. Sirve
+    # para que el admin y los formularios ofrezcan la lista, y para que
+    # makemigrations deje constancia de cual es la lista buena.
+    #
+    # La lista vive en apps/users/config/constants.py, con la funcion que
+    # normaliza las variantes ('EnRevision', 'En Revisión') que ya podian estar
+    # guardadas.
+    estado = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        default='Borrador',
+        choices=ESTADOS_CURSO_CHOICES,
+    )
     generado_con_ia = models.BooleanField(default=False)
     version = models.IntegerField(default=1)
     fecha_creacion = models.DateTimeField(auto_now_add=True)

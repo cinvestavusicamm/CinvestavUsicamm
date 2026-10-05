@@ -953,6 +953,9 @@
     // ============================================================
     // 8. FUNCIONES DE GUARDADO (CREAR / ACTUALIZAR)
     // ============================================================
+    // El estado sale de la lista canonica de apps/users/config/constants.py.
+    // Antes se mandaba 'EnRevision', que se guardaba tal cual y no coincidia
+    // con el 'En_Revisión' que comparan el resto de vistas.
     function guardarCurso(estado = 'Borrador') {
         const contenido = recolectarContenidoCurso();
         const titulo = document.querySelector('#bloque-presentacion .h1-input')?.innerText || cursoActual.titulo;
@@ -993,7 +996,7 @@
                 if (!cursoActual.id) {
                     cursoActual.id = data.curso_id;
                 }
-                Swal.fire('Guardado', `Curso ${estado === 'EnRevision' ? 'enviado a revisión' : 'guardado como borrador'}`, 'success');
+                Swal.fire('Guardado', `Curso ${estado === 'En_Revisión' ? 'enviado a revisión' : 'guardado como borrador'}`, 'success');
             } else {
                 Swal.fire('Error', data.error || 'Ocurrió un error', 'error');
             }
@@ -1006,7 +1009,7 @@
     }
 
     function subirAAprobacion() {
-        guardarCurso('EnRevision');
+        guardarCurso('En_Revisión');
     }
 
     // Función para guardado rápido (borrador) desde un botón adicional

@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test import SimpleTestCase
 
+from apps.users.config.constants import ESTADO_EN_REVISION
 from apps.users.services.curso_service import CursoService
 
 
@@ -43,16 +44,18 @@ class CursoServiceTests(SimpleTestCase):
         curso = MagicMock(titulo="Anterior", descripcion="Vieja", estado="Borrador")
         obtener_curso_por_id.return_value = curso
 
-        resultado = CursoService.actualizar_curso(3, titulo="Nuevo", estado="Publicado")
+        resultado = CursoService.actualizar_curso(
+            3, titulo="Nuevo", estado=ESTADO_EN_REVISION
+        )
 
         self.assertEqual(resultado.titulo, "Nuevo")
         self.assertEqual(resultado.descripcion, "Vieja")
-        self.assertEqual(resultado.estado, "Publicado")
+        self.assertEqual(resultado.estado, ESTADO_EN_REVISION)
         curso.save.assert_called_once()
 
     @patch("apps.users.services.curso_service.CursoService.obtener_curso_por_id")
     def test_desactivar_curso_marca_inactivo(self, obtener_curso_por_id):
-        curso = MagicMock(estado="Publicado")
+        curso = MagicMock(estado=ESTADO_EN_REVISION)
         obtener_curso_por_id.return_value = curso
 
         resultado = CursoService.desactivar_curso(3)

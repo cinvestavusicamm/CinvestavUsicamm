@@ -2,7 +2,12 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 from apps.users.services.permisos import requiere_rol
-from apps.users.config.constants import ROLE_DOCENTE
+from apps.users.config.constants import (
+    ROLE_DOCENTE,
+    ESTADO_APROBADO,
+    ESTADO_EN_REVISION,
+    ESTADO_BORRADOR,
+)
 from apps.users.models import Usuario
 from apps.users.services.curso_service import CursoService
 from apps.users.services.proceso_escalafon_service import ProcesoEscalafonService
@@ -30,14 +35,15 @@ def consultar_progreso(request):
     cursos_con_progreso = []
     for curso in cursos:
         # Calcular progreso simulado basado en estado y contenido
+        # Antes comparaba contra 'Publicado' y 'En Progreso', dos estados que
+        # nadie escribe y que no estan en la lista canonica, asi que el 100 por
+        # uno solo se obtenia con 'Aprobado' y el 50 era inalcanzable.
         progreso = 0
-        if curso.estado == 'Aprobado':
+        if curso.estado == ESTADO_APROBADO:
             progreso = 100
-        elif curso.estado == 'Publicado':
-            progreso = 100
-        elif curso.estado == 'En Progreso':
+        elif curso.estado == ESTADO_EN_REVISION:
             progreso = 50
-        elif curso.estado == 'Borrador':
+        elif curso.estado == ESTADO_BORRADOR:
             progreso = 10
         
         # Calcular puntaje del curso

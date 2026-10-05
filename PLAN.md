@@ -200,6 +200,75 @@ define). El stack que funciona es `infrastructure/docker-compose.yml`.
 
 ---
 
+### DEUDA-9. El estado de un curso se escribia desde once sitios y se leia contra tres listas
+
+**Estado: RESUELTO. Una sola lista en `apps/users/config/constants.py`, `choices` en el modelo, y una función que normaliza las variantes.**
+
+Lo que había:
+
+| Dónde | Qué usaba |
+|---|---|
+| `plantillas/generador_cursos/generador_de_cursos.html` | guardaba **`EnRevision`** (sin guion ni tilde) |
+| `views/evaluador/validaciones.py` | `Aprobado`, `Rechazado`, `En_Revisión` |
+| `views/docentes/consultar_progreso.py` | comparaba con `Aprobado`, **`Publicado`**, **`En Progreso`** |
+| `views/generador_cursos/estadisticas_cursos.py` | contaba **`Activo`** y **`Completado`** |
+| `plantillas/docente/vertical.html` | `Aprobado`, **`Publicado`**, **`En Progreso`** |
+| `plantillas/generador_cursos/mis_cursos.html` | `Aprobado`, **`En Revisión`** (con espacio), **`Observaciones`** |
+| `plantillas/generador_cursos/index_generador_de_cursos.html` | `Aprobado`, **`En Revisión`**, **`Observaciones`** |
+| `static/js/generador/cursos.js` | mapa de clases con `Borrador`, `Aprobado`, `Rechazado`, `En_Revisión`, **`Publicado`** (y sin `Inactivo`) |
+| `validators/__init__.py` | lista propia: `Borrador`, **`Pendiente`**, **`Revisión`**, `Aprobado`, `Rechazado`, `Inactivo`. **No la llamaba nadie** |
+
+El daño era silencioso. Un curso enviado a revisión desde la interfaz quedaba
+como `EnRevision`, y ninguna comparación por igualdad contra el `En_Revisión` del
+evaluador lo encontraba. Los tableros no se enteraban porque cuentan con
+`icontains("revision")`, que absorbe las dos escrituras. Las ramas que
+comparaban `Publicado`, `En Progreso`, `Activo`, `Completado` y `Observaciones`
+no se ejecutaban nunca, porque nadie escribía esos valores: dos contadores de
+estadísticas daban 0 siempre y el 50 % de progreso de `consultar_progreso` era
+inalcanzable.
+
+**Arreglo aplicado.**
+
+- `ESTADOS_CURSO`, `ESTADO_BORRADOR`…`ESTADO_INACTIVO` y `ESTADOS_CURSO_CHOICES`
+  en `apps/users/config/constants.py`, junto a los roles.
+- `reconocer_estado_curso()` reduce el valor a una clave comparable (sin
+  tildes, espacios, guiones ni mayúsculas) y devuelve el estado canónico o
+  `None`. `normalizar_estado_curso()` encima, con defecto `Borrador`. Dos
+  funciones y no una porque quien llama tiene que poder distinguir "no me
+  pasaron estado" (un borrador) de "me pasaron uno que no conozco" (un 400).
+- Variantes que ya pueden estar guardadas y su destino: `EnRevision`,
+  `En Revisión`, `Revisión`, `Pendiente` → `En_Revisión`; `Publicado`,
+  `Completado` → `Aprobado`; `Observaciones` → `Rechazado`.
+- `choices` en `Curso.estado`. Migración `0008_curso_estado_choices`, un solo
+  `AlterField`: `sqlmigrate` sale como `-- (no-op)` porque `choices` no se
+  aplica en la base. Comprobado aplicando la migración sobre una base con
+  cursos en `EnRevision`, `En Revisión`, `Publicado`, `En Progreso`,
+  `Observaciones` y `Borrador`: las filas salen igual, con su `contenido_json`,
+  su `generado_con_ia` y su `fecha_creacion` intactos.
+- `CursoValidator.validar_estado` delega en la constante única. Sigue sin
+  llamarse desde ninguna parte.
+- Escrituras y lecturas corregidas: la plantilla del generador manda
+  `En_Revisión`; `consultar_progreso` y `estadisticas_cursos` usan las
+  constantes; `vertical.html`, `mis_cursos.html` e
+  `index_generador_de_cursos.html` comparan estados canónicos; `cursos.js`
+  mapea `Inactivo` en vez de `Publicado`.
+- `test_curso_service.py` ya no fija `Publicado`.
+
+**Lo que NO se tocó, a propósito.** Los lectores con `icontains`
+(`repositories/__init__.py`, `evaluador/reportes.py`, `router_service.py`,
+`dashboard_builders.py`, `js/evaluador/reportes.js`) se quedan como estaban: son
+los que hacen que los cursos guardados antes de este arreglo sigan contando en
+los tableros. Pasarlos a igualdad exacta exigiría antes una migración de datos
+que normalice las filas existentes, y eso no se ha hecho. La función está lista
+para cuando se decida.
+
+**Pendiente, y no de este arreglo:** `makemigrations` sigue proponiendo 21
+operaciones de deriva acumulada en otros modelos (`retroalimentacioniacurso`
+sobre todo: renombrar `fecha`→`fecha_generacion`, `id`→`id_retroalimentacion`,
+`comentario`→`sugerencias`, quitarle la FK `curso`, y renombrar la tabla). Eso
+es anterior a este trabajo y va por separado. La migración 0008 está escrita a
+mano para no mezclarse con eso.
+
 ### DEUDA-1. `apps/users/api/usuarios_api.py`: `@csrf_exempt` sobre vistas con sesión
 
 **Corrección a una hipótesis previa:** estas vistas **sí exigen autenticación y rol**. No son

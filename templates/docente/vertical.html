@@ -91,12 +91,12 @@
                         {% endif %}
                         
                         {% for curso in cursos %}
-                        <div class="step {% if curso.estado == 'Aprobado' or curso.estado == 'Publicado' %}completado{% elif curso.estado == 'En Progreso' %}actual{% else %}{% endif %}">
-                            <div class="step-marker">{% if curso.estado == 'Aprobado' or curso.estado == 'Publicado' %}<i class="fas fa-check"></i>{% else %}{{ forloop.counter|add:2 }}{% endif %}</div>
+                        <div class="step {% if curso.estado == 'Aprobado' %}completado{% elif curso.estado == 'En_Revisión' %}actual{% else %}{% endif %}">
+                            <div class="step-marker">{% if curso.estado == 'Aprobado' %}<i class="fas fa-check"></i>{% else %}{{ forloop.counter|add:2 }}{% endif %}</div>
                             <div class="step-content">
                                 <h3>{{ forloop.counter|add:2 }}. {{ curso.titulo }}</h3>
                                 <p class="text-small">{{ curso.descripcion|truncatewords:10 }}</p>
-                                {% if curso.estado == 'En Progreso' %}
+                                {% if curso.estado == 'En_Revisión' %}
                                 <button style="background:var(--turquesa); color:white; border:none; padding:8px 15px; border-radius:6px; font-size:0.75rem; cursor:pointer; font-weight: bold; margin-top: 10px;">
                                     <i class="fas fa-external-link-alt"></i> CONTINUAR CURSO
                                 </button>
@@ -146,7 +146,7 @@
                                 <tr>
                                     <td>{{ curso.titulo }}</td>
                                     <td>{{ curso.fecha_creacion|date:"d M Y" }}</td>
-                                    <td><span class="table-status {% if curso.estado == 'Aprobado' %}status-success{% elif curso.estado == 'En Progreso' %}status-info{% else %}status-pending{% endif %}">{{ curso.estado }}</span></td>
+                                    <td><span class="table-status {% if curso.estado == 'Aprobado' %}status-success{% elif curso.estado == 'En_Revisión' %}status-info{% else %}status-pending{% endif %}">{{ curso.estado }}</span></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
