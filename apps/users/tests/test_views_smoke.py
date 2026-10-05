@@ -57,22 +57,19 @@ class ViewsSmokeTest(TestCase):
             method = route_data[1]
             data = route_data[2] if len(route_data) > 2 else {}
             
-            try:
+            with self.subTest(ruta=route_name, metodo=method):
                 if method == 'GET':
                     response = self.client.get(reverse(route_name))
                 else:
                     response = self.client.post(reverse(route_name), data=data)
-                
+
                 # Allow 200, 302 (redirect), or 405 (method not allowed for GET on POST-only routes)
                 # Also allow 500 for routes that require DB setup (we'll skip those in smoke test)
                 self.assertIn(
-                    response.status_code, 
+                    response.status_code,
                     [200, 302, 405, 400, 401, 500],
                     f"Route {route_name} ({method}) returned {response.status_code}"
                 )
-                print(f"✓ {route_name} ({method}): {response.status_code}")
-            except Exception as e:
-                print(f"✗ {route_name} ({method}): ERROR - {str(e)}")
     
     def test_admin_routes_with_admin_role(self):
         """Test admin routes with admin authentication"""
@@ -84,7 +81,7 @@ class ViewsSmokeTest(TestCase):
         ]
         
         for route_name in admin_routes:
-            try:
+            with self.subTest(ruta=route_name):
                 response = self.client.get(reverse(route_name))
                 # Allow 200 or 302 (redirect)
                 self.assertIn(
@@ -92,9 +89,6 @@ class ViewsSmokeTest(TestCase):
                     [200, 302],
                     f"Admin route {route_name} returned {response.status_code}"
                 )
-                print(f"✓ {route_name}: {response.status_code}")
-            except Exception as e:
-                print(f"✗ {route_name}: ERROR - {str(e)}")
     
     def test_docente_routes_with_docente_role(self):
         """Test docente routes with docente authentication"""
@@ -111,7 +105,7 @@ class ViewsSmokeTest(TestCase):
         ]
         
         for route_name in docente_routes:
-            try:
+            with self.subTest(ruta=route_name):
                 response = self.client.get(reverse(route_name))
                 # Allow 200 or 302 (redirect)
                 self.assertIn(
@@ -119,9 +113,6 @@ class ViewsSmokeTest(TestCase):
                     [200, 302],
                     f"Docente route {route_name} returned {response.status_code}"
                 )
-                print(f"✓ {route_name}: {response.status_code}")
-            except Exception as e:
-                print(f"✗ {route_name}: ERROR - {str(e)}")
     
     def test_evaluador_routes_with_evaluador_role(self):
         """Test evaluador routes with evaluador authentication"""
@@ -140,7 +131,7 @@ class ViewsSmokeTest(TestCase):
         ]
         
         for route_name in evaluador_routes:
-            try:
+            with self.subTest(ruta=route_name):
                 response = self.client.get(reverse(route_name))
                 # Allow 200 or 302 (redirect)
                 self.assertIn(
@@ -148,9 +139,6 @@ class ViewsSmokeTest(TestCase):
                     [200, 302],
                     f"Evaluador route {route_name} returned {response.status_code}"
                 )
-                print(f"✓ {route_name}: {response.status_code}")
-            except Exception as e:
-                print(f"✗ {route_name}: ERROR - {str(e)}")
     
     def test_generador_routes_with_generador_role(self):
         """Test generador routes with generador authentication"""
@@ -165,7 +153,7 @@ class ViewsSmokeTest(TestCase):
         ]
         
         for route_name in generador_routes:
-            try:
+            with self.subTest(ruta=route_name):
                 response = self.client.get(reverse(route_name))
                 # Allow 200 or 302 (redirect)
                 self.assertIn(
@@ -173,9 +161,6 @@ class ViewsSmokeTest(TestCase):
                     [200, 302],
                     f"Generador route {route_name} returned {response.status_code}"
                 )
-                print(f"✓ {route_name}: {response.status_code}")
-            except Exception as e:
-                print(f"✗ {route_name}: ERROR - {str(e)}")
     
     def test_ajax_endpoints(self):
         """Test AJAX endpoints with proper authentication"""
@@ -189,21 +174,18 @@ class ViewsSmokeTest(TestCase):
         ]
         
         for endpoint, method, data in ajax_endpoints:
-            try:
+            with self.subTest(endpoint=endpoint, metodo=method):
                 if method == 'POST':
                     response = self.client.post(endpoint, data=data)
                 else:
                     response = self.client.get(endpoint)
-                
+
                 # Allow 200, 400 (bad request), 401 (unauthorized), or 500 (service unavailable)
                 self.assertIn(
                     response.status_code,
                     [200, 400, 401, 500],
                     f"AJAX endpoint {endpoint} returned {response.status_code}"
                 )
-                print(f"✓ {endpoint} ({method}): {response.status_code}")
-            except Exception as e:
-                print(f"✗ {endpoint} ({method}): ERROR - {str(e)}")
     
     def test_api_endpoints(self):
         """Test API endpoints"""
@@ -215,11 +197,11 @@ class ViewsSmokeTest(TestCase):
         ]
         
         for endpoint in api_endpoints:
-            try:
-                # Some endpoints require parameters, skip those for basic smoke test
-                if 'usuario' in endpoint or 'actualizar' in endpoint or 'crear' in endpoint:
-                    continue
-                    
+            # Some endpoints require parameters, skip those for basic smoke test
+            if 'usuario' in endpoint or 'actualizar' in endpoint or 'crear' in endpoint:
+                continue
+
+            with self.subTest(endpoint=endpoint):
                 response = self.client.get(reverse(endpoint))
                 # Allow 200, 400, 401, 404
                 self.assertIn(
@@ -227,6 +209,3 @@ class ViewsSmokeTest(TestCase):
                     [200, 400, 401, 404],
                     f"API endpoint {endpoint} returned {response.status_code}"
                 )
-                print(f"✓ {endpoint}: {response.status_code}")
-            except Exception as e:
-                print(f"✗ {endpoint}: ERROR - {str(e)}")
