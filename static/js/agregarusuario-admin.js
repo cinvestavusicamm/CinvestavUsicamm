@@ -22,12 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         
         const formData = new FormData(this);
-        
-        console.log('Datos a enviar:');
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
-        
+
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Guardando...';
