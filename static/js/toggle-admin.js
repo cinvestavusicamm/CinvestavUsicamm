@@ -3,15 +3,21 @@ function cambiarEstado(id, elem) {
         method: 'POST',
         headers: { 'X-CSRFToken': getCookie('csrftoken') }
     })
-    .then(res => res.json())
-    .then(data => {
-        if (!data.success) {
-            alert(data.error);
+    .then(res => res.json().then(data => ({ ok: res.ok, data })))
+    .then(({ ok, data }) => {
+        // toggle_usuario responde con respuesta_ok/respuesta_error, que usan
+        // estado/mensaje/datos. Este JS leia success/error, que esa funcion
+        // nunca devuelve: por eso el boton nunca actualizaba nada y solo
+        // mostraba "undefined".
+        if (!ok || data.estado === 'error') {
+            alert(data.mensaje || 'No se pudo cambiar el estado del usuario');
             return;
         }
 
+        const activo = data.datos.activo;
+
         // Cambiar icono y color
-        if (data.activo) {
+        if (activo) {
             elem.classList.remove('fa-toggle-off');
             elem.classList.add('fa-toggle-on');
             elem.style.color = '#27AE60'; // verde
@@ -22,10 +28,10 @@ function cambiarEstado(id, elem) {
         }
 
         // Actualizar contadores
-        if (data.contadores) {
-            document.querySelector('[data-total]').textContent = data.contadores.total;
-            document.querySelector('[data-activos]').textContent = data.contadores.activos;
-            document.querySelector('[data-en-revision]').textContent = data.contadores.en_revision;
+        if (data.datos.contadores) {
+            document.querySelector('[data-total]').textContent = data.datos.contadores.total;
+            document.querySelector('[data-activos]').textContent = data.datos.contadores.activos;
+            document.querySelector('[data-en-revision]').textContent = data.datos.contadores.en_revision;
         }
     });
 }

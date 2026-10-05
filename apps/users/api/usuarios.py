@@ -4,11 +4,10 @@ API endpoints para gestión de usuarios
 from django.http import JsonResponse
 import logging
 from apps.users.models import Usuario, Rol, Institucion
-from apps.users.services.user_service import UserService
+from apps.users.services.user_service import UserService, OperacionRechazada
 from apps.users.services.bitacora_service import BitacoraService
 from apps.users.services.permisos import requiere_rol
 from apps.users.config.constants import ROLE_ADMIN
-from django.contrib.auth.hashers import make_password
 from django.core.cache import cache
 from django.middleware.csrf import get_token
 
@@ -32,6 +31,25 @@ def _registrar_bitacora(request, tipo_evento, descripcion, detalles=None):
         )
     except Exception as exc:
         logger.warning("No se pudo registrar bitácora: %s", exc)
+
+
+def _registrar_rechazo(request, objetivo_id, rechazo):
+    """Audita un intento rechazado por las reglas de proteccion del ADMIN.
+
+    Se llama desde el manejador, ya fuera del atomic del servicio: dentro
+    se perderia al revertirse la transaccion, que es justo el caso que
+    interesa dejar rastro.
+    """
+    _registrar_bitacora(
+        request,
+        'USUARIO_ACTUALIZADO_RECHAZADO',
+        f'No se pudo modificar al usuario {objetivo_id}: {rechazo.mensaje}',
+        {
+            'usuario_objetivo': objetivo_id,
+            'codigo': rechazo.codigo,
+            'motivo': rechazo.mensaje,
+        },
+    )
 
 
 def _check_rate_limit(request, endpoint_name, max_attempts=10, ttl=3600):
@@ -142,17 +160,14 @@ def agregar_usuario_ajax(request):
 def toggle_usuario(request, id):
     """API endpoint para activar/desactivar un usuario"""
     from apps.users.infrastructure.api_response import respuesta_error, respuesta_ok
-    
+
     if request.method != 'POST':
         return respuesta_error(request, 'Método no permitido')
 
     usuario_actual = request.session.get('usuario_id')
 
-    if int(id) == int(usuario_actual):
-        return respuesta_error(request, 'No puedes desactivar tu propia cuenta')
-
     try:
-        usuario = UserService.alternar_activo(id)
+        usuario = UserService.alternar_activo(id, actor_id=usuario_actual)
 
         _registrar_bitacora(
             request,
@@ -173,6 +188,14 @@ def toggle_usuario(request, id):
 
     except Usuario.DoesNotExist:
         return respuesta_error(request, 'Usuario no encontrado')
+
+    except OperacionRechazada as rechazo:
+        # Fuera del atomic: el servicio ya ha cerrado su transaccion y
+        # revertido. Registrar aqui es lo que permite que el rechazo quede
+        # auditado; dentro se perderia con el rollback.
+        _registrar_rechazo(request, id, rechazo)
+
+        return respuesta_error(request, rechazo.mensaje, status=rechazo.status)
 
 
 @requiere_rol(ROLE_ADMIN)
@@ -205,50 +228,71 @@ def editar_usuario_ajax(request, id):
         if length_errors:
             return JsonResponse({'success': False, 'error': '; '.join(length_errors)}, status=400)
         
-        usuario.nombre = nombre
-        usuario.apellido_paterno = apellido_paterno
-        usuario.apellido_materno = apellido_materno
-        usuario.correo = correo
-        usuario.curp = curp
-        
+        # Los valores se leen y se validan aqui; la escritura y las reglas
+        # de proteccion del ADMIN son del servicio.
         rol_id = request.POST.get('rol')
-        if rol_id:
-            try:
-                usuario.rol = Rol.objects.get(id_rol=rol_id)
-            except Rol.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Rol no válido'}, status=400)
-        
+        if rol_id and not Rol.objects.filter(id_rol=rol_id).exists():
+            return JsonResponse({'success': False, 'error': 'Rol no válido'}, status=400)
+
         institucion_id = request.POST.get('institucion')
-        if institucion_id:
-            try:
-                usuario.institucion = Institucion.objects.get(id_institucion=institucion_id)
-            except Institucion.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Institución no válida'}, status=400)
-        
+        if institucion_id and not Institucion.objects.filter(id_institucion=institucion_id).exists():
+            return JsonResponse({'success': False, 'error': 'Institución no válida'}, status=400)
+
         nueva_contrasena = request.POST.get('contrasena')
         if nueva_contrasena and nueva_contrasena.strip():
             contrasena_actual = request.POST.get('contrasena_actual')
             if not contrasena_actual or not usuario.check_password(contrasena_actual):
                 security_logger.warning(f"Intento de cambiar contraseña sin contraseña actual para usuario {id} desde IP: {request.META.get('REMOTE_ADDR')}")
                 return JsonResponse({'success': False, 'error': 'La contraseña actual es requerida para cambiar la contraseña'}, status=400)
-            usuario.contrasena = make_password(nueva_contrasena)
-        
-        usuario.save()
-        
+
+        # Las reglas de proteccion del ADMIN viven en el servicio, que es
+        # el unico que escribe. Esta vista solo valida formato y delega.
+        data = {
+            'nombre': nombre,
+            'apellido_paterno': apellido_paterno,
+            'apellido_materno': apellido_materno,
+            'correo': correo,
+            'curp': curp,
+        }
+        if rol_id:
+            data['rol'] = rol_id
+        if institucion_id:
+            data['institucion'] = institucion_id
+        if nueva_contrasena and nueva_contrasena.strip():
+            data['contrasena'] = nueva_contrasena
+
+        usuario = UserService.editar_usuario(
+            id, data, actor_id=request.session.get('usuario_id')
+        )
+
         _registrar_bitacora(
             request,
             'USUARIO_EDITADO',
             f'Editó al usuario {usuario.id_usuario}',
             {'usuario_editado': usuario.id_usuario},
         )
-        
+
         return JsonResponse({
             'success': True,
             'message': 'Usuario actualizado correctamente'
         })
-        
+
     except Usuario.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Usuario no encontrado'}, status=404)
+
+    except OperacionRechazada as rechazo:
+        # Fuera del atomic del servicio, a proposito: si se registrara
+        # dentro, el rollback borraria el rastro del intento.
+        _registrar_rechazo(request, id, rechazo)
+
+        return JsonResponse(
+            {'success': False, 'error': rechazo.mensaje, 'codigo': rechazo.codigo},
+            status=rechazo.status,
+        )
+
+    except Rol.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Rol no válido'}, status=400)
+
     except Exception as e:
         logger.error(f"Error editando usuario: {str(e)}", exc_info=True)
         security_logger.warning(f"Error al editar usuario {id} desde IP: {request.META.get('REMOTE_ADDR')}")

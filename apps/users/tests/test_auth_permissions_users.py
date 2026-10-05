@@ -8,7 +8,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
-from apps.users.config.constants import ROLE_ADMIN
+from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE
 from apps.users.api.usuarios import (
     agregar_usuario_ajax,
     editar_usuario_ajax,
@@ -218,22 +218,26 @@ class UsersAjaxCrudTests(TestCase):
         self.assertEqual(payload["error"], "Usuario no encontrado")
 
     @patch("apps.users.api.usuarios._registrar_bitacora")
-    @patch("apps.users.api.usuarios.Usuario")
-    def test_editar_usuario_ajax_updates_user_data(self, usuario_model, registrar_bitacora):
-        fake_user = SimpleNamespace(
-            id_usuario=5,
+    def test_editar_usuario_ajax_updates_user_data(self, registrar_bitacora):
+        # Usuario real: la escritura pasa por UserService y mockear el
+        # modelo en la vista ya no intercepta nada.
+        objetivo = Usuario.objects.create(
             nombre="Viejo",
             apellido_paterno="Dato",
             apellido_materno="Anterior",
             correo="old@test.com",
-            curp="OLDCURP",
-            contrasena="hash",
-            save=MagicMock(),
+            curp="OLDCURP0000000001",
+            contrasena="x",
+            rol=Rol.objects.create(nombre_rol=ROLE_DOCENTE),
+            institucion=Institucion.objects.create(
+                nombre="I", tipo="UNIVERSIDAD", activo=True
+            ),
+            activo=True,
+            fecha_registro=datetime.now(),
         )
-        usuario_model.objects.get.return_value = fake_user
 
         request = self.factory.post(
-            reverse("administrador:editar_usuario_ajax", kwargs={"id": 5}),
+            reverse("administrador:editar_usuario_ajax", kwargs={"id": objetivo.id_usuario}),
             data={
                 "nombre": "Nuevo",
                 "apellido_paterno": "Apellido",
@@ -245,13 +249,14 @@ class UsersAjaxCrudTests(TestCase):
         _attach_session_and_messages(request)
         _login_como_admin(request)
 
-        response = editar_usuario_ajax(request, 5)
+        response = editar_usuario_ajax(request, objetivo.id_usuario)
         payload = json.loads(response.content)
 
+        objetivo.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertTrue(payload["success"])
-        self.assertEqual(fake_user.nombre, "Nuevo")
-        fake_user.save.assert_called_once()
+        self.assertEqual(objetivo.nombre, "Nuevo")
+        self.assertEqual(objetivo.correo, "nuevo@test.com")
         registrar_bitacora.assert_called_once()
 
     def test_editar_usuario_ajax_requires_post(self):

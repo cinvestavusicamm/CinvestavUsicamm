@@ -226,6 +226,55 @@ estructurada. Migrar `obtener_usuario_ajax` y las respuestas planas de las otras
 el JS en la misma tarea. Conviene hacerlo junto con tests del lado del cliente o, en su defecto,
 con una revisión manual del JS.
 
+> **Avance parcial en Fase 1.** `toggle-admin.js` hablaba un formato que su vista nunca
+> devolvía: leía `data.success` / `data.error` / `data.activo`, pero `toggle_usuario` responde con
+> `respuesta_ok` (`estado` / `mensaje` / `datos`). El botón no actualizaba nada y pintaba un
+> `alert(undefined)`. Se corrigió **solo** `toggle-admin.js` para hablar el formato real, porque
+> Fase 1 exige que el rechazo se vea en pantalla. La unificación de los cuatro endpoints sigue
+> pendiente: `editar_usuario_ajax` y `obtener_usuario_ajax` continúan con `JsonResponse` plano.
+
+### DEUDA-6. `select_for_update` sin verificar: SQLite no lo ejecuta
+
+**Regla aplicada en Fase 1:** un ADMIN no puede desactivarse ni cambiarse su propio rol, y el
+sistema no puede quedar sin ningún ADMIN activo. Las reglas viven en `UserService`, no en el JS, y
+aplican a editar y a toggle.
+
+**Lo que está verificado** (SQLite, 117 tests): la lógica, el rollback y la auditoría del rechazo.
+`test_admin_protection.py` cubre autodesactivación, cambio de rol propio, último ADMIN
+desactivado, último ADMIN degradado, los dos casos permitidos con dos ADMIN, y que el rechazo queda
+en bitácora con su código.
+
+**Lo que NO está verificado: el bloqueo.** `select_for_update` requiere que el backend declare la
+característica; el de SQLite no la declara y Django **lo ignora en silencio**, sin error ni aviso.
+Los tests pasan igual, lo que hace fácil creer que la protección de concurrencia está ahí cuando en
+esa base no hay nada. Solo en PostgreSQL hay `SELECT ... FOR UPDATE`.
+
+**Cómo verificarlo, en local:**
+
+```bash
+# 1. Levantar solo PostgreSQL (pgvector/pgvector:pg16, puerto 5432)
+docker compose up -d postgres
+
+# 2. Esperar a que acepte conexiones
+docker compose exec postgres pg_isready -U user -d cinvestav_db
+
+# 3. Correr SOLO el test de concurrencia contra PostgreSQL
+DJANGO_SETTINGS_MODULE=core.settings.dev \
+DATABASE_URL=postgresql://user:password@localhost:5432/cinvestav_db \
+./venv/bin/python manage.py test \
+  apps.users.tests.test_admin_protection_concurrency --keepdb
+```
+
+El módulo se salta entero si la base no es PostgreSQL, así que en la suite normal aparece como
+`skipped=1` y no da falsa confianza en ningún sentido.
+
+**Qué demuestra y qué no.** El test lanza dos hilos, cada uno con su propia conexión, que intentan
+apagar al ADMIN contrario tras pasar una barrera. Al terminar exige que quede **exactamente un**
+ADMIN activo y que uno de los dos hilos fuera **rechazado**. Sin `select_for_update` los dos leerían
+"hay dos" y los dos confirmarían, dejando cero. Una ejecución en verde no es prueba de que no haya
+carrera: la barrera maximize la solapación pero no la garantiza. Lo que demuestra es que el segundo
+hilo **rechaza** en lugar de dejar el sistema sin ADMIN, y conviene repetirlo varias veces.
+
 ## Tareas solicitadas fuera del plan original (solo lectura, sin implementar)
 - [ ] **Paso 1**: investigación de la vista de administrador
 - [ ] **Paso 2**: investigación del flujo de creación de cursos con IA

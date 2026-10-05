@@ -80,15 +80,15 @@ function enviarEdicionUsuario(id) {
         body: formData
     })
     .then(response => {
-        console.log('Respuesta status:', response.status);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+        // Antes se hacia throw en cualquier !response.ok, con lo que un 400 o
+        // 409 de proteccion del ADMIN caia en el catch y se perdiaba el
+        // mensaje del servidor: el usuario veia "HTTP error! status: 409".
+        // Ahora el cuerpo se lee tambien en error, y el .then decide.
+        return response.json().then(data => ({ ok: response.ok, data }));
     })
-    .then(data => {
-        console.log('Respuesta:', data);
-        
+    .then(({ data }) => {
+        // editar_usuario_ajax ya manda success:false en su cuerpo de
+        // error, asi que el status no hace falta para decidir.
         if (data.success) {
             alert('Usuario actualizado correctamente');
             cerrarModalEditar();
