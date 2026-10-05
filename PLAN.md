@@ -97,10 +97,30 @@ clase `DjangoBackendClient` (líneas 15-39). A su vez, ese cliente se instancia 
 mismo archivo. **Pero sus cuatro métodos no los invoca nadie**: 0 llamadas a `get_usuario`,
 `create_usuario`, `update_usuario` y `toggle_usuario` fuera del propio cliente. Es código muerto.
 
+**Verificado el 2026-10-04 (rama `vista-administrador`, Fase 0):** el atributo `self.django` solo se
+usa para `health_check()` (línea 230) y `close()` (línea 242). Los cuatro métodos de usuarios no
+tienen ninguna llamada en el repo.
+
 **Consecuencia:** como exige sesión ADMIN, el orquestador no puede llamarlas en la práctica. Y si
 lo intentara, fallaría por dos motivos independientes: pide `/api/usuarios/agregar` sin barra final
 cuando la ruta es `/api/usuarios/agregar/`, y manda `json_data=` (cuerpo JSON) mientras la vista
 lee `request.POST`.
+
+Comprobado con `django.test.Client` y sesión ADMIN:
+
+| Llamada tal y como la hace `DjangoBackendClient` | Respuesta |
+|---|---|
+| `POST /api/usuarios/agregar` (sin barra final) | `301` |
+| `POST /api/usuarios/agregar/` con cuerpo JSON | `400` `Campos requeridos faltantes: …` |
+| `POST /api/usuarios/agregar/` con `data=` form-encoded | `200` |
+
+Las rutas **sí funcionan** por sí solas: `GET /api/usuarios/<id>/` devuelve `200` con el JSON
+esperado. Lo que no existe es un consumidor capaz de alcanzarlas.
+
+**Decisión del cliente (2026-10-04): no se tocan.** Se conservan las cuatro rutas, el módulo
+`usuarios_api.py` y los métodos del orquestador. Motivo: hay un consumidor declarado en otro
+proyecto, aunque esté muerto. La eliminación queda como decisión pendiente, no como deuda a aplicar
+por omisión.
 
 **Riesgo real que queda:** el `@csrf_exempt` es innecesario y peligroso. Un navegador con sesión
 ADMIN abierta es vulnerable a CSRF contra estas rutas, porque el middleware está desactivado en
