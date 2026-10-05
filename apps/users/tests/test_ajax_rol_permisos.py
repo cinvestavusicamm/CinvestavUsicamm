@@ -16,7 +16,7 @@ NameResolutionError seria un fallo del entorno, no de la autorizacion.
 """
 import datetime
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from unittest.mock import patch
 
@@ -41,6 +41,12 @@ CASOS = [
     ('/evaluador/ajax/', (ROLE_EVALUADOR,), 'apps.users.views.evaluador_ajax'),
     ('/generador/ajax/', (ROLE_GENERADOR,), 'apps.users.views.generador_ajax'),
 ]
+
+# /agente-ajax/ exige ademas INTERNAL_SERVICE_KEY para hablar con el
+# microservicio. Aqui se declara una de prueba: lo que se prueba en este
+# fichero es la autorizacion, no la clave, que tiene su propio modulo
+# (test_internal_service_key.py).
+CLAVE_PRUEBA = 'clave-de-prueba-autorizacion'
 
 TODOS_LOS_ROLES = [ROLE_ADMIN, ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR]
 
@@ -160,6 +166,7 @@ class RolEquivocadoTests(AutorizacionAjaxTestBase):
         mock_post.assert_not_called()
 
 
+@override_settings(INTERNAL_SERVICE_KEY=CLAVE_PRUEBA)
 class RolCorrectoTests(AutorizacionAjaxTestBase):
     """Con el rol correcto la vista se ejecuta de verdad."""
 
@@ -216,6 +223,7 @@ class TokenCsrfTests(AutorizacionAjaxTestBase):
 
         self.assertEqual(response.status_code, 403)
 
+    @override_settings(INTERNAL_SERVICE_KEY=CLAVE_PRUEBA)
     def test_con_el_token_de_paneladm_pasa(self):
         """El token sale de paneladm.html, que es donde vive el chatbot.
 

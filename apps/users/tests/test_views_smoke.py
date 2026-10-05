@@ -5,7 +5,7 @@ This script dynamically tests all main routes to ensure they return 200/302 (not
 import datetime
 from unittest.mock import patch
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse, get_resolver
 from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR
 from apps.users.models import Usuario, Rol, Institucion
@@ -189,6 +189,7 @@ class ViewsSmokeTest(TestCase):
                     f"Generador route {route_name} returned {response.status_code}"
                 )
     
+    @override_settings(INTERNAL_SERVICE_KEY="clave-de-prueba-smoke")
     @patch("apps.users.api.agente.requests.post")
     @patch("apps.users.views.docente_ajax.requests.post")
     @patch("apps.users.views.evaluador_ajax.requests.post")

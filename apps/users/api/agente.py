@@ -4,6 +4,9 @@ API endpoints para el agente de IA
 import requests
 import json
 import logging
+
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.http import StreamingHttpResponse
 from apps.users.config.constants import ROLE_ADMIN, ROLE_EVALUADOR
 from apps.users.infrastructure.api_response import respuesta_ok, respuesta_error
@@ -14,6 +17,33 @@ logger = logging.getLogger(__name__)
 
 FASTAPI_URL = "http://ia_service_core:8003/api/ask"
 FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
+
+
+def clave_del_servicio():
+    """Clave compartida con el microservicio de IA.
+
+    Sale del entorno (INTERNAL_SERVICE_KEY). Antes estaba escrita en este
+    archivo, con lo que el repositorio llevaba una credencial de servicio
+    versionada y no se podia rotar sin tocar codigo.
+
+    Sin valor por defecto a proposito: si la clave no esta definida, prefiero
+    un fallo ruidoso antes que mandar una cadena vacia o un literal de
+    repuesto. Una cadena vacia pasaria el chequeo del microservicio solo
+    si este tambien aceptase vacio, y un literal de repuesto seria volver
+    a la credencial en el codigo. El error se propaga tal cual: es un
+    despliegue mal configurado, no un error del usuario que pregunta.
+    """
+    clave = getattr(settings, 'INTERNAL_SERVICE_KEY', '') or ''
+    if not clave.strip():
+        raise ImproperlyConfigured(
+            'INTERNAL_SERVICE_KEY no esta definida, asi que no se puede '
+            'autenticar contra el microservicio de IA (/agente-ajax/). '
+            'Definela en el entorno -- en desarrollo, en el .env local; en '
+            'produccion, en las variables del despliegue -- con el mismo '
+            'valor que lea el microservicio de IA. No hay valor por defecto '
+            'a proposito. Ver INTERNAL_SERVICE_KEY en .env.example.'
+        )
+    return clave
 
 
 # El rol se comprueba contra la base, no contra la cookie. ADMIN porque es
@@ -71,6 +101,12 @@ def agente_ajax(request):
     if usar_stream:
         return agente_streaming(pregunta)
 
+    # Fuera del try de abajo: ese bloque convierte cualquier Exception en un
+    # 500 de "ocurrio un error inesperado" con el detalle dentro, y una clave
+    # sin configurar no es un fallo del microservicio sino un despliegue roto.
+    # Ahi dentro el mensaje claro se perderia.
+    clave = clave_del_servicio()
+
     try:
         payload = {
             "prompt": pregunta,
@@ -80,7 +116,7 @@ def agente_ajax(request):
 
         headers = {
             "Content-Type": "application/json",
-            "X-Internal-Service-Key": "clave_estricta_por_defecto_cambiar_en_prod"
+            "X-Internal-Service-Key": clave
         }
 
         r = requests.post(

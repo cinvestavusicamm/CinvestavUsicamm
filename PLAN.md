@@ -133,6 +133,45 @@ es otro resto igual que este.
 
 ---
 
+### DEUDA-8. La clave de servicio entre Django y el microservicio de IA, en cuatro sitios y con tres nombres
+
+**Estado: Django arreglado; el resto del engranaje sigue roto y bloquea el despliegue.**
+
+El valor compartido vive en cuatro ficheros, y no con el mismo nombre:
+
+| Dónde | Cómo | Quién lo lee |
+|---|---|---|
+| `apps/users/api/agente.py` | **texto plano en el código** (ya no) → ahora `settings.INTERNAL_SERVICE_KEY` | Django, al mandar `X-Internal-Service-Key` |
+| `ia_service_core/src/infrastructure/api/security.py:8` | `os.getenv("microAI", <valor escrito>)` | el microservicio, en `verify_internal_key` |
+| `infrastructure/docker-compose.yml:69` | `MICROSERVICE_SECRET: <valor escrito>` (servicio `backend`) | **nadie** |
+| `infrastructure/docker-compose.yml:111` | `MICROSERVICE_SECRET=<valor escrito>` (servicio `django`) | **nadie** |
+| `ia_service_core/docker-compose.yml:22` | `MICROSERVICE_SECRET: ${MICROSERVICE_SECRET:-super_secreto_interno}` | **nadie** |
+
+**El bug de fondo.** El microservicio busca `microAI`, que no pone nadie en ningún
+`docker-compose.yml` ni en `.env.example`, así que siempre cae en el literal de
+respaldo de `security.py`. Los `MICROSERVICE_SECRET` que sí se pasan no los lee
+nadie. Funciona porque Django y el microservicio tienen **la misma cadena escrita a
+mano dos veces**; el transporte de la variable nunca ha funcionado.
+
+**Consecuencia del arreglo de Django.** `INTERNAL_SERVICE_KEY` ya es obligatoria y
+sin valor por defecto. El día que alguien la defina en `.env` con un valor propio,
+Django dejará de mandar el literal y el microservicio seguirá esperando el suyo:
+`/ask` responderá 403 y el chatbot dirá "error inesperado". Es decir, **este arreglo
+no se puede activar en un entorno real hasta unificar los nombres**.
+
+**Arreglo mínimo pendiente de decisión:** leer `INTERNAL_SERVICE_KEY` en
+`security.py` y quitarle el literal de respaldo, y borrar los `MICROSERVICE_SECRET`
+muertos de los tres compose. Falta decidir si el nombre canónico es
+`INTERNAL_SERVICE_KEY` (lo que ya usan Django y `.env.example`) o `microAI` (lo que
+usa el microservicio), y eso depende de si hay otros consumidores fuera del repo.
+
+**Lo que sí está hecho en este commit:** la credencial versionada desaparece de
+`apps/users/api/agente.py`, `INTERNAL_SERVICE_KEY` está documentada en `.env.example`,
+`core.settings.prov` se niega a arrancar sin ella, y `clave_del_servicio()` falla con
+un mensaje que dice qué variable falta y dónde definirla.
+
+---
+
 ### DEUDA-1. `apps/users/api/usuarios_api.py`: `@csrf_exempt` sobre vistas con sesión
 
 **Corrección a una hipótesis previa:** estas vistas **sí exigen autenticación y rol**. No son

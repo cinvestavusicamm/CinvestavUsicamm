@@ -1,6 +1,6 @@
 import datetime
 
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from unittest.mock import patch
 
 from apps.users.config.constants import (
@@ -53,6 +53,7 @@ class _SesionRealTest(TestCase):
 class FlujoCompletoTest(_SesionRealTest):
 
     # ✅ TEST AGENTE
+    @override_settings(INTERNAL_SERVICE_KEY="clave-de-prueba-flujo")
     @patch("apps.users.services.router_service.RouterService.decidir")
     @patch("apps.users.api.agente.requests.post")
     def test_agente_ajax(self, mock_post, mock_decidir):

@@ -180,6 +180,20 @@ AI_AGENT_SERVICE_URL = config('AI_AGENT_SERVICE_URL', default='http://ms_ai_agen
 IA_AGENT_CHAT_URL = config('IA_AGENT_CHAT_URL', default=f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat')
 IA_AGENT_STREAM_URL = config('IA_AGENT_STREAM_URL', default=f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat/stream')
 
+# Clave compartida con el microservicio de IA: Django la manda en la cabecera
+# X-Internal-Service-Key y el microservicio la exige en /ask.
+#
+# Sin valor por defecto a proposito. La version anterior de agente.py traia la
+# clave escrita en el codigo, de modo que el repositorio entero llevaba una
+# credencial de servicio versionada y cualquiera con lectura del repo podia
+# hablar con el microservicio. Ahora la clave viene del entorno y si falta se
+# dice que falta.
+#
+# Vacio es el unico "no definida" que se acepta, para que el error se produzca
+# al usar el endpoint y no al importar los settings: asi un comando de
+# administracion que no habla con la IA sigue funcionando.
+INTERNAL_SERVICE_KEY = config('INTERNAL_SERVICE_KEY', default='')
+
 # Configuración específica para pruebas
 if 'test' in sys.argv or 'pytest' in sys.argv:
     DATABASES = {
