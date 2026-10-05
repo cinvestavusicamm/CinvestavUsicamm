@@ -64,126 +64,15 @@ Health check endpoint for monitoring.
 
 ## Course Management API
 
-### GET /api/cursos/listar/
+Las rutas `/api/cursos/*` se retiraron. No las consumia la interfaz ni
+`ms_orchestrator`, y `GET /api/cursos/listar/` respondia **sin ninguna
+autenticacion** con `Curso.objects.all().values()`, de modo que cualquier
+peticion se llevaba todos los cursos y su `contenido_json`.
 
-List all courses or filter by teacher.
-
-**Endpoint**: `GET /api/cursos/listar/`
-
-**Authentication**: Required
-
-**Query Parameters**:
-```
-docente_id: integer (optional) - Filter courses by teacher ID
-```
-
-**Response**:
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id_curso": 1,
-      "titulo": "Curso de Matemáticas",
-      "descripcion": "Descripción del curso",
-      "estado": "Aprobado",
-      "generado_con_ia": true,
-      "version": 1,
-      "fecha_creacion": "2024-01-01T00:00:00Z",
-      "fecha_aprobacion": "2024-01-15T00:00:00Z",
-      "docente_id": 123
-    }
-  ],
-  "count": 1
-}
-```
-
-**Status Codes**: 200
-
----
-
-### POST /api/cursos/crear/
-
-Create a new course (Generator role only).
-
-**Endpoint**: `POST /api/cursos/crear/`
-
-**Authentication**: Required (Generator role)
-
-**Request Body** (JSON):
-```json
-{
-  "titulo": "string (required)",
-  "descripcion": "string (optional)",
-  "contenido": {
-    "modulos": [],
-    "preguntas_audio": [],
-    "relaciones": [],
-    "examen_final": []
-  }
-}
-```
-
-**Response**:
-```json
-{
-  "success": true,
-  "mensaje": "Curso creado exitosamente",
-  "curso_id": 1,
-  "titulo": "Curso de Matemáticas"
-}
-```
-
-**Error Responses**:
-- `400`: Missing title, invalid JSON
-- `403`: Permission denied
-- `500`: Internal server error
-
-**Status Codes**: 201, 400, 403, 500
-
----
-
-### POST /api/cursos/actualizar/<int:curso_id>/
-
-Update an existing course (Generator role only).
-
-**Endpoint**: `POST /api/cursos/actualizar/<curso_id>/`
-
-**Authentication**: Required (Generator role)
-
-**Request Body** (JSON):
-```json
-{
-  "titulo": "string (optional)",
-  "descripcion": "string (optional)",
-  "estado": "string (optional)",
-  "contenido": {
-    "modulos": [],
-    "preguntas_audio": [],
-    "relaciones": [],
-    "examen_final": []
-  }
-}
-```
-
-**Response**:
-```json
-{
-  "success": true,
-  "mensaje": "Curso actualizado exitosamente",
-  "curso_id": 1
-}
-```
-
-**Error Responses**:
-- `400`: Invalid JSON
-- `403`: Not course owner
-- `404`: Course not found
-- `500`: Internal server error
-
-**Status Codes**: 200, 400, 403, 404, 500
-
----
+Para el GENERADOR, el listado y el detalle van por
+`/generador/api/cursos/` y `/generador/api/obtener-curso/<id>/`, y la
+creacion por `/generador/api/crear-curso-generador/`. Ver
+`POST /generador/api/crear-curso-generador/`, mas abajo.
 
 ## Forum Management API
 
@@ -450,11 +339,31 @@ Create a course from generator panel.
 
 **Authentication**: Required (Generador role)
 
-**Request Body** (form-data):
+El rol se comprueba **antes** que el metodo HTTP, asi que un usuario sin rol
+recibe 403 tambien si usa GET, en vez de un 405. Y el `csrf_exempt` que tenia
+esta vista se quito: hace falta la cabecera `X-CSRFToken` con el token que
+emite `GET /generador/generador_de_cursos/`.
+
+**Request Body** (JSON):
+```json
+{
+  "titulo": "Algebra lineal",
+  "descripcion": "Curso de introduccion",
+  "estado": "Borrador",
+  "generado_con_ia": true,
+  "contenido": {
+    "modulos": []
+  }
+}
 ```
-titulo: string (required)
-descripcion: string (optional)
-nivel: string (optional)
+```
+titulo: string (required, no vacio, max 200)
+descripcion: string (optional, max 20000)
+estado: string (optional) - uno de Borrador, En_Revision, Aprobado,
+         Rechazado, Inactivo; se normalizan las variantes antiguas
+         ("EnRevision", "En Revision", "Publicado", "Observaciones", ...)
+generado_con_ia: bool (optional, default false)
+contenido: object (optional) - serializado a UTF-8, max 1 MB
 ```
 
 **Response**:
@@ -466,7 +375,22 @@ nivel: string (optional)
 }
 ```
 
-**Status Codes**: 200, 400, 403
+Un dato invalido es un 400 que dice el campo, y se hace `GET` al final para
+poder devolver el `curso_id` recien creado:
+
+```json
+{
+  "error": "El titulo no puede quedar vacio",
+  "campo": "titulo"
+}
+```
+
+**Status Codes**: 200, 400, 403, 500
+
+Cuando el dato es invalido **no se crea nada**. El contenido se comprueba
+antes de insertar la fila, no despues: si se creara primero y el contenido
+resultara demasiado grande, el curso quedaria guardado con un 400 en la cara
+del usuario.
 
 ---
 
@@ -743,8 +667,9 @@ Version information is included in health check responses.
 # Health check
 curl http://localhost:8001/health/
 
-# Get courses (requires authentication cookie)
-curl -b cookies.txt http://localhost:8001/api/cursos/listar/
+# Listar los cursos del generador (con cookie de sesion y token CSRF)
+curl -b cookies.txt -H "X-CSRFToken: $CSRF" \
+  http://localhost:8001/generador/api/cursos/
 
 # Create user (admin only)
 curl -X POST -b cookies.txt \
@@ -767,8 +692,8 @@ import requests
 response = requests.get('http://localhost:8001/health/')
 print(response.json())
 
-# Get courses
-response = requests.get('http://localhost:8001/api/cursos/listar/', cookies=session)
+# Listar los cursos del generador
+response = requests.get('http://localhost:8001/generador/api/cursos/', cookies=session)
 print(response.json())
 ```
 

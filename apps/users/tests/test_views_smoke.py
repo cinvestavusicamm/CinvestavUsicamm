@@ -241,7 +241,6 @@ class ViewsSmokeTest(TestCase):
     def test_api_endpoints(self):
         """Test API endpoints"""
         api_endpoints = [
-            'api_listar_cursos',
             'api_listar_foros',
             'health_check',
         ]

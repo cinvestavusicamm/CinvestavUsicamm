@@ -49,14 +49,27 @@ class DjangoBackendClient(MicroserviceClient):
         logger.info(f"Calling DjangoBackend.toggle_usuario: {usuario_id}")
         return await self.post(f"/api/usuarios/toggle/{usuario_id}")
 
+    # Los tres metodos de cursos siguientes quedaron sin uso cuando se
+    # retiraron las rutas /api/cursos/* de Django (ver PLAN.md, DEUDA-10):
+    # nada en el repositorio los invoca. Se conservan solo como documentacion
+    # de una superficie que existio.
+    #
+    # Ademas nunca pudieron funcionar, por tres motivos independientes: piden
+    # la URL sin barra final y Django exige la barra; este cliente no manda
+    # cookie de sesion ni cabecera de autenticacion, y estas vistas se
+    # autenticaban por sesion con requiere_rol; y ademas GET /api/cursos/listar/
+    # no exigia nada, asi que devolvia todos los cursos del sistema. Si se
+    # llegan a usar, hay que decidir primero como se autentica un
+    # microservicio contra Django, porque el login por cookie es de navegador.
+
     async def get_cursos(self, docente_id: Optional[int] = None) -> Dict[str, Any]:
-        """Get cursos, optionally filtered by docente."""
+        """Get cursos, optionally filtered by docente. SIN USO."""
         logger.info(f"Calling DjangoBackend.get_cursos for docente: {docente_id}")
         params = {"docente_id": docente_id} if docente_id else {}
         return await self.get("/api/cursos/listar", params=params)
 
     async def create_curso(self, curso_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Create a new curso."""
+        """Create a new curso. SIN USO."""
         logger.info("Calling DjangoBackend.create_curso")
         return await self.post(
             "/api/cursos/crear",
@@ -64,7 +77,7 @@ class DjangoBackendClient(MicroserviceClient):
         )
 
     async def update_curso(self, curso_id: int, curso_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Update an existing curso."""
+        """Update an existing curso. SIN USO."""
         logger.info(f"Calling DjangoBackend.update_curso: {curso_id}")
         return await self.post(
             f"/api/cursos/actualizar/{curso_id}",

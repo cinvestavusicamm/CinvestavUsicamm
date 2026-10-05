@@ -89,12 +89,15 @@ def agente_ajax(request):
                 mensaje="Respuesta obtenida desde la base de datos",
                 datos={"answer": respuesta, "source": "bd"},
             )
-        except Exception as e:
-            logger.exception(f"Error consultando la base de datos desde agente_ajax: {e}")
+        except Exception:
+            # La excepcion entera se queda en el log. Antes se devolvia con
+            # errores=str(e), que al usuario le llegaba el texto de la libreria
+            # de base de datos, con la consulta y a veces la estructura de las
+            # tablas.
+            logger.exception('No se pudo consultar la base de datos desde agente_ajax')
             return respuesta_error(
                 request,
                 mensaje="No se pudo consultar la base de datos",
-                errores=str(e),
                 status=500,
             )
 
@@ -123,25 +126,78 @@ def agente_ajax(request):
             FASTAPI_URL,
             json=payload,
             headers=headers,
-            timeout=180
+            timeout=settings.IA_SERVICE_TIMEOUT,
         )
         r.raise_for_status()
         data = r.json()
 
-        respuesta = data.get("response", "No se pudo generar una respuesta")
+        # Antes data.get("response", "no se pudo generar..."): si la clave del JSON
+        # estaba mal, el usuario leia un mensaje que parece un fallo del modelo
+        # cuando en realidad el servicio contesto otra cosa. Ahora se distingue:
+        # si el campo no esta, se dice que la respuesta vino incompleta, que es
+        # un fallo del servicio y no del modelo.
+        if "response" not in data:
+            logger.error(
+                'Respuesta sin campo "response" de %s. Claves recibidas: %s',
+                FASTAPI_URL, sorted(data) if isinstance(data, dict) else type(data).__name__,
+            )
+            return respuesta_error(
+                request,
+                mensaje='El asistente devolvio una respuesta incompleta. Intenta de nuevo.',
+                status=502,
+            )
+
         return respuesta_ok(
             request,
             mensaje="Respuesta generada correctamente",
-            datos={"answer": respuesta, "source": "agente"}
+            datos={"answer": data["response"], "source": "agente"}
         )
 
-    except Exception as e:
-        logger.exception(f"Error inesperado en agente_ajax: {e}")
+    except requests.exceptions.Timeout:
+        # Distinto del "error inesperado" de abajo porque la accion es otra: no
+        # se reintenta igual, la pregunta era larga o el modelo se atasco.
+        logger.error('Timeout de %ss hablando con el asistente', settings.IA_SERVICE_TIMEOUT)
+        return respuesta_error(
+            request,
+            mensaje='El asistente esta tardando demasiado. Prueba con una pregunta mas corta.',
+            status=504,
+        )
+    except requests.exceptions.ConnectionError:
+        # El servicio no contesto: no arranco, se cayo o no hay red. El log
+        # lleva la excepcion entera; al usuario le basta con saber que no esta.
+        logger.exception('No se pudo conectar con el microservicio de IA')
+        return respuesta_error(
+            request,
+            mensaje='El asistente no esta disponible. Intenta en unos momentos.',
+            status=503,
+        )
+    except requests.exceptions.HTTPError as e:
+        # El microservicio respondio con 4xx/5xx. La causa va al log; el codigo
+        # se traduce porque un 401 del microservicio significa clave mal puesta
+        # en el despliegue, que el usuario no puede arreglar.
+        logger.error('El asistente respondio con error HTTP: %s', e.response.status_code)
+        return respuesta_error(
+            request,
+            mensaje='El asistente no pudo procesar la pregunta. Intenta de nuevo.',
+            status=502,
+        )
+    except ValueError:
+        # r.json() sobre un cuerpo que no es JSON. Es una respuesta invalida del
+        # servicio, no un problema de la pregunta del usuario.
+        logger.exception('El asistente devolvio algo que no es JSON')
+        return respuesta_error(
+            request,
+            mensaje='El asistente devolvio una respuesta que no se pudo leer.',
+            status=502,
+        )
+    except Exception:
+        # Se registra entero y no se devuelve str(e): antes el usuario recibia la
+        # excepcion de la libreria, con URL interna y a veces la clave.
+        logger.exception('Error inesperado en agente_ajax')
         return respuesta_error(
             request,
             mensaje="Ocurrió un error inesperado",
-            errores=str(e),
-            status=500
+            status=500,
         )
 
 
@@ -153,16 +209,26 @@ def agente_streaming(pregunta):
         try:
             logger.info(f"Conectando a FASTAPI_STREAM_URL: {FASTAPI_STREAM_URL}")
             
+            # El None de antes era un timeout de lectura infinito: si el
+            # servicio se colgaba sin cerrar la conexion, esta peticion se
+            # quedaba ocupando un worker de gunicorn indefinidamente. Con dos
+            # valores, uno para conectar y otro para leer, se acaba solo.
             with requests.post(
                 FASTAPI_STREAM_URL,
                 json={"prompt": pregunta},
                 stream=True,
-                timeout=(30, None)
+                timeout=(
+                    settings.IA_SERVICE_CONNECT_TIMEOUT,
+                    settings.IA_SERVICE_READ_TIMEOUT,
+                )
             ) as r:
                 logger.info(f"Respuesta del servicio: status={r.status_code}")
-                
+
                 if r.status_code != 200:
-                    yield f"data: {json.dumps({'error': f'Error del servicio: {r.status_code}'})}\n\n"
+                    # El codigo se queda en el log, no en el stream. Al
+                    # navegador le llega lo que puede hacer: reintentar.
+                    logger.error('El asistente respondio %s en streaming', r.status_code)
+                    yield f"data: {json.dumps({'error': 'El asistente no pudo iniciar la respuesta. Intenta de nuevo.'})}\n\n"
                     return
                 
                 line_count = 0
@@ -197,15 +263,28 @@ def agente_streaming(pregunta):
                     logger.warning("No se recibieron líneas del servicio")
                     yield f"data: {json.dumps({'error': 'No se recibió respuesta del asistente'})}\n\n"
 
+        # Conectar no salio en 10s: casi siempre es que el servicio no esta
+            # levantado. El timeout de lectura es otro caso, el de "se conecta
+            # y luego se queda pensando", y su mensaje tiene que ser otro para
+            # que el usuario sepa si reintentar ya o esperar.
+        except requests.exceptions.ConnectTimeout:
+            logger.error('No se pudo conectar con el asistente en streaming')
+            yield f"data: {json.dumps({'error': 'No se pudo conectar con el asistente'})}\n\n"
+        except requests.exceptions.ReadTimeout:
+            logger.error('El asistente dejo de enviar respuesta a mitad')
+            yield f"data: {json.dumps({'error': 'El asistente se quedo pensando y se corto. Intenta de nuevo.'})}\n\n"
         except requests.exceptions.Timeout:
             logger.error("Timeout conectando al servicio")
             yield f"data: {json.dumps({'error': 'Tiempo de espera agotado'})}\n\n"
-        except requests.exceptions.ConnectionError as e:
-            logger.error(f"Error de conexión: {e}")
+        except requests.exceptions.ConnectionError:
+            logger.exception('No se pudo conectar con el microservicio de IA en streaming')
             yield f"data: {json.dumps({'error': 'No se pudo conectar con el asistente'})}\n\n"
-        except Exception as e:
-            logger.exception(f"Error inesperado en streaming: {e}")
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        except Exception:
+            # El log se lleva la excepcion entera; al navegador no sale
+            # str(e), que antes podia filtrar la URL interna o la cabecera de
+            # autenticacion.
+            logger.exception('Error inesperado en streaming')
+            yield f"data: {json.dumps({'error': 'Ocurrio un error inesperado al escribir la respuesta.'})}\n\n"
 
     response = StreamingHttpResponse(
         generar_stream(),

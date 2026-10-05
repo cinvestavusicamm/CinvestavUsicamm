@@ -269,6 +269,108 @@ sobre todo: renombrar `fecha`→`fecha_generacion`, `id`→`id_retroalimentacion
 es anterior a este trabajo y va por separado. La migración 0008 está escrita a
 mano para no mezclarse con eso.
 
+### DEUDA-10. Tres endpoints de creación de cursos para GENERADOR, uno sin autenticación
+
+**Estado: RESUELTO. Las tres superficies duplicadas se retiraron; queda
+`/generador/api/crear-curso-generador/`.**
+
+Había tres vistas distintas para crear un curso, y la que se pidió confirmar con
+grep resultó no ser la única sin consumidor:
+
+| Ruta | Vista | Decoradores | Estado |
+|---|---|---|---|
+| `/generador/api/crear-curso-generador/` | `views/generador_cursos/cursos.py` | `csrf_exempt` + rol | rota (CSRF apagado) |
+| `/generador/api/crear/` | `api/cursos.py` | `csrf_exempt` + rol | rota |
+| `/api/cursos/crear/` | `api/cursos_api.py` → `api/cursos.py` | `csrf_exempt` + rol | rota |
+| `/generador/api/crear-curso-index/` | `views/generador_cursos/index_generador.py` | `csrf_exempt` + rol | rota |
+| `views/generador_cursos/crear_curso_api.py` | copiada de `api/cursos.py` | `csrf_exempt` + rol | ni registrada |
+
+Las cuatro rotas usan `docente_id=request.user.id`. El login de este proyecto es
+por sesión propia, no de `django.contrib.auth`, así que `request.user` es un
+`AnonymousUser` y `.id` no existe: no podían crear nada.
+
+**El hallazgo que cambia el tono de esta deuda es otro.** Al revisar el grep
+pedido, la única que de verdad respondía sin autenticación era
+`GET /api/cursos/listar/`, en `api/cursos_api.py`: no lleva `requiere_rol` y
+devolvía `Curso.objects.all().values()`. Comprobado contra una fila real de
+prueba, sin sesión y sin token:
+
+```
+GET /api/cursos/listar/  ->  200
+{"success": true, "data": [{"id_curso": 1, "titulo": "Curso privado",
+  "descripcion": "secreto", "docente_id": 1, "estado": "Borrador",
+  "generado_con_ia": false, "contenido_json": {"perg": "respuestaSecreta"}}],
+  "count": 1}
+```
+
+Es decir: todos los cursos del sistema y su `contenido_json`, a cualquiera que
+preguntara. Con `@csrf_exempt` encima. En el despliegue con nginx `/api/` lo
+manda al gateway, que reescribe a `/api/v1/...` y no alcanza estas rutas; pero
+`docs/API.md` las documentaba contra `localhost:8001` en directo, así que en
+desarrollo y en cualquier acceso directo a Django estaba expuesta.
+
+**Por qué se borra la superficie en vez de arreglarla.** Sin consumidor no hay
+nada que proteger: nadie la llama y no se pierde ninguna capacidad, porque las
+mismas operaciones siguen en las rutas del panel que sí consume la interfaz. Es
+el mismo criterio del commit `0671d40`, que retiró `/api/usuarios/*`.
+
+**Consumer check (el grep que se pidió, con alcance de todo el repositorio).**
+Cero llamadas en `templates/` y `static/`. Fuera de ahí, la única referencia
+viva era `ms_orchestrator`, en `DjangoBackendClient`: `get_cursos`,
+`create_curso` y `update_curso` apuntan a estas rutas, pero **nadie los invoca**
+dentro de `ms_orchestrator` (0 llamadas). Además ese cliente no manda cookie ni
+cabecera de autenticación, y las vistas se autenticaban por sesión, así que
+aunque se invocasen no habrían funcionado. Sus tres métodos se conservan
+marcados `SIN USO` con el motivo, igual que se hizo con los de usuarios.
+
+**Arreglo aplicado.**
+
+- Borrados `apps/users/api/cursos.py`, `apps/users/api/cursos_api.py` y
+  `apps/users/views/generador_cursos/crear_curso_api.py` (esta última no estaba
+  registrada en ninguna parte: nadie la importaba).
+- Fuera sus rutas de `urls.py` y `routes/generador_urls.py`.
+- De la vista que queda se quitó `@csrf_exempt` y se invirtieron los
+  decoradores, para que `@requiere_rol(ROLE_GENERADOR)` se evalúe antes de
+  `@require_http_methods`. Ahora un usuario sin rol recibe 403 también si usa
+  GET, en vez de un 405 que no explica nada.
+- `generador_de_cursos.html` emite `{% csrf_token %}`. Estaba el `X-CSRFToken`
+  en el JS, pero el token solo lo imprimían login y registro: si el usuario
+  entraba por otro lado, la cabecera llegaba vacía. Con el `csrf_exempt` fuera,
+  eso rompía la creación, así que la plantilla tiene que emitirlo siempre.
+- El contenido se valida **antes** de crear la fila. Se validaba después, con
+  lo que un contenido de más de 1 MB dejaba el curso creado y un 400 en la cara
+  del usuario. Ahora el 400 significa que no se creó nada.
+- `test_crear_curso_endpoint.py` (23 tests) y `test_agente_timeouts.py`
+  (15 tests) cubren la cadena de decoradores completa a traves del cliente de
+  Django, no llamando a la vista directamente.
+
+**Lo que NO se tocó, a propósito.**
+
+- `crear_curso_index` en `index_generador.py` sigue registrada en su propia
+  ruta y con sus mismos problemas. No esCreation del panel del generador de IA,
+  es la creación del curso semilla del panel, y mezclarla aquí sería otro
+  arreglo distinto. Anotado abajo.
+- `ms_ai_agent_service`, que tampoco se extiende.
+
+### DEUDA-11. `crear_curso_index`: el mismo endpoint de creación, otra vez
+
+**Estado: ABIERTO. No es lo mismo que lo que se acaba de arreglar, y conviene
+no confundirlos.**
+
+`/generador/api/crear-curso-index/` (`views/generador_cursos/index_generador.py`)
+tiene los dos primeros problemas: `@csrf_exempt` y el orden de decoradores
+invertido. Pero no el tercero: lee `request.session.get('usuario_id')`, asi que
+esta sí crea cursos. El `str(e)` en el `except` también devuelve la excepción
+cruda al cliente.
+
+No se toca en el mismo commit por dos razones. La primera es que tampoco tiene
+consumidor (0 referencias a `crear-curso-index` en `templates/` y `static/`),
+igual que las que se acabaron de retirar. La segunda es que su flujo es otro:
+crea el curso semilla que abre el panel, no un curso por petición de la
+interfaz de generación, y decidir si debe evitarse duplicarlo cuando el panel ya
+está abierto es una pregunta de producto que no está resuelta. Retirarlo sin
+decidir eso podría quitar la forma de crear el curso inicial del panel.
+
 ### DEUDA-1. `apps/users/api/usuarios_api.py`: `@csrf_exempt` sobre vistas con sesión
 
 **Corrección a una hipótesis previa:** estas vistas **sí exigen autenticación y rol**. No son

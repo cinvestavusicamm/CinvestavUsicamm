@@ -2,6 +2,16 @@
 <html lang="es">
 
 <head>
+    {% comment %}
+    El token CSRF se emite aqui, antes de nada, porque este documento hace sus
+    peticiones con fetch mandando X-CSRFToken, y el JS lo lee de la cookie.
+    Esa cookie solo la pone una plantilla que imprima el token, y de las que
+    hay en el proyecto solo lo imprimen la de login y la de registro. Es decir,
+    que el token llegue depende de por donde haya entrado el usuario. Antes lo
+    que hacia que eso no importara era el csrf_exempt de la vista; con el
+    csrf_exempt fuera, hace falta que esta plantilla lo emita siempre.
+    {% endcomment %}
+    {% csrf_token %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador IA USICAMM | EscalafonIA</title>

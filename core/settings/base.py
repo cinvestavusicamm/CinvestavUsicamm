@@ -194,6 +194,26 @@ IA_AGENT_STREAM_URL = config('IA_AGENT_STREAM_URL', default=f'{AI_AGENT_SERVICE_
 # administracion que no habla con la IA sigue funcionando.
 INTERNAL_SERVICE_KEY = config('INTERNAL_SERVICE_KEY', default='')
 
+# Tiempos de espera contra el microservicio de IA.
+#
+# El default de 150 va a proposito por debajo del --timeout 180 de gunicorn
+# (apps/Dockerfile e infrastructure/docker-compose.yml). Si la peticion HTTP
+# aguantara mas que gunicorn, el worker moriria a los 180 y el usuario veria un
+# 502 de nginx en vez del mensaje de "el asistente esta tardando demasiado". Con
+# requests cortando antes, el error lo genera Django y se puede explicar.
+#
+# El streaming tambien tiene timeout de lectura, y antes era None, es decir
+# infinito: si el microservicio se quedaba colgado sin cerrar la conexion, esa
+# peticionoccupaba un worker de gunicorn para siempre y se acababan los workers.
+IA_SERVICE_TIMEOUT = config('IA_SERVICE_TIMEOUT', default=150, cast=int)
+# Conectar es rapido y no depende del modelo, asi que va corto: si no conecta,
+# el problema es de red o de que el servicio no arranco, y no tiene sentido
+# esperar.
+IA_SERVICE_CONNECT_TIMEOUT = config('IA_SERVICE_CONNECT_TIMEOUT', default=10, cast=int)
+# El streaming se lee token a token, con pausas entre tokenes porque el modelo
+# va poco a poco. Por eso el de lectura es holgado, pero no infinito.
+IA_SERVICE_READ_TIMEOUT = config('IA_SERVICE_READ_TIMEOUT', default=150, cast=int)
+
 # Configuración específica para pruebas
 if 'test' in sys.argv or 'pytest' in sys.argv:
     DATABASES = {
