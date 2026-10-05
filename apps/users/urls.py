@@ -4,7 +4,6 @@ from .views.dashboard_views import dashboard
 from .api.agente import agente_ajax
 from .api.admin import listar_tablas_bd
 from .api.health import health_check
-from .api.usuarios_api import api_get_usuario, api_create_usuario, api_update_usuario, api_toggle_usuario
 from .api.cursos_api import api_listar_cursos, api_crear_curso, api_actualizar_curso
 from .api.foros_api import api_listar_foros
 from .views.docente_ajax import docente_ajax
@@ -33,12 +32,6 @@ urlpatterns = [
 
     # API endpoints para ms_orchestrator
     path('health/', health_check, name='health_check'),
-    
-    # API endpoints para usuarios
-    path('api/usuarios/<int:usuario_id>/', api_get_usuario, name='api_get_usuario'),
-    path('api/usuarios/agregar/', api_create_usuario, name='api_create_usuario'),
-    path('api/usuarios/editar/<int:usuario_id>/', api_update_usuario, name='api_update_usuario'),
-    path('api/usuarios/toggle/<int:usuario_id>/', api_toggle_usuario, name='api_toggle_usuario'),
     
     # API endpoints para cursos
     path('api/cursos/listar/', api_listar_cursos, name='api_listar_cursos'),

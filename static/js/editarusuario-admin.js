@@ -25,8 +25,6 @@ function editarUsuario(id) {
         return response.json();
     })
     .then(data => {
-        console.log('Datos recibidos:', data);
-        
         if (data.success) {
             const form = document.getElementById('formEditarUsuario');
             

@@ -97,7 +97,7 @@ redirect no introduce bucle.
 **Estado:** la ruta `evaluador:chat` se retiró del enrutado, pero **la vista sigue existiendo** en
 `apps/users/views/evaluador/chat.py` y su JS también. Falta la plantilla `Evaluador/chat_ia.html`.
 
-Para rehabilitar el chat hay que escribir esa plantilla. No es matter de descomentar una línea:
+Para rehabilitar el chat hay que escribir esa plantilla. No es cuestión de descomentar una línea:
 `templates/Evaluador/` tiene ocho plantillas y ninguna de chat, y no hay equivalente al que
 adaptarla. Decidir si el chat vive en el microservicio de IA o dentro de Django es requisito
 previo.
@@ -149,7 +149,7 @@ Comprobado con `django.test.Client` y sesión ADMIN:
 Las rutas **sí funcionan** por sí solas: `GET /api/usuarios/<id>/` devuelve `200` con el JSON
 esperado. Lo que no existe es un consumidor capaz de alcanzarlas.
 
-**Decisión del cliente (2026-10-04): no se tocan.** Se conservan las cuatro rutas, el módulo
+**Decisión del cliente (2026-10-04, Fase 0): no se tocan.** Se conservan las cuatro rutas, el módulo
 `usuarios_api.py` y los métodos del orquestador. Motivo: hay un consumidor declarado en otro
 proyecto, aunque esté muerto. La eliminación queda como decisión pendiente, no como deuda a aplicar
 por omisión.
@@ -166,7 +166,7 @@ natural es **borrar el módulo y sus cuatro rutas**, no autenticarlas.
 2. Crear un decorador `requiere_api_key` en `apps/users/services/permisos.py`, junto a
    `requiere_rol`. No reutilizar `requiere_rol`: son esquemas distintos.
 3. Las cuatro vistas pasan a exigir **API key en vez de** sesión ADMIN, no ambas cosas: son dos
-  encia de autenticación incompatible para el mismo consumidor. Se evita el `or` que abriría la
+   encia de autenticación incompatible para el mismo consumidor. Se evita el `or` que abriría la
    puerta a que un navegador con sesión ADMIN entre por la vía de la API key.
 4. Un flag de entorno `ORCHESTRATOR_API_ENABLED`, apagado por defecto, para que activar el
    contrato sea deliberado.
@@ -181,6 +181,26 @@ natural es **borrar el módulo y sus cuatro rutas**, no autenticarlas.
 **Alternativa más simple, que es la que se recomienda:** borrar `usuarios_api.py` y sus cuatro rutas
 en `apps/users/urls.py`, más los métodos muertos de `DjangoBackendClient`. Se elimina la superficie
 de ataque en vez de autenticarla. Decisión del cliente.
+
+**RESUELTO (2026-10-04, punto C).** El cliente revirtió la decisión de no tocar nada y se aplicó la
+alternativa recomendada, por las razones ya verificadas: cero llamadas a los cuatro métodos en todo
+el repositorio, `nginx` manda `/api/` al gateway y el gateway no tiene `usuarios` en su
+`SERVICE_MAP`, y el orquestador no habría podido alcanzar las rutas ni por la barra final ni por
+el formato del cuerpo.
+
+Qué se eliminó: el módulo `apps/users/api/usuarios_api.py`, sus cuatro rutas en
+`apps/users/urls.py`, la sección *User Management API* de `docs/API.md` y el ejemplo de `curl` que
+usaba la ruta. Los cuatro métodos de `DjangoBackendClient` se conservan **marcados como SIN USO**,
+con el motivo y las dos razones por las que nunca pudieron funcionar.
+
+**Lo que NO se pierde.** Las operaciones de usuario siguen disponibles por sus rutas AJAX reales en
+`apps/users/routes/administrador_urls.py`, que son las que consume el JS del panel:
+`agregar_usuario_ajax`, `usuario/<id>/obtener/`, `usuario/<id>/editar/` y `toggle-usuario/<id>/`.
+Las cuatro exigían sesión ADMIN, así que no se pierde ninguna capacidad.
+
+**Pendiente que queda abierto:** el consumidor server-to-server declarado en el otro proyecto, si
+alguna vez existe, pierde su ruta. Si aparece, hay que rehacer el contrato con API key según los
+siete puntos de arriba, no resucitar estas rutas.
 
 ### DEUDA-2. Dos formatos de respuesta conviven en las vistas AJAX de admin
 

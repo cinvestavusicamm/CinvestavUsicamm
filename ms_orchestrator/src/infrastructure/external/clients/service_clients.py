@@ -12,13 +12,24 @@ logger = logging.getLogger(__name__)
 class DjangoBackendClient(MicroserviceClient):
     """Client for the Django Backend (apps/)."""
 
+    # Los cuatro metodos de usuario siguientes quedaron sin uso cuando se
+    # retiraron las rutas /api/usuarios/* de Django (commit "retirar
+    # /api/usuarios/*"): nada en el repositorio los invoca. Se conservan
+    # solo como documentacion de una superficie que existio.
+    #
+    # Ademas nunca pudieron funcionar contra estas rutas, por dos motivos
+    # independientes: las URLs no tienen barra final, y las vistas leen
+    # request.POST mientras el cliente envia json_data. Si se vuelven a
+    # usar, hay que revisar ambas cosas y el contrato de respuesta, que
+    # tiene dos formatos distintos segun la vista.
+
     async def get_usuario(self, usuario_id: int) -> Dict[str, Any]:
-        """Get usuario by ID."""
+        """Get usuario by ID. SIN USO."""
         logger.info(f"Calling DjangoBackend.get_usuario: {usuario_id}")
         return await self.get(f"/api/usuarios/{usuario_id}")
 
     async def create_usuario(self, usuario_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Create a new usuario."""
+        """Create a new usuario. SIN USO."""
         logger.info("Calling DjangoBackend.create_usuario")
         return await self.post(
             "/api/usuarios/agregar",
@@ -26,7 +37,7 @@ class DjangoBackendClient(MicroserviceClient):
         )
 
     async def update_usuario(self, usuario_id: int, usuario_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Update an existing usuario."""
+        """Update an existing usuario. SIN USO."""
         logger.info(f"Calling DjangoBackend.update_usuario: {usuario_id}")
         return await self.post(
             f"/api/usuarios/editar/{usuario_id}",
@@ -34,7 +45,7 @@ class DjangoBackendClient(MicroserviceClient):
         )
 
     async def toggle_usuario(self, usuario_id: int) -> Dict[str, Any]:
-        """Toggle usuario active status."""
+        """Toggle usuario active status. SIN USO."""
         logger.info(f"Calling DjangoBackend.toggle_usuario: {usuario_id}")
         return await self.post(f"/api/usuarios/toggle/{usuario_id}")
 
