@@ -2,9 +2,13 @@
 Automated Smoke Testing for All Views
 This script dynamically tests all main routes to ensure they return 200/302 (not 500/404)
 """
+import datetime
+from unittest.mock import patch
+
 from django.test import TestCase, Client
 from django.urls import reverse, get_resolver
 from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR
+from apps.users.models import Usuario, Rol, Institucion
 
 
 class ViewsSmokeTest(TestCase):
@@ -13,14 +17,38 @@ class ViewsSmokeTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.resolver = get_resolver()
-        
+        self._contador = 0
+    
     def _login_con_rol(self, rol):
-        """Helper to login with specific role"""
+        """Crea un usuario real del rol indicado y abre sesion con el.
+
+        Antes fijaba usuario_id = 1 a pelo. En una base de test recien
+        creada no existe esa fila, y las vistas que hacen
+        Usuario.objects.get(id_usuario=...) devolvian 500.
+        """
+        self._contador += 1
+        institucion, _ = Institucion.objects.get_or_create(
+            nombre='Institucion de prueba',
+            defaults={'tipo': 'UNIVERSIDAD', 'activo': True},
+        )
+        rol_obj, _ = Rol.objects.get_or_create(nombre_rol=rol)
+        usuario = Usuario.objects.create(
+            nombre='Usuario',
+            apellido_paterno=f'Prueba{self._contador}',
+            correo=f'prueba{self._contador}@test.com',
+            curp=f'PRUEBA{self._contador:02d}000000AAA0',
+            contrasena='x',
+            rol=rol_obj,
+            institucion=institucion,
+            activo=True,
+            fecha_registro=datetime.datetime.now(),
+        )
         session = self.client.session
-        session['usuario_id'] = 1
+        session['usuario_id'] = usuario.id_usuario
         session['usuario_rol'] = rol
-        session['usuario_nombre'] = 'Test User'
+        session['usuario_nombre'] = usuario.nombre_completo
         session.save()
+        return usuario
     
     def _get_all_url_patterns(self):
         """Get all URL patterns from the project"""
@@ -63,11 +91,11 @@ class ViewsSmokeTest(TestCase):
                 else:
                     response = self.client.post(reverse(route_name), data=data)
 
-                # Allow 200, 302 (redirect), or 405 (method not allowed for GET on POST-only routes)
-                # Also allow 500 for routes that require DB setup (we'll skip those in smoke test)
+                # 200, 302 (redirect), 405 (GET on a POST-only route) y 400/401.
+                # El 500 se quitó: aceptarlo era justo lo que ocultaba los fallos.
                 self.assertIn(
                     response.status_code,
-                    [200, 302, 405, 400, 401, 500],
+                    [200, 302, 405, 400, 401],
                     f"Route {route_name} ({method}) returned {response.status_code}"
                 )
     
@@ -120,7 +148,6 @@ class ViewsSmokeTest(TestCase):
         
         evaluador_routes = [
             'evaluador:dashboard',
-            'evaluador:chat',
             'evaluador:banco_preguntas',
             'evaluador:evaluaciones',
             'evaluador:validaciones',
@@ -162,17 +189,35 @@ class ViewsSmokeTest(TestCase):
                     f"Generador route {route_name} returned {response.status_code}"
                 )
     
-    def test_ajax_endpoints(self):
-        """Test AJAX endpoints with proper authentication"""
+    @patch("apps.users.api.agente.requests.post")
+    @patch("apps.users.views.docente_ajax.requests.post")
+    @patch("apps.users.views.evaluador_ajax.requests.post")
+    @patch("apps.users.views.generador_ajax.requests.post")
+    @patch("apps.users.services.router_service.RouterService.decidir")
+    def test_ajax_endpoints(self, mock_decidir, mock_gen, mock_eva, mock_doc, mock_agente):
+        """Test AJAX endpoints with proper authentication
+
+        Las cuatro vistas reenvian la consulta al microservicio de IA.
+        Aqui se intercepta esa llamada porque un smoke test mide que la
+        ruta esta bien cableada en Django, no si el servicio de IA esta
+        levantado: sin esto las cuatro devuelven 500 por NameResolution
+        y el 500 hiding the real result.
+        """
         self._login_con_rol(ROLE_ADMIN)
-        
+
+        mock_decidir.return_value = "agente"
+        for mock in (mock_agente, mock_doc, mock_eva, mock_gen):
+            mock.return_value.json.return_value = {"response": "Respuesta de prueba"}
+            mock.return_value.raise_for_status = lambda: None
+
+        # Sin barra inicial estas rutas no resuelven y devuelven 404.
         ajax_endpoints = [
-            ('agente-ajax', 'POST', {'pregunta': 'test'}),
-            ('docente/ajax/', 'POST', {'pregunta': 'test'}),
-            ('evaluador/ajax/', 'POST', {'pregunta': 'test'}),
-            ('generador/ajax/', 'POST', {'pregunta': 'test'}),
+            ('/agente-ajax/', 'POST', {'pregunta': 'test'}),
+            ('/docente/ajax/', 'POST', {'pregunta': 'test'}),
+            ('/evaluador/ajax/', 'POST', {'pregunta': 'test'}),
+            ('/generador/ajax/', 'POST', {'pregunta': 'test'}),
         ]
-        
+
         for endpoint, method, data in ajax_endpoints:
             with self.subTest(endpoint=endpoint, metodo=method):
                 if method == 'POST':
@@ -180,10 +225,10 @@ class ViewsSmokeTest(TestCase):
                 else:
                     response = self.client.get(endpoint)
 
-                # Allow 200, 400 (bad request), 401 (unauthorized), or 500 (service unavailable)
+                # 200, 400 (peticion invalida) y 401 (sin sesion valida). Sin 500.
                 self.assertIn(
                     response.status_code,
-                    [200, 400, 401, 500],
+                    [200, 400, 401],
                     f"AJAX endpoint {endpoint} returned {response.status_code}"
                 )
     
@@ -209,3 +254,53 @@ class ViewsSmokeTest(TestCase):
                     [200, 400, 401, 404],
                     f"API endpoint {endpoint} returned {response.status_code}"
                 )
+
+
+class RedireccionDocenteTest(TestCase):
+    """/docente/index/ ya no renderiza: redirige al panel del docente.
+
+    Antes pedia la plantilla docente/index_docente.html, que no existe, y
+    devolvia 500 con TemplateDoesNotExist.
+    """
+
+    def setUp(self):
+        self.client = Client()
+        institucion = Institucion.objects.create(
+            nombre='Institucion de prueba', tipo='UNIVERSIDAD', activo=True)
+        rol = Rol.objects.create(nombre_rol=ROLE_DOCENTE)
+        self.docente = Usuario.objects.create(
+            nombre='Docente',
+            apellido_paterno='Prueba',
+            correo='docente@test.com',
+            curp='PRUEBA010000AAA0001',
+            contrasena='x',
+            rol=rol,
+            institucion=institucion,
+            activo=True,
+            fecha_registro=datetime.datetime.now(),
+        )
+        session = self.client.session
+        session['usuario_id'] = self.docente.id_usuario
+        session['usuario_rol'] = ROLE_DOCENTE
+        session.save()
+
+    def test_index_redirige_al_panel(self):
+        response = self.client.get(reverse('Docente:index_docente'))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('Docente:panel_docente'))
+
+    def test_el_panel_responde_200(self):
+        response = self.client.get(reverse('Docente:panel_docente'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_seguir_el_indice_lleva_al_panel(self):
+        """Seguir la redireccion no vuelve al indice: no hay bucle."""
+        response = self.client.get(reverse('Docente:index_docente'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'docente/panel_docente.html')
+
+    def test_anónimo_sigue_yendo_al_login(self):
+        self.client.session.flush()
+        response = self.client.get(reverse('Docente:index_docente'))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('sesion', response.url)

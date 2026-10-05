@@ -1,23 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 from apps.users.services.permisos import requiere_rol
 from apps.users.config.constants import ROLE_DOCENTE
-from apps.users.models import Usuario
-from apps.users.services.curso_service import CursoService
-from apps.users.services.proceso_escalafon_service import ProcesoEscalafonService
+
 
 @requiere_rol(ROLE_DOCENTE)
 def index_docente(request):
-    usuario_id = request.session.get('usuario_id')
-    usuario = Usuario.objects.get(id_usuario=usuario_id)
-    cursos = CursoService.obtener_cursos_docente(usuario_id)
-    
-    procesos = ProcesoEscalafonService.obtener_procesos_usuario(usuario_id)
-    proceso = procesos.first() if procesos else None
+    """Redirige al panel del docente.
 
-    context = {
-        'usuario': usuario,
-        'cursos': cursos,
-        'total_cursos': cursos.count(),
-        'proceso': proceso,
-    }
-    return render(request, 'docente/index_docente.html', context)
+    Antes renderizaba 'docente/index_docente.html', una plantilla que no
+    existe en el repositorio: la ruta devolvia 500 con TemplateDoesNotExist
+    para cualquier DOCENTE que la abriera. El contexto que armaba aqui es
+    identico al de panel_docente, asi que la ruta pasa a redirigir alli.
+    """
+    return redirect('Docente:panel_docente')

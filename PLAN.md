@@ -72,6 +72,38 @@
 
 ## Deuda técnica registrada (2026-10-04, NO implementada)
 
+### DEUDA-4. Rutas rotas en producción que el smoke test ocultaba
+
+**Ambos fallos existían en producción** y no se detectaban. Ninguno era del smoke test:
+
+| Ruta | Qué pasaba | Qué se hizo |
+|---|---|---|
+| `/docente/index/` | `index_docente` renderizaba `docente/index_docente.html`, que **no existe** en el repositorio. Cualquier DOCENTE que abriera la ruta recibía un **500 con `TemplateDoesNotExist`**. | La vista ahora redirige a `Docente:panel_docente`. El contexto que armaba era idéntico al del panel. |
+| `/evaluador/chat/` | `chat` renderizaba `Evaluador/chat_ia.html`, que **no existe**. Cualquier EVALUADOR que abriera el chat recibía un **500**. | Ruta retirada del enrutado. La vista y su JS quedan sin tocar. |
+
+**Cómo se ocultaban.** Los siete bucles de `test_views_smoke.py` envolvían la petición en
+`try/except Exception`, y si algo fallaban imprimían un `✗` y continuaban. Los dos 500 se
+contabilizaban como aprobado. El `try/except` se retiró en `4c45769` y los 25 fallos que
+aparecieron estaban en la vista del smoke test, no en la aplicación: faltaba una barra inicial
+en cuatro rutas AJAX y `_login_con_rol` fijaba `usuario_id = 1` en una base de test vacía.
+
+**Verificación previa a tocar nada.** Ninguna plantilla, JS ni menú enlaza a
+`Docente:index_docente`, `/docente/index/`, `evaluador:chat` ni `/evaluador/chat/`; las únicas
+referencias estaban en dos tests. `panel_docente` no redirige a `index_docente`, así que el
+redirect no introduce bucle.
+
+### DEUDA-5. Chat del evaluador sin plantilla, pendiente
+
+**Estado:** la ruta `evaluador:chat` se retiró del enrutado, pero **la vista sigue existiendo** en
+`apps/users/views/evaluador/chat.py` y su JS también. Falta la plantilla `Evaluador/chat_ia.html`.
+
+Para rehabilitar el chat hay que escribir esa plantilla. No es matter de descomentar una línea:
+`templates/Evaluador/` tiene ocho plantillas y ninguna de chat, y no hay equivalente al que
+adaptarla. Decidir si el chat vive en el microservicio de IA o dentro de Django es requisito
+previo.
+
+---
+
 ### DEUDA-1. `apps/users/api/usuarios_api.py`: `@csrf_exempt` sobre vistas con sesión
 
 **Corrección a una hipótesis previa:** estas vistas **sí exigen autenticación y rol**. No son
