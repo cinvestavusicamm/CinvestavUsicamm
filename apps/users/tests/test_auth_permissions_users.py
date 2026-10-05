@@ -124,6 +124,7 @@ class UsersAjaxCrudTests(TestCase):
             curp="PEPL900101HDFRRS01",
             rol=SimpleNamespace(id_rol=2),
             institucion=SimpleNamespace(id_institucion=3),
+            activo=True,
         )
         user_service.obtener_usuario.return_value = fake_user
 
@@ -138,6 +139,32 @@ class UsersAjaxCrudTests(TestCase):
         self.assertTrue(payload["success"])
         self.assertEqual(payload["id_usuario"], 7)
         self.assertEqual(payload["correo"], "luis@test.com")
+        self.assertIs(payload["activo"], True)
+
+    @patch("apps.users.api.usuarios.UserService")
+    def test_obtener_usuario_ajax_informa_usuario_inactivo(self, user_service):
+        fake_user = SimpleNamespace(
+            id_usuario=8,
+            nombre="Ana",
+            apellido_paterno="Lopez",
+            apellido_materno="",
+            correo="ana@test.com",
+            curp="AEPA900101HDFRRS08",
+            rol=SimpleNamespace(id_rol=2),
+            institucion=SimpleNamespace(id_institucion=3),
+            activo=False,
+        )
+        user_service.obtener_usuario.return_value = fake_user
+
+        request = self.factory.get(reverse("administrador:obtener_usuario_ajax", kwargs={"id": 8}))
+        _attach_session_and_messages(request)
+        _login_como_admin(request)
+
+        response = obtener_usuario_ajax(request, 8)
+        payload = json.loads(response.content)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIs(payload["activo"], False)
 
     @patch("apps.users.api.usuarios.UserService")
     def test_obtener_usuario_ajax_returns_not_found(self, user_service):

@@ -271,7 +271,8 @@ def obtener_usuario_ajax(request, id):
             'correo': usuario.correo,
             'curp': usuario.curp,
             'rol': usuario.rol.id_rol,
-            'institucion': usuario.institucion.id_institucion
+            'institucion': usuario.institucion.id_institucion,
+            'activo': usuario.activo
         })
 
     except Usuario.DoesNotExist:
