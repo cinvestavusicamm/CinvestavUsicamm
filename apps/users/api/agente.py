@@ -5,8 +5,9 @@ import requests
 import json
 import logging
 from django.http import StreamingHttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from apps.users.config.constants import ROLE_ADMIN, ROLE_EVALUADOR
 from apps.users.infrastructure.api_response import respuesta_ok, respuesta_error
+from apps.users.services.permisos import requiere_rol
 from apps.users.services.router_service import RouterService
 
 logger = logging.getLogger(__name__)
@@ -15,16 +16,20 @@ FASTAPI_URL = "http://ia_service_core:8003/api/ask"
 FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
 
 
-@csrf_exempt
+# El rol se comprueba contra la base, no contra la cookie. ADMIN porque es
+# el unico consumidor hoy (chatbot-admin.js, que carga paneladm.html);
+# EVALUADOR porque las ocho plantillas de templates/Evaluador/ ya preparan
+# esta URL para un chat que todavia no existe (DEUDA-5). Si ese chat se
+# rehabilita, el consumidor aparece y este rol queda justo; si se decide
+# que no, se quita EVALUADOR de la lista.
+#
+# Sin @csrf_exempt a proposito: el token llega de la cookie csrftoken, que
+# paneladm.html emite con sus dos {% csrf_token %}. Con csrf_exempt el
+# token se enviaba pero no se validaba, y eso dejaba el endpoint abierto a
+# CSRF para cualquier pagina externa con la sesion de la victima.
+@requiere_rol(ROLE_ADMIN, ROLE_EVALUADOR)
 def agente_ajax(request):
     """API endpoint para interactuar con el agente de IA"""
-    if not request.session.get('usuario_id'):
-        return respuesta_error(
-            request,
-            mensaje="No autorizado",
-            status=401
-        )
-
     if request.method != "POST":
         return respuesta_error(
             request,

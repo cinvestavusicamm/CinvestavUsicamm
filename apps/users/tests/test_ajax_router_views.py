@@ -52,12 +52,6 @@ def _request_with_session(request, rol):
     return request
 
 
-def _request_with_plain_session(request, rol):
-    """Solo para vistas sin requiere_rol (api/agente), que no tocan la base."""
-    request.session = {"usuario_id": 1, "usuario_rol": rol}
-    return request
-
-
 class RouterServiceTests(SimpleTestCase):
     def test_decidir_envia_consultas_de_datos_a_bd(self):
         self.assertEqual(RouterService.decidir("cuantos cursos pendientes hay"), "bd")
@@ -66,7 +60,10 @@ class RouterServiceTests(SimpleTestCase):
         self.assertEqual(RouterService.decidir("ayudame a redactar una introduccion"), "agente")
 
 
-class AgentAjaxRouterTests(SimpleTestCase):
+class AgentAjaxRouterTests(TestCase):
+    """El endpoint ya pasa por requiere_rol, que consulta la base: esta
+    clase no puede seguir siendo SimpleTestCase."""
+
     def setUp(self):
         self.factory = RequestFactory()
 
@@ -74,7 +71,7 @@ class AgentAjaxRouterTests(SimpleTestCase):
     def test_agente_ajax_usa_bd_cuando_el_decisor_lo_indica(self, responder_desde_bd):
         responder_desde_bd.return_value = "Cursos registrados: 3."
         request = self.factory.post(reverse("agente_ajax"), data={"pregunta": "cuantos cursos hay"})
-        _request_with_plain_session(request, ROLE_EVALUADOR)
+        _request_with_session(request, ROLE_EVALUADOR)
 
         response = agente_ajax(request)
         payload = json.loads(response.content)
