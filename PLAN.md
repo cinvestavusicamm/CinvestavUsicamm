@@ -102,6 +102,35 @@ Para rehabilitar el chat hay que escribir esa plantilla. No es cuestión de desc
 adaptarla. Decidir si el chat vive en el microservicio de IA o dentro de Django es requisito
 previo.
 
+### DEUDA-7. Tres endpoints AJAX de rol sin consumidor y solo con chequeo de cookie
+
+**Estado: protegidos por rol, pendientes de decidir si se retiran.**
+
+`/docente/ajax/`, `/evaluador/ajax/` y `/generador/ajax/` solo miraban que la cookie tuviera
+`usuario_id`, sin comprobar el rol, y eran `@csrf_exempt`. Cualquier usuario autenticado —de
+cualquier rol— podía gastarse el microservicio de IA desde ellos.
+
+Ahora llevan `@requiere_rol(ROLE_DOCENTE)`, `@requiere_rol(ROLE_EVALUADOR)` y
+`@requiere_rol(ROLE_GENERADOR)` respectivamente, que releen el rol en la base.
+
+**No hay consumidor.** Ningún JS ni plantilla hace POST a estas tres rutas exactas. Conviene
+no confundirlas con vistas parecidas que sí están en uso y ya estaban protegidas:
+`/generador/ajax/datos/` (la consume `static/js/generador/cursos.js`) apunta a
+`generador_datos_ajax`, que es otra vista.
+
+**Quedan abiertas dos decisiones**, ambas bloqueadas por lo mismo:
+
+1. Si el chat de cada rol se rehabilita, estas vistas son su endpoint natural y la protección
+   por rol que se acaba de poner es la correcta.
+2. Si el chat vive en el microservicio y Django solo orquesta, estas vistas sobran y conviene
+   borrarlas con sus tres plantillas muertas por el camino.
+
+Hasta resolverlo, seguirlas hace que un usuario con el rol correcto reciba `302/401/403` en vez
+de una respuesta inventada. Para decidir hay que trazar primero el flujo real de creación de
+cursos con IA (ver "Tareas solicitadas fuera del plan original"), porque `docente_ajax` sí
+invoca `ms_ai_agent_service` y no está claro si `generador_ajax` participa en ese camino o si
+es otro resto igual que este.
+
 ---
 
 ### DEUDA-1. `apps/users/api/usuarios_api.py`: `@csrf_exempt` sobre vistas con sesión

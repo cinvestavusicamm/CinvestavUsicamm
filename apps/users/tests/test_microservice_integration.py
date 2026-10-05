@@ -6,7 +6,9 @@ without timeouts or blocking errors.
 from django.test import TestCase, Client
 from django.urls import reverse
 from unittest.mock import patch, MagicMock
+import datetime
 from apps.users.config.constants import ROLE_DOCENTE, ROLE_EVALUADOR, ROLE_GENERADOR
+from apps.users.models import Usuario, Rol, Institucion
 
 
 class MicroserviceIntegrationTest(TestCase):
@@ -14,14 +16,39 @@ class MicroserviceIntegrationTest(TestCase):
     
     def setUp(self):
         self.client = Client()
+        self._contador = 0
     
     def _login_con_rol(self, rol):
-        """Helper to login with specific role"""
+        """Helper to login with specific role
+
+        Antes fijaba usuario_id = 1 a pelo.requiere_rol relee el usuario
+        en la base, y en una base de test recien creada esa fila no
+        existe, asi que la sesion quedaba vacia y el endpoint respondia
+        302 en vez de 200.
+        """
+        self._contador += 1
+        institucion, _ = Institucion.objects.get_or_create(
+            nombre='Institucion de prueba',
+            defaults={'tipo': 'UNIVERSIDAD', 'activo': True},
+        )
+        rol_obj, _ = Rol.objects.get_or_create(nombre_rol=rol)
+        usuario = Usuario.objects.create(
+            nombre='Usuario',
+            apellido_paterno=f'Micro{self._contador}',
+            correo=f'micro{self._contador}@test.com',
+            curp=f'MICRO{self._contador:02d}000000AAA0',
+            contrasena='x',
+            rol=rol_obj,
+            institucion=institucion,
+            activo=True,
+            fecha_registro=datetime.datetime.now(),
+        )
         session = self.client.session
-        session['usuario_id'] = 1
+        session['usuario_id'] = usuario.id_usuario
         session['usuario_rol'] = rol
-        session['usuario_nombre'] = 'Test User'
+        session['usuario_nombre'] = usuario.nombre_completo
         session.save()
+        return usuario
     
     @patch("apps.users.services.router_service.RouterService.decidir")
     @patch("apps.users.views.docente_ajax.requests.post")

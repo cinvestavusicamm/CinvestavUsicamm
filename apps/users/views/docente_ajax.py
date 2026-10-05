@@ -1,11 +1,12 @@
 import requests
 from django.conf import settings
 from django.http import StreamingHttpResponse
-from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
 from apps.users.utils.api_response import respuesta_ok, respuesta_error
 from apps.users.services.router_service import RouterService
+from apps.users.config.constants import ROLE_DOCENTE
+from apps.users.services.permisos import requiere_rol
 
 logger = logging.getLogger(__name__)
 
@@ -17,14 +18,14 @@ FASTAPI_URL = IA_AGENT_CHAT_URL
 FASTAPI_STREAM_URL = IA_AGENT_STREAM_URL
 
 
-@csrf_exempt
+# Sin consumidor conocido: ningun JS ni template hace POST a esta ruta
+# exacta. Queda protegida por rol para que, si alguien la llama, sea solo
+# un DOCENTE. Candidata a retirada, pendiente de revisar el flujo de
+# cursos con IA (ver PLAN.md).
+# Sin @csrf_exempt: sin consumidor al que avisar del fallo. Si aparece
+# uno, necesita la cookie csrftoken y un {% csrf_token %} en su pagina.
+@requiere_rol(ROLE_DOCENTE)
 def docente_ajax(request):
-    if not request.session.get('usuario_id'):
-        return respuesta_error(
-            mensaje="No autorizado",
-            status=401
-        )
-
     if request.method != "POST":
         return respuesta_error(
             mensaje="Método no permitido",

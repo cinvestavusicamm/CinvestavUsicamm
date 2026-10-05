@@ -202,9 +202,13 @@ class ViewsSmokeTest(TestCase):
         ruta esta bien cableada en Django, no si el servicio de IA esta
         levantado: sin esto las cuatro devuelven 500 por NameResolution
         y el 500 hiding the real result.
-        """
-        self._login_con_rol(ROLE_ADMIN)
 
+        Cada endpoint se prueba con su propio rol. Antes se entraba una
+        sola vez como ADMIN y se hacian las cuatro peticiones, lo que
+        solo podia funcionar porque las tres vistas de rol no
+        comprobaban el rol. Ahora lo comprueban, y un 403 aqui seria
+        autorizacion funcionando, no una ruta mal cableada.
+        """
         mock_decidir.return_value = "agente"
         for mock in (mock_agente, mock_doc, mock_eva, mock_gen):
             mock.return_value.json.return_value = {"response": "Respuesta de prueba"}
@@ -212,23 +216,24 @@ class ViewsSmokeTest(TestCase):
 
         # Sin barra inicial estas rutas no resuelven y devuelven 404.
         ajax_endpoints = [
-            ('/agente-ajax/', 'POST', {'pregunta': 'test'}),
-            ('/docente/ajax/', 'POST', {'pregunta': 'test'}),
-            ('/evaluador/ajax/', 'POST', {'pregunta': 'test'}),
-            ('/generador/ajax/', 'POST', {'pregunta': 'test'}),
+            ('/agente-ajax/', 'POST', {'pregunta': 'test'}, ROLE_ADMIN),
+            ('/docente/ajax/', 'POST', {'pregunta': 'test'}, ROLE_DOCENTE),
+            ('/evaluador/ajax/', 'POST', {'pregunta': 'test'}, ROLE_EVALUADOR),
+            ('/generador/ajax/', 'POST', {'pregunta': 'test'}, ROLE_GENERADOR),
         ]
 
-        for endpoint, method, data in ajax_endpoints:
+        for endpoint, method, data, rol in ajax_endpoints:
             with self.subTest(endpoint=endpoint, metodo=method):
+                self._login_con_rol(rol)
                 if method == 'POST':
                     response = self.client.post(endpoint, data=data)
                 else:
                     response = self.client.get(endpoint)
 
-                # 200, 400 (peticion invalida) y 401 (sin sesion valida). Sin 500.
+                # 200 y 400 (peticion invalida). Sin 500 ni 403.
                 self.assertIn(
                     response.status_code,
-                    [200, 400, 401],
+                    [200, 400],
                     f"AJAX endpoint {endpoint} returned {response.status_code}"
                 )
     

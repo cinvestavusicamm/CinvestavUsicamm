@@ -10,7 +10,10 @@ This test simulates the complete "Happy Path" of a real user:
 from django.test import TestCase, Client
 from django.urls import reverse
 from unittest.mock import patch, MagicMock
+import datetime
+from django.contrib.auth.hashers import make_password
 from apps.users.config.constants import ROLE_ADMIN, ROLE_DOCENTE
+from apps.users.models import Usuario, Rol, Institucion
 
 
 class EndToEndFlowTest(TestCase):
@@ -63,16 +66,31 @@ class EndToEndFlowTest(TestCase):
     def test_complete_docente_user_flow(self, mock_post, mock_decidir, mock_usuario_model):
         """Test complete flow for docente user: login -> AI agent interaction -> logout"""
         
-        # Setup mock user
-        fake_user = MagicMock()
-        fake_user.id_usuario = 2
-        fake_user.nombre = "Docente"
-        fake_user.apellido_paterno = "Test"
-        fake_user.correo = "docente@test.com"
-        fake_user.rol.nombre_rol = ROLE_DOCENTE
-        fake_user.save = MagicMock()
-        
-        mock_usuario_model.objects.select_related.return_value.get.return_value = fake_user
+        # El usuario del login es un MagicMock, pero /docente/ajax/ ahora
+        # relee el rol en la base: requiere_rol no pasa por el Usuario del
+        # login, y un id 2 que no existe deja la sesion vacia. Se crea el
+        # docente de verdad y se devuelve ese mismo objeto desde el mock
+        # del login, para que el id de la sesion exista en la base.
+        institucion = Institucion.objects.create(
+            nombre="Institucion de prueba", tipo="UNIVERSIDAD", activo=True
+        )
+        rol_docente = Rol.objects.create(nombre_rol=ROLE_DOCENTE)
+        docente = Usuario.objects.create(
+            nombre="Docente",
+            apellido_paterno="Test",
+            correo="docente@test.com",
+            curp="DOCE123456HDFRPR09",
+            # El login hace check_password, asi que el campo contrasena
+            # lleva el hash. Con "x" a pelo el login caia en la rama de
+            # credenciales invalidas y la seson nunca se abria.
+            contrasena=make_password("secure"),
+            rol=rol_docente,
+            institucion=institucion,
+            activo=True,
+            fecha_registro=datetime.datetime.now(),
+        )
+
+        mock_usuario_model.objects.select_related.return_value.get.return_value = docente
         
         # Setup mocks for AI service
         mock_decidir.return_value = "agente"
