@@ -1,8 +1,8 @@
-"""Generacion de la estructura de un curso con la IA.
+"""Generacion y modificacion de la estructura de un curso con la IA.
 
 Cubre `services/generacion_ia_service.py` (extraccion del JSON del texto del
-modelo, validacion de la forma y traduccion de fallos) y el endpoint
-`/generador/api/generar-curso-ia/`.
+modelo, validacion de la forma y traduccion de fallos) y los endpoints
+`/generador/api/generar-curso-ia/` y `/generador/api/modificar-curso-ia/`.
 
 El fixture `fixtures/ia_generate_course_respuesta.json` es una respuesta real de
 ia_service_core (/api/generate-course) con llama3.2:3b, guardada tal cual para
@@ -21,11 +21,13 @@ from apps.users.services.generacion_ia_service import (
     GeneracionIAError,
     extraer_json,
     generar_curso_ia,
+    modificar_curso_ia,
 )
 
 FIXTURE = Path(__file__).parent / 'fixtures' / 'ia_generate_course_respuesta.json'
 CLAVE = {'INTERNAL_SERVICE_KEY': 'clave-de-prueba'}
 URL = '/generador/api/generar-curso-ia/'
+URL_MODIFICAR = '/generador/api/modificar-curso-ia/'
 
 
 def _contenido_valido():
@@ -41,6 +43,8 @@ def _contenido_valido():
                     ]},
                 ],
             },
+            {'titulo': 'Módulo 2', 'items': [{'tipo': 'video'}]},
+            {'titulo': 'Módulo 3', 'items': [{'tipo': 'video'}]},
         ],
         'examen': {'preguntas': [
             {'pregunta': 'q?', 'opciones': ['a', 'b'], 'correcta': 'b'},
@@ -93,6 +97,9 @@ class ValidacionEstructuraTests(SimpleTestCase):
 
     def test_sin_modulos(self):
         self._con_error(lambda c: c.update(modulos=[]), 'modulos')
+
+    def test_mas_de_tres_modulos(self):
+        self._con_error(lambda c: c['modulos'].append({'titulo': 'Módulo 4', 'items': []}), 'modulos')
 
     def test_quiz_sin_preguntas(self):
         def mutar(c):
@@ -187,6 +194,44 @@ class GenerarCursoServicioTests(SimpleTestCase):
         mock_post.assert_not_called()
 
 
+class ModificarCursoServicioTests(SimpleTestCase):
+    def _respuesta(self, datos):
+        r = MagicMock()
+        r.status_code = 200
+        r.json.return_value = datos
+        return r
+
+    @patch('apps.users.services.generacion_ia_service.requests.post')
+    @override_settings(**CLAVE, IA_SERVICE_MODIFY_URL='http://ia.test/modify-course')
+    def test_manda_la_instruccion_y_el_curso_al_endpoint_de_modificar(self, mock_post):
+        mock_post.return_value = self._respuesta({'course_json': json.dumps(_contenido_valido())})
+
+        contenido = modificar_curso_ia('cambia el titulo', _contenido_valido())
+
+        self.assertIn('presentacion', contenido)
+        self.assertEqual(mock_post.call_args.args[0], 'http://ia.test/modify-course')
+        enviado = mock_post.call_args.kwargs['json']
+        self.assertEqual(enviado['instruccion'], 'cambia el titulo')
+        self.assertEqual(enviado['contenido']['presentacion']['titulo'], 'Curso')
+
+    @override_settings(**CLAVE)
+    def test_sin_curso_no_llama_al_servicio(self):
+        with self.assertRaises(CursoInvalido):
+            modificar_curso_ia('cambia algo', {})
+
+    @patch('apps.users.services.generacion_ia_service.requests.post')
+    @override_settings(**CLAVE)
+    def test_acepta_un_curso_sin_examen(self, mock_post):
+        """Un curso de tipo "puntos" no tiene examen; no debe fallar por eso."""
+        sin_examen = _contenido_valido()
+        sin_examen.pop('examen')
+        mock_post.return_value = self._respuesta({'course_json': json.dumps(sin_examen)})
+
+        contenido = modificar_curso_ia('cambia algo', sin_examen)
+
+        self.assertEqual(contenido['examen'], {'preguntas': []})
+
+
 class _BaseEndpoint(TestCase):
     def setUp(self):
         self.institucion = Institucion.objects.create(
@@ -255,6 +300,43 @@ class EndpointGenerarCursoTests(_BaseEndpoint):
     def test_sin_rol_da_403(self):
         self._iniciar(self.admin)
         respuesta = self._post({'peticion': 'un curso'})
+        self.assertEqual(respuesta.status_code, 403)
+
+
+class EndpointModificarCursoTests(_BaseEndpoint):
+    def _post_mod(self, cuerpo):
+        return self.cliente.post(
+            URL_MODIFICAR, data=json.dumps(cuerpo),
+            content_type='application/json', HTTP_X_CSRFTOKEN=self.token,
+        )
+
+    @patch('apps.users.views.generador_cursos.cursos.servicio_modificar_curso_ia')
+    def test_aplica_y_devuelve_el_curso(self, mock_servicio):
+        mock_servicio.return_value = _contenido_valido()
+
+        respuesta = self._post_mod({'instruccion': 'cambia el titulo', 'contenido': _contenido_valido()})
+
+        self.assertEqual(respuesta.status_code, 200)
+        cuerpo = respuesta.json()
+        self.assertTrue(cuerpo['success'])
+        self.assertIn('presentacion', cuerpo['contenido'])
+        mock_servicio.assert_called_once()
+
+    @patch('apps.users.views.generador_cursos.cursos.servicio_modificar_curso_ia')
+    def test_sin_instruccion_da_400(self, mock_servicio):
+        respuesta = self._post_mod({'instruccion': '  ', 'contenido': _contenido_valido()})
+        self.assertEqual(respuesta.status_code, 400)
+        mock_servicio.assert_not_called()
+
+    @patch('apps.users.views.generador_cursos.cursos.servicio_modificar_curso_ia')
+    def test_sin_contenido_da_400(self, mock_servicio):
+        respuesta = self._post_mod({'instruccion': 'cambia algo'})
+        self.assertEqual(respuesta.status_code, 400)
+        mock_servicio.assert_not_called()
+
+    def test_sin_rol_da_403(self):
+        self._iniciar(self.admin)
+        respuesta = self._post_mod({'instruccion': 'x', 'contenido': _contenido_valido()})
         self.assertEqual(respuesta.status_code, 403)
 
 

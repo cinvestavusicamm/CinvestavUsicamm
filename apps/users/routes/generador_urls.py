@@ -1,7 +1,7 @@
 from django.urls import path
-from apps.users.views.generador_cursos.cursos import cursos, crear_curso_generador, actualizar_curso_generador, eliminar_curso_generador, obtener_curso_generador, generar_curso_con_ia
+from apps.users.views.generador_cursos.cursos import cursos, crear_curso_generador, actualizar_curso_generador, eliminar_curso_generador, obtener_curso_generador, generar_curso_con_ia, modificar_curso_con_ia
 from apps.users.views.generador_cursos.estadisticas_cursos import estadisticas_cursos, obtener_estadisticas_api
-from apps.users.views.generador_cursos.generador_de_cursos import generador_de_cursos, guardar_curso_generado, modificar_html_seguro
+from apps.users.views.generador_cursos.generador_de_cursos import generador_de_cursos, guardar_curso_generado
 from apps.users.views.generador_cursos.index_generador import index_generador, crear_curso_index
 from apps.users.views.generador_cursos.perfil_generador import perfil_generador, actualizar_perfil_generador
 from apps.users.api.roles import datos_generador_ajax
@@ -25,6 +25,7 @@ urlpatterns = [
     # pudieron crear nada, y la tercera era GET sin ninguna autenticacion.
     path('api/crear-curso-generador/', crear_curso_generador, name='crear_curso_generador'),
     path('api/generar-curso-ia/', generar_curso_con_ia, name='generar_curso_con_ia'),
+    path('api/modificar-curso-ia/', modificar_curso_con_ia, name='modificar_curso_con_ia'),
     path('api/actualizar-curso-generador/<int:curso_id>/', actualizar_curso_generador, name='actualizar_curso_generador'),
     path('api/eliminar-curso-generador/<int:curso_id>/', eliminar_curso_generador, name='eliminar_curso_generador'),
     path('api/obtener-curso/<int:curso_id>/', obtener_curso_generador, name='obtener_curso_generador'),
@@ -32,7 +33,4 @@ urlpatterns = [
     path('api/crear-curso-index/', crear_curso_index, name='crear_curso_index'),
     path('api/obtener-estadisticas/', obtener_estadisticas_api, name='obtener_estadisticas_api'),
     path('api/actualizar-perfil-generador/', actualizar_perfil_generador, name='actualizar_perfil_generador'),
-    
-    # Endpoint seguro para modificación de HTML por IA
-    path('api/modificar-html-seguro/', modificar_html_seguro, name='modificar_html_seguro'),
 ]

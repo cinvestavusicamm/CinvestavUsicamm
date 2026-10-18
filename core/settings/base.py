@@ -190,6 +190,10 @@ IA_SERVICE_STREAM_URL = config('IA_SERVICE_STREAM_URL', default='http://ia_servi
 IA_SERVICE_GENERATE_URL = config(
     'IA_SERVICE_GENERATE_URL', default='http://ia_service_core:8003/api/generate-course'
 )
+# Endpoint del chat del generador: aplica un cambio sobre un curso existente.
+IA_SERVICE_MODIFY_URL = config(
+    'IA_SERVICE_MODIFY_URL', default='http://ia_service_core:8003/api/modify-course'
+)
 
 # Clave compartida con el microservicio de IA: Django la manda en la cabecera
 # X-Internal-Service-Key y el microservicio la exige en /ask.

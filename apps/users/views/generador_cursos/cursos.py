@@ -13,6 +13,7 @@ from apps.users.services.vistas_bd_service import VistasBdService
 from apps.users.services.curso_service import CursoService, CursoInvalido
 from apps.users.services.generacion_ia_service import (
     generar_curso_ia as servicio_generar_curso_ia,
+    modificar_curso_ia as servicio_modificar_curso_ia,
     GeneracionIAError,
 )
 from apps.users.services.foro_service import ForoService
@@ -184,6 +185,44 @@ def generar_curso_con_ia(request):
         logger.exception('Error generando curso con IA')
         return JsonResponse(
             {'error': 'No se pudo generar el curso. Intentalo de nuevo.'}, status=500
+        )
+
+    return JsonResponse({'success': True, 'contenido': contenido})
+
+
+# El chat del generador: el usuario pide un cambio sobre el curso que tiene en
+# pantalla. Se manda el JSON recogido del DOM y la instruccion; la IA devuelve
+# el curso entero actualizado, que la interfaz vuelve a pintar. No se guarda
+# nada aqui (para eso esta el boton de guardar).
+@requiere_rol(ROLE_GENERADOR)
+@require_http_methods(["POST"])
+def modificar_curso_con_ia(request):
+    try:
+        datos = json.loads(request.body)
+    except (ValueError, TypeError):
+        return JsonResponse({'error': 'El cuerpo de la peticion no es JSON valido'}, status=400)
+
+    if not isinstance(datos, dict):
+        return JsonResponse({'error': 'Se esperaba un objeto JSON'}, status=400)
+
+    instruccion = (datos.get('instruccion') or '').strip()
+    if not instruccion:
+        return JsonResponse({'error': 'Escribe que quieres cambiar'}, status=400)
+
+    contenido = datos.get('contenido')
+    if not isinstance(contenido, dict) or not contenido:
+        return JsonResponse({'error': 'No hay ningun curso que modificar'}, status=400)
+
+    try:
+        contenido = servicio_modificar_curso_ia(instruccion, contenido)
+    except CursoInvalido as e:
+        return JsonResponse({'error': e.mensaje, 'campo': e.campo}, status=400)
+    except GeneracionIAError as e:
+        return JsonResponse({'error': e.mensaje}, status=e.status)
+    except Exception:
+        logger.exception('Error modificando curso con IA')
+        return JsonResponse(
+            {'error': 'No se pudieron aplicar los cambios. Intentalo de nuevo.'}, status=500
         )
 
     return JsonResponse({'success': True, 'contenido': contenido})

@@ -1,9 +1,9 @@
-"""Generacion de la estructura de un curso con ia_service_core.
+"""Generacion y modificacion de la estructura de un curso con ia_service_core.
 
-Django no habla con Ollama: le pide a ia_service_core (/api/generate-course)
-el JSON del curso, lo extrae del texto que devuelve el modelo y lo valida
-contra el esquema que espera el generador de cursos antes de devolverselo a la
-interfaz.
+Django no habla con Ollama: le pide a ia_service_core (/api/generate-course
+para crear, /api/modify-course para aplicar un cambio del chat) el JSON del
+curso, lo extrae del texto que devuelve el modelo y lo valida contra el esquema
+que espera el generador de cursos antes de devolverselo a la interfaz.
 
 La validacion es de forma, no de contenido: exige que la estructura tenga
 sentido (presentacion, tres bloques de modulo con sus items, examen con
@@ -94,8 +94,13 @@ def _validar_pregunta(pregunta):
         pregunta['correcta'] = opciones[0]
 
 
-def _validar_estructura(contenido):
-    """Comprueba la forma del curso generado o lanza `CursoInvalido`."""
+def _validar_estructura(contenido, exigir_examen=True):
+    """Comprueba la forma del curso generado o lanza `CursoInvalido`.
+
+    `exigir_examen` se pone a False al modificar: un curso de tipo "puntos" no
+    tiene bloque de examen, y su JSON no debe fallar por eso. Si trae examen,
+    se valida igual.
+    """
     if not isinstance(contenido, dict):
         raise CursoInvalido('El curso generado no es un objeto', 'contenido')
 
@@ -107,6 +112,11 @@ def _validar_estructura(contenido):
     modulos = contenido.get('modulos')
     if not isinstance(modulos, list) or not modulos:
         raise CursoInvalido('El curso generado no trae modulos', 'modulos')
+    # El editor del generador tiene exactamente tres bloques de modulo (los ids
+    # bloque1..bloque3 son fijos): un cuarto modulo no se pintaria y se perderia
+    # al guardar. Mejor rechazarlo que perderlo en silencio.
+    if len(modulos) != 3:
+        raise CursoInvalido('El curso tiene que tener exactamente 3 modulos', 'modulos')
     for modulo in modulos:
         if not isinstance(modulo, dict):
             raise CursoInvalido('Cada modulo debe ser un objeto', 'modulos')
@@ -127,10 +137,16 @@ def _validar_estructura(contenido):
                     _validar_pregunta(pregunta)
 
     examen = contenido.get('examen')
+    if examen is None and not exigir_examen:
+        examen = contenido['examen'] = {'preguntas': []}
     if not isinstance(examen, dict):
         raise CursoInvalido('El curso generado no trae examen', 'examen')
     preguntas = examen.get('preguntas')
-    if not isinstance(preguntas, list) or not preguntas:
+    if not isinstance(preguntas, list):
+        if exigir_examen:
+            raise CursoInvalido('El examen necesita al menos una pregunta', 'examen.preguntas')
+        preguntas = examen['preguntas'] = []
+    if not preguntas and exigir_examen:
         raise CursoInvalido('El examen necesita al menos una pregunta', 'examen.preguntas')
     for pregunta in preguntas:
         _validar_pregunta(pregunta)
@@ -138,12 +154,12 @@ def _validar_estructura(contenido):
     return contenido
 
 
-def _pedir_al_servicio(peticion):
-    """Una llamada a /api/generate-course. Devuelve el texto crudo del modelo."""
+def _pedir_al_servicio(url, payload):
+    """Una llamada al servicio de generacion. Devuelve el texto crudo del modelo."""
     try:
         respuesta = requests.post(
-            settings.IA_SERVICE_GENERATE_URL,
-            json={'query': peticion},
+            url,
+            json=payload,
             headers={
                 'Content-Type': 'application/json',
                 'X-Internal-Service-Key': _clave(),
@@ -157,14 +173,14 @@ def _pedir_al_servicio(peticion):
         raise GeneracionIAError('El generador no esta disponible. Intenta en unos momentos.', 503)
 
     if respuesta.status_code >= 500:
-        logger.error('ia_service_core respondio %s en /generate-course', respuesta.status_code)
+        logger.error('ia_service_core respondio %s en %s', respuesta.status_code, url)
         raise GeneracionIAError('El generador no pudo crear el curso. Intenta de nuevo.', 502)
     if respuesta.status_code == 403:
         # Clave mal puesta en el despliegue: el usuario no lo puede arreglar.
-        logger.error('ia_service_core rechazo la clave interna en /generate-course')
+        logger.error('ia_service_core rechazo la clave interna en %s', url)
         raise GeneracionIAError('El generador no pudo crear el curso. Intenta de nuevo.', 502)
     if respuesta.status_code != 200:
-        logger.error('ia_service_core respondio %s en /generate-course', respuesta.status_code)
+        logger.error('ia_service_core respondio %s en %s', respuesta.status_code, url)
         raise GeneracionIAError('El generador devolvio una respuesta inesperada.', 502)
 
     try:
@@ -175,7 +191,7 @@ def _pedir_al_servicio(peticion):
 
     texto = datos.get('course_json')
     if not isinstance(texto, str):
-        logger.error('Respuesta de /generate-course sin "course_json": %s', sorted(datos))
+        logger.error('Respuesta de %s sin "course_json": %s', url, sorted(datos))
         raise GeneracionIAError('El generador devolvio una respuesta incompleta.', 502)
     return texto
 
@@ -201,24 +217,54 @@ def _clave():
     return clave
 
 
+def _generar_y_validar(url, payload, con_reparacion, exigir_examen=True):
+    """Pide el curso, extrae el JSON y lo valida, con un reintento.
+
+    El reintento es unico y solo por JSON ilegible (el modelo contesto prosa en
+    vez del objeto). Si el JSON se lee pero no tiene la forma, sube el
+    `CursoInvalido`: reintentar por forma alargaria la espera sin garantia.
+    """
+    texto = _pedir_al_servicio(url, payload)
+
+    try:
+        return _validar_estructura(extraer_json(texto), exigir_examen=exigir_examen)
+    except ValueError:
+        logger.warning('La IA devolvio texto sin JSON legible; se reintenta una vez')
+
+    texto = _pedir_al_servicio(url, con_reparacion(payload))
+    try:
+        return _validar_estructura(extraer_json(texto), exigir_examen=exigir_examen)
+    except ValueError:
+        raise GeneracionIAError('El generador no devolvio un curso valido. Intenta de nuevo.', 502)
+
+
 def generar_curso_ia(peticion):
     """Devuelve el contenido de un curso generado, ya validado.
 
     Lanza `GeneracionIAError` (con su `status`) o `CursoInvalido` (400).
     """
-    texto = _pedir_al_servicio(peticion)
+    return _generar_y_validar(
+        settings.IA_SERVICE_GENERATE_URL,
+        {'query': peticion},
+        lambda p: {'query': p['query'] + _REPARACION},
+    )
 
-    try:
-        contenido = extraer_json(texto)
-        return _validar_estructura(contenido)
-    except ValueError:
-        # Un unico reintento, y solo por JSON ilegible.
-        logger.warning('La IA devolvio texto sin JSON legible; se reintenta una vez')
 
-    texto = _pedir_al_servicio(peticion + _REPARACION)
-    try:
-        contenido = extraer_json(texto)
-    except ValueError:
-        raise GeneracionIAError('El generador no devolvio un curso valido. Intenta de nuevo.', 502)
+def modificar_curso_ia(instruccion, contenido):
+    """Aplica una instruccion del chat sobre un curso y devuelve el curso entero.
 
-    return _validar_estructura(contenido)
+    `contenido` es el JSON del curso recogido de la pantalla; el servicio le
+    pasa al modelo el curso completo y la instruccion, y devuelve el curso
+    actualizado (misma forma), listo para volver a pintar.
+
+    Lanza `GeneracionIAError` (con su `status`) o `CursoInvalido` (400).
+    """
+    if not isinstance(contenido, dict) or not contenido:
+        raise CursoInvalido('No hay ningun curso que modificar', 'contenido')
+
+    return _generar_y_validar(
+        settings.IA_SERVICE_MODIFY_URL,
+        {'instruccion': instruccion, 'contenido': contenido},
+        lambda p: {**p, 'instruccion': p['instruccion'] + _REPARACION},
+        exigir_examen=False,
+    )
