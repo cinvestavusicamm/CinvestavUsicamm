@@ -204,7 +204,14 @@ class ProduccionExigeClaveTests(TestCase):
     tiene la comprobacion.
     """
     def test_base_deja_la_clave_vacia_y_no_una_credencial(self):
-        self.assertEqual(settings.INTERNAL_SERVICE_KEY, '')
+        # Se mira el fichero y no settings.INTERNAL_SERVICE_KEY: dev carga el
+        # .env del desarrollador, asi que la clave del entorno no dice nada
+        # sobre cual es el default del proyecto.
+        import pathlib
+
+        raiz = pathlib.Path(settings.BASE_DIR)
+        base = (raiz / 'core' / 'settings' / 'base.py').read_text()
+        self.assertIn("INTERNAL_SERVICE_KEY = config('INTERNAL_SERVICE_KEY', default='')", base)
 
     def test_prov_tiene_la_comprobacion(self):
         import pathlib

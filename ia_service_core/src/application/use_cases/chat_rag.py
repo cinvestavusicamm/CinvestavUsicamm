@@ -1,6 +1,7 @@
 # backend_api/src/application/use_cases/chat_rag.py
 
 from src.application.ports.output import VectorRepository, LLMService
+from src.domain.exceptions import EmbeddingError
 from src.domain.prompts import PromptTemplates
 
 class ChatRAGUseCase:
@@ -25,7 +26,10 @@ class ChatRAGUseCase:
         query_vector = await self.llm.get_embedding(user_query)
         
         if not query_vector:
-            return "Error: No pude procesar tu pregunta (Fallo en Embedding)."
+            # Antes se devolvia "Error: No pude procesar tu pregunta (Fallo en
+            # Embedding)." como si fuera una respuesta (HTTP 200). Se lanza
+            # para que el router conteste un error de verdad (DEUDA-12).
+            raise EmbeddingError("no se pudo calcular el embedding de la consulta")
 
         # 2. Buscar fragmentos relevantes en la Base de Datos
         # Nota: Podrías aumentar el limit a 3 o 4 si las respuestas necesitan más contexto.

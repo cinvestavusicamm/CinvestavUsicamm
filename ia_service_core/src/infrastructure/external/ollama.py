@@ -28,21 +28,25 @@ class OllamaAdapter(LLMService):
                 return []
 
     async def generate_response(self, prompt: str) -> str:
-        """Pide a Ollama que complete el texto (Generate)."""
+        """Pide a Ollama que complete el texto (Generate).
+
+        Si Ollama falla, la excepcion de httpx sube tal cual. Antes se
+        capturaba y se devolvia una cadena "Error generando respuesta: ...",
+        que el router empaquetaba en un 200: el fallo era indistinguible de una
+        respuesta del modelo (ver DEUDA-12 en PLAN.md). El router traduce la
+        excepcion a un codigo HTTP.
+        """
         async with httpx.AsyncClient() as client:
-            try:
-                response = await client.post(
-                    f"{self.base_url}/api/generate",
-                    json={
-                        "model": self.model,
-                        "prompt": prompt,
-                        "stream": False,
-                        "options": {"temperature": 0.3} # Menos creativo, más preciso
-                    },
-                    timeout=60.0 # Darle tiempo para pensar
-                )
-                response.raise_for_status()
-                data = response.json()
-                return data.get("response", "")
-            except Exception as e:
-                return f"Error generando respuesta: {str(e)}"
+            response = await client.post(
+                f"{self.base_url}/api/generate",
+                json={
+                    "model": self.model,
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {"temperature": 0.3} # Menos creativo, más preciso
+                },
+                timeout=120.0 # Darle tiempo para pensar
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data.get("response", "")

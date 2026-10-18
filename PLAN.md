@@ -373,7 +373,7 @@ decidir eso podría quitar la forma de crear el curso inicial del panel.
 
 ### DEUDA-12. `ia_service_core` devuelve los fallos de la IA como 200 con el error dentro de `response`
 
-**Estado: ABIERTO. Parcheado en Django; la correccion real es en el servicio.**
+**Estado: RESUELTO en el servicio. El parche de Django se queda como red de seguridad.**
 
 Verificado contra el servicio real (`POST /api/ask` con clave y sin Ollama
 levantado): contesta `200` con
@@ -387,13 +387,21 @@ Es decir: para el servicio, un fallo de la IA no es un error HTTP; es una
 respuesta correcta cuyo texto empieza por "Error". Cualquier consumidor que solo
 mire el estado pinta ese texto como si fuera la respuesta del modelo.
 
-Mientras eso siga asi, `apps/users/api/agente.py` reconoce los dos prefijos
-conocidos en `_SENTINELAS_FALLO_IA` y los traduce a `502`. Es un parche atado a
-las cadenas exactas del servicio: si `ia_service_core` cambia el texto, el
-usuario vuelve a ver el error como respuesta. La correccion de raiz es que el
-adaptador de Ollama lance y que el router devuelva `502`/`503`, en vez de meter
-el fallo en `response`. Se hace en el punto 5, junto con el endpoint de
-generacion, que tambien necesita distinguir "JSON invalido" de "la IA fallo".
+Mientras eso siguiera asi, `apps/users/api/agente.py` reconocia los dos prefijos
+conocidos en `_SENTINELAS_FALLO_IA` y los traducia a `502`.
+
+**Corregido en el servicio:** el adaptador de Ollama ya no captura
+(`ia_service_core/src/infrastructure/external/ollama.py` propaga la excepcion de
+httpx), `ChatRAGUseCase.run` lanza `EmbeddingError` en vez de devolver la cadena,
+y `routers/chat.py` traduce la excepcion a un codigo con `error_ia()`
+(`TimeoutException`→504, `ConnectError`→503, `IAError`→502, resto→500) sin
+filtrar `str(e)`; en el stream, el detalle va al log y al cliente solo un
+mensaje corto. Las excepciones viven en
+`ia_service_core/src/domain/exceptions.py` (`IAError` y sus hijas).
+
+`_SENTINELAS_FALLO_IA` se queda en `agente.py` como red de seguridad por si un
+despliegue viejo del servicio todavia devuelve texto con ese prefijo; ya no se
+dispara con el servicio actual.
 
 ### DEUDA-1. `apps/users/api/usuarios_api.py`: `@csrf_exempt` sobre vistas con sesión
 
