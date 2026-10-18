@@ -371,6 +371,30 @@ interfaz de generación, y decidir si debe evitarse duplicarlo cuando el panel y
 está abierto es una pregunta de producto que no está resuelta. Retirarlo sin
 decidir eso podría quitar la forma de crear el curso inicial del panel.
 
+### DEUDA-12. `ia_service_core` devuelve los fallos de la IA como 200 con el error dentro de `response`
+
+**Estado: ABIERTO. Parcheado en Django; la correccion real es en el servicio.**
+
+Verificado contra el servicio real (`POST /api/ask` con clave y sin Ollama
+levantado): contesta `200` con
+`{"response": "Error: No pude procesar tu pregunta (Fallo en Embedding)."}`.
+El fallo de Ollama hace lo mismo con otro prefijo
+(`"Error generando respuesta: ..."`) porque el adaptador
+(`ia_service_core/src/infrastructure/external/ollama.py`) captura la excepcion y
+devuelve una cadena en vez de propagarla, y `ChatRAGUseCase.run` hace lo propio.
+
+Es decir: para el servicio, un fallo de la IA no es un error HTTP; es una
+respuesta correcta cuyo texto empieza por "Error". Cualquier consumidor que solo
+mire el estado pinta ese texto como si fuera la respuesta del modelo.
+
+Mientras eso siga asi, `apps/users/api/agente.py` reconoce los dos prefijos
+conocidos en `_SENTINELAS_FALLO_IA` y los traduce a `502`. Es un parche atado a
+las cadenas exactas del servicio: si `ia_service_core` cambia el texto, el
+usuario vuelve a ver el error como respuesta. La correccion de raiz es que el
+adaptador de Ollama lance y que el router devuelva `502`/`503`, en vez de meter
+el fallo en `response`. Se hace en el punto 5, junto con el endpoint de
+generacion, que tambien necesita distinguir "JSON invalido" de "la IA fallo".
+
 ### DEUDA-1. `apps/users/api/usuarios_api.py`: `@csrf_exempt` sobre vistas con sesión
 
 **Corrección a una hipótesis previa:** estas vistas **sí exigen autenticación y rol**. No son

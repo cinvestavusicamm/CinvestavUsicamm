@@ -15,8 +15,12 @@ from apps.users.services.router_service import RouterService
 
 logger = logging.getLogger(__name__)
 
-FASTAPI_URL = "http://ia_service_core:8003/api/ask"
-FASTAPI_STREAM_URL = "http://ia_service_core:8003/api/ask/stream"
+# ia_service_core no usa un codigo HTTP para los fallos de la IA: el caso de uso
+# devuelve el error como texto dentro de "response" y contesta 200. Son dos
+# cadenas concretas: una cuando no se pudo calcular el embedding y otra cuando
+# Ollama fallo. Hasta que el servicio lo distinga con un estado, aqui se
+# reconocen para no ensenarle al usuario un "Error..." como si fuera respuesta.
+_SENTINELAS_FALLO_IA = ("Error:", "Error generando respuesta:")
 
 
 def clave_del_servicio():
@@ -101,17 +105,24 @@ def agente_ajax(request):
                 status=500,
             )
 
-    if usar_stream:
-        return agente_streaming(pregunta)
-
     # Fuera del try de abajo: ese bloque convierte cualquier Exception en un
     # 500 de "ocurrio un error inesperado" con el detalle dentro, y una clave
     # sin configurar no es un fallo del microservicio sino un despliegue roto.
-    # Ahi dentro el mensaje claro se perderia.
+    # Ahi dentro el mensaje claro se perderia. Se calcula antes del streaming
+    # porque el streaming tambien manda la clave.
     clave = clave_del_servicio()
+
+    if usar_stream:
+        return agente_streaming(pregunta, clave)
 
     try:
         payload = {
+            # ia_service_core espera "query" (ChatRequest). Antes iba solo
+            # "prompt", asi que el servicio contestaba 422 y aqui se veia como
+            # un 502 de "no pudo procesar la pregunta". Se mandan las dos
+            # claves: "query" es la que exige el DTO y "prompt" la que ya usaba
+            # el streaming, por si algun consumidor lee esa.
+            "query": pregunta,
             "prompt": pregunta,
             "role": "teacher",
             "user_id": str(request.session.get("usuario_id", "anon"))
@@ -123,7 +134,7 @@ def agente_ajax(request):
         }
 
         r = requests.post(
-            FASTAPI_URL,
+            settings.IA_SERVICE_URL,
             json=payload,
             headers=headers,
             timeout=settings.IA_SERVICE_TIMEOUT,
@@ -139,7 +150,8 @@ def agente_ajax(request):
         if "response" not in data:
             logger.error(
                 'Respuesta sin campo "response" de %s. Claves recibidas: %s',
-                FASTAPI_URL, sorted(data) if isinstance(data, dict) else type(data).__name__,
+                settings.IA_SERVICE_URL,
+                sorted(data) if isinstance(data, dict) else type(data).__name__,
             )
             return respuesta_error(
                 request,
@@ -147,10 +159,23 @@ def agente_ajax(request):
                 status=502,
             )
 
+        respuesta_texto = data["response"]
+
+        # El servicio contesta 200 aunque la IA haya fallado, con el error
+        # dentro de "response" (ver _SENTINELAS_FALLO_IA). Sin esto, un
+        # "Error: ..." del servicio se pintaba como si fuera la respuesta.
+        if respuesta_texto.startswith(_SENTINELAS_FALLO_IA):
+            logger.error('El asistente devolvio un fallo como respuesta: %s', respuesta_texto)
+            return respuesta_error(
+                request,
+                mensaje='El asistente no pudo generar la respuesta. Intenta de nuevo.',
+                status=502,
+            )
+
         return respuesta_ok(
             request,
             mensaje="Respuesta generada correctamente",
-            datos={"answer": data["response"], "source": "agente"}
+            datos={"answer": respuesta_texto, "source": "agente"}
         )
 
     except requests.exceptions.Timeout:
@@ -201,21 +226,26 @@ def agente_ajax(request):
         )
 
 
-def agente_streaming(pregunta):
-    """Genera respuesta streaming del agente"""
+def agente_streaming(pregunta, clave):
+    """Genera respuesta streaming del agente.
+
+    `clave` la calcula quien llama (agente_ajax) para que un despliegue sin
+    INTERNAL_SERVICE_KEY falle con el mismo mensaje claro y fuera del generador.
+    """
     logger.info(f"Iniciando streaming para pregunta: {pregunta[:50]}...")
 
     def generar_stream():
         try:
-            logger.info(f"Conectando a FASTAPI_STREAM_URL: {FASTAPI_STREAM_URL}")
-            
+            logger.info(f"Conectando a IA_SERVICE_STREAM_URL: {settings.IA_SERVICE_STREAM_URL}")
+
             # El None de antes era un timeout de lectura infinito: si el
             # servicio se colgaba sin cerrar la conexion, esta peticion se
             # quedaba ocupando un worker de gunicorn indefinidamente. Con dos
             # valores, uno para conectar y otro para leer, se acaba solo.
             with requests.post(
-                FASTAPI_STREAM_URL,
-                json={"prompt": pregunta},
+                settings.IA_SERVICE_STREAM_URL,
+                json={"query": pregunta, "prompt": pregunta},
+                headers={"X-Internal-Service-Key": clave},
                 stream=True,
                 timeout=(
                     settings.IA_SERVICE_CONNECT_TIMEOUT,

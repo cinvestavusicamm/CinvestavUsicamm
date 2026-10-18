@@ -180,6 +180,13 @@ AI_AGENT_SERVICE_URL = config('AI_AGENT_SERVICE_URL', default='http://ms_ai_agen
 IA_AGENT_CHAT_URL = config('IA_AGENT_CHAT_URL', default=f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat')
 IA_AGENT_STREAM_URL = config('IA_AGENT_STREAM_URL', default=f'{AI_AGENT_SERVICE_URL}/api/v1/ai/chat/stream')
 
+# ia_service_core (FastAPI): /ask es el endpoint que consume /agente-ajax/.
+# Antes la URL estaba escrita a mano en apps/users/api/agente.py, con lo que no
+# se podia apuntar a otro host sin tocar codigo. Se leen dentro de cada llamada
+# (no al importar) para que el entorno y override_settings las cambien de verdad.
+IA_SERVICE_URL = config('IA_SERVICE_URL', default='http://ia_service_core:8003/api/ask')
+IA_SERVICE_STREAM_URL = config('IA_SERVICE_STREAM_URL', default='http://ia_service_core:8003/api/ask/stream')
+
 # Clave compartida con el microservicio de IA: Django la manda en la cabecera
 # X-Internal-Service-Key y el microservicio la exige en /ask.
 #

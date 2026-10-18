@@ -208,7 +208,7 @@ class StreamingTests(TestCase):
         r.iter_lines.return_value = ['data: {"type": "content", "token": "hola"}']
         mock_post.return_value = r
 
-        list(agente.agente_streaming('hola').streaming_content)
+        list(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content)
 
         timeout = mock_post.call_args.kwargs['timeout']
         self.assertIsInstance(timeout, tuple)
@@ -225,7 +225,7 @@ class StreamingTests(TestCase):
         r.iter_lines.side_effect = requests.exceptions.ReadTimeout()
         mock_post.return_value = r
 
-        lineas = b''.join(agente.agente_streaming('hola').streaming_content).decode()
+        lineas = b''.join(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content).decode()
 
         # Distinto del timeout de conectar: aqui el servicio si arranco y se
         # quedo pensando a mitad, que se corrige con otra pregunta, no
@@ -241,7 +241,7 @@ class StreamingTests(TestCase):
 
         mock_post.side_effect = requests.exceptions.ConnectTimeout()
 
-        lineas = b''.join(agente.agente_streaming('hola').streaming_content).decode()
+        lineas = b''.join(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content).decode()
 
         self.assertIn('conectar', lineas)
         self.assertNotIn('conectando', lineas)
@@ -254,7 +254,7 @@ class StreamingTests(TestCase):
             'fallo en http://ia_service_core:8003 con key secreta'
         )
 
-        lineas = b''.join(agente.agente_streaming('hola').streaming_content).decode()
+        lineas = b''.join(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content).decode()
 
         for filtrado in ('ia_service_core', 'secreta', 'RuntimeError', 'Traceback'):
             self.assertNotIn(filtrado, lineas)
@@ -270,7 +270,7 @@ class StreamingTests(TestCase):
         r.__exit__ = MagicMock(return_value=False)
         mock_post.return_value = r
 
-        lineas = b''.join(agente.agente_streaming('hola').streaming_content).decode()
+        lineas = b''.join(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content).decode()
 
         # El 503 va al log; al navegador solo le llega que puede reintentar.
         self.assertNotIn('503', lineas)
@@ -288,6 +288,108 @@ class StreamingTests(TestCase):
         mock_post.return_value = r
 
         with override_settings(IA_SERVICE_CONNECT_TIMEOUT=3, IA_SERVICE_READ_TIMEOUT=42):
-            list(agente.agente_streaming('hola').streaming_content)
+            list(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content)
 
         self.assertEqual(mock_post.call_args.kwargs['timeout'], (3, 42))
+
+
+class ContratoConIaServiceCoreTests(_Base):
+    """Lo que viaja en la peticion a ia_service_core.
+
+    El endpoint real (verificado a mano) es POST /api/ask con un DTO que exige
+    "query"; antes Django mandaba "prompt", asi que el servicio contestaba 422 y
+    aqui se veia como un 502 de "no pudo procesar la pregunta". Ademas el
+    servicio devuelve los fallos de la IA como texto dentro de "response" con
+    HTTP 200, asi que hay que reconocerlos.
+    """
+
+    @patch('apps.users.api.agente.requests.post')
+    @override_settings(**CLAVE)
+    def test_manda_query_y_prompt(self, mock_post):
+        mock_post.return_value = _respuesta()
+
+        self._pregunta()
+
+        enviado = mock_post.call_args.kwargs['json']
+        self.assertEqual(enviado['query'], 'que es un curso')
+        self.assertEqual(enviado['prompt'], 'que es un curso')
+
+    @patch('apps.users.api.agente.requests.post')
+    @override_settings(**CLAVE)
+    def test_manda_la_cabecera_del_servicio(self, mock_post):
+        mock_post.return_value = _respuesta()
+
+        self._pregunta()
+
+        cabeceras = mock_post.call_args.kwargs['headers']
+        self.assertEqual(cabeceras['X-Internal-Service-Key'], 'clave-de-prueba')
+
+    @patch('apps.users.api.agente.requests.post')
+    @override_settings(**CLAVE, IA_SERVICE_URL='http://otro:9000/api/ask')
+    def test_usa_la_url_configurada(self, mock_post):
+        mock_post.return_value = _respuesta()
+
+        self._pregunta()
+
+        self.assertEqual(mock_post.call_args.args[0], 'http://otro:9000/api/ask')
+
+    @patch('apps.users.api.agente.requests.post')
+    @override_settings(**CLAVE)
+    def test_fallo_de_embedding_dentro_de_response_da_502(self, mock_post):
+        r = _respuesta()
+        r.json.return_value = {
+            'response': 'Error: No pude procesar tu pregunta (Fallo en Embedding).',
+        }
+        mock_post.return_value = r
+
+        respuesta = self._pregunta()
+
+        self.assertEqual(respuesta.status_code, 502)
+        # El sentinela interno no se le ensena al usuario.
+        self.assertNotIn('Embedding', respuesta.content.decode())
+
+    @patch('apps.users.api.agente.requests.post')
+    @override_settings(**CLAVE)
+    def test_ollama_caido_dentro_de_response_da_502(self, mock_post):
+        r = _respuesta()
+        r.json.return_value = {'response': 'Error generando respuesta: connect refused'}
+        mock_post.return_value = r
+
+        respuesta = self._pregunta()
+
+        self.assertEqual(respuesta.status_code, 502)
+        self.assertNotIn('connect refused', respuesta.content.decode())
+
+
+class StreamingConClaveTests(TestCase):
+    """El streaming tambien manda la clave y lee la URL de settings."""
+
+    def _respuesta_stream(self):
+        r = MagicMock()
+        r.status_code = 200
+        r.__enter__ = MagicMock(return_value=r)
+        r.__exit__ = MagicMock(return_value=False)
+        r.iter_lines.return_value = []
+        return r
+
+    @patch('apps.users.api.agente.requests.post')
+    def test_manda_la_clave(self, mock_post):
+        from apps.users.api import agente
+
+        mock_post.return_value = self._respuesta_stream()
+
+        list(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content)
+
+        cabeceras = mock_post.call_args.kwargs['headers']
+        self.assertEqual(cabeceras['X-Internal-Service-Key'], 'clave-de-prueba')
+
+    @patch('apps.users.api.agente.requests.post')
+    def test_usa_la_url_configurada(self, mock_post):
+        from apps.users.api import agente
+
+        mock_post.return_value = self._respuesta_stream()
+
+        with override_settings(IA_SERVICE_STREAM_URL='http://otro:9000/api/ask/stream'):
+            list(agente.agente_streaming('hola', 'clave-de-prueba').streaming_content)
+
+        self.assertEqual(mock_post.call_args.args[0], 'http://otro:9000/api/ask/stream')

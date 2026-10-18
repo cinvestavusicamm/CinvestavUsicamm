@@ -40,7 +40,7 @@ async def ask_agent(
         print(f"Error crítico en Microservicio IA (/ask): {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/ask/stream")
+@router.post("/ask/stream", dependencies=[Depends(verify_internal_key)])
 async def ask_agent_stream(
     request: StreamRequest,
     use_case: ChatRAGUseCase = Depends(get_chat_use_case)
