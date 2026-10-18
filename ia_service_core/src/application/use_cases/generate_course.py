@@ -21,7 +21,19 @@ class GenerateCourseUseCase:
 
     async def run(self, query: str) -> str:
         prompt = PromptTemplates.get_course_generation_prompt(query)
-        texto = await self.llm.generate_response(prompt)
+        return await self._generar(prompt)
+
+    async def modify(self, instruccion: str, curso_json: str) -> str:
+        """Aplica un cambio sobre un curso ya existente.
+
+        `curso_json` es el JSON del curso tal como lo manda el cliente; el
+        modelo devuelve el curso completo actualizado (ver PromptTemplates).
+        """
+        prompt = PromptTemplates.get_course_modification_prompt(instruccion, curso_json)
+        return await self._generar(prompt)
+
+    async def _generar(self, prompt: str) -> str:
+        texto = await self.llm.generate_response(prompt, json_mode=True)
 
         if not texto or not texto.strip():
             raise CourseGenerationError("el modelo devolvio una respuesta vacia")

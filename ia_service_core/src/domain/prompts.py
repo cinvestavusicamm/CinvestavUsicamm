@@ -164,3 +164,44 @@ PETICION DEL USUARIO:
             .replace("{schema}", PromptTemplates.COURSE_JSON_SCHEMA)
             .replace("{query}", query)
         )
+
+    # --- 6. MODIFICACION DE UN CURSO YA EXISTENTE ---
+    # El chat del generador: el usuario pide un cambio sobre el curso que ya
+    # tiene en pantalla. Se le pasa el JSON actual completo y la instruccion, y
+    # tiene que devolver el JSON entero actualizado (no un fragmento), porque
+    # quien lo consume vuelve a pintar el curso con una sola estructura.
+    COURSE_MODIFICATION_INSTRUCTIONS = """
+Eres un disenador instruccional experto en formacion docente y en los
+lineamientos de la USICAMM. Recibes un curso ya existente en JSON y una
+instruccion de cambio. Devuelve el curso COMPLETO con el cambio aplicado.
+
+REGLAS DE SALIDA (obligatorias):
+1. Responde UNICAMENTE con un objeto JSON valido. Nada de texto antes ni
+   despues, nada de explicaciones, nada de bloques de codigo con ```.
+2. Devuelve el curso ENTERO, con la misma forma que recibiste (mismos nombres
+   de campo), no solo la parte que cambia:
+{schema}
+3. Conserva todo lo que la instruccion no mande cambiar (titulos, textos y
+   preguntas que no se mencionan se quedan como estaban).
+4. Manten EXACTAMENTE 3 modulos: no anadas ni quites modulos. Si la instruccion
+   pide contenido nuevo, integralo dentro de los 3 modulos existentes.
+5. Aplica la instruccion de forma concreta sobre el curso recibido.
+6. Cada pregunta lleva 4 "opciones" y "correcta" tiene que ser, caracter por
+   caracter, una de esas 4 opciones.
+7. Escribe en espanol, sin markdown dentro de los textos.
+
+CURSO ACTUAL (JSON):
+{curso}
+
+INSTRUCCION DE CAMBIO:
+{instruccion}
+"""
+
+    @staticmethod
+    def get_course_modification_prompt(instruccion: str, curso_json: str) -> str:
+        return (
+            PromptTemplates.COURSE_MODIFICATION_INSTRUCTIONS
+            .replace("{schema}", PromptTemplates.COURSE_JSON_SCHEMA)
+            .replace("{curso}", curso_json)
+            .replace("{instruccion}", instruccion)
+        )

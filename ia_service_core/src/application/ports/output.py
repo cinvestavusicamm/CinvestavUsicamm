@@ -21,6 +21,12 @@ class LLMService(ABC):
         pass
 
     @abstractmethod
-    async def generate_response(self, prompt: str) -> str:
-        """Genera texto respuesta."""
+    async def generate_response(self, prompt: str, json_mode: bool = False) -> str:
+        """Genera texto respuesta.
+
+        Con `json_mode` se le pide a Ollama que devuelva solo JSON valido
+        (`format: json`): menos divagacion y sin prosa alrededor. Lo usan la
+        generacion y la modificacion de cursos; el chat RAG normal no, porque
+        ahi se quiere texto redactado.
+        """
         pass

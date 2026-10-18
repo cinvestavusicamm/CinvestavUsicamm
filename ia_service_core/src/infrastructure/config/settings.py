@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://motor_ollama:11434")
     LLM_MODEL: str = "llama3.2:3b"
     EMBEDDING_MODEL: str = "nomic-embed-text"
+    # Tope de espera por una generacion del modelo. Tiene que quedar por debajo
+    # de IA_SERVICE_READ_TIMEOUT de Django: si no, Django corta antes de que el
+    # servicio pueda contestar con un error propio.
+    OLLAMA_GENERATE_TIMEOUT: float = float(os.getenv("OLLAMA_GENERATE_TIMEOUT", "120"))
 
     @property
     def DATABASE_URL(self):
