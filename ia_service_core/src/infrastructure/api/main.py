@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.infrastructure.api.routers import chat, upload, learn 
+from src.infrastructure.api.routers import chat, upload, learn, courses 
 
 app = FastAPI(title="EscalafonIA System", version="2.1.0")
 
@@ -13,6 +13,7 @@ app.add_middleware(
 )
 
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
+app.include_router(courses.router, prefix="/api", tags=["Generacion de cursos"])
 app.include_router(upload.router, prefix="/api", tags=["Ingesta PDF"])
 app.include_router(learn.router, prefix="/api", tags=["Aprendizaje Texto"])
 

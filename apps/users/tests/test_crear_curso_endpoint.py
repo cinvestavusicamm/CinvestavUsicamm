@@ -322,3 +322,103 @@ class LoQueSeGuardaTests(_Base):
     def test_el_estado_pedido_se_guarda(self):
         self._con_token(self._payload(estado=ESTADO_EN_REVISION))
         self.assertEqual(Curso.objects.get().estado, ESTADO_EN_REVISION)
+
+class GuardadoExtremoAExtremoTests(_Base):
+    """El flujo completo del boton Guardar, tal como lo llama la plantilla.
+
+    No es una prueba de la vista por separado: replica el payload exacto que
+    construye `guardarCurso()` en `generador_de_cursos.html` y lo manda por la
+    URL exacta que esa funcion escribe, con la cabecera CSRF que manda su
+    `fetch`. Si alguien cambia una de esas tres cosas (payload, URL o cabecera)
+    y no la otra, este test cae.
+
+    Ver tambien `test_la_plantilla_que_manda_el_js_es_la_misma`, que comprueba
+    que la plantilla y el JS comparten el token.
+    """
+
+    # Copiado de recolectarContenidoCurso() de generador_de_cursos.html. Las
+    # tres secciones fijas (presentacion, modulos, examen) y el orden de sus
+    # campos importan, porque es lo que la vista guarda tal cual en
+    # contenido_json y lo que luego espera ver quien renderiza.
+    def _payload_de_guardarCurso(self, estado='Borrador'):
+        return {
+            'titulo': 'Algebra lineal',
+            'descripcion': 'Curso de introduccion',
+            'contenido': {
+                'presentacion': {'titulo': 'Algebra lineal',
+                                 'descripcion': 'Curso de introduccion',
+                                 'duracion': '12 horas'},
+                'modulos': [
+                    {'titulo': 'Sistemas de ecuaciones', 'items': [{'tipo': 'video'}]},
+                    {'titulo': 'Matrices', 'items': [{'tipo': 'quiz', 'preguntas': [
+                        {'pregunta': 'Que es una matriz?',
+                         'opciones': ['tabla', 'nota'],
+                         'correcta': 'tabla'}]}]},
+                    {'titulo': 'Determinantes', 'items': [{'tipo': 'video'}]},
+                ],
+                'examen': {'preguntas': []},
+            },
+            'estado': estado,
+            'generado_con_ia': True,
+        }
+
+    def test_la_url_del_js_es_la_que_se_prueba(self):
+        """El JS no puede cambiar de endpoint por su cuenta.
+
+        La URL del test esta escrita a mano mas arriba; esta comprueba contra el
+        texto real de la plantilla, que es donde el navegador la pone. Si se
+        retira la vista o se mueve la ruta, los dos lados del fetch caen
+        juntos.
+        """
+        import pathlib
+
+        from django.conf import settings
+
+        plantilla = (
+            pathlib.Path(settings.BASE_DIR)
+            / 'templates' / 'generador_cursos' / 'generador_de_cursos.html'
+        ).read_text()
+        self.assertIn("'/generador/api/crear-curso-generador/'", plantilla)
+        self.assertEqual(URL, '/generador/api/crear-curso-generador/')
+
+    def test_guardar_borrador_guarda_con_docente_y_estado(self):
+        """El boton Guardar, la rama de creacion (cursoActual.id nulo)."""
+        respuesta = self._con_token(self._payload_de_guardarCurso('Borrador'))
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTrue(respuesta.json()['success'])
+
+        self.assertEqual(Curso.objects.count(), 1)
+        curso = Curso.objects.get()
+        self.assertEqual(curso.id_curso, respuesta.json()['curso_id'])
+        # El docente es el de la sesion, que es lo que se pedia: el login es
+        # propio y request.user.id no existe.
+        self.assertEqual(curso.docente_id, self.generador.pk)
+        self.assertEqual(curso.estado, ESTADO_BORRADOR)
+        self.assertEqual(curso.titulo, 'Algebra lineal')
+        self.assertTrue(curso.generado_con_ia)
+
+    def test_subir_a_revision_guarda_en_revision(self):
+        """`subirAAprobacion()` llama a guardarCurso('En_Revisión')."""
+        respuesta = self._con_token(self._payload_de_guardarCurso(ESTADO_EN_REVISION))
+
+        self.assertEqual(respuesta.status_code, 200)
+        curso = Curso.objects.get()
+        self.assertEqual(curso.estado, ESTADO_EN_REVISION)
+        self.assertEqual(curso.docente_id, self.generador.pk)
+
+    def test_el_contenido_llega_igual_que_lo_que_manda_el_js(self):
+        """Se guarda la estructura de tres secciones, no una version aplanada."""
+        payload = self._payload_de_guardarCurso()
+        self._con_token(payload)
+
+        curso = Curso.objects.get()
+        self.assertEqual(curso.contenido_json, payload['contenido'])
+        self.assertEqual(list(curso.contenido_json),
+                         ['presentacion', 'modulos', 'examen'])
+        self.assertEqual(len(curso.contenido_json['modulos']), 3)
+        self.assertEqual(
+            curso.contenido_json['modulos'][1]['items'][0]['preguntas'][0]['correcta'],
+            'tabla',
+        )
+        self.assertEqual(curso.contenido_json['examen']['preguntas'], [])

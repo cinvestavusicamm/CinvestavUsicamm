@@ -186,6 +186,10 @@ IA_AGENT_STREAM_URL = config('IA_AGENT_STREAM_URL', default=f'{AI_AGENT_SERVICE_
 # (no al importar) para que el entorno y override_settings las cambien de verdad.
 IA_SERVICE_URL = config('IA_SERVICE_URL', default='http://ia_service_core:8003/api/ask')
 IA_SERVICE_STREAM_URL = config('IA_SERVICE_STREAM_URL', default='http://ia_service_core:8003/api/ask/stream')
+# Endpoint de generacion de la estructura de un curso (JSON), en ia_service_core.
+IA_SERVICE_GENERATE_URL = config(
+    'IA_SERVICE_GENERATE_URL', default='http://ia_service_core:8003/api/generate-course'
+)
 
 # Clave compartida con el microservicio de IA: Django la manda en la cabecera
 # X-Internal-Service-Key y el microservicio la exige en /ask.

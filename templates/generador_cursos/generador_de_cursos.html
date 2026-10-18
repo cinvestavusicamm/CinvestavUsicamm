@@ -635,6 +635,15 @@
 </script>
 
     <script>
+        // El texto que viene de la IA (o de un titulo que escribio el usuario)
+        // se pinta dentro de innerHTML: sin escapar, un "<img onerror=...>"
+        // en una pregunta o en el titulo se ejecutaria en el navegador.
+        function escapeHtml(texto) {
+            const div = document.createElement('div');
+            div.textContent = (texto == null) ? '' : String(texto);
+            return div.innerHTML;
+        }
+
         function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -741,11 +750,42 @@
     function generarCursoConIA() {
         document.getElementById('loader').style.display = "block";
         document.getElementById('feed-central').innerHTML = '';
-        setTimeout(() => {
+
+        const peticion = construirPeticionCurso();
+
+        fetch('/generador/api/generar-curso-ia/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ peticion: peticion })
+        })
+        .then(res => res.json().then(cuerpo => ({ ok: res.ok, cuerpo })))
+        .then(({ ok, cuerpo }) => {
             document.getElementById('loader').style.display = "none";
+            if (!ok || !cuerpo.success) {
+                Swal.fire('No se pudo generar', cuerpo.error || 'Intenta de nuevo.', 'error');
+                return;
+            }
+            // El contenido generado es el mismo JSON que espera el renderizado,
+            // asi que se pinta con las funciones que ya existian. El usuario lo
+            // revisa y lo guarda con el boton de siempre.
+            cursoActual.contenido = cuerpo.contenido;
             renderizarCurso(true);
-            agregarMensaje('ia', '✅ <b>¡Curso Generado!</b> He estructurado los módulos basados en los requerimientos USICAMM. Puedes pedirme cambios en el chat o editarlos manualmente.');
-        }, 2500);
+            agregarMensaje('ia', '✅ He generado una propuesta de curso. Revísala y edítala antes de guardarla.');
+        })
+        .catch(() => {
+            document.getElementById('loader').style.display = "none";
+            Swal.fire('Error de red', 'No se pudo contactar con el generador.', 'error');
+        });
+    }
+
+    function construirPeticionCurso() {
+        const tipoLargo = cursoActual.tipo === 'vertical' ? 'promoción vertical' :
+                          (cursoActual.tipo === 'horizontal' ? 'promoción horizontal' : 'puntaje general');
+        return `Diseña un curso titulado "${cursoActual.titulo}", de duración ${cursoActual.duracion}, ` +
+               `orientado a ${tipoLargo} según los lineamientos de la USICAMM.`;
     }
 
     function generarCursoManual() {
@@ -874,8 +914,8 @@
                             qContainer.innerHTML += `
                                 <div class="quiz-item">
                                     <button class="btn-remove-item" style="top:5px; right:5px; width:25px; height:25px;" onclick="this.parentElement.remove()"><i class="fas fa-trash" style="font-size:0.7rem;"></i></button>
-                                    <strong contenteditable="true">${p.pregunta}</strong>
-                                    ${p.opciones.map((opt, i) => `<div class="option-editable${i===0 ? ' correct' : ''}" contenteditable="true">${opt}</div>`).join('')}
+                                    <strong contenteditable="true">${escapeHtml(p.pregunta)}</strong>
+                                    ${p.opciones.map((opt, i) => `<div class="option-editable${i===0 ? ' correct' : ''}" contenteditable="true">${escapeHtml(opt)}</div>`).join('')}
                                 </div>
                             `;
                         });
@@ -893,8 +933,8 @@
                     examenDiv.innerHTML += `
                         <div class="quiz-item">
                             <button class="btn-remove-item" style="top:5px; right:5px; width:25px; height:25px;" onclick="this.parentElement.remove()"><i class="fas fa-trash" style="font-size:0.7rem;"></i></button>
-                            <strong contenteditable="true">${p.pregunta}</strong>
-                            ${p.opciones.map((opt, i) => `<div class="option-editable${i===0 ? ' correct' : ''}" contenteditable="true">${opt}</div>`).join('')}
+                            <strong contenteditable="true">${escapeHtml(p.pregunta)}</strong>
+                            ${p.opciones.map((opt, i) => `<div class="option-editable${i===0 ? ' correct' : ''}" contenteditable="true">${escapeHtml(opt)}</div>`).join('')}
                         </div>
                     `;
                 });
@@ -1182,7 +1222,7 @@
     function agregarMensajeInicialIA() {
         const chat = document.getElementById('chat-box');
         chat.innerHTML = '';
-        agregarMensaje('ia', `¡Hola! Soy Jaguar IA 🐾.<br><br>He generado la estructura base para el curso <b>"${cursoActual.titulo}"</b>.<br><br><b>¿Qué deseas hacer ahora?</b>
+        agregarMensaje('ia', `¡Hola! Soy Jaguar IA 🐾.<br><br>He generado la estructura base para el curso <b>"${escapeHtml(cursoActual.titulo)}"</b>.<br><br><b>¿Qué deseas hacer ahora?</b>
         <div class="quick-options">
             <button class="quick-option-btn" onclick="rellenarTextoIA()">📘 Redactar textos del Módulo 1</button>
             <button class="quick-option-btn" onclick="crearExamenIA()">📗 Generar Examen Final con 10 preguntas</button>

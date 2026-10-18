@@ -108,3 +108,59 @@ class PromptTemplates:
     @staticmethod
     def get_sql_prompt(question: str) -> str:
         return f"{PromptTemplates.SYSTEM_SQL}\n\nPREGUNTA: {question}\nQUERY SQL:"
+
+    # --- 5. GENERACION DE LA ESTRUCTURA DE UN CURSO ---
+    # No es RAG: aqui no hay contexto que recuperar, se le pide al modelo que
+    # cree la estructura. El resultado tiene que ser el JSON que espera el
+    # generador de cursos (presentacion / modulos / examen), no prosa.
+    COURSE_JSON_SCHEMA = """
+{
+  "presentacion": {"titulo": "string", "descripcion": "string", "duracion": "string"},
+  "modulos": [
+    {
+      "titulo": "string",
+      "items": [
+        {"tipo": "video"},
+        {"tipo": "quiz", "preguntas": [
+          {"pregunta": "string", "opciones": ["string", "string", "string", "string"], "correcta": "string"}
+        ]}
+      ]
+    }
+  ],
+  "examen": {"preguntas": [
+    {"pregunta": "string", "opciones": ["string", "string", "string", "string"], "correcta": "string"}
+  ]}
+}
+"""
+
+    COURSE_GENERATION_INSTRUCTIONS = """
+Eres un disenador instruccional experto en formacion docente y en los
+lineamientos de la USICAMM. A partir de la peticion del usuario, disena un
+curso completo.
+
+REGLAS DE SALIDA (obligatorias):
+1. Responde UNICAMENTE con un objeto JSON valido. Nada de texto antes ni
+   despues, nada de explicaciones, nada de bloques de codigo con ```.
+2. El JSON tiene EXACTAMENTE esta forma (mismos nombres de campo):
+{schema}
+3. "modulos" debe tener exactamente 3 modulos.
+4. Cada modulo debe incluir un item {"tipo": "video"} y, al menos, un item
+   {"tipo": "quiz"} con entre 3 y 5 preguntas.
+5. "examen" debe tener exactamente 10 preguntas.
+6. Cada pregunta lleva 4 "opciones" y "correcta" tiene que ser, caracter por
+   caracter, una de esas 4 opciones.
+7. Escribe en espanol, sin markdown dentro de los textos.
+
+PETICION DEL USUARIO:
+{query}
+"""
+
+    @staticmethod
+    def get_course_generation_prompt(query: str) -> str:
+        # Con replace, no con format: el esquema lleva llaves {"tipo": ...} y
+        # format las interpretaria como campos (KeyError: '"tipo"').
+        return (
+            PromptTemplates.COURSE_GENERATION_INSTRUCTIONS
+            .replace("{schema}", PromptTemplates.COURSE_JSON_SCHEMA)
+            .replace("{query}", query)
+        )

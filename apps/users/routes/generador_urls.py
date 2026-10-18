@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.users.views.generador_cursos.cursos import cursos, crear_curso_generador, actualizar_curso_generador, eliminar_curso_generador, obtener_curso_generador
+from apps.users.views.generador_cursos.cursos import cursos, crear_curso_generador, actualizar_curso_generador, eliminar_curso_generador, obtener_curso_generador, generar_curso_con_ia
 from apps.users.views.generador_cursos.estadisticas_cursos import estadisticas_cursos, obtener_estadisticas_api
 from apps.users.views.generador_cursos.generador_de_cursos import generador_de_cursos, guardar_curso_generado, modificar_html_seguro
 from apps.users.views.generador_cursos.index_generador import index_generador, crear_curso_index
@@ -24,6 +24,7 @@ urlpatterns = [
     # ellas usaban request.user.id sobre un AnonymousUser y por tanto nunca
     # pudieron crear nada, y la tercera era GET sin ninguna autenticacion.
     path('api/crear-curso-generador/', crear_curso_generador, name='crear_curso_generador'),
+    path('api/generar-curso-ia/', generar_curso_con_ia, name='generar_curso_con_ia'),
     path('api/actualizar-curso-generador/<int:curso_id>/', actualizar_curso_generador, name='actualizar_curso_generador'),
     path('api/eliminar-curso-generador/<int:curso_id>/', eliminar_curso_generador, name='eliminar_curso_generador'),
     path('api/obtener-curso/<int:curso_id>/', obtener_curso_generador, name='obtener_curso_generador'),
