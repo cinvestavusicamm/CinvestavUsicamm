@@ -42,7 +42,8 @@ services:
     command: >
         sh -c "ollama serve &
               sleep 5 &&
-              ollama pull phi3:mini &&
+              ollama pull llama3.2:3b &&
+              ollama pull nomic-embed-text &&
               wait"
 
   # -------------------------------------------------------------------------
@@ -51,11 +52,11 @@ services:
   backend:
     container_name: ia_service_core
     build:
-      context: ../backend_api
+      context: ../ia_service_core
       dockerfile: Dockerfile
-    command: uvicorn infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload --app-dir /app/src
+    command: uvicorn src.infrastructure.api.main:app --host 0.0.0.0 --port 8003 --reload
     volumes:
-      - ../backend_api:/app
+      - ../ia_service_core:/app
     ports:
       - "8003:8003"
     environment:

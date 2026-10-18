@@ -8,3 +8,11 @@ pydantic-settings>=2.1.0
 python-multipart>=0.0.9
 requests>=2.31.0
 pypdf>=4.0.0
+# El repositorio de vectores usa asyncpg directamente y el adaptador de
+# Ollama usa httpx. Estaban en el codigo pero no aqui, asi que el servicio
+# arrancaba y moria al importar (ModuleNotFoundError: No module named
+# 'asyncpg'). Faltaba tambien PyMuPDF, que es lo que pdf_parser importa
+# como 'fitz'; 'pypdf' de arriba no lo usa nadie.
+asyncpg>=0.29.0
+httpx>=0.26.0
+PyMuPDF>=1.23.0

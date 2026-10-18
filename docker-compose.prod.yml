@@ -600,7 +600,7 @@ services:
   # ─────────────────────────────────────────────────────────────────────
   backend_api:
     build:
-      context: ./backend_api
+      context: ./ia_service_core
       dockerfile: Dockerfile
     container_name: cinvestav_backend_api
     ports:
@@ -611,6 +611,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-user}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
       - POSTGRES_DB=${POSTGRES_DB:-cinvestav_db}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - INTERNAL_SERVICE_KEY=${INTERNAL_SERVICE_KEY:?define INTERNAL_SERVICE_KEY en .env}
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
       - REDIS_HOST=redis
