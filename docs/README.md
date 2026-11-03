@@ -41,7 +41,7 @@ Editar el archivo `.env` con las configuraciones necesarias:
 # Django Settings
 DEBUG=True
 SECRET_KEY=your-secret-key-here-change-in-production
-DATABASE_URL=postgresql://user:password@localhost:5432/escalafon_db
+DATABASE_URL=postgresql://user:password@localhost:5432/cinvestav_db
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Microservices URLs
@@ -49,6 +49,7 @@ VALIDATION_SERVICE_URL=http://localhost:8001
 BACKEND_API_URL=http://localhost:8003
 MICROSERVICE_DB_URL=http://localhost:8002
 DJANGO_BACKEND_URL=http://localhost:8000
+INTERNAL_SERVICE_KEY=<genera_una_clave_segura>
 ```
 
 **Variables de Entorno Obligatorias:**
@@ -61,8 +62,7 @@ DJANGO_BACKEND_URL=http://localhost:8000
 ### 3. Levantar el Proyecto con Docker Compose
 
 ```bash
-cd infrastructure
-docker-compose up --build -d
+docker compose -f docker-compose.prod.yml up --build -d
 ```
 
 Este comando:
@@ -78,16 +78,16 @@ Este comando:
 Las migraciones se ejecutan automáticamente al iniciar el contenedor Django. Si necesitas ejecutarlas manualmente:
 
 ```bash
-docker-compose exec django python manage.py migrate
+docker compose -f docker-compose.prod.yml exec django python manage.py migrate
 ```
 
 ### 5. Verificar que el Sistema Funciona
 
-- **Django Backend**: http://localhost:8001
+- **Django Backend** (nginx): http://localhost
 - **FastAPI Backend**: http://localhost:8003
 - **MS Orchestrator**: http://localhost:9000
-- **Health Check**: http://localhost:8001/health/
-- **Admin Panel**: http://localhost:8001/admin/
+- **Health Check**: http://localhost/health
+- **Admin Panel**: http://localhost/admin/
 
 ## 📁 Estructura del Proyecto
 
@@ -103,10 +103,11 @@ CinvestavUsicamm/
 │   │   └── serializers/    # Serializadores
 │   ├── Dockerfile
 │   └── requirements.txt
-├── backend_api/            # Backend FastAPI (IA)
+├── ia_service_core/        # Servicio de IA (FastAPI)
 ├── ms_orchestrator/        # Microservicio de orquestación
-├── infrastructure/         # Configuración Docker
-│   └── docker-compose.yml
+├── infrastructure/         # Scripts de inicialización de la BD
+│   └── database/
+├── docker-compose.prod.yml # Stack completo (Django + IA + microservicios)
 ├── core/                   # Configuración central de Django
 │   ├── settings/           # Settings de Django
 │   ├── urls.py            # URLs principales
@@ -114,7 +115,6 @@ CinvestavUsicamm/
 ├── templates/              # Plantillas HTML
 ├── static/                 # Archivos estáticos
 ├── docs/                   # Documentación
-├── Dockerfile              # Dockerfile principal
 ├── manage.py              # Script de gestión Django
 └── .env.example           # Ejemplo de variables de entorno
 ```
@@ -124,47 +124,47 @@ CinvestavUsicamm/
 ### Ver Logs de Todos los Servicios
 
 ```bash
-docker-compose logs -f
+docker compose -f docker-compose.prod.yml logs -f
 ```
 
 ### Ver Logs de un Servicio Específico
 
 ```bash
-docker-compose logs -f django
-docker-compose logs -f backend
-docker-compose logs -f db
+docker compose -f docker-compose.prod.yml logs -f django
+docker compose -f docker-compose.prod.yml logs -f backend_api
+docker compose -f docker-compose.prod.yml logs -f postgres
 ```
 
 ### Detener Todos los Servicios
 
 ```bash
-docker-compose down
+docker compose -f docker-compose.prod.yml down
 ```
 
 ### Detener y Eliminar Volúmenes
 
 ```bash
-docker-compose down -v
+docker compose -f docker-compose.prod.yml down -v
 ```
 
 ### Reconstruir un Servicio Específico
 
 ```bash
-docker-compose up --build -d django
+docker compose -f docker-compose.prod.yml up --build -d django
 ```
 
 ### Ejecutar Comandos en el Contenedor Django
 
 ```bash
-docker-compose exec django python manage.py shell
-docker-compose exec django python manage.py createsuperuser
-docker-compose exec django python manage.py collectstatic
+docker compose -f docker-compose.prod.yml exec django python manage.py shell
+docker compose -f docker-compose.prod.yml exec django python manage.py createsuperuser
+docker compose -f docker-compose.prod.yml exec django python manage.py collectstatic
 ```
 
 ### Acceder a la Base de Datos
 
 ```bash
-docker-compose exec db psql -U user -d escalafon_db
+docker compose -f docker-compose.prod.yml exec postgres psql -U user -d cinvestav_db
 ```
 
 ## 🗄️ Base de Datos
@@ -176,7 +176,7 @@ El sistema utiliza PostgreSQL con extensión pgvector para almacenamiento de vec
 - **Motor**: PostgreSQL 16 con pgvector
 - **Usuario**: user
 - **Contraseña**: password (cambiar en producción)
-- **Base de Datos**: escalafon_db
+- **Base de Datos**: cinvestav_db
 - **Puerto**: 5432
 
 ### Migraciones
@@ -190,7 +190,7 @@ Las migraciones se gestionan a través de Django. El sistema utiliza tablas exis
 Las siguientes variables deben cambiarse en producción:
 
 - `SECRET_KEY`: Generar una clave segura
-- `MICROSERVICE_SECRET`: Clave para comunicación entre microservicios
+- `INTERNAL_SERVICE_KEY`: Clave para comunicación entre Django y el servicio de IA
 - `POSTGRES_PASSWORD`: Contraseña de la base de datos
 
 ### Configuración de Seguridad en Producción
@@ -208,14 +208,14 @@ CSRF_COOKIE_SECURE = True
 Para ejecutar pruebas:
 
 ```bash
-docker-compose exec django python manage.py test
+docker compose -f docker-compose.prod.yml exec django python manage.py test
 ```
 
 ## 📊 Monitoreo
 
 ### Health Checks
 
-- **Django**: http://localhost:8001/health/
+- **Django** (nginx): http://localhost/health
 - **FastAPI**: http://localhost:8003/health
 - **Orchestrator**: http://localhost:9000/health
 
@@ -223,7 +223,7 @@ docker-compose exec django python manage.py test
 
 Los logs se almacenan en:
 - Django: `logs/error.log`, `logs/security.log`
-- Docker: `docker-compose logs`
+- Docker: `docker compose -f docker-compose.prod.yml logs`
 
 ## 🤝 Contribución
 
@@ -248,8 +248,8 @@ Para reportar problemas o solicitar ayuda, abrir un issue en el repositorio.
 Verificar que la base de datos esté lista:
 
 ```bash
-docker-compose ps
-docker-compose logs db
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml logs postgres
 ```
 
 ### Error de conexión a la base de datos
@@ -258,10 +258,10 @@ Verificar las credenciales en `.env` y que el contenedor de base de datos esté 
 
 ### Ollama no responde
 
-Verificar que el modelo phi3:mini esté descargado:
+Verificar que el modelo `llama3.2:3b` esté descargado:
 
 ```bash
-docker-compose exec ollama ollama list
+docker compose -f docker-compose.prod.yml exec ollama ollama list
 ```
 
 ### Migraciones fallidas
@@ -269,8 +269,8 @@ docker-compose exec ollama ollama list
 Eliminar el volumen de base de datos y volver a crear:
 
 ```bash
-docker-compose down -v
-docker-compose up --build -d
+docker compose -f docker-compose.prod.yml down -v
+docker compose -f docker-compose.prod.yml up --build -d
 ```
 
 ## 📚 Documentación Adicional

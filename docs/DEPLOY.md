@@ -42,7 +42,7 @@ Before deploying to production, ensure the following security measures are in pl
 # Django Settings
 DEBUG=False
 SECRET_KEY=<generate-strong-secret-key>
-DATABASE_URL=postgresql://<user>:<password>@<host>:5432/escalafon_db
+DATABASE_URL=postgresql://<user>:<password>@<host>:5432/cinvestav_db
 ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
 
 # Microservices URLs
@@ -83,17 +83,17 @@ CSRF_COOKIE_SECURE = True
 Update the database URL in `.env`:
 
 ```env
-DATABASE_URL=postgresql://production_user:strong_password@production-db-host:5432/escalafon_db
+DATABASE_URL=postgresql://production_user:strong_password@production-db-host:5432/cinvestav_db
 ```
 
-#### Update docker-compose.yml
+#### Update docker-compose.prod.yml
 
 ```yaml
 db:
   environment:
     POSTGRES_USER: production_user
     POSTGRES_PASSWORD: strong_password
-    POSTGRES_DB: escalafon_db
+    POSTGRES_DB: cinvestav_db
 ```
 
 ### 3. Domain Configuration
@@ -136,7 +136,7 @@ Edit the `.env` file with production values.
 ### Step 3: Build Docker Images
 
 ```bash
-docker-compose build
+docker compose -f docker-compose.prod.yml build
 ```
 
 This will build images for:
@@ -147,7 +147,7 @@ This will build images for:
 ### Step 4: Start Services
 
 ```bash
-docker-compose up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 This will start all services in detached mode:
@@ -160,19 +160,19 @@ This will start all services in detached mode:
 ### Step 5: Run Database Migrations
 
 ```bash
-docker-compose exec django python manage.py migrate
+docker compose -f docker-compose.prod.yml exec django python manage.py migrate
 ```
 
 ### Step 6: Collect Static Files
 
 ```bash
-docker-compose exec django python manage.py collectstatic --noinput
+docker compose -f docker-compose.prod.yml exec django python manage.py collectstatic --noinput
 ```
 
 ### Step 7: Create Superuser
 
 ```bash
-docker-compose exec django python manage.py createsuperuser
+docker compose -f docker-compose.prod.yml exec django python manage.py createsuperuser
 ```
 
 Follow the prompts to create an admin user.
@@ -182,13 +182,13 @@ Follow the prompts to create an admin user.
 Check that all services are running:
 
 ```bash
-docker-compose ps
+docker compose -f docker-compose.prod.yml ps
 ```
 
 Expected output:
 ```
 NAME                  STATUS              PORTS
-escalafon_db          Up (healthy)        0.0.0.0:5432->5432/tcp
+cinvestav_db          Up (healthy)        0.0.0.0:5432->5432/tcp
 motor_ollama          Up (running)         0.0.0.0:11434->11434/tcp
 ia_service_core       Up (healthy)        0.0.0.0:8003->8003/tcp
 escalafon_django      Up (running)         0.0.0.0:8001->8000/tcp
@@ -282,7 +282,7 @@ Certbot will automatically configure SSL and redirect HTTP to HTTPS.
 
 ### Option 2: Using Traefik
 
-Add Traefik to docker-compose.yml:
+Add Traefik to docker-compose.prod.yml:
 
 ```yaml
 version: '3.8'
@@ -327,7 +327,7 @@ services:
 #### Manual Backup
 
 ```bash
-docker-compose exec db pg_dump -U user escalafon_db > backup_$(date +%Y%m%d_%H%M%S).sql
+docker compose -f docker-compose.prod.yml exec postgres pg_dump -U user cinvestav_db > backup_$(date +%Y%m%d_%H%M%S).sql
 ```
 
 #### Automated Backup
@@ -339,13 +339,13 @@ Create a cron job:
 crontab -e
 
 # Add daily backup at 2 AM
-0 2 * * * docker-compose exec db pg_dump -U user escalafon_db > /backups/backup_$(date +\%Y\%m\%d).sql
+0 2 * * * docker compose -f docker-compose.prod.yml exec postgres pg_dump -U user cinvestav_db > /backups/backup_$(date +\%Y\%m\%d).sql
 ```
 
 #### Restore from Backup
 
 ```bash
-docker-compose exec -T db psql -U user escalafon_db < backup_20240101_020000.sql
+docker compose -f docker-compose.prod.yml exec -T postgres psql -U user cinvestav_db < backup_20240101_020000.sql
 ```
 
 ### Database Migration Strategy
@@ -359,10 +359,10 @@ Since models use `managed = False`:
 
 ```bash
 # Generate migration (for reference)
-docker-compose exec django python manage.py makemigrations
+docker compose -f docker-compose.prod.yml exec django python manage.py makemigrations
 
 # Do NOT run migrate in production for managed=False models
-# docker-compose exec django python manage.py migrate
+# docker compose -f docker-compose.prod.yml exec django python manage.py migrate
 ```
 
 ---
@@ -374,26 +374,26 @@ docker-compose exec django python manage.py makemigrations
 #### All Services
 
 ```bash
-docker-compose logs -f
+docker compose -f docker-compose.prod.yml logs -f
 ```
 
 #### Specific Service
 
 ```bash
 # Django logs
-docker-compose logs -f django
+docker compose -f docker-compose.prod.yml logs -f django
 
 # FastAPI logs
-docker-compose logs -f backend
+docker compose -f docker-compose.prod.yml logs -f backend_api
 
 # Database logs
-docker-compose logs -f db
+docker compose -f docker-compose.prod.yml logs -f postgres
 
 # Ollama logs
-docker-compose logs -f ollama
+docker compose -f docker-compose.prod.yml logs -f ollama
 
 # Orchestrator logs
-docker-compose logs -f ms_orchestrator
+docker compose -f docker-compose.prod.yml logs -f ms_orchestrator
 ```
 
 #### Application Logs
@@ -432,7 +432,7 @@ Create `/etc/logrotate.d/escalafonia`:
 
 #### Gunicorn Workers
 
-In `infrastructure/docker-compose.yml`:
+In `docker-compose.prod.yml`:
 
 ```yaml
 django:
@@ -452,7 +452,7 @@ In `core/settings/base.py`:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'escalafon_db',
+        'NAME': 'cinvestav_db',
         'USER': 'user',
         'PASSWORD': 'password',
         'HOST': 'db',
@@ -483,7 +483,7 @@ ALTER SYSTEM SET default_statistics_target = 100;
 Restart database:
 
 ```bash
-docker-compose restart db
+docker compose -f docker-compose.prod.yml restart postgres
 ```
 
 ---
@@ -539,7 +539,7 @@ All services have health checks configured:
 
 ```yaml
 healthcheck:
-  test: ["CMD-SHELL", "pg_isready -U user -d escalafon_db"]
+  test: ["CMD-SHELL", "pg_isready -U user -d cinvestav_db"]
   interval: 5s
   timeout: 5s
   retries: 5
@@ -562,13 +562,13 @@ Use tools like:
 #### Check Logs
 
 ```bash
-docker-compose logs <service_name>
+docker compose -f docker-compose.prod.yml logs <service_name>
 ```
 
 #### Check Dependencies
 
 ```bash
-docker-compose ps
+docker compose -f docker-compose.prod.yml ps
 ```
 
 Ensure all dependencies are healthy before starting dependent services.
@@ -611,7 +611,7 @@ docker stats
 #### Check Database Performance
 
 ```bash
-docker-compose exec db psql -U user -d escalafon_db -c "SELECT * FROM pg_stat_activity;"
+docker compose -f docker-compose.prod.yml exec postgres psql -U user -d cinvestav_db -c "SELECT * FROM pg_stat_activity;"
 ```
 
 #### Solutions
@@ -629,23 +629,23 @@ docker-compose exec db psql -U user -d escalafon_db -c "SELECT * FROM pg_stat_ac
 
 ```bash
 # Stop current deployment
-docker-compose down
+docker compose -f docker-compose.prod.yml down
 
 # Switch to previous version
 git checkout <previous-commit>
 
 # Rebuild and start
-docker-compose up --build -d
+docker compose -f docker-compose.prod.yml up --build -d
 
 # Run migrations if needed
-docker-compose exec django python manage.py migrate
+docker compose -f docker-compose.prod.yml exec django python manage.py migrate
 ```
 
 ### Database Rollback
 
 ```bash
 # Restore from backup
-docker-compose exec -T db psql -U user escalafon_db < backup_20240101_020000.sql
+docker compose -f docker-compose.prod.yml exec -T postgres psql -U user cinvestav_db < backup_20240101_020000.sql
 ```
 
 ---
@@ -720,8 +720,8 @@ bantime = 3600
 sudo apt update && sudo apt upgrade -y
 
 # Update Docker images
-docker-compose pull
-docker-compose up -d
+docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ---
@@ -770,10 +770,10 @@ jobs:
           script: |
             cd /path/to/CinvestavUsicamm
             git pull
-            docker-compose down
-            docker-compose up --build -d
-            docker-compose exec django python manage.py migrate
-            docker-compose exec django python manage.py collectstatic --noinput
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up --build -d
+            docker compose -f docker-compose.prod.yml exec django python manage.py migrate
+            docker compose -f docker-compose.prod.yml exec django python manage.py collectstatic --noinput
 ```
 
 ---

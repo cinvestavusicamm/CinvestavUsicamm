@@ -151,5 +151,6 @@ def listar_tablas_bd(request):
             "total_filas": total_filas,
             "usuario_nombre": request.session.get("usuario_nombre"),
             "usuario_rol": request.session.get("usuario_rol"),
+            "seccion": "bd",
         },
     )

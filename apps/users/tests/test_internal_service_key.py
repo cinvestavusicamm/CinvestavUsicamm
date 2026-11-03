@@ -231,9 +231,7 @@ class UnSoloNombreDeClaveTests(TestCase):
     ficheros. Estos tests fallan si alguien vuelve a inventarse un nombre.
     """
     COMPOSES = (
-        'docker-compose.yml',
         'docker-compose.prod.yml',
-        'infrastructure/docker-compose.yml',
         'ia_service_core/docker-compose.yml',
     )
 
@@ -360,8 +358,7 @@ class UnSoloNombreDeClaveTests(TestCase):
 
         Se busca la interpolacion y no el `INTERNAL_SERVICE_KEY:` literal porque
         los compose usan los dos estilos de YAML: mapeo (`clave: ${...}`) en
-        infrastructure/ e ia_service_core/, y lista (`- clave=${...}`) en los
-        de la raiz.
+        ia_service_core/, y lista (`- clave=${...}`) en docker-compose.prod.yml.
         """
         for nombre in self.COMPOSES:
             texto = (self._raiz() / nombre).read_text()
@@ -377,14 +374,14 @@ class UnSoloNombreDeClaveTests(TestCase):
             )
 
     def test_django_recibe_la_clave_que_manda_al_microservicio(self):
-        """El servicio django de los compose raiz y prod tambien la recibe.
+        """El servicio django del compose tambien la recibe.
 
         Sin esto, `docker compose up -d` levanta Django sin clave y
         /agente-ajax/ solo falla cuando alguien lo usa.
         """
-        for nombre in ('docker-compose.yml', 'docker-compose.prod.yml'):
-            texto = (self._raiz() / nombre).read_text()
-            self.assertIn('${INTERNAL_SERVICE_KEY:?', texto, nombre)
+        nombre = 'docker-compose.prod.yml'
+        texto = (self._raiz() / nombre).read_text()
+        self.assertIn('${INTERNAL_SERVICE_KEY:?', texto, nombre)
 
     def test_el_env_example_avis_de_generar_una_clave_nueva(self):
         """La anterior esta en el historial de git: hay que rotarla."""

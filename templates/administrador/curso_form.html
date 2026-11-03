@@ -1,0 +1,74 @@
+{% extends 'administrador/base_admin.html' %}
+
+{% block title %}{% if curso %}Editar curso{% else %}Nuevo curso{% endif %}{% endblock %}
+{% block page_title %}{% if curso %}Editar curso{% else %}Nuevo curso{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h3>{% if curso %}Editar curso #{{ curso.id_curso }}{% else %}Nuevo curso{% endif %}</h3>
+        <p>{% if curso %}Actualiza los datos generales del curso. El contenido se conserva.{% else %}Registra un
+            curso y asígnalo a un usuario responsable.{% endif %}</p>
+    </div>
+    <a class="btn btn-ghost" href="{% url 'administrador:cursos' %}">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+
+<form class="card form-card" method="post">
+    {% csrf_token %}
+
+    <div class="form-grid">
+        <div class="form-field full">
+            <label for="titulo">Título *</label>
+            <input id="titulo" name="titulo" type="text" maxlength="200" required
+                value="{{ form_data.titulo }}" placeholder="Nombre del curso">
+        </div>
+
+        <div class="form-field full">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" name="descripcion"
+                placeholder="Describe el objetivo y alcance del curso">{{ form_data.descripcion }}</textarea>
+        </div>
+
+        <div class="form-field">
+            <label for="docente">Usuario responsable *</label>
+            <select id="docente" name="docente" required>
+                <option value="">Selecciona un usuario</option>
+                {% for docente in docentes %}
+                <option value="{{ docente.id_usuario }}"
+                    {% if docente.id_usuario|stringformat:"s" == form_data.docente_id %}selected{% endif %}>
+                    {{ docente.nombre_completo }} ({{ docente.rol.nombre_rol }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-field">
+            <label for="estado">Estado *</label>
+            <select id="estado" name="estado" required>
+                {% for estado in estados %}
+                <option value="{{ estado }}" {% if estado == form_data.estado %}selected{% endif %}>{{ estado }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-field full">
+            <label class="checkbox-field">
+                <input type="checkbox" name="generado_con_ia" {% if form_data.generado_con_ia %}checked{% endif %}>
+                Contenido generado con IA
+            </label>
+            <span class="hint">Marca esta opción solo si el contenido del curso fue generado por el asistente de
+                IA.</span>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a class="btn btn-ghost" href="{% url 'administrador:cursos' %}">Cancelar</a>
+        <button class="btn btn-primary" type="submit">
+            <i class="fas fa-save"></i> {% if curso %}Guardar cambios{% else %}Crear curso{% endif %}
+        </button>
+    </div>
+</form>
+{% endblock %}

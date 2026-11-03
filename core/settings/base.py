@@ -212,7 +212,7 @@ INTERNAL_SERVICE_KEY = config('INTERNAL_SERVICE_KEY', default='')
 # Tiempos de espera contra el microservicio de IA.
 #
 # El default de 150 va a proposito por debajo del --timeout 180 de gunicorn
-# (apps/Dockerfile e infrastructure/docker-compose.yml). Si la peticion HTTP
+# (apps/Dockerfile y docker-compose.prod.yml). Si la peticion HTTP
 # aguantara mas que gunicorn, el worker moriria a los 180 y el usuario veria un
 # 502 de nginx en vez del mensaje de "el asistente esta tardando demasiado". Con
 # requests cortando antes, el error lo genera Django y se puede explicar.

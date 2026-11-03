@@ -14,45 +14,88 @@ Este proyecto implementa una arquitectura de microservicios con los siguientes c
 
 ## 📋 Requisitos Previos
 
-- Docker (versión 20.10 o superior)
-- Docker Compose (versión 2.0 o superior)
+- Docker Desktop (con el daemon corriendo) y Docker Compose v2
+- Python 3.12
 - Git
 
-## 🚀 Inicio Rápido con Docker
+No hace falta Node: el frontend son plantillas Django y JS servido por Django.
 
-### 1. Clonar el Repositorio
+## 🚀 Inicio Rápido
+
+### 1. Clonar y crear el entorno
 
 ```bash
 git clone <repository-url>
 cd CinvestavUsicamm
+python3.12 -m venv venv
+./venv/bin/pip install -r apps/requirements.txt
 ```
 
-### 2. Configurar Variables de Entorno
+### 2. Configurar `.env`
 
 ```bash
 cp .env.example .env
 ```
 
-Editar `.env` con las configuraciones necesarias.
-
-### 3. Levantar el Proyecto
+Genera los dos secretos y pégalos en `.env`:
 
 ```bash
-cd infrastructure
-docker-compose up --build -d
+python -c "import secrets; print('SECRET_KEY=' + secrets.token_urlsafe(50))"
+python -c "import secrets; print('INTERNAL_SERVICE_KEY=' + secrets.token_urlsafe(48))"
 ```
 
-### 4. Ejecutar Migraciones
+`INTERNAL_SERVICE_KEY` tiene que ser **el mismo valor** para Django y para
+`ia_service_core`; los compose se niegan a arrancar si falta.
+
+Elige la base en `DATABASE_URL` según dónde corras Django:
+
+| Dónde corre Django | `DATABASE_URL` |
+|---|---|
+| En tu máquina, con el Postgres de Docker | `postgresql://user:password@localhost:5432/cinvestav_db` |
+| Dentro del compose (`django`) | el compose lo inyecta solo (`postgres:5432/cinvestav_db`) |
+| SQLite local (sin Postgres) | vacío |
+
+Si usas una base remota (p. ej. Supabase), arranca con
+`ALLOW_REMOTE_DB=1`; el proyecto se niega a usar un host remoto por defecto.
+
+Los cuatro `IA_SERVICE_*` del `.env` apuntan a `http://localhost:8003/...` para
+cuando corras Django en tu máquina. Dentro del compose, el servicio `django`
+los sobreescribe a `http://backend_api:8003/...`.
+
+### 3. Levantar el proyecto
 
 ```bash
-docker-compose exec django python manage.py migrate
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+La primera vez construye todos los servicios y Ollama descarga
+`llama3.2:3b` y `nomic-embed-text` (varios minutos). Comprueba que está listo:
+
+```bash
+curl http://localhost:8003/health
+docker compose -f docker-compose.prod.yml ps
+```
+
+### 4. Desarrollar con Django en tu máquina (opcional)
+
+Si prefieres `runserver` en vez de reconstruir la imagen de Django, levanta solo
+la infraestructura y corre Django contra ella:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d postgres redis qdrant ollama backend_api ms_ai_agent_service
+./venv/bin/python manage.py migrate
+./venv/bin/python manage.py runserver 0.0.0.0:8000
 ```
 
 ### 5. Verificar el Sistema
 
-- **Django**: http://localhost:8001
-- **FastAPI**: http://localhost:8003
-- **Health Check**: http://localhost:8001/health/
+- **Aplicación** (nginx): http://localhost
+- **Django** interno: http://localhost:8000 (solo si lo arrancas en tu máquina)
+- **Servicio de IA**: http://localhost:8003/health
+- **Orquestador**: http://localhost:9000
+
+`docker-compose.prod.yml` es el único compose del proyecto: levanta Django,
+Postgres, Redis, Qdrant, Ollama, `ia_service_core` y los microservicios.
 
 ## 🧪 Pruebas
 

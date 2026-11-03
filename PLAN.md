@@ -196,7 +196,7 @@ por caducado todo entorno que la usara.
 
 **Ajeno a este arreglo, menor:** `ia_service_core/docker-compose.yml` es un fragmento
 que ya estaba roto antes de tocarlo (`depends_on: database`, un servicio que no
-define). El stack que funciona es `infrastructure/docker-compose.yml`.
+define). El stack que funciona es `docker-compose.prod.yml`.
 
 ---
 

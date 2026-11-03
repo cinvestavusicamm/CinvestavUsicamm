@@ -191,7 +191,14 @@ class CursoService:
         return curso
 
     @staticmethod
-    def actualizar_curso(curso_id, titulo=None, descripcion=None, estado=None):
+    def actualizar_curso(
+        curso_id,
+        titulo=None,
+        descripcion=None,
+        estado=None,
+        docente_id=None,
+        generado_con_ia=None,
+    ):
         """Actualiza lo que se le pase, validando antes de escribir.
 
         Se valida antes de asignar para que un fallo no deje la fila a medias en
@@ -201,12 +208,23 @@ class CursoService:
 
         if titulo is not None:
             CursoService._validar_titulo(titulo)
-            curso.titulo = titulo.strip()
         if descripcion is not None:
             CursoService._validar_descripcion(descripcion)
+        if estado is not None:
+            estado = CursoService._validar_estado(estado)
+        if docente_id is not None:
+            CursoService._validar_docente(docente_id)
+
+        if titulo is not None:
+            curso.titulo = titulo.strip()
+        if descripcion is not None:
             curso.descripcion = descripcion
         if estado is not None:
-            curso.estado = CursoService._validar_estado(estado)
+            curso.estado = estado
+        if docente_id is not None:
+            curso.docente_id = docente_id
+        if generado_con_ia is not None:
+            curso.generado_con_ia = bool(generado_con_ia)
 
         curso.save()
         return curso

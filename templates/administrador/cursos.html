@@ -1,0 +1,116 @@
+{% extends 'administrador/base_admin.html' %}
+
+{% block title %}Cursos{% endblock %}
+{% block page_title %}Cursos{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h3>Cursos</h3>
+        <p>Consulta, crea, edita y elimina los cursos del sistema. Los cursos con contenido generado por IA
+            conservan su contenido al editar los datos generales.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'administrador:curso_crear' %}">
+        <i class="fas fa-plus"></i> Nuevo curso
+    </a>
+</div>
+
+<form class="toolbar" method="get">
+    <label class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="search" name="q" value="{{ q }}" placeholder="Buscar por título, descripción o docente">
+    </label>
+    <select name="estado" aria-label="Filtrar por estado">
+        <option value="">Todos los estados</option>
+        {% for estado in estados %}
+        <option value="{{ estado }}" {% if estado == estado_seleccionado %}selected{% endif %}>{{ estado }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn btn-secondary" type="submit"><i class="fas fa-filter"></i> Filtrar</button>
+    {% if q or estado_seleccionado %}
+    <a class="btn btn-ghost" href="{% url 'administrador:cursos' %}">Limpiar</a>
+    {% endif %}
+</form>
+
+<div class="card">
+    {% if page_obj.object_list %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Docente</th>
+                    <th>Estado</th>
+                    <th>IA</th>
+                    <th>Versión</th>
+                    <th>Creado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for curso in page_obj %}
+                <tr>
+                    <td><strong>{{ curso.id_curso }}</strong></td>
+                    <td>
+                        {{ curso.titulo }}
+                        {% if curso.descripcion %}
+                        <br><small>{{ curso.descripcion|truncatechars:90 }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ curso.docente.nombre_completo }}<br>
+                        <small>{{ curso.docente.correo }}</small>
+                    </td>
+                    <td>
+                        <span class="badge {% if curso.estado == 'Aprobado' %}badge-success{% endif %}">
+                            {{ curso.estado|default:"Sin estado" }}
+                        </span>
+                    </td>
+                    <td>{% if curso.generado_con_ia %}Sí{% else %}No{% endif %}</td>
+                    <td>{{ curso.version }}</td>
+                    <td>{{ curso.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <div class="actions">
+                            <a class="btn btn-ghost btn-sm"
+                                href="{% url 'administrador:curso_editar' curso.id_curso %}">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <form class="inline-form" method="post"
+                                action="{% url 'administrador:curso_eliminar' curso.id_curso %}"
+                                onsubmit="return confirm('¿Eliminar este curso? Esta acción no se puede deshacer.');">
+                                {% csrf_token %}
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a
+            href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}&estado={{ estado_seleccionado|urlencode }}">Anterior</a>
+        {% endif %}
+        <span class="current">{{ page_obj.number }}</span>
+        <span>de {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a
+            href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}&estado={{ estado_seleccionado|urlencode }}">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-book-open"></i>
+        <p>No hay cursos que coincidan con el filtro.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

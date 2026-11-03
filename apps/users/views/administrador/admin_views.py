@@ -60,7 +60,7 @@ def crear_admin(request):
         return redirect('administrador:panel_admin')
 
     instituciones = Institucion.objects.all()
-    return render(request, 'administrador/crear_admin.html', {'instituciones': instituciones})
+    return render(request, 'administrador/crear_admin.html', {'instituciones': instituciones, 'seccion': 'crear_admin'})
 
 
 @never_cache
@@ -106,11 +106,12 @@ def panel_admin(request):
         'docentes': docentes,
         'instituciones': instituciones,
         'roles': roles,
-        
+
         'total_registros': total_registros,
         'activos': activos,
         'en_revision': en_revision,
-        
+
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
+        'seccion': 'usuarios',
     })

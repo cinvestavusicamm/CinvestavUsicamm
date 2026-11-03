@@ -601,7 +601,7 @@ View → Service → Repository → Django ORM → PostgreSQL
 
 ### Service Discovery
 
-- **Method**: Hardcoded URLs in docker-compose.yml
+- **Method**: Hardcoded URLs in docker-compose.prod.yml
 - **Future**: Service registry (Consul, etcd)
 
 ### Load Balancing
@@ -666,7 +666,7 @@ View → Service → Repository → Django ORM → PostgreSQL
 
 - **Tool**: Docker Compose
 - **Future**: Kubernetes
-- **Configuration**: docker-compose.yml
+- **Configuration**: docker-compose.prod.yml
 - **Volumes**: PostgreSQL data, Ollama models, static files
 
 ### Environment Configuration

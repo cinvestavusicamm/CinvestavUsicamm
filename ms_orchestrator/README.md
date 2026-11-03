@@ -669,7 +669,7 @@ Look for `debug-123` in logs to track request through all services.
 
 ### Related Services
 - [ms_validation](../ms_validation/README.md)
-- [ia_service_core](../backend_api/README.md)
+- [ia_service_core](../ia_service_core/)
 - [microservice_db](../microservice_db/README.md)
 
 ---

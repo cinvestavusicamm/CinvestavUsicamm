@@ -1,0 +1,45 @@
+{% extends 'administrador/base_admin.html' %}
+
+{% block title %}{% if rol %}Editar rol{% else %}Nuevo rol{% endif %}{% endblock %}
+{% block page_title %}{% if rol %}Editar rol{% else %}Nuevo rol{% endif %}{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h3>{% if rol %}Editar rol #{{ rol.id_rol }}{% else %}Nuevo rol{% endif %}</h3>
+        <p>{% if rol and es_sistema %}Este rol pertenece al sistema y su nombre no puede modificarse.{% else %}El
+            nombre se guarda en mayúsculas y debe ser único.{% endif %}</p>
+    </div>
+    <a class="btn btn-ghost" href="{% url 'administrador:roles' %}">
+        <i class="fas fa-arrow-left"></i> Volver
+    </a>
+</div>
+
+<form class="card form-card" method="post">
+    {% csrf_token %}
+
+    <div class="form-grid">
+        <div class="form-field full">
+            <label for="nombre_rol">Nombre del rol *</label>
+            <input id="nombre_rol" name="nombre_rol" type="text" maxlength="50" required
+                value="{{ form_data.nombre_rol }}" placeholder="Ej. COORDINADOR" {% if es_sistema %}readonly{% endif %}>
+            {% if es_sistema %}
+            <span class="hint">Los roles del sistema no se pueden renombrar porque el inicio de sesión y los permisos
+                dependen de su nombre.</span>
+            {% else %}
+            <span class="hint">Solo ADMIN, DOCENTE, EVALUADOR y GENERADOR están integrados en el flujo de inicio de
+                sesión.</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a class="btn btn-ghost" href="{% url 'administrador:roles' %}">Cancelar</a>
+        {% if not es_sistema %}
+        <button class="btn btn-primary" type="submit">
+            <i class="fas fa-save"></i> {% if rol %}Guardar cambios{% else %}Crear rol{% endif %}
+        </button>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

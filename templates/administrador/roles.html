@@ -1,0 +1,75 @@
+{% extends 'administrador/base_admin.html' %}
+
+{% block title %}Roles{% endblock %}
+{% block page_title %}Roles{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h3>Roles</h3>
+        <p>Administra los roles disponibles en el sistema. Los roles del sistema (ADMIN, DOCENTE, EVALUADOR,
+            GENERADOR) no pueden eliminarse ni renombrarse.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'administrador:rol_crear' %}">
+        <i class="fas fa-plus"></i> Nuevo rol
+    </a>
+</div>
+
+<div class="card">
+    {% if roles %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Usuarios asignados</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rol in roles %}
+                <tr>
+                    <td><strong>{{ rol.id_rol }}</strong></td>
+                    <td>{{ rol.nombre_rol }}</td>
+                    <td>
+                        {% if rol.es_sistema %}
+                        <span class="badge badge-sistema">Sistema</span>
+                        {% else %}
+                        <span class="badge badge-custom">Personalizado</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ rol.total_usuarios }}</td>
+                    <td>
+                        <div class="actions">
+                            {% if not rol.es_sistema %}
+                            <a class="btn btn-ghost btn-sm" href="{% url 'administrador:rol_editar' rol.id_rol %}">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            {% endif %}
+                            {% if not rol.es_sistema and rol.total_usuarios == 0 %}
+                            <form class="inline-form" method="post"
+                                action="{% url 'administrador:rol_eliminar' rol.id_rol %}"
+                                onsubmit="return confirm('¿Eliminar este rol?');">
+                                {% csrf_token %}
+                                <button class="btn btn-danger btn-sm" type="submit">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-user-tag"></i>
+        <p>No hay roles registrados.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

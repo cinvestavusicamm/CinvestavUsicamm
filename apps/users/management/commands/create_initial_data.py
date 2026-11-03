@@ -11,33 +11,21 @@ class Command(BaseCommand):
         self.stdout.write('Creando datos iniciales...')
 
         # Crear roles
-        roles_data = [
-            {'id_rol': 1, 'nombre_rol': 'ADMIN'},
-            {'id_rol': 2, 'nombre_rol': 'DOCENTE'},
-            {'id_rol': 3, 'nombre_rol': 'EVALUADOR'},
-            {'id_rol': 4, 'nombre_rol': 'GENERADOR'},
-        ]
-
-        for role_data in roles_data:
-            rol, created = Rol.objects.get_or_create(
-                id_rol=role_data['id_rol'],
-                defaults={'nombre_rol': role_data['nombre_rol']}
-            )
+        for nombre_rol in ('ADMIN', 'DOCENTE', 'EVALUADOR', 'GENERADOR'):
+            rol, created = Rol.objects.get_or_create(nombre_rol=nombre_rol)
             if created:
                 self.stdout.write(f'Rol creado: {rol.nombre_rol}')
             else:
                 self.stdout.write(f'Rol ya existe: {rol.nombre_rol}')
 
         # Crear institución
-        institucion, created = Institucion.objects.get_or_create(
-            id_institucion=1,
-            defaults={
-                'nombre': 'Institución de Prueba',
-                'tipo': 'Educación Básica',
-                'activo': True
-            }
-        )
-        if created:
+        institucion = Institucion.objects.filter(nombre='Institución de Prueba').first()
+        if institucion is None:
+            institucion = Institucion.objects.create(
+                nombre='Institución de Prueba',
+                tipo='Educación Básica',
+                activo=True,
+            )
             self.stdout.write(f'Institución creada: {institucion.nombre}')
         else:
             self.stdout.write(f'Institución ya existe: {institucion.nombre}')
@@ -68,19 +56,17 @@ class Command(BaseCommand):
             self.stdout.write(f'Usuario administrador ya existe: {admin.correo}')
 
         # Crear curso de prueba
-        curso, created = Curso.objects.get_or_create(
-            id_curso=1,
-            defaults={
-                'titulo': 'Curso de Prueba',
-                'descripcion': 'Este es un curso de prueba para el sistema',
-                'estado': 'Borrador',
-                'generado_con_ia': False,
-                'version': 1,
-                'contenido_json': {'modulos': []},
-                'docente': admin
-            }
-        )
-        if created:
+        curso = Curso.objects.filter(titulo='Curso de Prueba').first()
+        if curso is None:
+            curso = Curso.objects.create(
+                titulo='Curso de Prueba',
+                descripcion='Este es un curso de prueba para el sistema',
+                estado='Borrador',
+                generado_con_ia=False,
+                version=1,
+                contenido_json={'modulos': []},
+                docente=admin,
+            )
             self.stdout.write(f'Curso creado: {curso.titulo}')
         else:
             self.stdout.write(f'Curso ya existe: {curso.titulo}')
